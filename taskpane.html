@@ -942,12 +942,20 @@ body{
     </div>
 
     <div class="coherence-cost-note" id="coherenceCostNote">
-      ⚠ El coste mostrado incluye el análisis de coherencia narrativa sobre el documento completo. Es una estimación orientativa — el coste real puede ser hasta un 30% mayor o menor dependiendo de la cantidad de incidencias detectadas.
-    </div>
+	  ⚠ TE informamos que el coste real puede variar
+	</div>
 
-    <div style="font-size:10.5px;color:var(--muted);text-align:center;margin-bottom:12px;line-height:1.5">
-      Estimación basada en el número de palabras y opciones seleccionadas.<br>El coste real puede variar según la longitud de las respuestas de Claude.
-    </div>
+	<div style="font-size:10.5px;color:var(--muted);background:var(--sepia);
+	  border-radius:6px;padding:9px 11px;margin-bottom:12px;line-height:1.6">
+	  <strong style="color:var(--ink);display:block;margin-bottom:3px">
+		ℹ Por qué el coste real puede variar:
+	  </strong>
+	  La estimación se calcula en base al número de palabras y opciones seleccionadas. 
+	  El coste real depende de cuántos errores encuentre Claude: si detecta muchos problemas 
+	  y genera comentarios detallados con sinónimos, la respuesta será más larga y el coste 
+	  mayor. Si el texto está muy limpio, el coste será menor. La variación habitual 
+	  es de ±30%, aunque en casos extremos puede ser mayor.
+	</div>
 
     <button class="btn-primary" onclick="confirmAndAnalyze()">
       ✦ Confirmar y analizar
