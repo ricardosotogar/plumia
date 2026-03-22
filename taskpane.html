@@ -116,17 +116,20 @@ body{
 .welcome-hero{
   background:linear-gradient(160deg,var(--ink) 0%,var(--ink2) 100%);
   padding:24px 20px 20px;
-  position:relative;overflow:hidden;
+  position:relative;overflow:visible;
+  flex-shrink:0;
 }
 .welcome-hero::before{
   content:'';position:absolute;top:-20px;right:-20px;
   width:120px;height:120px;border-radius:50%;
   background:radial-gradient(circle,rgba(180,125,46,.15) 0%,transparent 70%);
+  pointer-events:none;
 }
 .welcome-title{
   font-family:'Cormorant Garamond',serif;
   color:var(--paper);font-size:28px;font-weight:600;
   letter-spacing:.02em;margin-bottom:4px;
+  line-height:1.2;overflow:visible;
 }
 .welcome-title em{color:var(--gold2);font-style:italic}
 .welcome-subtitle{
