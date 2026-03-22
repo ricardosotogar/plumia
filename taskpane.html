@@ -915,7 +915,7 @@ body{
 <div class="overlay" id="costOverlay" onclick="closeCostPopup(event)">
   <div class="cost-popup" onclick="event.stopPropagation()">
     <div class="popup-handle"></div>
-    <div class="popup-title">Coste estimado del análisis</div>
+    <div class="popup-title">Coste estimado <span style="font-size:13px;font-weight:400;color:var(--mid);font-family:'DM Sans',sans-serif">(orientativo)</span></div>
 
     <div class="cost-grid">
       <div class="cost-item">
@@ -942,7 +942,11 @@ body{
     </div>
 
     <div class="coherence-cost-note" id="coherenceCostNote">
-      🔮 Has seleccionado opciones de <strong>coherencia narrativa</strong>. Este análisis requiere leer el documento completo y puede ser entre 3–5× más costoso que las correcciones ortotipográficas.
+      ⚠ El coste mostrado incluye el análisis de coherencia narrativa sobre el documento completo. Es una estimación orientativa — el coste real puede ser hasta un 30% mayor o menor dependiendo de la cantidad de incidencias detectadas.
+    </div>
+
+    <div style="font-size:10.5px;color:var(--muted);text-align:center;margin-bottom:12px;line-height:1.5">
+      Estimación basada en el número de palabras y opciones seleccionadas.<br>El coste real puede variar según la longitud de las respuestas de Claude.
     </div>
 
     <button class="btn-primary" onclick="confirmAndAnalyze()">
