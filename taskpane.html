@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Plumia</title>
+<script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & VARIABLES ──────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:     #16161a;
+  --ink2:    #2a2a35;
+  --paper:   #faf9f6;
+  --sepia:   #f0ece3;
+  --sepia2:  #e8e2d6;
+  --rule:    #ddd8cc;
+  --gold:    #b07d2e;
+  --gold2:   #d4a843;
+  --gold-bg: #fdf5e4;
+  --mid:     #7a7570;
+  --muted:   #aaa59e;
+  --ok:      #3a6b4a;
+  --ok-bg:   #edf7f1;
+  --err:     #8b2020;
+  --err-bg:  #fef2f2;
+  --warn:    #7a4f10;
+  --warn-bg: #fff8ed;
+  --info-bg: #eef4fc;
+  --info:    #2a4a7a;
+  --radius:  8px;
+  --shadow:  0 2px 12px rgba(22,22,26,.08);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:13px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── SCROLLBAR ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--rule);border-radius:2px}
+
+/* ── HEADER ─────────────────────────────────────────────────────────────── */
+.app-header{
+  background:var(--ink);
+  padding:12px 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;position:relative;z-index:100;
+}
+.brand{display:flex;align-items:baseline;gap:6px}
+.brand-name{
+  font-family:'Cormorant Garamond',serif;
+  color:var(--paper);font-size:22px;font-weight:600;
+  letter-spacing:.02em;line-height:1;
+}
+.brand-name em{color:var(--gold2);font-style:italic}
+.brand-sub{
+  font-size:9px;color:#888;letter-spacing:.08em;
+  text-transform:uppercase;margin-top:2px;display:block;
+}
+.help-btn{
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:var(--paper);font-size:13px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
+  font-family:'Cormorant Garamond',serif;
+}
+.help-btn:hover{background:var(--gold);border-color:var(--gold)}
+
+/* ── PROGRESS STEPS ─────────────────────────────────────────────────────── */
+.steps{
+  display:flex;background:var(--ink2);
+  padding:8px 16px;gap:0;flex-shrink:0;
+}
+.step{
+  flex:1;display:flex;align-items:center;gap:6px;
+  font-size:9.5px;font-weight:500;letter-spacing:.04em;
+  text-transform:uppercase;color:#555;
+  padding:4px 0;position:relative;
+}
+.step.active{color:var(--gold2)}
+.step.done{color:#666}
+.step-num{
+  width:18px;height:18px;border-radius:50%;
+  background:#333;border:1.5px solid #444;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#666;flex-shrink:0;
+  transition:all .3s;
+}
+.step.active .step-num{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.step.done .step-num{background:#3a3a40;border-color:#555;color:#888}
+.step.done .step-num::after{content:'✓';font-size:9px}
+.step-label{display:none}
+@media(min-width:320px){.step-label{display:block}}
+.step-divider{width:1px;background:#333;align-self:stretch;margin:0 2px}
+
+/* ── SCREENS ────────────────────────────────────────────────────────────── */
+.screen{
+  display:none;flex:1;overflow-y:auto;flex-direction:column;
+}
+.screen.active{display:flex}
+
+/* ── WELCOME SCREEN ─────────────────────────────────────────────────────── */
+#screen-welcome{padding:0}
+.welcome-hero{
+  background:linear-gradient(160deg,var(--ink) 0%,var(--ink2) 100%);
+  padding:24px 20px 20px;
+  position:relative;overflow:hidden;
+}
+.welcome-hero::before{
+  content:'';position:absolute;top:-20px;right:-20px;
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(180,125,46,.15) 0%,transparent 70%);
+}
+.welcome-title{
+  font-family:'Cormorant Garamond',serif;
+  color:var(--paper);font-size:28px;font-weight:600;
+  letter-spacing:.02em;margin-bottom:4px;
+}
+.welcome-title em{color:var(--gold2);font-style:italic}
+.welcome-subtitle{
+  font-size:11px;color:rgba(255,255,255,.5);
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.welcome-content{padding:0 0 80px}
+.welcome-section{
+  border-bottom:1px solid var(--rule);
+  padding:16px 18px;
+}
+.ws-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:600;color:var(--gold);
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.ws-title::before{
+  content:'';width:3px;height:16px;
+  background:var(--gold);border-radius:2px;flex-shrink:0;
+}
+.ws-body{font-size:12px;color:var(--mid);line-height:1.65}
+.ws-body p{margin-bottom:8px}
+.ws-body p:last-child{margin-bottom:0}
+.ws-body strong{color:var(--ink);font-weight:600}
+
+/* Grupos de correcciones en bienvenida */
+.corr-group-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:14px;font-weight:600;color:var(--ink);
+  margin:14px 0 8px;padding-bottom:4px;
+  border-bottom:1px solid var(--sepia2);
+}
+.corr-entry{margin-bottom:12px}
+.corr-entry-name{
+  font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;
+}
+.corr-entry-desc{font-size:11.5px;color:var(--mid);line-height:1.6;margin-bottom:5px}
+.example-box{
+  background:var(--sepia);border-left:2px solid var(--gold);
+  border-radius:0 4px 4px 0;padding:7px 10px;
+  font-family:'DM Mono',monospace;font-size:10.5px;
+  color:var(--ink2);line-height:1.6;
+}
+.example-box .ex-ok{color:var(--ok);font-weight:500}
+.example-box .ex-bad{color:var(--err)}
+.note-box{
+  background:var(--warn-bg);border:1px solid #e8c87a;
+  border-radius:var(--radius);padding:10px 12px;
+  font-size:11.5px;color:var(--warn);line-height:1.5;
+  margin:10px 0;
+}
+.info-box{
+  background:var(--info-bg);border:1px solid #b8d0f0;
+  border-radius:var(--radius);padding:10px 12px;
+  font-size:11.5px;color:var(--info);line-height:1.5;
+  margin:10px 0;
+}
+
+/* ── WELCOME FOOTER (fijo) ──────────────────────────────────────────────── */
+.welcome-cta{
+  position:fixed;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,var(--paper) 70%,transparent);
+  padding:20px 18px 16px;z-index:50;
+}
+
+/* ── API KEY SCREEN ──────────────────────────────────────────────────────── */
+#screen-apikey{padding:20px 18px}
+.form-section{margin-bottom:20px}
+.form-label{
+  font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--mid);
+  display:block;margin-bottom:8px;
+}
+.api-input-wrap{
+  display:flex;gap:8px;align-items:stretch;
+}
+.api-input{
+  flex:1;border:1.5px solid var(--rule);border-radius:var(--radius);
+  padding:10px 12px;font-family:'DM Mono',monospace;font-size:11.5px;
+  color:var(--ink);background:var(--sepia);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.api-input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(176,125,46,.12);
+}
+.api-toggle{
+  background:var(--sepia2);border:1.5px solid var(--rule);
+  border-radius:var(--radius);padding:0 12px;
+  font-size:11px;color:var(--mid);cursor:pointer;
+  white-space:nowrap;transition:all .2s;
+}
+.api-toggle:hover{background:var(--rule);color:var(--ink)}
+.api-status{
+  margin-top:8px;font-size:11px;
+  display:flex;align-items:center;gap:5px;color:var(--mid);
+}
+.api-status.ok{color:var(--ok)}
+.api-status.err{color:var(--err)}
+.status-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:currentColor;flex-shrink:0;
+}
+
+.security-note{
+  background:var(--ok-bg);border:1px solid #a8d5b5;
+  border-radius:var(--radius);padding:10px 12px;
+  font-size:11px;color:var(--ok);line-height:1.5;
+}
+.security-note strong{display:block;margin-bottom:3px}
+
+/* ── OPTIONS SCREEN ──────────────────────────────────────────────────────── */
+#screen-options{padding:16px 18px 100px}
+.select-all-row{
+  display:flex;gap:8px;margin-bottom:14px;
+}
+.btn-sel-all,.btn-clear-all{
+  flex:1;border:1.5px solid var(--rule);background:white;
+  border-radius:6px;padding:7px;font-size:10.5px;
+  font-weight:500;color:var(--mid);cursor:pointer;
+  transition:all .15s;text-align:center;
+  font-family:'DM Sans',sans-serif;
+}
+.btn-sel-all:hover{border-color:var(--gold);color:var(--gold)}
+.btn-clear-all:hover{border-color:var(--err);color:var(--err)}
+
+.group-block{margin-bottom:16px}
+.group-header{
+  font-family:'Cormorant Garamond',serif;
+  font-size:14px;font-weight:600;color:var(--gold);
+  padding:6px 0;margin-bottom:8px;
+  border-bottom:1px solid var(--gold-bg);
+  display:flex;align-items:center;gap:6px;
+}
+.group-badge{
+  font-size:9px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);
+  font-family:'DM Sans',sans-serif;
+  background:var(--sepia);padding:2px 7px;border-radius:20px;
+  margin-left:auto;
+}
+.group-badge.coherence-badge{
+  background:#f3eeff;color:#6030a0;
+}
+
+.corr-check{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:7px 10px;border-radius:6px;
+  cursor:pointer;transition:background .15s;
+  margin-bottom:2px;
+}
+.corr-check:hover{background:var(--sepia)}
+.corr-check.disabled{opacity:.4;cursor:not-allowed}
+.cb-box{
+  width:16px;height:16px;border-radius:4px;
+  border:1.5px solid var(--rule);background:white;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;transition:all .15s;
+}
+.corr-check.checked .cb-box{
+  background:var(--gold);border-color:var(--gold);
+}
+.corr-check.checked .cb-box::after{
+  content:'✓';font-size:10px;color:white;font-weight:700;
+  line-height:1;
+}
+.cb-text{flex:1}
+.cb-label{
+  font-size:12px;font-weight:500;color:var(--ink);
+  line-height:1.3;margin-bottom:2px;
+}
+.cb-desc{font-size:10.5px;color:var(--muted);line-height:1.3}
+
+/* Coherencia narrativa warning */
+.coherence-warning{
+  background:#faf0ff;border:1px solid #d4b0f5;
+  border-radius:var(--radius);padding:10px 12px;
+  font-size:11px;color:#5a2080;line-height:1.5;
+  margin:8px 0;display:none;
+}
+.coherence-warning.visible{display:block}
+
+/* Formato resultado */
+.result-format{margin-top:20px}
+.format-title{
+  font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--mid);
+  margin-bottom:10px;
+}
+.format-options{display:flex;flex-direction:column;gap:8px}
+.format-opt{
+  display:flex;align-items:flex-start;gap:10px;
+  border:1.5px solid var(--rule);border-radius:var(--radius);
+  padding:11px 13px;cursor:pointer;transition:all .2s;
+  background:white;
+}
+.format-opt.selected{
+  border-color:var(--gold);background:var(--gold-bg);
+}
+.radio-circle{
+  width:16px;height:16px;border-radius:50%;
+  border:1.5px solid var(--rule);background:white;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;transition:all .15s;
+}
+.format-opt.selected .radio-circle{border-color:var(--gold)}
+.format-opt.selected .radio-circle::after{
+  content:'';width:8px;height:8px;border-radius:50%;
+  background:var(--gold);display:block;
+}
+.format-opt-label{
+  font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;
+}
+.format-opt-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* ── COST POPUP ──────────────────────────────────────────────────────────── */
+.overlay{
+  position:fixed;inset:0;background:rgba(22,22,26,.6);
+  z-index:200;display:none;align-items:flex-end;
+  backdrop-filter:blur(2px);
+}
+.overlay.visible{display:flex}
+.cost-popup{
+  background:var(--paper);border-radius:16px 16px 0 0;
+  width:100%;padding:20px 20px 24px;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.popup-handle{
+  width:36px;height:3px;background:var(--rule);
+  border-radius:2px;margin:0 auto 16px;
+}
+.popup-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:600;color:var(--ink);
+  margin-bottom:14px;
+}
+.cost-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin-bottom:14px;
+}
+.cost-item{
+  background:var(--sepia);border-radius:var(--radius);
+  padding:10px 12px;
+}
+.cost-item-label{
+  font-size:9.5px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:4px;
+}
+.cost-item-value{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;color:var(--ink);
+}
+.cost-item-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.cost-divider{
+  grid-column:1/-1;height:1px;background:var(--rule);
+}
+.coherence-cost-note{
+  background:#faf0ff;border:1px solid #d4b0f5;
+  border-radius:var(--radius);padding:10px 12px;
+  font-size:11px;color:#5a2080;line-height:1.5;
+  margin-bottom:14px;display:none;
+}
+.coherence-cost-note.visible{display:block}
+
+/* ── PROGRESS SCREEN ─────────────────────────────────────────────────────── */
+#screen-progress{
+  padding:30px 20px;align-items:center;justify-content:center;
+  text-align:center;
+}
+.progress-icon{
+  font-size:40px;margin-bottom:20px;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.progress-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:600;color:var(--ink);
+  margin-bottom:8px;
+}
+.progress-subtitle{
+  font-size:12px;color:var(--mid);margin-bottom:24px;
+  line-height:1.5;
+}
+.progress-bar-wrap{
+  width:100%;background:var(--rule);border-radius:4px;
+  height:4px;margin-bottom:10px;overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));
+  border-radius:4px;transition:width .5s ease;width:0%;
+}
+.progress-pct{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--muted);margin-bottom:6px;
+}
+.progress-step-label{
+  font-size:11px;color:var(--mid);font-style:italic;
+  min-height:16px;
+}
+.abort-btn{
+  margin-top:24px;background:none;border:1px solid var(--rule);
+  border-radius:var(--radius);padding:8px 16px;
+  font-size:11px;color:var(--muted);cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.abort-btn:hover{border-color:var(--err);color:var(--err)}
+
+/* ── DONE SCREEN ─────────────────────────────────────────────────────────── */
+#screen-done{
+  padding:30px 20px;align-items:center;justify-content:center;
+  text-align:center;
+}
+.done-icon{font-size:48px;margin-bottom:16px}
+.done-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;color:var(--ink);margin-bottom:8px;
+}
+.done-stats{
+  background:var(--sepia);border-radius:var(--radius);
+  padding:14px;margin:14px 0;width:100%;text-align:left;
+}
+.done-stat-row{
+  display:flex;justify-content:space-between;
+  align-items:center;padding:5px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:12px;
+}
+.done-stat-row:last-child{border-bottom:none}
+.done-stat-label{color:var(--mid)}
+.done-stat-value{font-weight:600;color:var(--ink)}
+.done-filename{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);background:var(--sepia);
+  border-radius:4px;padding:4px 8px;
+  margin:8px 0;word-break:break-all;
+  text-align:center;width:100%;
+}
+.btn-new-analysis{
+  margin-top:8px;background:none;border:1.5px solid var(--rule);
+  border-radius:var(--radius);padding:9px 20px;
+  font-size:12px;color:var(--mid);cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.btn-new-analysis:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── ERROR SCREEN ────────────────────────────────────────────────────────── */
+.error-banner{
+  background:var(--err-bg);border:1px solid #f5c0c0;
+  border-radius:var(--radius);padding:12px 14px;
+  font-size:12px;color:var(--err);line-height:1.5;
+  margin:16px 18px;display:none;
+}
+.error-banner.visible{display:block}
+.error-banner strong{display:block;margin-bottom:4px}
+.resume-btn{
+  margin-top:10px;background:var(--gold);color:white;
+  border:none;border-radius:6px;padding:8px 14px;
+  font-size:11.5px;font-weight:500;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+}
+
+/* ── HELP MODAL ──────────────────────────────────────────────────────────── */
+.help-overlay{
+  position:fixed;inset:0;background:rgba(22,22,26,.7);
+  z-index:300;display:none;
+  backdrop-filter:blur(3px);
+}
+.help-overlay.visible{display:block}
+.help-panel{
+  position:fixed;top:0;right:0;bottom:0;
+  width:100%;background:var(--paper);
+  overflow-y:auto;
+  transform:translateX(100%);
+  transition:transform .3s ease;
+  z-index:301;
+}
+.help-panel.visible{transform:translateX(0)}
+.help-header{
+  background:var(--ink);padding:14px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:10;
+}
+.help-header-title{
+  font-family:'Cormorant Garamond',serif;
+  color:var(--paper);font-size:17px;font-weight:600;
+}
+.help-close{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,.1);border:none;
+  color:var(--paper);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.help-close:hover{background:rgba(255,255,255,.2)}
+.help-body{padding:16px 18px 30px}
+
+/* ── BUTTONS ─────────────────────────────────────────────────────────────── */
+.btn-primary{
+  width:100%;background:var(--gold);color:var(--ink);
+  border:none;border-radius:var(--radius);
+  padding:13px;font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:600;letter-spacing:.02em;
+  cursor:pointer;transition:all .2s;
+}
+.btn-primary:hover{background:#9a6d25;color:white}
+.btn-primary:disabled{
+  background:var(--sepia2);color:var(--muted);cursor:not-allowed;
+}
+.btn-secondary{
+  width:100%;background:white;color:var(--mid);
+  border:1.5px solid var(--rule);border-radius:var(--radius);
+  padding:11px;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;
+  margin-top:8px;
+}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+.btn-back{
+  display:flex;align-items:center;gap:6px;
+  background:none;border:none;color:var(--muted);
+  font-size:11px;cursor:pointer;padding:0;
+  margin-bottom:16px;font-family:'DM Sans',sans-serif;
+  transition:color .15s;
+}
+.btn-back:hover{color:var(--gold)}
+
+/* ── SCREEN FOOTERS ─────────────────────────────────────────────────────── */
+.screen-footer{
+  position:sticky;bottom:0;
+  background:linear-gradient(to top,var(--paper) 70%,transparent);
+  padding:16px 18px;flex-shrink:0;
+}
+.footer-hint{
+  font-size:10.5px;color:var(--muted);
+  text-align:center;margin-bottom:10px;
+  line-height:1.4;
+}
+
+/* ── SAVED PROGRESS BANNER ──────────────────────────────────────────────── */
+.resume-banner{
+  background:var(--info-bg);border:1px solid #b8d0f0;
+  border-radius:var(--radius);padding:11px 13px;
+  font-size:11.5px;color:var(--info);
+  margin:0 18px 14px;display:none;
+}
+.resume-banner.visible{display:block}
+.resume-banner strong{display:block;margin-bottom:4px}
+.resume-banner-btns{display:flex;gap:8px;margin-top:8px}
+.btn-resume,.btn-discard{
+  flex:1;padding:6px;font-size:11px;font-weight:500;
+  border-radius:5px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;border:none;
+}
+.btn-resume{background:var(--info);color:white}
+.btn-discard{background:var(--sepia2);color:var(--mid)}
+
+/* ── MISC ────────────────────────────────────────────────────────────────── */
+.app-footer{
+  padding:8px 18px;text-align:center;
+  font-size:9.5px;color:var(--muted);
+  border-top:1px solid var(--rule);flex-shrink:0;
+}
+.app-footer a{color:var(--gold);text-decoration:none}
+.divider{height:1px;background:var(--rule);margin:16px 0}
+.tag{
+  display:inline-block;font-size:9px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  background:var(--sepia);color:var(--muted);
+  padding:2px 7px;border-radius:20px;
+}
+.tag.coherence{background:#f3eeff;color:#6030a0}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
+<header class="app-header">
+  <div class="brand">
+    <div>
+      <div class="brand-name">Plum<em>ia</em></div>
+      <div class="brand-sub">Corrector ortotipográfico</div>
+    </div>
+  </div>
+  <button class="help-btn" onclick="openHelp()" title="Ayuda">?</button>
+</header>
+
+<!-- ── STEPS ──────────────────────────────────────────────────────────────── -->
+<div class="steps" id="steps-bar" style="display:none">
+  <div class="step" id="step-1">
+    <div class="step-num">1</div>
+    <span class="step-label">API</span>
+  </div>
+  <div class="step-divider"></div>
+  <div class="step" id="step-2">
+    <div class="step-num">2</div>
+    <span class="step-label">Opciones</span>
+  </div>
+  <div class="step-divider"></div>
+  <div class="step" id="step-3">
+    <div class="step-num">3</div>
+    <span class="step-label">Análisis</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SCREEN 0: BIENVENIDA / MANUAL
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="screen active" id="screen-welcome">
+  <div class="welcome-hero">
+    <div class="welcome-title">Plum<em>ia</em></div>
+    <div class="welcome-subtitle">Corrector ortotipográfico y de estilo</div>
+  </div>
+
+  <div class="welcome-content" id="welcome-manual">
+    <!-- El contenido del manual se genera por JS para reutilizarlo en el panel de ayuda -->
+  </div>
+
+  <div class="welcome-cta">
+    <div class="footer-hint">Este manual estará siempre disponible pulsando el botón <strong>?</strong></div>
+    <button class="btn-primary" onclick="goToApiKey()">Comenzar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SCREEN 1: API KEY
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-apikey">
+  <button class="btn-back" onclick="goBack('welcome')">← Volver al manual</button>
+
+  <div class="form-section">
+    <label class="form-label">Clave de API de Anthropic</label>
+    <div class="api-input-wrap">
+      <input type="password" class="api-input" id="apiKeyInput"
+        placeholder="sk-ant-api03-…"
+        oninput="validateKeyFormat()"/>
+      <button class="api-toggle" id="toggleBtn" onclick="toggleKeyVisibility()">Ver</button>
+    </div>
+    <div class="api-status" id="apiStatus">
+      <span class="status-dot"></span>
+      <span id="apiStatusText">Introduce tu clave de API</span>
+    </div>
+  </div>
+
+  <div class="security-note">
+    <strong>🔒 Tu clave está segura</strong>
+    Se guarda únicamente en tu dispositivo. No se comparte con ningún servidor externo. No se realizará ningún cargo hasta que confirmes el análisis.
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="font-size:11.5px;color:var(--mid);line-height:1.6">
+    <p style="margin-bottom:6px">¿No tienes clave? Obtenerla es gratis y rápido:</p>
+    <ol style="padding-left:18px;display:flex;flex-direction:column;gap:4px">
+      <li>Ve a <strong>console.anthropic.com</strong></li>
+      <li>Accede a <strong>API Keys → Create Key</strong></li>
+      <li>Añade crédito en <strong>Billing</strong> (mínimo $5)</li>
+    </ol>
+    <p style="margin-top:8px">El coste aproximado es de <strong>$0,001 por página</strong>. Solo pagas por lo que uses.</p>
+  </div>
+
+  <div class="error-banner" id="apiError">
+    <strong>Clave inválida</strong>
+    <span id="apiErrorText">La clave debe empezar por sk-ant-</span>
+  </div>
+
+  <div class="screen-footer">
+    <button class="btn-primary" id="btnContinueApi" onclick="saveApiKey()" disabled>
+      Continuar →
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SCREEN 2: OPCIONES
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-options">
+  <button class="btn-back" onclick="goBack('apikey')">← Cambiar clave</button>
+
+  <!-- Banner de análisis interrumpido -->
+  <div class="resume-banner" id="resumeBanner">
+    <strong>⚡ Análisis interrumpido encontrado</strong>
+    Hay un análisis previo a medias. ¿Deseas retomarlo desde donde se quedó o empezar desde cero?
+    <div class="resume-banner-btns">
+      <button class="btn-resume" onclick="resumeAnalysis()">Retomar análisis</button>
+      <button class="btn-discard" onclick="discardAndStart()">Empezar de cero</button>
+    </div>
+  </div>
+
+  <div class="select-all-row">
+    <button class="btn-sel-all" onclick="selectAll(true)">✓ Seleccionar todo</button>
+    <button class="btn-clear-all" onclick="selectAll(false)">✕ Limpiar</button>
+  </div>
+
+  <!-- Las opciones de corrección se generan por JS desde corrections-config -->
+  <div id="corrections-list"></div>
+
+  <div class="coherence-warning" id="coherenceWarning">
+    ⚠ Las opciones de coherencia narrativa analizan el documento completo aunque hayas seleccionado texto. El análisis puede tardar más y ser más costoso.
+  </div>
+
+  <!-- Formato de resultado -->
+  <div class="result-format">
+    <div class="format-title">¿Cómo quieres recibir el resultado?</div>
+    <div class="format-options">
+      <div class="format-opt selected" id="format-marked" onclick="selectFormat('marked')">
+        <div class="radio-circle"></div>
+        <div>
+          <div class="format-opt-label">Documento marcado con colores</div>
+          <div class="format-opt-desc">Crea una versión nueva del documento con los errores resaltados y comentarios explicativos</div>
+        </div>
+      </div>
+      <div class="format-opt" id="format-report" onclick="selectFormat('report')">
+        <div class="radio-circle"></div>
+        <div>
+          <div class="format-opt-label">Solo informe de estadísticas</div>
+          <div class="format-opt-desc">Genera un documento separado con el listado de incidencias por categoría</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-footer">
+    <div class="footer-hint" id="selectionHint">Selecciona al menos una opción</div>
+    <button class="btn-primary" id="btnAnalyze" onclick="requestCostEstimate()" disabled>
+      Calcular coste y continuar →
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SCREEN 3: PROGRESO
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-progress">
+  <div class="progress-icon">✦</div>
+  <div class="progress-title">Analizando tu texto</div>
+  <div class="progress-subtitle" id="progressSubtitle">Extrayendo texto del documento…</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-pct" id="progressPct">0%</div>
+  <div class="progress-step-label" id="progressStepLabel"></div>
+  <button class="abort-btn" onclick="abortAnalysis()">Cancelar análisis</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SCREEN 4: COMPLETADO
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-done">
+  <div class="done-icon">✓</div>
+  <div class="done-title">Análisis completado</div>
+  <div style="font-size:12px;color:var(--mid);margin-bottom:4px" id="doneDesc"></div>
+
+  <div class="done-stats" id="doneStats"></div>
+  <div class="done-filename" id="doneFilename"></div>
+
+  <button class="btn-primary" style="margin-top:8px" onclick="goToOptions()">
+    Nuevo análisis
+  </button>
+  <button class="btn-secondary" onclick="openHelp()">Ver manual de uso</button>
+</div>
+
+<!-- ─── ERROR BANNER (visible en options y progress) ───────────────────────── -->
+<div class="error-banner" id="analysisError" style="margin:16px 18px">
+  <strong id="analysisErrorTitle">Error en el análisis</strong>
+  <span id="analysisErrorText"></span>
+  <div style="margin-top:8px;display:flex;gap:8px">
+    <button class="resume-btn" id="btnResumeAnalysis" onclick="resumeFromError()" style="display:none">
+      Retomar desde aquí
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     POPUP: CONFIRMACIÓN DE COSTE
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="overlay" id="costOverlay" onclick="closeCostPopup(event)">
+  <div class="cost-popup" onclick="event.stopPropagation()">
+    <div class="popup-handle"></div>
+    <div class="popup-title">Coste estimado del análisis</div>
+
+    <div class="cost-grid">
+      <div class="cost-item">
+        <div class="cost-item-label">Palabras</div>
+        <div class="cost-item-value" id="costWords">—</div>
+        <div class="cost-item-sub">a analizar</div>
+      </div>
+      <div class="cost-item">
+        <div class="cost-item-label">Correcciones</div>
+        <div class="cost-item-value" id="costChecks">—</div>
+        <div class="cost-item-sub">tipos seleccionados</div>
+      </div>
+      <div class="cost-divider"></div>
+      <div class="cost-item">
+        <div class="cost-item-label">Coste estimado USD</div>
+        <div class="cost-item-value" id="costUSD">—</div>
+        <div class="cost-item-sub" id="costTokens">— tokens</div>
+      </div>
+      <div class="cost-item">
+        <div class="cost-item-label">Coste estimado EUR</div>
+        <div class="cost-item-value" id="costEUR">—</div>
+        <div class="cost-item-sub">estimación orientativa</div>
+      </div>
+    </div>
+
+    <div class="coherence-cost-note" id="coherenceCostNote">
+      🔮 Has seleccionado opciones de <strong>coherencia narrativa</strong>. Este análisis requiere leer el documento completo y puede ser entre 3–5× más costoso que las correcciones ortotipográficas.
+    </div>
+
+    <button class="btn-primary" onclick="confirmAndAnalyze()">
+      ✦ Confirmar y analizar
+    </button>
+    <button class="btn-secondary" onclick="closeCostPopup()">
+      Cancelar
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PANEL DE AYUDA
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="help-overlay" id="helpOverlay" onclick="closeHelp()"></div>
+<div class="help-panel" id="helpPanel">
+  <div class="help-header">
+    <div class="help-header-title">Manual de Plumia</div>
+    <button class="help-close" onclick="closeHelp()">✕</button>
+  </div>
+  <div class="help-body" id="helpBody">
+    <!-- Mismo contenido que welcome-manual, generado por JS -->
+  </div>
+</div>
+
+<!-- ── APP FOOTER ─────────────────────────────────────────────────────────── -->
+<div class="app-footer">
+  Powered by <a href="https://anthropic.com" target="_blank">Anthropic Claude</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+
+// ── CONFIGURACIÓN INLINE (equivalente a corrections-config.js para el browser) ──
+// En producción esto se importaría como módulo ES. Aquí se incluye inline
+// para compatibilidad con el entorno de Office Add-in sin bundler.
+
+const GROUPS = [
+  { id:"pronouns",   label:"Pronombres y deixis" },
+  { id:"lexicon",    label:"Léxico y vocabulario" },
+  { id:"style",      label:"Estilo y fluidez" },
+  { id:"grammar",    label:"Gramática" },
+  { id:"orthotypo",  label:"Ortotipografía" },
+  { id:"coherence",  label:"Coherencia narrativa",
+    requiresFullDoc:true,
+    costWarning:"El análisis de coherencia requiere leer el documento completo." },
+];
+
+const CORRECTIONS = [
+  // Pronombres
+  { id:"leismo",              groupId:"pronouns",  label:"Leísmos, laísmos y loísmos",              desc:"Uso incorrecto de le, la, lo como complemento" },
+  { id:"ambiguedad_pronominal",groupId:"pronouns", label:"Ambigüedades pronominales",               desc:"Pronombres con referente poco claro" },
+  // Léxico
+  { id:"repeticion_lexica",   groupId:"lexicon",   label:"Repeticiones léxicas cercanas",           desc:"Misma palabra repetida en corta distancia" },
+  { id:"verbos_comedin",      groupId:"lexicon",   label:"Verbos comodín",                          desc:"Abuso de hacer, poner, tener, dar…" },
+  { id:"sustantivos_genericos",groupId:"lexicon",  label:"Sustantivos genéricos",                   desc:"Abuso de cosa, tema, aspecto, situación…" },
+  { id:"muletillas",          groupId:"lexicon",   label:"Muletillas narrativas",                   desc:"Expresiones repetidas que no aportan valor" },
+  { id:"pleonasmos",          groupId:"lexicon",   label:"Pleonasmos",                              desc:"Palabras innecesarias que repiten información" },
+  // Estilo
+  { id:"adverbios_mente",     groupId:"style",     label:"Abuso de adverbios en -mente",            desc:"Acumulación de adverbios terminados en -mente" },
+  { id:"voz_pasiva",          groupId:"style",     label:"Voz pasiva innecesaria",                  desc:"Construcciones pasivas que podrían ser activas" },
+  { id:"frases_largas",       groupId:"style",     label:"Frases demasiado largas",                 desc:"Oraciones de +40 palabras que dificultan la lectura" },
+  { id:"nombres_propios",     groupId:"style",     label:"Exceso de nombres propios",               desc:"Repetición excesiva de nombres propios cercanos" },
+  { id:"ritmo_narrativo",     groupId:"style",     label:"Ritmo narrativo",                         desc:"Desequilibrios entre tipo de escena y longitud de frases" },
+  // Gramática
+  { id:"gerundios",           groupId:"grammar",   label:"Gerundios incorrectos",                   desc:"Gerundio de posterioridad y otros usos incorrectos" },
+  { id:"dequeismo",           groupId:"grammar",   label:"Dequeísmo y queísmo",                     desc:"Uso incorrecto de 'de que' / omisión incorrecta" },
+  { id:"concordancia",        groupId:"grammar",   label:"Concordancia de género y número",         desc:"Errores de concordancia sujeto-verbo o sustantivo-adjetivo" },
+  { id:"tiempos_verbales",    groupId:"grammar",   label:"Inconsistencia de tiempos verbales",      desc:"Mezcla no intencional de indefinido e imperfecto" },
+  // Ortotipografía
+  { id:"ortotipografia_pura", groupId:"orthotypo", label:"Ortotipografía pura",                     desc:"Guiones, comillas, puntos suspensivos, mayúsculas, signos ¿¡, espaciado" },
+  { id:"puntuacion_dialogo",  groupId:"orthotypo", label:"Problemas de puntuación en diálogo",      desc:"Errores de puntuación en intervenciones y acotaciones" },
+  // Coherencia
+  { id:"coherencia_personajes",  groupId:"coherence", label:"Coherencia de personajes",             desc:"Contradicciones en experiencias, habilidades o rasgos físicos", requiresFullDoc:true },
+  { id:"coherencia_temporal",    groupId:"coherence", label:"Coherencia temporal",                  desc:"Inconsistencias en la línea de tiempo del relato", requiresFullDoc:true },
+  { id:"coherencia_objetos",     groupId:"coherence", label:"Coherencia de objetos y espacios",     desc:"Objetos que desaparecen o espacios que cambian sin explicación", requiresFullDoc:true },
+  { id:"coherencia_conocimiento",groupId:"coherence", label:"Coherencia de conocimiento",           desc:"Personajes que saben cosas que no deberían saber aún", requiresFullDoc:true },
+  { id:"tono_voz",               groupId:"coherence", label:"Tono y voz narrativa",                 desc:"Cambios bruscos de registro o ruptura del punto de vista", requiresFullDoc:true },
+  { id:"nombres_inconsistentes", groupId:"coherence", label:"Inconsistencia de nombres propios",    desc:"El mismo nombre escrito de formas distintas", requiresFullDoc:true },
+  { id:"pov",                    groupId:"coherence", label:"Cambios de punto de vista (POV)",      desc:"Saltos entre perspectivas sin transición clara", requiresFullDoc:true },
+];
+
+// ── ESTADO ───────────────────────────────────────────────────────────────────
+const state = {
+  apiKey:       '',
+  selectedIds:  new Set(),
+  outputFormat: 'marked',
+  currentScreen:'welcome',
+  processor:    null,
+  wordCount:    0,
+  isResuming:   false,
+};
+
+// ── INICIALIZACIÓN ────────────────────────────────────────────────────────────
+Office.onReady(() => {
+  buildManualContent();
+  buildCorrectionsList();
+  checkSavedApiKey();
+  checkSavedProgress();
+});
+
+// ── CONSTRUCCIÓN DEL MANUAL ───────────────────────────────────────────────────
+function buildManualContent() {
+  const html = getManualHTML();
+  document.getElementById('welcome-manual').innerHTML = html;
+  document.getElementById('helpBody').innerHTML = html;
+}
+
+function getManualHTML() {
+  return `
+  <div class="welcome-section">
+    <div class="ws-title">A — ¿Qué verifica Plumia?</div>
+    <div class="ws-body">
+      <p><strong>Plumia</strong> es un corrector ortotipográfico y de estilo para textos en español. Analiza tu escritura en seis áreas y señala con precisión los puntos que merece la pena revisar. <strong>No corrige ni reescribe tu texto</strong>: te indica qué mirar y por qué, respetando siempre tu voz como escritor.</p>
+    </div>
+
+    <div class="corr-group-title">Grupo 1 · Pronombres y deixis</div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Leísmos, laísmos y loísmos</div>
+      <div class="corr-entry-desc">Los usos incorrectos de le, la y lo pueden generar incorrecciones que distraen al lector. En la norma general del español, lo y la son complemento directo; le, indirecto.</div>
+      <div class="example-box"><span class="ex-bad">La dije que viniera.</span><br><span class="ex-ok">Le dije que viniera.</span></div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Ambigüedades pronominales</div>
+      <div class="corr-entry-desc">Pronombres como él, ella, lo, la cuyo referente no queda claro por la presencia de varios personajes cercanos.</div>
+      <div class="example-box"><span class="ex-bad">Juan habló con Pedro cuando él salió.</span><br><span class="ex-ok">Juan habló con Pedro cuando Pedro salió.</span></div>
+    </div>
+
+    <div class="corr-group-title">Grupo 2 · Léxico y vocabulario</div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Repeticiones léxicas cercanas</div>
+      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas sin intención estilística produce sensación de descuido.</div>
+      <div class="example-box"><span class="ex-bad">Abrió la puerta y miró el pasillo. Miró a ambos lados.</span><br><span class="ex-ok">Abrió la puerta y observó el pasillo. Miró a ambos lados.</span></div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Verbos comodín · Sustantivos genéricos · Muletillas · Pleonasmos</div>
+      <div class="corr-entry-desc">Verbos vagos (hacer, poner), sustantivos difusos (cosa, tema), expresiones repetidas sin valor y redundancias (subir arriba) que empobrecen el estilo.</div>
+      <div class="example-box"><span class="ex-bad">Hizo una sonrisa. / Subir arriba.</span><br><span class="ex-ok">Sonrió. / Subir.</span></div>
+    </div>
+
+    <div class="corr-group-title">Grupo 3 · Estilo y fluidez</div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Adverbios en -mente · Voz pasiva · Frases largas · Exceso de nombres · Ritmo</div>
+      <div class="corr-entry-desc">Acumulaciones que vuelven la prosa pesada, estructuras que frenan el ritmo o desequilibrios entre el tipo de escena y la longitud de las frases.</div>
+      <div class="example-box"><span class="ex-bad">La puerta fue abierta por Carlos.</span><br><span class="ex-ok">Carlos abrió la puerta.</span></div>
+    </div>
+
+    <div class="corr-group-title">Grupo 4 · Gramática</div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Gerundios · Dequeísmo · Concordancia · Tiempos verbales</div>
+      <div class="corr-entry-desc">Errores gramaticales frecuentes: gerundio de posterioridad, preposición de sobra o ausente ante que, falta de acuerdo entre sujeto y verbo, y mezclas no intencionales de tiempos del pasado.</div>
+      <div class="example-box"><span class="ex-bad">Salió de casa, encontrando a Juan.</span><br><span class="ex-ok">Salió de casa y encontró a Juan.</span></div>
+    </div>
+
+    <div class="corr-group-title">Grupo 5 · Ortotipografía</div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Mayúsculas · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
+      <div class="corr-entry-desc">Errores tipográficos que se corrigen directamente en el documento. Los cambios quedan marcados en negrita para que puedas identificarlos.</div>
+      <div class="example-box"><span class="ex-bad">-No voy - dijo Juan. / "Buenos días"</span><br><span class="ex-ok">—No voy —dijo Juan. / «Buenos días»</span></div>
+    </div>
+
+    <div class="corr-group-title">Grupo 6 · Coherencia narrativa <span class="tag coherence">Documento completo</span></div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Personajes · Temporal · Objetos · Conocimiento · Tono · Nombres · POV</div>
+      <div class="corr-entry-desc">Detecta contradicciones entre capítulos: un personaje que sabe algo que aún no debería saber, un objeto que desaparece sin explicación, cambios de registro bruscos o saltos de punto de vista.</div>
+      <div class="example-box"><span class="ex-bad">Cap.1: «Era la primera vez que tocaba un muerto.»<br>Cap.14: «Es la primera vez que toco un muerto.»</span></div>
+    </div>
+    <div class="note-box">⚠ Las opciones de coherencia narrativa requieren analizar el documento completo y pueden ser hasta 5× más costosas que el resto.</div>
+  </div>
+
+  <div class="welcome-section">
+    <div class="ws-title">B — Cómo funciona</div>
+    <div class="ws-body">
+      <p>Plumia envía tu texto a la API de <strong>Claude Sonnet</strong> (Anthropic), un modelo de IA con comprensión profunda del español. El análisis se realiza de forma segura: el texto se transmite cifrado y no se almacena ni se usa para entrenar ningún modelo.</p>
+      <p><strong>¿Qué texto se analiza?</strong> Si seleccionas texto antes de lanzar el análisis, solo se envía ese fragmento. Si no hay nada seleccionado, se analiza el documento completo excluyendo el índice, encabezados, pies de página y notas al pie.</p>
+      <p>El coste aproximado es de <strong>$0,001 por página</strong>. Antes de cada análisis se muestra una estimación del coste para que puedas decidir.</p>
+    </div>
+  </div>
+
+  <div class="welcome-section">
+    <div class="ws-title">C — Plumia no reescribe tu texto</div>
+    <div class="note-box">Plumia señala, no corrige. Tu voz como escritor es intocable.</div>
+    <div class="ws-body">
+      <p>Plumia no propone cambios automáticos ni altera tu estilo. Señala exactamente dónde hay un posible problema y explica por qué conviene revisarlo. Para algunos tipos de error (adverbios, verbos comodín, voz pasiva) ofrece alternativas orientativas como punto de partida, no como imposición.</p>
+    </div>
+  </div>
+
+  <div class="welcome-section">
+    <div class="ws-title">D — Resultados</div>
+    <div class="ws-body">
+      <p>Al finalizar el análisis se genera un documento Word nuevo con el nombre del original más <strong>REVISION V.1.0</strong>. Puedes elegir entre:</p>
+      <p><strong>Opción A:</strong> Documento marcado con colores y comentarios de Word explicando cada incidencia, más un informe de estadísticas al final.</p>
+      <p><strong>Opción B:</strong> Solo un informe de estadísticas (<strong>ESTADISTICAS V.1.0</strong>) con el listado de incidencias por categoría, página y sugerencia.</p>
+    </div>
+  </div>`;
+}
+
+// ── CONSTRUCCIÓN DE LA LISTA DE CORRECCIONES ──────────────────────────────────
+function buildCorrectionsList() {
+  const container = document.getElementById('corrections-list');
+  let html = '';
+
+  for (const group of GROUPS) {
+    const groupCorrections = CORRECTIONS.filter(c => c.groupId === group.id);
+    const isCoherence = group.id === 'coherence';
+
+    html += `<div class="group-block">
+      <div class="group-header">
+        ${group.label}
+        <span class="group-badge ${isCoherence ? 'coherence-badge' : ''}">
+          ${isCoherence ? 'Doc. completo' : groupCorrections.length + ' opciones'}
+        </span>
+      </div>`;
+
+    for (const corr of groupCorrections) {
+      html += `
+      <div class="corr-check" id="check-${corr.id}" onclick="toggleCorrection('${corr.id}')">
+        <div class="cb-box"></div>
+        <div class="cb-text">
+          <div class="cb-label">${corr.label}</div>
+          <div class="cb-desc">${corr.desc}</div>
+        </div>
+      </div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// ── NAVEGACIÓN ────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  state.currentScreen = id;
+
+  // Steps bar
+  const stepsBar = document.getElementById('steps-bar');
+  if (id === 'welcome') {
+    stepsBar.style.display = 'none';
+  } else {
+    stepsBar.style.display = 'flex';
+    updateSteps(id);
+  }
+}
+
+function updateSteps(screenId) {
+  const map = { apikey:1, options:2, progress:3, done:3 };
+  const current = map[screenId] || 0;
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('step-' + i);
+    el.className = 'step' + (i === current ? ' active' : i < current ? ' done' : '');
+    if (i < current) el.querySelector('.step-num').textContent = '';
+    else el.querySelector('.step-num').textContent = i;
+  }
+}
+
+function goToApiKey() {
+  showScreen('apikey');
+  // Pre-rellenar si ya hay clave guardada
+  const saved = localStorage.getItem('plumia_api_key');
+  if (saved) {
+    document.getElementById('apiKeyInput').value = saved;
+    state.apiKey = saved;
+    setApiStatus('ok', 'Clave guardada ✓');
+    document.getElementById('btnContinueApi').disabled = false;
+  }
+}
+
+function goToOptions() {
+  showScreen('options');
+  checkSavedProgress();
+  updateAnalyzeButton();
+}
+
+function goBack(to) {
+  showScreen(to);
+}
+
+// ── API KEY ───────────────────────────────────────────────────────────────────
+function validateKeyFormat() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  const valid = val.startsWith('sk-ant-') && val.length > 20;
+  document.getElementById('btnContinueApi').disabled = !valid;
+  if (val.length > 5 && !valid) {
+    setApiStatus('err', 'La clave debe empezar por sk-ant-…');
+  } else if (valid) {
+    setApiStatus('ok', 'Formato correcto');
+  } else {
+    setApiStatus('', 'Introduce tu clave de API');
+  }
+}
+
+function setApiStatus(type, msg) {
+  const el = document.getElementById('apiStatus');
+  el.className = 'api-status' + (type ? ' ' + type : '');
+  document.getElementById('apiStatusText').textContent = msg;
+}
+
+function toggleKeyVisibility() {
+  const input = document.getElementById('apiKeyInput');
+  const btn   = document.getElementById('toggleBtn');
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = 'Ocultar';
+  } else {
+    input.type = 'password';
+    btn.textContent = 'Ver';
+  }
+}
+
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key.startsWith('sk-ant-')) {
+    showApiError('La clave debe empezar por sk-ant-');
+    return;
+  }
+  localStorage.setItem('plumia_api_key', key);
+  state.apiKey = key;
+  hideApiError();
+  goToOptions();
+}
+
+function checkSavedApiKey() {
+  const saved = localStorage.getItem('plumia_api_key');
+  if (saved) {
+    state.apiKey = saved;
+    // Si ya tiene clave, saltar la bienvenida directamente a opciones
+    showScreen('options');
+    buildCorrectionsList();
+    checkSavedProgress();
+  }
+}
+
+function showApiError(msg) {
+  const el = document.getElementById('apiError');
+  document.getElementById('apiErrorText').textContent = msg;
+  el.classList.add('visible');
+}
+function hideApiError() {
+  document.getElementById('apiError').classList.remove('visible');
+}
+
+// ── CORRECCIONES ──────────────────────────────────────────────────────────────
+function toggleCorrection(id) {
+  const el = document.getElementById('check-' + id);
+  if (el.classList.contains('disabled')) return;
+
+  if (state.selectedIds.has(id)) {
+    state.selectedIds.delete(id);
+    el.classList.remove('checked');
+  } else {
+    state.selectedIds.add(id);
+    el.classList.add('checked');
+  }
+
+  updateCoherenceState();
+  updateAnalyzeButton();
+}
+
+function selectAll(checked) {
+  CORRECTIONS.forEach(c => {
+    const el = document.getElementById('check-' + c.id);
+    if (!el || el.classList.contains('disabled')) return;
+    if (checked) {
+      state.selectedIds.add(c.id);
+      el.classList.add('checked');
+    } else {
+      state.selectedIds.delete(c.id);
+      el.classList.remove('checked');
+    }
+  });
+  updateCoherenceState();
+  updateAnalyzeButton();
+}
+
+function updateCoherenceState() {
+  const hasCoherence = [...state.selectedIds].some(id => {
+    const c = CORRECTIONS.find(x => x.id === id);
+    return c && c.requiresFullDoc;
+  });
+  document.getElementById('coherenceWarning').classList.toggle('visible', hasCoherence);
+}
+
+function updateAnalyzeButton() {
+  const hasAny = state.selectedIds.size > 0;
+  document.getElementById('btnAnalyze').disabled = !hasAny;
+  document.getElementById('selectionHint').textContent = hasAny
+    ? `${state.selectedIds.size} opción${state.selectedIds.size !== 1 ? 'es' : ''} seleccionada${state.selectedIds.size !== 1 ? 's' : ''}`
+    : 'Selecciona al menos una opción';
+}
+
+function selectFormat(fmt) {
+  state.outputFormat = fmt;
+  document.getElementById('format-marked').classList.toggle('selected', fmt === 'marked');
+  document.getElementById('format-report').classList.toggle('selected', fmt === 'report');
+}
+
+// ── CÁLCULO DE COSTE ──────────────────────────────────────────────────────────
+async function requestCostEstimate() {
+  // Obtener número de palabras del documento
+  try {
+    await Word.run(async ctx => {
+      const body = ctx.document.body;
+      body.load('text');
+      await ctx.sync();
+      state.wordCount = (body.text || '').trim().split(/\s+/).filter(Boolean).length;
+    });
+  } catch {
+    state.wordCount = 500; // fallback
+  }
+
+  const hasCoherence = [...state.selectedIds].some(id => {
+    const c = CORRECTIONS.find(x => x.id === id);
+    return c && c.requiresFullDoc;
+  });
+
+  // Obtener tasa EUR/USD
+  let eurRate = 1.08;
+  try {
+    const res  = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    const data = await res.json();
+    eurRate = data.rates?.EUR || 1.08;
+  } catch {}
+
+  // Calcular coste
+  const wordsPerToken    = 0.75;
+  const inputPrice       = 0.000003;
+  const outputPrice      = 0.000015;
+  const textTokens       = Math.ceil(state.wordCount / wordsPerToken);
+  const promptTokensAvg  = 300;
+  const numCorrections   = state.selectedIds.size;
+  const inputTokens      = numCorrections * (textTokens + promptTokensAvg);
+  const outputTokens     = numCorrections * Math.ceil(textTokens * 0.15);
+  const multiplier       = hasCoherence ? 1.8 : 1.0;
+  const totalUSD         = ((inputTokens * inputPrice) + (outputTokens * outputPrice)) * multiplier;
+  const totalEUR         = totalUSD / eurRate;
+  const totalTokens      = Math.ceil((inputTokens + outputTokens) * multiplier);
+
+  // Mostrar popup
+  document.getElementById('costWords').textContent   = state.wordCount.toLocaleString('es-ES');
+  document.getElementById('costChecks').textContent  = numCorrections;
+  document.getElementById('costUSD').textContent     = '$' + totalUSD.toFixed(4);
+  document.getElementById('costEUR').textContent     = totalEUR.toFixed(4) + ' €';
+  document.getElementById('costTokens').textContent  = totalTokens.toLocaleString('es-ES') + ' tokens';
+  document.getElementById('coherenceCostNote').classList.toggle('visible', hasCoherence);
+  document.getElementById('costOverlay').classList.add('visible');
+}
+
+function closeCostPopup(e) {
+  if (!e || e.target === document.getElementById('costOverlay')) {
+    document.getElementById('costOverlay').classList.remove('visible');
+  }
+}
+
+// ── ANÁLISIS ──────────────────────────────────────────────────────────────────
+async function confirmAndAnalyze() {
+  closeCostPopup();
+  showScreen('progress');
+  hideAnalysisError();
+
+  updateProgress(0, 'Extrayendo texto del documento…');
+
+  try {
+    // Importar processor dinámicamente (en producción se importaría como módulo)
+    // Para el add-in se incluirá el código inline o mediante script tag
+    await runAnalysis();
+  } catch (err) {
+    handleAnalysisError(err, false);
+  }
+}
+
+async function runAnalysis() {
+  // Llamada a processor.js (PlumiaProcessor)
+  // En el add-in final esto usará import() o tendrá el código inline
+  const { PlumiaProcessor } = await getProcessor();
+
+  const proc = new PlumiaProcessor(
+    state.apiKey,
+    [...state.selectedIds],
+    state.outputFormat,
+    (pct, msg) => updateProgress(pct, msg),
+    (partialResults) => {
+      // Guardado parcial progresivo — ya aplicado en document-builder
+    },
+    (err, canResume, corrLabel) => handleAnalysisError(err, canResume, corrLabel)
+  );
+
+  state.processor = proc;
+
+  // Extraer texto
+  updateProgress(2, 'Leyendo el documento…');
+  const { text, isSelection, wordCount } = await proc.extractTextFromDocument();
+
+  // Análisis
+  const allResults = await proc.analyze(text, isSelection);
+
+  // Construir output
+  updateProgress(98, 'Generando documento de revisión…');
+  const { DocumentBuilder } = await getDocumentBuilder();
+  const builder = new DocumentBuilder(state.outputFormat);
+
+  const resolved = proc.resolveOverlaps(allResults);
+  const originalName = await getDocumentName();
+  const output = await builder.buildOutput(allResults, resolved, originalName, [...state.selectedIds]);
+
+  showDoneScreen(output, allResults);
+}
+
+function updateProgress(pct, msg) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent  = pct + '%';
+  document.getElementById('progressStepLabel').textContent = msg || '';
+  if (pct > 5) {
+    document.getElementById('progressSubtitle').textContent = 'Analizando tu texto con Claude…';
+  }
+}
+
+function abortAnalysis() {
+  if (state.processor) state.processor.abort();
+  showScreen('options');
+}
+
+function handleAnalysisError(err, canResume, corrLabel) {
+  const errEl    = document.getElementById('analysisError');
+  const titleEl  = document.getElementById('analysisErrorTitle');
+  const textEl   = document.getElementById('analysisErrorText');
+  const resumeEl = document.getElementById('btnResumeAnalysis');
+
+  let title = 'Error en el análisis';
+  let text  = err.message || 'Error desconocido';
+
+  if (err.message?.includes('API_KEY_INVALID')) {
+    title = 'Clave de API inválida';
+    text  = 'Revisa tu clave en console.anthropic.com';
+  } else if (err.message?.includes('RATE_LIMIT')) {
+    title = 'Límite de uso alcanzado';
+    text  = 'Espera unos segundos e inténtalo de nuevo';
+  } else if (corrLabel) {
+    text = `El análisis se interrumpió en «${corrLabel}». ${canResume ? 'Puedes retomar desde este punto.' : ''}`;
+  }
+
+  titleEl.textContent = title;
+  textEl.textContent  = text;
+  resumeEl.style.display = canResume ? 'inline-block' : 'none';
+  errEl.classList.add('visible');
+
+  if (state.currentScreen === 'progress') showScreen('options');
+}
+
+function hideAnalysisError() {
+  document.getElementById('analysisError').classList.remove('visible');
+}
+
+function resumeFromError() {
+  confirmAndAnalyze();
+}
+
+// ── PANTALLA DE COMPLETADO ────────────────────────────────────────────────────
+function showDoneScreen(output, allResults) {
+  document.getElementById('doneDesc').textContent =
+    output.mode === 'marked'
+      ? 'Documento de revisión generado con marcas de color y comentarios.'
+      : 'Informe de estadísticas generado.';
+
+  const totalFindings = allResults.reduce((sum, r) => sum + r.findings.length, 0);
+  const statsHTML = allResults
+    .filter(r => r.findings.length > 0)
+    .map(r => `<div class="done-stat-row">
+      <span class="done-stat-label">${r.label}</span>
+      <span class="done-stat-value">${r.findings.length}</span>
+    </div>`)
+    .join('');
+
+  document.getElementById('doneStats').innerHTML = `
+    <div class="done-stat-row">
+      <span class="done-stat-label"><strong>Total incidencias</strong></span>
+      <span class="done-stat-value"><strong>${totalFindings}</strong></span>
+    </div>
+    ${statsHTML}`;
+
+  document.getElementById('doneFilename').textContent =
+    output.mode === 'marked' ? output.revisionName : output.statsName;
+
+  showScreen('done');
+}
+
+// ── PROGRESO INTERRUMPIDO ─────────────────────────────────────────────────────
+function checkSavedProgress() {
+  const saved = localStorage.getItem('plumia_analysis_progress');
+  if (saved) {
+    document.getElementById('resumeBanner').classList.add('visible');
+  } else {
+    document.getElementById('resumeBanner').classList.remove('visible');
+  }
+}
+
+function resumeAnalysis() {
+  state.isResuming = true;
+  document.getElementById('resumeBanner').classList.remove('visible');
+  confirmAndAnalyze();
+}
+
+function discardAndStart() {
+  localStorage.removeItem('plumia_analysis_progress');
+  localStorage.removeItem('plumia_analysis_results');
+  document.getElementById('resumeBanner').classList.remove('visible');
+}
+
+// ── AYUDA ─────────────────────────────────────────────────────────────────────
+function openHelp() {
+  document.getElementById('helpOverlay').classList.add('visible');
+  document.getElementById('helpPanel').classList.add('visible');
+}
+function closeHelp() {
+  document.getElementById('helpOverlay').classList.remove('visible');
+  document.getElementById('helpPanel').classList.remove('visible');
+}
+
+// ── UTILIDADES ────────────────────────────────────────────────────────────────
+async function getDocumentName() {
+  return new Promise(resolve => {
+    Word.run(async ctx => {
+      const props = ctx.document.properties;
+      props.load('title');
+      await ctx.sync();
+      resolve(props.title || 'Documento');
+    }).catch(() => resolve('Documento'));
+  });
+}
+
+// Stubs para processor y document-builder
+// En producción se importan como módulos ES
+async function getProcessor() {
+  // En el add-in final, processor.js se incluye con <script type="module">
+  // y se exporta al window para acceso global. Aquí devolvemos el stub.
+  if (window.PlumiaProcessor) return { PlumiaProcessor: window.PlumiaProcessor };
+  throw new Error('processor.js no cargado. Revisa la instalación del complemento.');
+}
+async function getDocumentBuilder() {
+  if (window.DocumentBuilder) return { DocumentBuilder: window.DocumentBuilder };
+  throw new Error('document-builder.js no cargado. Revisa la instalación del complemento.');
+}
+
+</script>
+</body>
+</html>
