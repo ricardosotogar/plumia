@@ -845,7 +845,7 @@ body{
     <button class="btn-primary" id="btnAnalyze" onclick="requestCostEstimate()" disabled>
       Calcular coste y continuar →
     </button>
-    <button class="btn-secondary" onclick="showScreen('welcome')" style="margin-top:6px">
+    <button class="btn-secondary" onclick="resetCoherenceState();showScreen('welcome')" style="margin-top:6px">
       Cancelar
     </button>
   </div>
@@ -1037,7 +1037,9 @@ const state = {
   wordCount:        0,
   isResuming:       false,
   hasSelection:     false,
-  forceFullDoc:     false,  // true cuando usuario acepta analizar todo por coherencia
+  forceFullDoc:     false,
+  coherenceAnswered: false,  // true cuando el usuario ha respondido al aviso de coherencia
+  coherenceAccepted: false,  // true si respondió Sí
   completedChecks:  0,
   totalChecks:      0,
 };
@@ -1219,7 +1221,20 @@ function goToApiKey() {
   }
 }
 
+function resetCoherenceState() {
+  state.forceFullDoc      = false;
+  state.coherenceAnswered = false;
+  state.coherenceAccepted = false;
+  const warning = document.getElementById('coherenceWarning');
+  if (warning) {
+    warning.classList.remove('visible');
+    document.getElementById('coherenceDismissed').classList.remove('visible');
+    warning.querySelector('.coherence-warning-btns').style.display = 'flex';
+  }
+}
+
 function goToOptions() {
+  resetCoherenceState();
   showScreen('options');
   checkSavedProgress();
   updateAnalyzeButton();
@@ -1233,12 +1248,24 @@ async function detectSelection() {
       sel.load('text');
       await ctx.sync();
       const txt = (sel.text || '').trim();
-      state.hasSelection = txt.length > 10;
+      const newHasSelection = txt.length > 10;
+
+      // Si cambió el estado de selección, resetear respuesta de coherencia
+      if (newHasSelection !== state.hasSelection) {
+        state.coherenceAnswered = false;
+        state.coherenceAccepted = false;
+        state.forceFullDoc      = false;
+      }
+
+      state.hasSelection = newHasSelection;
       updateSelectionContext();
+      updateCoherenceState();
+      updateAnalyzeButton();
     });
   } catch {
     state.hasSelection = false;
     updateSelectionContext();
+    updateAnalyzeButton();
   }
 }
 
@@ -1309,12 +1336,11 @@ function checkSavedApiKey() {
   const saved = localStorage.getItem('plumia_api_key');
   if (saved) {
     state.apiKey = saved;
-    // Inicializar correctamente la pantalla de opciones
     buildCorrectionsList();
     checkSavedProgress();
+    resetCoherenceState();
     showScreen('options');
     updateAnalyzeButton();
-    // Detectar selección con pequeño delay para que Office.js esté listo
     setTimeout(() => detectSelection(), 300);
   }
 }
@@ -1367,61 +1393,117 @@ function updateCoherenceState() {
     return c && c.requiresFullDoc;
   });
 
-  const warning = document.getElementById('coherenceWarning');
-  const dismissed = document.getElementById('coherenceDismissed');
+  const warning    = document.getElementById('coherenceWarning');
+  const dismissed  = document.getElementById('coherenceDismissed');
+  const warnText   = warning.querySelector('.coherence-warning-text');
+  const warnBtns   = warning.querySelector('.coherence-warning-btns');
 
-  if (hasCoherence && state.hasSelection && !state.forceFullDoc) {
-    // Tiene selección + coherencia marcada → mostrar aviso con botones
-    warning.classList.add('visible');
-    dismissed.classList.remove('visible');
-    // Mostrar los botones, ocultar el mensaje de desmarcado
-    warning.querySelector('.coherence-warning-btns').style.display = 'flex';
-    document.getElementById('btnAnalyze').disabled = true;
-  } else {
+  if (!hasCoherence) {
+    // Sin coherencia marcada → ocultar todo el aviso, resetear estado
     warning.classList.remove('visible');
     dismissed.classList.remove('visible');
+    state.coherenceAnswered = false;
+    state.coherenceAccepted = false;
+    return;
   }
+
+  // Hay coherencia marcada
+  if (state.coherenceAnswered) return; // ya respondió, no volver a mostrar
+
+  if (state.hasSelection) {
+    // Tiene texto seleccionado → preguntar si quiere analizar todo
+    warnText.innerHTML = `⚠ Las opciones de coherencia narrativa solo pueden revisarse si se analiza el documento completo. ¿Quieres que se analice todo el documento?<br>
+      <em style="font-size:10.5px;opacity:.8">(El análisis puede tardar más y ser más costoso.)</em>`;
+    warnBtns.style.display = 'flex';
+    warnBtns.innerHTML = `
+      <button class="btn-coherence-yes" onclick="acceptCoherenceFullDoc()">Sí, analizar todo</button>
+      <button class="btn-coherence-no" onclick="rejectCoherenceFullDoc()">No</button>`;
+  } else {
+    // No tiene selección → confirmar que se analiza todo
+    warnText.innerHTML = `📋 Se va a analizar todo el documento. ¿Estás de acuerdo?`;
+    warnBtns.style.display = 'flex';
+    warnBtns.innerHTML = `
+      <button class="btn-coherence-yes" onclick="acceptCoherenceFullDoc()">Sí</button>
+      <button class="btn-coherence-no" onclick="rejectCoherenceNoSelection()">No</button>`;
+  }
+
+  dismissed.classList.remove('visible');
+  warning.classList.add('visible');
 }
 
 function acceptCoherenceFullDoc() {
-  state.forceFullDoc = true;
+  state.forceFullDoc      = true;
+  state.coherenceAnswered = true;
+  state.coherenceAccepted = true;
   document.getElementById('coherenceWarning').classList.remove('visible');
+  document.getElementById('coherenceDismissed').classList.remove('visible');
   updateSelectionContext();
   updateAnalyzeButton();
 }
 
 function rejectCoherenceFullDoc() {
-  // Desmarcar todos los checks de coherencia
-  const coherenceIds = CORRECTIONS
-    .filter(c => c.requiresFullDoc)
-    .map(c => c.id);
+  // Con selección → desmarcar coherencia
+  _uncheckCoherenceItems();
+  state.coherenceAnswered = false;
+  state.coherenceAccepted = false;
+  state.forceFullDoc      = false;
 
-  for (const id of coherenceIds) {
-    state.selectedIds.delete(id);
-    const el = document.getElementById('check-' + id);
-    if (el) el.classList.remove('checked');
-  }
-
-  // Ocultar botones, mostrar mensaje
   document.getElementById('coherenceWarning').querySelector('.coherence-warning-btns').style.display = 'none';
+  document.getElementById('coherenceDismissed').textContent = 'Checks de coherencia narrativa desmarcados.';
   document.getElementById('coherenceDismissed').classList.add('visible');
 
-  // Ocultar el aviso tras 3 segundos
   setTimeout(() => {
     document.getElementById('coherenceWarning').classList.remove('visible');
     document.getElementById('coherenceDismissed').classList.remove('visible');
   }, 3000);
 
-  state.forceFullDoc = false;
   updateAnalyzeButton();
+}
+
+function rejectCoherenceNoSelection() {
+  // Sin selección → deshabilitar botón y mostrar instrucción
+  state.coherenceAnswered = true;
+  state.coherenceAccepted = false;
+
+  document.getElementById('coherenceWarning').querySelector('.coherence-warning-btns').style.display = 'none';
+  document.getElementById('coherenceDismissed').textContent = 'Pulsa Cancelar y selecciona el texto que quieres revisar.';
+  document.getElementById('coherenceDismissed').classList.add('visible');
+
+  updateAnalyzeButton();
+}
+
+function _uncheckCoherenceItems() {
+  const coherenceIds = CORRECTIONS.filter(c => c.requiresFullDoc).map(c => c.id);
+  for (const id of coherenceIds) {
+    state.selectedIds.delete(id);
+    const el = document.getElementById('check-' + id);
+    if (el) el.classList.remove('checked');
+  }
 }
 
 function updateAnalyzeButton() {
   const hasAny = state.selectedIds.size > 0;
-  document.getElementById('btnAnalyze').disabled = !hasAny;
-  document.getElementById('selectionHint').textContent = hasAny
-    ? `${state.selectedIds.size} opción${state.selectedIds.size !== 1 ? 'es' : ''} seleccionada${state.selectedIds.size !== 1 ? 's' : ''}`
-    : 'Selecciona al menos una opción';
+  const hasCoherence = [...state.selectedIds].some(id => {
+    const c = CORRECTIONS.find(x => x.id === id);
+    return c && c.requiresFullDoc;
+  });
+
+  // Bloquear si: sin opciones, o coherencia pendiente de respuesta,
+  // o respondió No sin selección (rechazó analizar todo)
+  const coherenceBlocking =
+    hasCoherence && (
+      (!state.coherenceAnswered) ||
+      (state.coherenceAnswered && !state.coherenceAccepted)
+    );
+
+  const enabled = hasAny && !coherenceBlocking;
+
+  document.getElementById('btnAnalyze').disabled = !enabled;
+  document.getElementById('selectionHint').textContent = !hasAny
+    ? 'Selecciona al menos una opción'
+    : coherenceBlocking && state.coherenceAnswered && !state.coherenceAccepted
+      ? 'Pulsa Cancelar o responde al aviso de coherencia'
+      : `${state.selectedIds.size} opción${state.selectedIds.size !== 1 ? 'es' : ''} seleccionada${state.selectedIds.size !== 1 ? 's' : ''}`;
 }
 
 function selectFormat(fmt) {
