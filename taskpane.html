@@ -947,13 +947,21 @@ body{
       </div>
     </div>
 
-    <div class="coherence-cost-note" id="coherenceCostNote">
-      ⚠ El coste mostrado incluye el análisis de coherencia narrativa sobre el documento completo. Es una estimación orientativa — el coste real puede ser hasta un 30% mayor o menor dependiendo de la cantidad de incidencias detectadas.
-    </div>
+   <div class="coherence-cost-note" id="coherenceCostNote">
+	  ⚠ IMPORTANTE: El coste mostrado puede variar.
+	</div>
 
-    <div style="font-size:10.5px;color:var(--muted);text-align:center;margin-bottom:12px;line-height:1.5">
-      Estimación basada en el número de palabras y opciones seleccionadas.<br>El coste real puede variar según la longitud de las respuestas de Claude.
-    </div>
+	<div style="font-size:10.5px;color:var(--muted);background:var(--sepia);
+	  border-radius:6px;padding:9px 11px;margin-bottom:12px;line-height:1.6">
+	  <strong style="color:var(--ink);display:block;margin-bottom:3px">
+		ℹ Por qué el coste real puede variar
+	  </strong>
+	  La estimación se calcula en base al número de palabras y opciones seleccionadas. 
+	  El coste real depende de cuántos errores encuentre Claude: si detecta muchos problemas 
+	  y genera comentarios detallados con sinónimos, la respuesta será más larga y el coste 
+	  mayor. Si el texto está muy limpio, el coste será menor. La variación habitual 
+	  es de ±30%, aunque en casos extremos puede ser mayor.
+	</div>
 
     <button class="btn-primary" onclick="confirmAndAnalyze()">
       ✦ Confirmar y analizar
@@ -1674,7 +1682,7 @@ async function requestCostEstimate() {
   document.getElementById('costUSD').textContent     = '$' + totalUSD.toFixed(4);
   document.getElementById('costEUR').textContent     = totalEUR.toFixed(4) + ' €';
   document.getElementById('costTokens').textContent  = totalTokens.toLocaleString('es-ES') + ' tokens';
-  document.getElementById('coherenceCostNote').classList.toggle('visible', hasCoherence);
+  document.getElementById('coherenceCostNote').classList.add('visible');
   document.getElementById('costOverlay').classList.add('visible');
 }
 
