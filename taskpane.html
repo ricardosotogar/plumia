@@ -845,7 +845,7 @@ body{
     <button class="btn-primary" id="btnAnalyze" onclick="requestCostEstimate()" disabled>
       Calcular coste y continuar →
     </button>
-    <button class="btn-secondary" onclick="resetCoherenceState();showScreen('welcome')" style="margin-top:6px">
+    <button class="btn-secondary" onclick="resetCoherenceState();state.hasSelection=false;showScreen('welcome')" style="margin-top:6px">
       Cancelar
     </button>
   </div>
@@ -889,8 +889,14 @@ body{
   <div class="done-title">Análisis completado</div>
   <div style="font-size:12px;color:var(--mid);margin-bottom:4px" id="doneDesc"></div>
 
+  <!-- Instrucciones guardar como (solo para modo marcado) -->
+  <div class="info-box" id="saveAsInstructions" style="display:none;margin:10px 0;font-size:11.5px">
+    <strong style="display:block;margin-bottom:4px">📁 Guarda el documento con el nombre de revisión:</strong>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;background:var(--sepia);padding:6px 8px;border-radius:4px;margin:6px 0" id="saveAsName"></div>
+    Usa <strong>Archivo → Guardar como</strong> y ponle ese nombre para conservar el original sin cambios.
+  </div>
+
   <div class="done-stats" id="doneStats"></div>
-  <div class="done-filename" id="doneFilename"></div>
 
   <button class="btn-primary" style="margin-top:8px" onclick="goToOptions()">
     Nuevo análisis
@@ -941,21 +947,13 @@ body{
       </div>
     </div>
 
-	<div class="coherence-cost-note" id="coherenceCostNote">
-	  ⚠ IMPORTANTE: El coste mostrado puede variar.
-	</div>
+    <div class="coherence-cost-note" id="coherenceCostNote">
+      ⚠ El coste mostrado incluye el análisis de coherencia narrativa sobre el documento completo. Es una estimación orientativa — el coste real puede ser hasta un 30% mayor o menor dependiendo de la cantidad de incidencias detectadas.
+    </div>
 
-	<div style="font-size:10.5px;color:var(--muted);background:var(--sepia);
-	  border-radius:6px;padding:9px 11px;margin-bottom:12px;line-height:1.6">
-	  <strong style="color:var(--ink);display:block;margin-bottom:3px">
-		ℹ Por qué el coste real puede variar
-	  </strong>
-	  La estimación se calcula en base al número de palabras y opciones seleccionadas. 
-	  El coste real depende de cuántos errores encuentre Claude: si detecta muchos problemas 
-	  y genera comentarios detallados con sinónimos, la respuesta será más larga y el coste 
-	  mayor. Si el texto está muy limpio, el coste será menor. La variación habitual 
-	  es de ±30%, aunque en casos extremos puede ser mayor.
-	</div>
+    <div style="font-size:10.5px;color:var(--muted);text-align:center;margin-bottom:12px;line-height:1.5">
+      Estimación basada en el número de palabras y opciones seleccionadas.<br>El coste real puede variar según la longitud de las respuestas de Claude.
+    </div>
 
     <button class="btn-primary" onclick="confirmAndAnalyze()">
       ✦ Confirmar y analizar
@@ -1033,7 +1031,7 @@ const CORRECTIONS = [
    prompt:`Eres un corrector experto en español. Analiza el siguiente texto en busca de leísmos, laísmos y loísmos: usos incorrectos de los pronombres le, la y lo.\nRecuerda:\n- "lo/la" son complemento directo (CD)\n- "le" es complemento indirecto (CI)\n- Leísmo: usar "le" donde corresponde "lo/la". Ej: "Le vi ayer" → "Lo vi ayer"\n- Laísmo: usar "la" donde corresponde "le". Ej: "La dije que viniera" → "Le dije que viniera"\n- Loísmo: usar "lo" donde corresponde "le". Ej: "Lo di el libro" → "Le di el libro"\nIgnora el leísmo de persona masculina singular si es el único caso.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"type":"leismo|laismo|loismo","originalText":"fragmento exacto","correction":"forma correcta","explanation":"explicación breve"}]}\nSi no encuentras ningún error: {"findings":[]}`},
 
   {id:"ambiguedad_pronominal", groupId:"pronouns", label:"Ambigüedades pronominales", desc:"Pronombres con referente poco claro", colorId:8, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector experto en español. Analiza el texto en busca de ambigüedades pronominales: casos en que pronombres como él, ella, lo, la, le, se, su no tienen un referente claro. Presta atención a escenas con varios personajes. Solo señala casos genuinamente ambiguos.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","pronoun":"pronombre ambiguo","possibleReferents":["ref1","ref2"],"explanation":"por qué es ambiguo","suggestion":"posible reformulación"}]}\nSi no encuentras ninguno: {"findings":[]}`},
+   prompt:`Eres un corrector experto en español. Analiza el texto en busca de ambigüedades pronominales: casos en que pronombres como él, ella, lo, la, le, se, su no tienen un referente claro porque pueden aplicarse a más de un personaje o elemento en la misma frase o párrafo.\nPresta atención a escenas con varios personajes. Solo señala casos genuinamente ambiguos donde el lector no pueda saber a quién se refiere el pronombre.\nNO señales:\n- Pronombres cuyo referente es claro por contexto\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría)\n- Frases donde el sujeto es obvio\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","pronoun":"pronombre ambiguo","possibleReferents":["ref1","ref2"],"explanation":"por qué es ambiguo","suggestion":"posible reformulación"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 
   {id:"repeticion_lexica", groupId:"lexicon", label:"Repeticiones léxicas cercanas", desc:"Misma palabra repetida en corta distancia", colorId:2, includesSynonyms:false, directFix:false,
    prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de repeticiones léxicas cercanas: la misma palabra (o su raíz) repetida en un radio de 3-5 líneas, sin intención estilística. No señales artículos, preposiciones, conjunciones, ni repeticiones deliberadas.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"word":"palabra base","occurrences":["fragmento 1","fragmento 2"],"explanation":"breve explicación","synonyms":["sin1","sin2","sin3"]}]}\nSi no encuentras ninguna: {"findings":[]}`},
@@ -1063,22 +1061,22 @@ const CORRECTIONS = [
    prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de nombres propios que se repiten con demasiada frecuencia en un fragmento corto, cuando podrían sustituirse por pronombres u otras referencias.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"name":"nombre propio","occurrences":["fragmento 1","fragmento 2"],"explanation":"por qué resulta excesivo","suggestion":"cómo aligerarlo"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 
   {id:"ritmo_narrativo", groupId:"style", label:"Ritmo narrativo", desc:"Desequilibrios de ritmo entre escena y longitud de frases", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un editor literario experto en español. Analiza el texto en busca de desequilibrios de ritmo: 1) Frases largas en escenas de acción/tensión. 2) Frases muy cortas en escenas descriptivas/de atmósfera. 3) Párrafos con densidad muy desigual sin intención estilística. Solo señala casos donde el desequilibrio sea claro y perjudicial.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","sceneType":"acción|descripción|diálogo|reflexión","issue":"descripción del desequilibrio","suggestion":"cómo mejorar el ritmo"}]}\nSi no encuentras ninguno: {"findings":[]}`},
+   prompt:`Eres un editor literario experto en español. Analiza el texto en busca de desequilibrios de ritmo: 1) Frases largas en escenas de acción/tensión. 2) Frases muy cortas en escenas descriptivas/de atmósfera. 3) Párrafos con densidad muy desigual sin intención estilística.\nNO señales:\n- Textos muy breves (menos de 100 palabras) donde no hay suficiente contexto para evaluar el ritmo\n- Errores gramaticales como leísmos que no tienen que ver con el ritmo\n- Frases cortas que son perfectamente válidas estilísticamente\n- Textos que no tienen suficiente extensión para determinar si hay un desequilibrio real\nSolo señala casos donde el desequilibrio sea CLARO, EVIDENTE y PERJUDICIAL para la lectura.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","sceneType":"acción|descripción|diálogo|reflexión","issue":"descripción del desequilibrio","suggestion":"cómo mejorar el ritmo"}]}\nSi no encuentras ninguno o el texto es demasiado corto para evaluarlo: {"findings":[]}`},
 
   {id:"gerundios", groupId:"grammar", label:"Gerundios incorrectos", desc:"Gerundio de posterioridad y otros usos incorrectos", colorId:7, includesSynonyms:false, directFix:false,
    prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de gerundios incorrectos: 1) Gerundio de posterioridad: acción posterior a la principal. Ej: "Salió de casa, encontrando a Juan". 2) Gerundio especificativo: "Una ley regulando el tráfico" → "que regula". 3) Gerundio como adjetivo: "Una caja conteniendo libros".\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","gerund":"gerundio problemático","errorType":"posterioridad|especificativo|adjetivo","explanation":"por qué es incorrecto","correction":"reformulación correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 
   {id:"dequeismo", groupId:"grammar", label:"Dequeísmo y queísmo", desc:"Uso incorrecto de 'de que' / omisión incorrecta", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de: 1) Dequeísmo: "de que" donde solo corresponde "que". Ej: "Pienso de que..." → "Pienso que...". 2) Queísmo: omitir "de" donde es necesaria. Ej: "Estoy seguro que..." → "Estoy seguro de que...".\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"dequeismo|queismo","explanation":"explicación breve","correction":"forma correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
+   prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de: 1) Dequeísmo: "de que" donde solo corresponde "que". Ej: "Pienso de que..." → "Pienso que...". 2) Queísmo: omitir "de" donde es necesaria. Ej: "Estoy seguro que..." → "Estoy seguro de que...".\nNO señales:\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría)\n- Usos correctos de "de que" después de verbos que lo requieren\n- Frases que contienen errores de otro tipo pero no dequeísmo ni queísmo\nSolo señala si encuentras exactamente una construcción "de que" incorrecta o una omisión incorrecta de "de".\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"dequeismo|queismo","explanation":"explicación breve","correction":"forma correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 
   {id:"concordancia", groupId:"grammar", label:"Concordancia de género y número", desc:"Errores de concordancia sujeto-verbo o sustantivo-adjetivo", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de errores de concordancia: 1) Sujeto-verbo: el verbo no concuerda en número. 2) Sustantivo-adjetivo: el adjetivo no concuerda en género o número. Ignora sujetos compuestos o colectivos con concordancia flexible.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"sujeto-verbo|sustantivo-adjetivo","explanation":"descripción del error","correction":"forma correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
+   prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de errores de concordancia: 1) Sujeto-verbo: el verbo no concuerda en número con el sujeto. 2) Sustantivo-adjetivo: el adjetivo no concuerda en género o número. Ignora sujetos compuestos o colectivos con concordancia flexible.\nNO señales:\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría). Por ejemplo, "La dije" es un laísmo, NO un error de concordancia.\n- Errores de otro tipo que no sean estrictamente de concordancia entre sujeto-verbo o sustantivo-adjetivo\n- Cualquier frase que simplemente te parezca incorrecta por otros motivos\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"sujeto-verbo|sustantivo-adjetivo","explanation":"descripción del error","correction":"forma correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 
   {id:"tiempos_verbales", groupId:"grammar", label:"Inconsistencia de tiempos verbales", desc:"Mezcla no intencional de indefinido e imperfecto", colorId:5, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector literario experto en español. Analiza el texto en busca de posibles inconsistencias en tiempos verbales del pasado: mezclas no intencionales de pretérito indefinido (canté) e imperfecto (cantaba) dentro de una misma escena. Solo señala los que parezcan descuidos, no los cambios intencionales.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","verbsFound":["verbo indefinido","verbo imperfecto"],"explanation":"por qué podría ser descuido","suggestion":"cómo resolverlo"}]}\nSi no encuentras ninguno: {"findings":[]}`},
+   prompt:`Eres un corrector literario experto en español. Analiza el texto en busca de posibles inconsistencias en tiempos verbales del pasado: mezclas no intencionales de pretérito indefinido (canté) e imperfecto (cantaba) dentro de una misma escena. Solo señala los que parezcan descuidos, no los cambios intencionales.\nNO señales:\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría)\n- Frases con otros tipos de errores gramaticales que no sean de tiempo verbal\n- Cambios de tiempo verbal que son correctos y habituales (descripción en imperfecto + acción en indefinido)\nSolo marca si hay un cambio de tiempo verbal que rompa la coherencia temporal de la escena.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","verbsFound":["verbo indefinido","verbo imperfecto"],"explanation":"por qué podría ser descuido","suggestion":"cómo resolverlo"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 
   {id:"ortotipografia_pura", groupId:"orthotypo", label:"Ortotipografía pura", desc:"Guiones, comillas, puntos suspensivos, mayúsculas, signos ¿¡, espaciado", colorId:null, includesSynonyms:false, directFix:true,
-   prompt:`Eres un corrector ortotipográfico experto en español. Analiza el texto en busca de: 1) Guiones de diálogo: guion corto (-) en lugar de raya (—). 2) Comillas inglesas ("") en lugar de españolas («»). 3) Tres puntos (...) en lugar del carácter tipográfico (…). 4) Signos de apertura omitidos (¿ ¡). 5) Espacio antes de coma, punto, punto y coma, dos puntos. 6) Falta de mayúscula tras punto.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"errorType":"guion|comillas|puntos_suspensivos|signo_apertura|espaciado|mayusculas","originalText":"fragmento exacto","correction":"fragmento corregido","isFirstOccurrence":true,"explanation":"solo si isFirstOccurrence: explicación breve"}]}\nSi no encuentras ninguno: {"findings":[]}`},
+   prompt:`Eres un corrector ortotipográfico experto en español. Analiza el texto ÚNICAMENTE en busca de errores tipográficos y ortotipográficos. Corrige:\n1. Guiones de diálogo: guion corto (-) en lugar de raya (—)\n2. Comillas inglesas ("") en lugar de españolas («»)\n3. Tres puntos separados (...) en lugar del carácter tipográfico (…)\n4. Signos de apertura omitidos (¿ ¡)\n5. Espacio ANTES de coma, punto, punto y coma, dos puntos (NO después)\n6. Falta de mayúscula al inicio de párrafo o tras punto final\nNO corrijas NUNCA:\n- Errores gramaticales como leísmos, laísmos o loísmos. Por ejemplo, "La dije" es un laísmo gramatical, NO un error ortotipográfico. NO lo corrijas aquí.\n- Errores de concordancia, dequeísmo, gerundios ni ningún otro error gramatical\n- Estilo, vocabulario o estructura de las frases\nSolo señala y corrige errores puramente tipográficos.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"errorType":"guion|comillas|puntos_suspensivos|signo_apertura|espaciado|mayusculas","originalText":"fragmento exacto","correction":"fragmento corregido","isFirstOccurrence":true,"explanation":"solo si isFirstOccurrence: explicación breve"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 
   {id:"puntuacion_dialogo", groupId:"orthotypo", label:"Problemas de puntuación en diálogo", desc:"Errores de puntuación en intervenciones y acotaciones", colorId:6, includesSynonyms:false, directFix:false,
    prompt:`Eres un corrector ortotipográfico experto en español. Analiza el texto en busca de errores de puntuación en diálogos: 1) Falta de raya antes de la acotación: —Hola. dijo → —Hola —dijo. 2) Punto incorrecto antes de acotación. 3) Coma innecesaria antes de raya de cierre. 4) Mayúscula incorrecta en verbo de acotación. 5) Punto tras interrogación/exclamación: —¿Vienes?. → —¿Vienes? 6) Falta de punto tras acotación cuando el diálogo continúa. 7) Coma innecesaria después de interrogación.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"descripción breve del error","correction":"fragmento corregido","explanation":"explicación breve de la regla"}]}\nSi no encuentras ninguno: {"findings":[]}`},
@@ -1096,13 +1094,13 @@ const CORRECTIONS = [
    prompt:`Eres un editor literario experto. Analiza el texto en busca de inconsistencias en el conocimiento de personajes: 1) Un personaje sabe algo que aún no le han contado. 2) Un personaje actúa como si no supiera algo que vivió. 3) El narrador revela información que el personaje focal no podría conocer.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"characterName":"personaje","knowledgeIssue":"descripción","occurrence1":{"text":"fragmento","location":"ubicación"},"occurrence2":{"text":"fragmento contradictorio","location":"ubicación"},"explanation":"descripción"}]}\nSi no encuentras ninguna: {"findings":[]}`},
 
   {id:"tono_voz", groupId:"coherence", label:"Tono y voz narrativa", desc:"Cambios bruscos de registro o ruptura del punto de vista", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto en busca de inconsistencias en tono y voz narrativa: 1) Cambios bruscos de registro sin justificación. 2) El narrador rompe el punto de vista establecido. 3) Cambios de persona narrativa no justificados. 4) Intrusiones del autor que rompen la ficción.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"issueType":"cambio_registro|ruptura_pov|cambio_persona|intrusion_autor","establishedTone":"descripción del tono establecido","occurrence":{"text":"fragmento con la ruptura","location":"ubicación"},"explanation":"descripción"}]}\nSi no encuentras ninguna: {"findings":[]}`},
+   prompt:`Eres un editor literario experto. Analiza el texto en busca de inconsistencias CLARAS en tono y voz narrativa: 1) Cambios bruscos e injustificados de registro (de formal a muy coloquial). 2) El narrador rompe explícitamente el punto de vista establecido. 3) Cambios de persona narrativa no justificados. 4) Intrusiones del autor que rompen la ficción.\nNO señales:\n- Textos breves (menos de 200 palabras) donde es imposible evaluar el tono con fiabilidad\n- Errores gramaticales como leísmos que no tienen que ver con el tono\n- Variaciones de tono que podrían ser intencionales\n- Textos sin contexto suficiente para determinar el tono establecido\nSolo señala inconsistencias MUY CLARAS Y EVIDENTES.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"issueType":"cambio_registro|ruptura_pov|cambio_persona|intrusion_autor","establishedTone":"descripción del tono establecido","occurrence":{"text":"fragmento con la ruptura","location":"ubicación"},"explanation":"descripción"}]}\nSi no encuentras ninguna inconsistencia CLARA: {"findings":[]}`},
 
   {id:"nombres_inconsistentes", groupId:"coherence", label:"Inconsistencia de nombres propios", desc:"El mismo nombre escrito de formas distintas", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
    prompt:`Eres un corrector experto en español. Analiza el texto en busca de inconsistencias en la grafía de nombres propios: el mismo nombre escrito de formas distintas (con o sin tilde, mayúsculas/minúsculas, grafías diferentes).\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"name":"nombre afectado","variants":["variante1","variante2"],"occurrences":[{"text":"fragmento","location":"ubicación"},{"text":"fragmento","location":"ubicación"}],"recommendedForm":"forma recomendada","explanation":"descripción"}]}\nSi no encuentras ninguna: {"findings":[]}`},
 
   {id:"pov", groupId:"coherence", label:"Cambios de punto de vista (POV)", desc:"Saltos entre perspectivas sin transición clara", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto en busca de cambios no controlados de punto de vista (POV): 1) En focalización fija, saltar a pensamientos de otro personaje sin transición. 2) En tercera persona limitada, el narrador accede a info que el personaje focal no puede saber. 3) Cabeza-hopping: cambiar de POV varias veces dentro de una escena.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"focalCharacter":"personaje cuyo POV se usaba","intrudingCharacter":"personaje cuyo POV irrumpe","occurrence":{"text":"fragmento con el cambio","location":"ubicación"},"explanation":"descripción del problema"}]}\nSi no encuentras ninguno: {"findings":[]}`},
+   prompt:`Eres un editor literario experto. Analiza el texto en busca de cambios no controlados de punto de vista (POV): 1) En focalización fija, saltar a pensamientos de otro personaje sin transición. 2) En tercera persona limitada, el narrador accede a info que el personaje focal no puede saber. 3) Cabeza-hopping: cambiar de POV varias veces dentro de una escena.\nNO señales:\n- Textos breves (menos de 200 palabras) donde no hay suficiente contexto para determinar el POV establecido\n- Errores gramaticales como leísmos que no tienen que ver con el POV\n- Narrador omnisciente, que por definición puede acceder a todos los personajes\n- Casos donde el POV no está claramente establecido\nSolo señala cambios de POV MUY CLAROS Y EVIDENTES en textos suficientemente largos.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"focalCharacter":"personaje cuyo POV se usaba","intrudingCharacter":"personaje cuyo POV irrumpe","occurrence":{"text":"fragmento con el cambio","location":"ubicación"},"explanation":"descripción del problema"}]}\nSi no encuentras ninguno: {"findings":[]}`},
 ];
 
 // ── ESTADO ───────────────────────────────────────────────────────────────────
@@ -1313,6 +1311,7 @@ function resetCoherenceState() {
 
 function goToOptions() {
   resetCoherenceState();
+  state.hasSelection = false; // resetear hasta que detectSelection() confirme
   showScreen('options');
   checkSavedProgress();
   updateAnalyzeButton();
@@ -1623,16 +1622,23 @@ function selectFormat(fmt) {
 
 // ── CÁLCULO DE COSTE ──────────────────────────────────────────────────────────
 async function requestCostEstimate() {
-  // Obtener número de palabras del documento
+  // Obtener número de palabras según si hay selección o no
   try {
     await Word.run(async ctx => {
-      const body = ctx.document.body;
-      body.load('text');
-      await ctx.sync();
-      state.wordCount = (body.text || '').trim().split(/\s+/).filter(Boolean).length;
+      if (state.hasSelection && !state.forceFullDoc) {
+        // Contar solo las palabras seleccionadas
+        const sel = ctx.document.getSelection();
+        sel.load('text'); await ctx.sync();
+        state.wordCount = (sel.text || '').trim().split(/\s+/).filter(Boolean).length;
+      } else {
+        // Contar todo el documento
+        const body = ctx.document.body;
+        body.load('text'); await ctx.sync();
+        state.wordCount = (body.text || '').trim().split(/\s+/).filter(Boolean).length;
+      }
     });
   } catch {
-    state.wordCount = 500; // fallback
+    state.wordCount = 500;
   }
 
   const hasCoherence = [...state.selectedIds].some(id => {
@@ -1803,12 +1809,19 @@ function resumeFromError() {
 
 // ── PANTALLA DE COMPLETADO ────────────────────────────────────────────────────
 function showDoneScreen(output, allResults) {
-  document.getElementById('doneDesc').textContent =
-    output.mode === 'marked'
-      ? 'Documento de revisión generado con marcas de color y comentarios.'
-      : 'Informe de estadísticas generado.';
-
   const totalFindings = allResults.reduce((sum, r) => sum + r.findings.length, 0);
+
+  if (output.mode === 'marked') {
+    document.getElementById('doneDesc').textContent =
+      `Se han aplicado ${totalFindings} marcas al documento con comentarios explicativos.`;
+    // Mostrar instrucciones de guardar como
+    document.getElementById('saveAsInstructions').style.display = 'block';
+    document.getElementById('saveAsName').textContent = output.revisionName + '.docx';
+  } else {
+    document.getElementById('doneDesc').textContent = 'Análisis completado. Genera el informe de estadísticas.';
+    document.getElementById('saveAsInstructions').style.display = 'none';
+  }
+
   const statsHTML = allResults
     .filter(r => r.findings.length > 0)
     .map(r => `<div class="done-stat-row">
@@ -1823,9 +1836,6 @@ function showDoneScreen(output, allResults) {
       <span class="done-stat-value"><strong>${totalFindings}</strong></span>
     </div>
     ${statsHTML}`;
-
-  document.getElementById('doneFilename').textContent =
-    output.mode === 'marked' ? output.revisionName : output.statsName;
 
   showScreen('done');
 }
@@ -2202,36 +2212,50 @@ class DocumentBuilder {
       const title = body.insertParagraph('INFORME DE ANÁLISIS — PLUMIA', 'End');
       title.styleBuiltIn = Word.Style.heading1;
       body.insertParagraph('', 'End');
+
+      // Leyenda
       body.insertParagraph('Leyenda de colores', 'End').styleBuiltIn = Word.Style.heading2;
       const usedColorIds = [...new Set(allResults.flatMap(r => r.findings.map(f => f.colorId)).filter(Boolean))];
       for (const cid of usedColorIds) {
         const ce = COLOR_MAP[cid]; if (!ce) continue;
-        const p = body.insertParagraph(`  ${ce.name.toUpperCase()}  —  ${ce.description||''}`, 'End');
+        const p = body.insertParagraph(`  ■  ${ce.name}  —  ${ce.description||''}`, 'End');
         if (ce.type==='highlight') p.font.highlightColor = WORD_HIGHLIGHT[ce.hex]||'Yellow';
         else if (ce.type==='text') p.font.color = ce.hex;
         p.font.bold = true;
       }
       body.insertParagraph('', 'End');
+
+      // Resumen
       const total = allResults.reduce((s,r)=>s+r.findings.length,0);
-      body.insertParagraph('Resumen estadístico', 'End').styleBuiltIn = Word.Style.heading2;
-      body.insertParagraph(`Total de incidencias detectadas: ${total}`, 'End');
+      body.insertParagraph('Resumen por categoría', 'End').styleBuiltIn = Word.Style.heading2;
+      for (const result of allResults) {
+        if (!result.findings.length) continue;
+        const p = body.insertParagraph(`• ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`, 'End');
+        p.leftIndent = 360;
+      }
+      body.insertParagraph(`Total: ${total} incidencias detectadas`, 'End').font.bold = true;
       body.insertParagraph('', 'End');
-      const tdata = allResults.filter(r=>r.findings.length>0).map(r=>[r.label, r.findings.length.toString()]);
-      if (tdata.length) body.insertTable(tdata.length+1, 2, 'End', [['Tipo de corrección','Incidencias'],...tdata]);
-      body.insertParagraph('', 'End');
+
+      // Detalle por categoría — como listado, no tabla
       body.insertParagraph('Detalle por categoría', 'End').styleBuiltIn = Word.Style.heading2;
       for (const result of allResults) {
         if (!result.findings.length) continue;
-        body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End').styleBuiltIn = Word.Style.heading3;
+        const sTitle = body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End');
+        sTitle.styleBuiltIn = Word.Style.heading3;
+
         for (let i=0; i<result.findings.length; i++) {
           const f = result.findings[i];
-          const ctx2 = `«${(f.originalText||'').substring(0,80)}${(f.originalText||'').length>80?'…':''}»`;
-          const ip = body.insertParagraph(`${i+1}. ${ctx2}`, 'End');
-          ip.leftIndent = 360;
+          const preview = `«${(f.originalText||'').substring(0,80)}${(f.originalText||'').length>80?'…':''}»`;
+          const ip = body.insertParagraph(`${i+1}.  ${preview}`, 'End');
+          ip.leftIndent = 360; ip.font.bold = true;
+
           const comment = buildCommentText([f]);
-          if (comment) { const cp = body.insertParagraph(comment,'End'); cp.leftIndent=720; cp.font.italic=true; cp.font.size=9; }
+          if (comment) {
+            const cp = body.insertParagraph(comment, 'End');
+            cp.leftIndent = 720; cp.font.italic = true; cp.font.size = 10;
+          }
+          body.insertParagraph('', 'End');
         }
-        body.insertParagraph('', 'End');
       }
       await ctx.sync();
     });
