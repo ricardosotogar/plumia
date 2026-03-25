@@ -5,18 +5,18 @@
 // ============================================================================
 (function() {
 // Aliases locales de los globals
-var CORRECTIONS          = window.PLUMIA_CORRECTIONS;
-var CONFIG               = window.PLUMIA_CONFIG;
-var API_CORRECTION_GROUPS = window.PLUMIA_API_GROUPS;
-var LOCAL_ONLY_IDS       = window.PLUMIA_LOCAL_IDS;
-var enrichWithLocalSynonyms  = window.enrichWithLocalSynonyms;
-var runLocalOrtotypography   = window.runLocalOrtotypography;
+var CORRECTIONS          = window.PLUMIA.CORRECTIONS;
+var CONFIG               = window.PLUMIA.CONFIG;
+var API_CORRECTION_GROUPS = window.PLUMIA.API_GROUPS;
+var LOCAL_ONLY_IDS       = window.PLUMIA.LOCAL_IDS;
+var enrichWithLocalSynonyms  = window.PLUMIA.enrichWithLocalSynonyms;
+var runLocalOrtotypography   = window.PLUMIA.runLocalOrtotypography;
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
 const STORAGE_KEY_PROGRESS = 'plumia_analysis_progress';
 
-window.PlumiaProcessor = class PlumiaProcessor {
+window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   constructor(apiKey, selectedIds, outputMode, onProgress, onChunkComplete, onError) {
     this.apiKey = apiKey; this.selectedIds = selectedIds;
     this.outputMode = outputMode; this.onProgress = onProgress;

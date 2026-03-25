@@ -1,17 +1,17 @@
 // ============================================================================
 // PLUMIA — synonyms-db.js
 // Diccionario local de sinónimos, ortotipografía por regex, grupos de API
-// Depende de: corrections-config.js (window.PLUMIA_CORRECTIONS)
+// Depende de: corrections-config.js (window.PLUMIA.CORRECTIONS)
 // ============================================================================
 (function() {
-var CORRECTIONS = window.PLUMIA_CORRECTIONS; // alias para buildPrompt lambdas
+var CORRECTIONS = window.PLUMIA.CORRECTIONS; // alias para buildPrompt lambdas
 // REDUCCIÓN DE COSTES — 3 estrategias
 // ═══════════════════════════════════════════════════════════════════════════
 
 // ── 1. DICCIONARIO LOCAL DE SINÓNIMOS ────────────────────────────────────────
 // Claude solo detecta la palabra problemática. Los sinónimos se añaden aquí
 // localmente, sin coste de tokens de salida.
-window.PLUMIA_SYNONYMS_DB = {
+window.PLUMIA.SYNONYMS_DB = {
   // Verbos comodín → alternativas más precisas
   verbos: {
     'hacer':    ['realizar','efectuar','ejecutar','llevar a cabo','elaborar','producir'],
@@ -84,7 +84,7 @@ window.PLUMIA_SYNONYMS_DB = {
 };
 
 // Función para enriquecer findings con sinónimos del diccionario local
-window.enrichWithLocalSynonyms = function(findings, correctionId) {
+window.PLUMIA.enrichWithLocalSynonyms = function(findings, correctionId) {
   return findings.map(f => {
     let synonyms = [];
     const word = (f.word || f.verb || f.genericWord || f.expression || '').toLowerCase();
@@ -109,7 +109,7 @@ window.enrichWithLocalSynonyms = function(findings, correctionId) {
 
 // ── 2. MOTOR LOCAL DE ORTOTIPOGRAFÍA (sin llamada a la API) ─────────────────
 // Detecta y corrige errores tipográficos mecánicos con regex, a coste cero.
-window.runLocalOrtotypography = function(text) {
+window.PLUMIA.runLocalOrtotypography = function(text) {
   const findings = [];
 
   // Guiones de diálogo: guion corto al inicio de línea o tras salto
@@ -199,7 +199,7 @@ window.runLocalOrtotypography = function(text) {
 // ── 3. GRUPOS DE CORRECCIONES PARA API (reduce llamadas) ─────────────────────
 // En lugar de 1 llamada por corrección, agrupamos varias en 1 sola llamada.
 // Ahorro estimado: 40-60% en número de llamadas (y tokens de prompt).
-window.PLUMIA_API_GROUPS = [
+window.PLUMIA.API_GROUPS = [
   {
     groupKey: 'pronouns_grammar',
     label: 'Pronombres y gramática',
@@ -297,6 +297,6 @@ Si no hay errores: findings:[].`,
 ];
 
 // IDs que se procesan localmente sin llamar a la API
-window.PLUMIA_LOCAL_IDS = ['ortotipografia_pura'];
+window.PLUMIA.LOCAL_IDS = ['ortotipografia_pura'];
 
 })();

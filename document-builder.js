@@ -4,21 +4,21 @@
 // Depende de: corrections-config.js (COLOR_MAP, CONFIG)
 // ============================================================================
 (function() {
-var COLOR_MAP  = window.PLUMIA_COLOR_MAP;
-var CONFIG     = window.PLUMIA_CONFIG;
+var COLOR_MAP  = window.PLUMIA.COLOR_MAP;
+var CONFIG     = window.PLUMIA.CONFIG;
 
 var WORD_HIGHLIGHT = {
   'FFD966':'Yellow','92D050':'Green','FF9900':'Orange','00B0F0':'Cyan',
   'FF69B4':'Pink','C9B8FF':'Violet','7030A0':'DarkMagenta',
 };
 
-window.buildCommentText = function buildCommentText(mergedFindings) {
+window.PLUMIA.buildCommentText = function buildCommentText(mergedFindings) {
   if (!mergedFindings || !mergedFindings.length) return '';
   if (mergedFindings.length === 1) return _singleComment(mergedFindings[0]);
   return mergedFindings.map((f,i) => `${i+1}) ${_singleComment(f)}`).join('\n');
 }
 
-window._singleComment = function _singleComment(f) {
+function _singleComment(f) {
   const label = f.label || f.correctionId || 'Error';
   switch(f.correctionId) {
     case 'leismo': case 'laismo': case 'loismo':
@@ -65,7 +65,7 @@ window._singleComment = function _singleComment(f) {
   }
 }
 
-window._coherenceComment = function _coherenceComment(f) {
+function _coherenceComment(f) {
   let c = `COHERENCIA — ${f.label||'Coherencia narrativa'}:\n`;
   if (f.occurrence1) c += `· ${f.occurrence1.location||'Primera mención'}: «${f.occurrence1.text}»\n`;
   if (f.occurrence2) c += `· ${f.occurrence2.location||'Segunda mención'}: «${f.occurrence2.text}»\n`;
@@ -73,21 +73,16 @@ window._coherenceComment = function _coherenceComment(f) {
 }
 
 
-window.DocumentBuilder = class DocumentBuilder {
+window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   constructor(outputMode) { this.outputMode = outputMode; }
 
   async getRevisionName(originalName) {
-    const base = originalName.replace(/\s*REVISION\s+V\.\d+\.\d+\s*/i,'').trim();
-    let version = 1;
-    const key = 'plumia_versions_' + base;
-    const saved = localStorage.getItem(key);
-    if (saved) version = parseInt(saved) + 1;
-    localStorage.setItem(key, version.toString());
-    return `${base} ${CONFIG.revisionSuffix} V.${version}.0`;
+    const base = originalName.replace(/\s*REVISION\s*/i, '').trim();
+    return `${base} REVISION`;
   }
 
   getStatsName(revisionName) {
-    return revisionName.replace(CONFIG.revisionSuffix, CONFIG.statsSuffix);
+    return revisionName.replace('REVISION', 'ESTADISTICAS');
   }
 
   async applyMarkings(resolvedFindings) {
