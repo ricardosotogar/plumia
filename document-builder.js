@@ -72,13 +72,6 @@ window._coherenceComment = function _coherenceComment(f) {
   return (c + (f.explanation||'')).trim();
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// DOCUMENT BUILDER — integrado desde document-builder.js
-// ═══════════════════════════════════════════════════════════════════════════
-const WORD_HIGHLIGHT = {
-  'FFD966':'Yellow','92D050':'Green','FF9900':'Orange','00B0F0':'Cyan',
-  'FF69B4':'Pink','C9B8FF':'Violet','7030A0':'DarkMagenta',
-};
 
 window.DocumentBuilder = class DocumentBuilder {
   constructor(outputMode) { this.outputMode = outputMode; }
