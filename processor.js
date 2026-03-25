@@ -24,16 +24,19 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     this.aborted = false;
   }
 
-  async extractTextFromDocument() {
+  async extractTextFromDocument(forceFullDoc = false) {
     return new Promise((resolve, reject) => {
       Word.run(async (ctx) => {
         try {
-          const sel = ctx.document.getSelection();
-          sel.load('text'); await ctx.sync();
-          const selectedText = sel.text.trim();
-          if (selectedText && selectedText.length > 10 && !state.forceFullDoc) {
-            resolve({ text: selectedText, isSelection: true, wordCount: this._countWords(selectedText) });
-            return;
+          // Comprobar selección solo si no se fuerza doc completo
+          if (!forceFullDoc && !state.forceFullDoc) {
+            const sel = ctx.document.getSelection();
+            sel.load('text'); await ctx.sync();
+            const selectedText = sel.text.trim();
+            if (selectedText && selectedText.length > 10) {
+              resolve({ text: selectedText, isSelection: true, wordCount: this._countWords(selectedText) });
+              return;
+            }
           }
           const body = ctx.document.body;
           body.load('paragraphs'); await ctx.sync();
@@ -178,15 +181,24 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     const selectedIds = this.selectedIds;
     const allResults  = [];
 
-    // Garantía: si hay correcciones que requieren doc completo,
-    // el texto debe ser el documento completo independientemente de la selección
+    // ── GARANTÍA requiresFullDoc ──────────────────────────────────────────────
+    // Si hay correcciones que requieren el documento completo pero se recibió
+    // solo una selección, re-extraer el documento completo automáticamente.
+    // Esto protege la lógica aunque se llame al motor directamente sin pasar por la UI.
     const hasFullDocRequired = selectedIds.some(id => {
       const c = CORRECTIONS.find(x => x.id === id);
       return c && c.requiresFullDoc;
     });
+
     if (hasFullDocRequired && isSelection) {
-      // Forzar re-extracción del documento completo
-      console.warn('Plumia: coherencia narrativa requiere doc completo — ignorando selección');
+      this.onProgress(1, 'Coherencia narrativa requiere el documento completo. Extrayendo…');
+      try {
+        const fullDoc = await this.extractTextFromDocument(true); // true = forzar doc completo
+        text = fullDoc.text;
+        isSelection = false;
+      } catch(e) {
+        throw new Error('No se pudo extraer el documento completo para el análisis de coherencia: ' + e.message);
+      }
     }
 
     // ── PASO 1: Ortotipografía local (sin API, coste cero) ──────────────────
