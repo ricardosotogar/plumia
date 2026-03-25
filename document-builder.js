@@ -124,7 +124,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const body = ctx.document.body;
 
       // ── 1. GUIONES DE DIÁLOGO ─────────────────────────────────────────────
-      // Recorrer párrafos y sustituir guion corto al inicio por raya
+      // Recorrer párrafos y sustituir guion corto al inicio por raya (—)
       body.load('paragraphs'); await ctx.sync();
       const paras = body.paragraphs.items;
       paras.forEach(p => p.load('text')); await ctx.sync();
@@ -132,15 +132,30 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       for (const para of paras) {
         const text = (para.text || '');
         const trimmed = text.trimStart();
-        // Solo actuar si el párrafo empieza exactamente con "- " o "-¡" o "-¿"
+        // Solo párrafos que empiezan exactamente con "- " o "-¡" o "-¿"
         if (/^-[\s¡¿]/.test(trimmed)) {
           try {
-            // Buscar solo la primera aparición del guion en este párrafo
-            const results = para.search('-', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-            results.load('items'); await ctx.sync();
-            if (results.items.length > 0) {
-              results.items[0].insertText('—', 'Replace');
-              results.items[0].font.bold = true;
+            // Obtener el rango del primer carácter no-espacio del párrafo
+            // Usamos getRange para el inicio del párrafo y desplazamos al guion
+            const startRange = para.getRange('Start');
+            // Expandir exactamente 1 carácter para cubrir el guion
+            startRange.expandTo(para.getRange('Start'));
+            // Buscar "-" con límite al propio párrafo para mayor precisión
+            const sr = para.search('-', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+            sr.load('items'); await ctx.sync();
+            // Solo reemplazar la PRIMERA ocurrencia si está al inicio del texto del párrafo
+            if (sr.items.length > 0) {
+              // Verificar que el fragmento encontrado está al inicio
+              sr.items[0].load('text'); await ctx.sync();
+              // Reemplazar solo si es el guion inicial (no uno interior)
+              const paraText = para.text || '';
+              const dashPos = paraText.indexOf('-');
+              if (dashPos <= paraText.search(/\S/)) {
+                // El guion está en la posición del primer carácter no-espacio o antes
+                sr.items[0].insertText('—', 'Replace');
+                sr.items[0].font.bold = true;
+                try { sr.items[0].insertComment('Ortotipografía: guión corto (-) corregido a raya de diálogo (—). Cambio aplicado en todos los párrafos de diálogo.'); } catch(ce) {}
+              }
             }
             await ctx.sync();
           } catch(e) { console.warn('Plumia ortotypo guion:', e); }
@@ -148,21 +163,22 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       }
 
       // ── 2. COMILLAS ASCII RECTAS → ESPAÑOLAS ──────────────────────────────
-      // La comilla recta " (U+0022) es ambigua: la primera es apertura, la segunda cierre.
-      // Estrategia: buscar todas las ocurrencias y alternar «/» según índice par/impar.
       try {
         const results = body.search('"', {matchCase:true, matchWholeWord:false, matchWildcards:false});
         results.load('items'); await ctx.sync();
-
         for (let i = 0; i < results.items.length; i++) {
           const replacement = (i % 2 === 0) ? '«' : '»';
           results.items[i].insertText(replacement, 'Replace');
           results.items[i].font.bold = true;
+          // Comentario explicativo solo en la primera ocurrencia
+          if (i === 0) {
+            try { results.items[i].insertComment('Ortotipografía: comillas inglesas (" ") corregidas a españolas («»). Cambio aplicado en todo el documento.'); } catch(ce) {}
+          }
         }
         await ctx.sync();
       } catch(e) { console.warn('Plumia ortotypo comillas rectas:', e); }
 
-      // Comillas tipográficas curvas (Word a veces autocorrije) → españolas
+      // Comillas tipográficas curvas → españolas
       for (const [search, replacement] of [['\u201c','«'],['\u201d','»'],['\u2018','«'],['\u2019','»']]) {
         try {
           const results = body.search(search, {matchCase:true, matchWholeWord:false, matchWildcards:false});

@@ -143,6 +143,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
     if (!resp.ok) {
       const d = await resp.json().catch(() => ({}));
+      // Acumular usage incluso en error (Anthropic a veces lo incluye)
+      if (d.usage) {
+        this.totalUsage.input_tokens  += d.usage.input_tokens  || 0;
+        this.totalUsage.output_tokens += d.usage.output_tokens || 0;
+      }
       const msg = d.error?.message || `HTTP ${resp.status}`;
       if (resp.status === 401) throw new Error('API_KEY_INVALID: ' + msg);
       if (resp.status === 429) throw new Error('RATE_LIMIT: ' + msg);

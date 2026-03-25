@@ -500,8 +500,11 @@ body{
 
 /* ── DONE SCREEN ─────────────────────────────────────────────────────────── */
 #screen-done{
-  padding:30px 20px;align-items:center;justify-content:center;
+  padding:20px 20px 30px;
+  align-items:center;
+  justify-content:flex-start;
   text-align:center;
+  overflow-y:auto;
 }
 .done-icon{font-size:48px;margin-bottom:16px}
 .done-title{

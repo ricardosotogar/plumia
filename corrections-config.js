@@ -19,7 +19,7 @@ window.PLUMIA.COLOR_MAP = {
 
 window.PLUMIA.CONFIG = {
   model:"claude-sonnet-4-20250514",
-  maxTokens:4096,
+  maxTokens:8192,
   wordsPerToken:0.75,
   inputPricePerToken:0.000003,
   outputPricePerToken:0.000015,

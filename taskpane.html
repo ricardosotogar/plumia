@@ -1164,15 +1164,19 @@ function showDoneScreen(output, allResults, realCostUSD, realCostEUR) {
   const totalFindings = allResults.reduce((sum, r) => sum + r.findings.length, 0);
 
   // Mostrar coste real (de la API) o estimado si algo falló
-  const costEl = document.getElementById('doneCost');
+  const costEl      = document.getElementById('doneCost');
   const costLabelEl = document.getElementById('doneCostLabel');
+
   if (realCostUSD > 0) {
-    costEl.textContent = `$${realCostUSD.toFixed(4)}  /  ${realCostEUR.toFixed(4)} €`;
+    costEl.textContent    = `$${realCostUSD.toFixed(4)}  /  ${realCostEUR.toFixed(4)} €`;
     if (costLabelEl) costLabelEl.textContent = 'Coste real del análisis';
+  } else if (state.estimatedCostUSD > 0) {
+    // No se hicieron llamadas a la API (solo ortotipografía local) → mostrar estimado
+    costEl.textContent    = `$${state.estimatedCostUSD.toFixed(4)}  /  ${state.estimatedCostEUR.toFixed(4)} €`;
+    if (costLabelEl) costLabelEl.textContent = 'Coste estimado (sin llamadas API)';
   } else {
-    // Fallback al estimado si no se obtuvieron tokens reales
-    costEl.textContent = `$${state.estimatedCostUSD.toFixed(4)}  /  ${state.estimatedCostEUR.toFixed(4)} €`;
-    if (costLabelEl) costLabelEl.textContent = 'Coste estimado del análisis';
+    costEl.textContent = '$0.0000  /  0.0000 €';
+    if (costLabelEl) costLabelEl.textContent = 'Sin coste (análisis local)';
   }
 
   if (output.mode === 'marked') {
