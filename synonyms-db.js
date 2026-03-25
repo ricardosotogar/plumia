@@ -220,21 +220,34 @@ Responde ÚNICAMENTE con este JSON exacto:
 Si no hay errores en una categoría, devuelve findings:[].`,
   },
   {
-    groupKey: 'lexicon',
-    label: 'Léxico y vocabulario',
-    ids: ['repeticion_lexica', 'verbos_comedin', 'sustantivos_genericos', 'muletillas', 'pleonasmos'],
-    buildPrompt: (text) => `Eres un corrector de estilo experto en español. Analiza el texto y devuelve CINCO análisis:
-1. "repeticion": misma palabra repetida en radio de 3-5 líneas sin intención estilística (excluye artículos, preposiciones)
-2. "verbos": verbos comodín usados donde podría emplearse uno más específico (hacer, poner, tener, dar…). Solo devuelve la palabra problemática, NO los sinónimos.
-3. "sustantivos": sustantivos genéricos (cosa, tema, aspecto, situación…). Solo devuelve la palabra, NO sinónimos.
-4. "muletillas": expresiones repetidas sin valor (en cierto modo, de alguna manera…). Solo devuelve la expresión, NO alternativas.
-5. "pleonasmos": redundancias (subir arriba, entrar dentro, salir fuera…)
+    groupKey: 'lexicon_a',
+    label: 'Léxico — repeticiones y verbos',
+    ids: ['repeticion_lexica', 'verbos_comedin', 'sustantivos_genericos'],
+    buildPrompt: (text) => `Eres un corrector de estilo experto en español. Analiza el texto y devuelve TRES análisis:
+1. "repeticion": misma palabra repetida en radio de 3-5 líneas sin intención estilística (excluye artículos, preposiciones, conjunciones).
+2. "verbos": verbos comodín donde podría usarse uno más específico (hacer, poner, tener, dar, decir, ver, ir, venir). Solo devuelve la palabra, NO sinónimos.
+3. "sustantivos": sustantivos genéricos (cosa, tema, aspecto, situación, elemento, algo). Solo devuelve la palabra, NO sinónimos.
 
 Texto:
 ${text}
 
 Responde ÚNICAMENTE con este JSON:
-{"repeticion":{"findings":[{"word":"palabra base","occurrences":["frag1","frag2"],"explanation":"explicación"}]},"verbos":{"findings":[{"originalText":"fragmento","verb":"verbo comodín","explanation":"por qué"}]},"sustantivos":{"findings":[{"originalText":"fragmento","genericWord":"palabra","explanation":"por qué"}]},"muletillas":{"findings":[{"expression":"muletilla","occurrences":["frag1","frag2"],"explanation":"por qué"}]},"pleonasmos":{"findings":[{"originalText":"fragmento","explanation":"por qué","correction":"corrección"}]}}
+{"repeticion":{"findings":[{"word":"palabra base","occurrences":["frag1","frag2"],"explanation":"explicación"}]},"verbos":{"findings":[{"originalText":"fragmento exacto","verb":"verbo comodín","explanation":"por qué"}]},"sustantivos":{"findings":[{"originalText":"fragmento exacto","genericWord":"palabra","explanation":"por qué"}]}}
+Si no hay errores en una categoría: findings:[].`,
+  },
+  {
+    groupKey: 'lexicon_b',
+    label: 'Léxico — muletillas y pleonasmos',
+    ids: ['muletillas', 'pleonasmos'],
+    buildPrompt: (text) => `Eres un corrector de estilo experto en español. Analiza el texto y devuelve DOS análisis:
+1. "muletillas": expresiones repetidas sin valor (en cierto modo, de alguna manera, de repente repetido, entonces abusivo…). Solo devuelve la expresión, NO alternativas.
+2. "pleonasmos": redundancias (subir arriba, entrar dentro, salir fuera, bajar abajo…)
+
+Texto:
+${text}
+
+Responde ÚNICAMENTE con este JSON:
+{"muletillas":{"findings":[{"expression":"muletilla","occurrences":["frag1","frag2"],"explanation":"por qué"}]},"pleonasmos":{"findings":[{"originalText":"fragmento exacto","explanation":"por qué","correction":"corrección"}]}}
 Si no hay errores en una categoría: findings:[].`,
   },
   {

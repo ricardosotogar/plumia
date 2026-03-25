@@ -92,21 +92,118 @@ window.DocumentBuilder = class DocumentBuilder {
 
   async applyMarkings(resolvedFindings) {
     if (!resolvedFindings || !resolvedFindings.length) return;
+
+    // Separar ortotipografía (requiere reemplazo global) del resto
+    const ortotypoFindings = resolvedFindings.filter(f => f.directFix);
+    const otherFindings    = resolvedFindings.filter(f => !f.directFix);
+
+    // Aplicar ortotipografía con reemplazos globales dedicados
+    if (ortotypoFindings.length > 0) {
+      await this.applyOrtotypography();
+    }
+
+    // Aplicar marcas de color y comentarios al resto
+    if (otherFindings.length > 0) {
+      await Word.run(async (ctx) => {
+        const body = ctx.document.body;
+        for (const finding of otherFindings) {
+          if (!finding.originalText) continue;
+          try {
+            const searchResults = body.search(finding.originalText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            searchResults.load('items'); await ctx.sync();
+            if (!searchResults.items.length) continue;
+            const targets = finding.correctionId === 'repeticion_lexica' ? searchResults.items : [searchResults.items[0]];
+            for (const range of targets) {
+              await this._applyMark(ctx, range, finding);
+            }
+            await ctx.sync();
+          } catch(e) { console.warn('Plumia: error marcando', finding.originalText, e); }
+        }
+      });
+    }
+  }
+
+  // Aplica correcciones ortotipográficas globalmente usando search-replace de Word
+  async applyOrtotypography() {
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
-      for (const finding of resolvedFindings) {
-        if (!finding.originalText) continue;
+
+      // ── 1. GUIONES DE DIÁLOGO ─────────────────────────────────────────────
+      // Recorrer párrafos y sustituir guion corto al inicio por raya
+      body.load('paragraphs'); await ctx.sync();
+      const paras = body.paragraphs.items;
+      paras.forEach(p => p.load('text')); await ctx.sync();
+
+      for (const para of paras) {
+        const text = (para.text || '');
+        const trimmed = text.trimStart();
+        // Solo actuar si el párrafo empieza exactamente con "- " o "-¡" o "-¿"
+        if (/^-[\s¡¿]/.test(trimmed)) {
+          try {
+            // Buscar solo la primera aparición del guion en este párrafo
+            const results = para.search('-', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+            results.load('items'); await ctx.sync();
+            if (results.items.length > 0) {
+              results.items[0].insertText('—', 'Replace');
+              results.items[0].font.bold = true;
+            }
+            await ctx.sync();
+          } catch(e) { console.warn('Plumia ortotypo guion:', e); }
+        }
+      }
+
+      // ── 2. COMILLAS ASCII RECTAS → ESPAÑOLAS ──────────────────────────────
+      // La comilla recta " (U+0022) es ambigua: la primera es apertura, la segunda cierre.
+      // Estrategia: buscar todas las ocurrencias y alternar «/» según índice par/impar.
+      try {
+        const results = body.search('"', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+        results.load('items'); await ctx.sync();
+
+        for (let i = 0; i < results.items.length; i++) {
+          const replacement = (i % 2 === 0) ? '«' : '»';
+          results.items[i].insertText(replacement, 'Replace');
+          results.items[i].font.bold = true;
+        }
+        await ctx.sync();
+      } catch(e) { console.warn('Plumia ortotypo comillas rectas:', e); }
+
+      // Comillas tipográficas curvas (Word a veces autocorrije) → españolas
+      for (const [search, replacement] of [['\u201c','«'],['\u201d','»'],['\u2018','«'],['\u2019','»']]) {
         try {
-          const searchResults = body.search(finding.originalText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          searchResults.load('items'); await ctx.sync();
-          if (!searchResults.items.length) continue;
-          const targets = finding.correctionId === 'repeticion_lexica' ? searchResults.items : [searchResults.items[0]];
-          for (const range of targets) {
-            await this._applyMark(ctx, range, finding);
+          const results = body.search(search, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+          results.load('items'); await ctx.sync();
+          for (const r of results.items) {
+            r.insertText(replacement, 'Replace');
+            r.font.bold = true;
           }
           await ctx.sync();
-        } catch(e) { console.warn('Plumia: error marcando', finding.originalText, e); }
+        } catch(e) {}
       }
+
+      // ── 3. TRES PUNTOS → PUNTOS SUSPENSIVOS ──────────────────────────────
+      try {
+        const results = body.search('...', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+        results.load('items'); await ctx.sync();
+        for (const r of results.items) {
+          r.insertText('…', 'Replace');
+          r.font.bold = true;
+        }
+        await ctx.sync();
+      } catch(e) {}
+
+      // ── 4. ESPACIO ANTES DE SIGNOS DE PUNTUACIÓN ─────────────────────────
+      for (const sign of [' ,', ' ;', ' :', ' .']) {
+        try {
+          const results = body.search(sign, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+          results.load('items'); await ctx.sync();
+          for (const r of results.items) {
+            r.insertText(sign.trim(), 'Replace');
+            r.font.bold = true;
+          }
+          await ctx.sync();
+        } catch(e) {}
+      }
+
     });
   }
 
@@ -178,17 +275,22 @@ window.DocumentBuilder = class DocumentBuilder {
 
         for (let i = 0; i < result.findings.length; i++) {
           const f = result.findings[i];
-          const preview = `«${(f.originalText||'').substring(0,100)}${(f.originalText||'').length>100?'…':''}»`;
+          const rawText = (f.originalText || '').replace(/\n+/g, ' ↵ ').trim();
+          const preview = `«${rawText.substring(0,100)}${rawText.length>100?'…':''}»`;
 
-          // Línea del hallazgo: "1.  «texto»"
+          // Línea del hallazgo con tamaño fijo para evitar herencia del heading3
           const numPara = body.insertParagraph(`${i+1}.  ${preview}`, 'End');
           numPara.font.bold = true;
+          numPara.font.size = 11;
+          numPara.font.italic = false;
 
-          // Comentario en la línea siguiente, sin sangría extra
+          // Comentario
           const comment = buildCommentText([f]);
           if (comment) {
             const comPara = body.insertParagraph(comment, 'End');
             comPara.font.size = 10;
+            comPara.font.italic = false;
+            comPara.font.bold = false;
           }
         }
         body.insertParagraph('', 'End');

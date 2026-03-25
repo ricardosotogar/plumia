@@ -276,10 +276,11 @@ window.PlumiaProcessor = class PlumiaProcessor {
       'ambiguedad':   'ambiguedad_pronominal',
       'concordancia': 'concordancia',
       'dequeismo':    'dequeismo',
-      // lexicon
+      // lexicon_a
       'repeticion':   'repeticion_lexica',
       'verbos':       'verbos_comedin',
       'sustantivos':  'sustantivos_genericos',
+      // lexicon_b
       'muletillas':   'muletillas',
       'pleonasmos':   'pleonasmos',
       // style
