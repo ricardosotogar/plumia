@@ -1,0 +1,228 @@
+// ============================================================================
+// PLUMIA — document-builder.js
+// buildCommentText, DocumentBuilder: marcas en Word, informe de incidencias
+// Depende de: corrections-config.js (COLOR_MAP, CONFIG)
+// ============================================================================
+(function() {
+var COLOR_MAP  = window.PLUMIA_COLOR_MAP;
+var CONFIG     = window.PLUMIA_CONFIG;
+
+var WORD_HIGHLIGHT = {
+  'FFD966':'Yellow','92D050':'Green','FF9900':'Orange','00B0F0':'Cyan',
+  'FF69B4':'Pink','C9B8FF':'Violet','7030A0':'DarkMagenta',
+};
+
+window.buildCommentText = function buildCommentText(mergedFindings) {
+  if (!mergedFindings || !mergedFindings.length) return '';
+  if (mergedFindings.length === 1) return _singleComment(mergedFindings[0]);
+  return mergedFindings.map((f,i) => `${i+1}) ${_singleComment(f)}`).join('\n');
+}
+
+window._singleComment = function _singleComment(f) {
+  const label = f.label || f.correctionId || 'Error';
+  switch(f.correctionId) {
+    case 'leismo': case 'laismo': case 'loismo':
+      return `${label}: la forma correcta es «${f.correction}».`;
+    case 'ambiguedad_pronominal':
+      return `Ambigüedad pronominal: el pronombre «${f.pronoun}» puede referirse a ${(f.possibleReferents||[]).join(' o ')}. ${f.suggestion?'Posible revisión: '+f.suggestion:''}`;
+    case 'repeticion_lexica':
+      return `Repetición léxica: «${f.word}» aparece varias veces cerca. ${f.synonyms?.length?'Sinónimos: '+f.synonyms.join(', ')+'.':''}`;
+    case 'verbos_comedin':
+      return `Verbo comodín «${f.verb}»: ${f.explanation} Alternativas: ${(f.alternatives||[]).join(', ')}.`;
+    case 'sustantivos_genericos':
+      return `Sustantivo genérico «${f.genericWord}»: ${f.explanation} Alternativas: ${(f.alternatives||[]).join(', ')}.`;
+    case 'muletillas':
+      return `Muletilla «${f.expression}»: aparece repetidamente. ${f.alternatives?.filter(a=>a!=='eliminar').length?'Alternativas: '+f.alternatives.join(', ')+'.':'Valora eliminarla.'}`;
+    case 'pleonasmos':
+      return `Pleonasmo: ${f.explanation} Corrección: «${f.correction}».`;
+    case 'adverbios_mente':
+      return `Adverbio -mente: ${f.explanation} ${f.alternatives?.length?'Alternativas: '+f.alternatives.join(', ')+'.':''}`;
+    case 'voz_pasiva':
+      return `Voz pasiva: ${f.explanation} Posible versión activa: «${f.activeVersion}».`;
+    case 'frases_largas':
+      return `Frase larga (${f.wordCount} palabras): ${f.explanation} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
+    case 'nombres_propios':
+      return `Exceso de nombres propios: «${f.name}» se repite varias veces cerca. ${f.suggestion||''}`;
+    case 'ritmo_narrativo':
+      return `Ritmo narrativo: ${f.issue} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
+    case 'gerundios':
+      return `Gerundio incorrecto (${f.errorType}): ${f.explanation} Corrección: «${f.correction}».`;
+    case 'dequeismo':
+      return `${f.errorType==='dequeismo'?'Dequeísmo':'Queísmo'}: ${f.explanation} Corrección: «${f.correction}».`;
+    case 'concordancia':
+      return `Concordancia (${f.errorType}): ${f.explanation} Corrección: «${f.correction}».`;
+    case 'tiempos_verbales':
+      return `Tiempo verbal: ${f.explanation} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
+    case 'ortotipografia_pura':
+      return f.isFirstOccurrence ? `Ortotipografía corregida en todo el documento: ${f.explanation}` : null;
+    case 'puntuacion_dialogo':
+      return `Puntuación de diálogo (${f.errorType}): ${f.explanation} Corrección: «${f.correction}».`;
+    case 'coherencia_personajes': case 'coherencia_temporal': case 'coherencia_objetos':
+    case 'coherencia_conocimiento': case 'tono_voz': case 'nombres_inconsistentes': case 'pov':
+      return _coherenceComment(f);
+    default:
+      return `${label}: ${f.explanation||''}`;
+  }
+}
+
+window._coherenceComment = function _coherenceComment(f) {
+  let c = `COHERENCIA — ${f.label||'Coherencia narrativa'}:\n`;
+  if (f.occurrence1) c += `· ${f.occurrence1.location||'Primera mención'}: «${f.occurrence1.text}»\n`;
+  if (f.occurrence2) c += `· ${f.occurrence2.location||'Segunda mención'}: «${f.occurrence2.text}»\n`;
+  return (c + (f.explanation||'')).trim();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DOCUMENT BUILDER — integrado desde document-builder.js
+// ═══════════════════════════════════════════════════════════════════════════
+const WORD_HIGHLIGHT = {
+  'FFD966':'Yellow','92D050':'Green','FF9900':'Orange','00B0F0':'Cyan',
+  'FF69B4':'Pink','C9B8FF':'Violet','7030A0':'DarkMagenta',
+};
+
+window.DocumentBuilder = class DocumentBuilder {
+  constructor(outputMode) { this.outputMode = outputMode; }
+
+  async getRevisionName(originalName) {
+    const base = originalName.replace(/\s*REVISION\s+V\.\d+\.\d+\s*/i,'').trim();
+    let version = 1;
+    const key = 'plumia_versions_' + base;
+    const saved = localStorage.getItem(key);
+    if (saved) version = parseInt(saved) + 1;
+    localStorage.setItem(key, version.toString());
+    return `${base} ${CONFIG.revisionSuffix} V.${version}.0`;
+  }
+
+  getStatsName(revisionName) {
+    return revisionName.replace(CONFIG.revisionSuffix, CONFIG.statsSuffix);
+  }
+
+  async applyMarkings(resolvedFindings) {
+    if (!resolvedFindings || !resolvedFindings.length) return;
+    await Word.run(async (ctx) => {
+      const body = ctx.document.body;
+      for (const finding of resolvedFindings) {
+        if (!finding.originalText) continue;
+        try {
+          const searchResults = body.search(finding.originalText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          searchResults.load('items'); await ctx.sync();
+          if (!searchResults.items.length) continue;
+          const targets = finding.correctionId === 'repeticion_lexica' ? searchResults.items : [searchResults.items[0]];
+          for (const range of targets) {
+            await this._applyMark(ctx, range, finding);
+          }
+          await ctx.sync();
+        } catch(e) { console.warn('Plumia: error marcando', finding.originalText, e); }
+      }
+    });
+  }
+
+  async _applyMark(ctx, range, finding) {
+    const colorEntry = finding.colorId ? COLOR_MAP[finding.colorId] : null;
+    if (finding.directFix) {
+      if (finding.correction) { range.insertText(finding.correction, 'Replace'); range.font.bold = true; }
+    } else if (colorEntry?.type === 'bracket') {
+      range.getRange('Start').insertText('[', 'Before');
+      range.getRange('End').insertText(']', 'After');
+    } else if (colorEntry?.type === 'highlight') {
+      range.font.highlightColor = WORD_HIGHLIGHT[colorEntry.hex] || 'Yellow';
+    } else if (colorEntry?.type === 'text') {
+      range.font.color = colorEntry.hex;
+    }
+    const commentText = buildCommentText(finding.mergedFindings || [finding]);
+    if (commentText) { try { range.insertComment(commentText); } catch(e) {} }
+  }
+
+  async highlightBrackets() {
+    await Word.run(async (ctx) => {
+      for (const char of ['[',']']) {
+        const results = ctx.document.body.search(char, {matchCase:true});
+        results.load('items'); await ctx.sync();
+        for (const r of results.items) { r.font.highlightColor = 'Pink'; r.font.bold = true; }
+      }
+      await ctx.sync();
+    });
+  }
+
+  async appendStatsReport(allResults) {
+    const total = allResults.reduce((s,r)=>s+r.findings.length,0);
+    if (total === 0) return; // nada que añadir
+
+    await Word.run(async (ctx) => {
+      const body = ctx.document.body;
+      body.insertBreak('Page', 'End');
+
+      // Título principal
+      const title = body.insertParagraph('INFORME DE INCIDENCIAS — PLUMIA', 'End');
+      title.styleBuiltIn = Word.Style.heading1;
+
+      // Resumen por categoría
+      body.insertParagraph('Resumen por categoría', 'End').styleBuiltIn = Word.Style.heading2;
+      for (const result of allResults) {
+        if (!result.findings.length) continue;
+        body.insertParagraph(
+          `• ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`,
+          'End'
+        );
+      }
+      const totalPara = body.insertParagraph(`Total: ${total} incidencias detectadas`, 'End');
+      totalPara.font.bold = true;
+
+      body.insertParagraph('', 'End');
+
+      // Detalle por categoría
+      body.insertParagraph('Detalle por categoría', 'End').styleBuiltIn = Word.Style.heading2;
+
+      for (const result of allResults) {
+        if (!result.findings.length) continue;
+
+        // Cabecera de categoría
+        const catTitle = body.insertParagraph(
+          `${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`,
+          'End'
+        );
+        catTitle.styleBuiltIn = Word.Style.heading3;
+
+        for (let i = 0; i < result.findings.length; i++) {
+          const f = result.findings[i];
+          const preview = `«${(f.originalText||'').substring(0,100)}${(f.originalText||'').length>100?'…':''}»`;
+
+          // Línea del hallazgo: "1.  «texto»"
+          const numPara = body.insertParagraph(`${i+1}.  ${preview}`, 'End');
+          numPara.font.bold = true;
+
+          // Comentario en la línea siguiente, sin sangría extra
+          const comment = buildCommentText([f]);
+          if (comment) {
+            const comPara = body.insertParagraph(comment, 'End');
+            comPara.font.size = 10;
+          }
+        }
+        body.insertParagraph('', 'End');
+      }
+
+      await ctx.sync();
+    });
+  }
+
+  async buildOutput(allResults, resolvedFindings, originalName, selectedIds) {
+    const revisionName = await this.getRevisionName(originalName);
+    const statsName    = this.getStatsName(revisionName);
+    if (this.outputMode === 'marked') {
+      // Modo A: marcas + comentarios + resumen al final
+      await this.applyMarkings(resolvedFindings);
+      await this.highlightBrackets();
+      await this.appendStatsReport(allResults, false); // false = sin leyenda de colores aquí
+      await Word.run(async ctx => { ctx.document.save(); await ctx.sync(); });
+      return { mode:'marked', revisionName, statsName, totalFindings:resolvedFindings.length };
+    } else {
+      // Modo B: solo añadir el informe de incidencias al final (sin marcas)
+      await this.appendStatsReport(allResults, false);
+      await Word.run(async ctx => { ctx.document.save(); await ctx.sync(); });
+      return { mode:'report', revisionName, statsName,
+        totalFindings: allResults.reduce((s,r)=>s+r.findings.length,0) };
+    }
+  }
+}
+
+})();

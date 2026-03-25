@@ -460,7 +460,7 @@ body{
   background:#faf0ff;border:1px solid #d4b0f5;
   border-radius:var(--radius);padding:10px 12px;
   font-size:11px;color:#5a2080;line-height:1.5;
-  margin-bottom:14px;display:none;
+  margin-bottom:14px;
 }
 .coherence-cost-note.visible{display:block}
 
@@ -825,14 +825,14 @@ body{
           <div class="radio-circle"></div>
           <div>
             <div class="format-opt-label">Documento marcado con colores</div>
-            <div class="format-opt-desc">Crea una versión nueva del documento con los errores resaltados y comentarios explicativos</div>
+            <div class="format-opt-desc">Actualiza el documento actual con las incidencias resaltadas, comentarios explicativos y un listado resumen al final</div>
           </div>
         </div>
         <div class="format-opt" id="format-report" onclick="selectFormat('report')">
           <div class="radio-circle"></div>
           <div>
             <div class="format-opt-label">Solo informe de estadísticas</div>
-            <div class="format-opt-desc">Genera un documento separado con el listado de incidencias por categoría</div>
+            <div class="format-opt-desc">Añade al final del documento el listado de incidencias por categoría, para que puedas guardarlo con otro nombre</div>
           </div>
         </div>
       </div>
@@ -887,10 +887,16 @@ body{
 <div class="screen" id="screen-done">
   <div class="done-icon">✓</div>
   <div class="done-title">Análisis completado</div>
-  <div style="font-size:12px;color:var(--mid);margin-bottom:4px" id="doneDesc"></div>
+  <div style="font-size:12px;color:var(--mid);margin-bottom:8px" id="doneDesc"></div>
+
+  <!-- Coste real del análisis -->
+  <div style="background:var(--sepia);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:11px;color:var(--mid)">Coste estimado del análisis</span>
+    <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--ink)" id="doneCost">—</span>
+  </div>
 
   <!-- Instrucciones guardar como (solo para modo marcado) -->
-  <div class="info-box" id="saveAsInstructions" style="display:none;margin:10px 0;font-size:11.5px">
+  <div class="info-box" id="saveAsInstructions" style="display:none;margin:0 0 10px;font-size:11.5px">
     <strong style="display:block;margin-bottom:4px">📁 Guarda el documento con el nombre de revisión:</strong>
     <div style="font-family:'DM Mono',monospace;font-size:11px;background:var(--sepia);padding:6px 8px;border-radius:4px;margin:6px 0" id="saveAsName"></div>
     Usa <strong>Archivo → Guardar como</strong> y ponle ese nombre para conservar el original sin cambios.
@@ -994,122 +1000,27 @@ body{
 <!-- ═══════════════════════════════════════════════════════════════════════════
      JAVASCRIPT
 ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     MÓDULOS EXTERNOS
+     Orden de carga: config → synonyms → processor → document-builder
+═══════════════════════════════════════════════════════════════════════════ -->
+<script src="corrections-config.js"></script>
+<script src="synonyms-db.js"></script>
+<script src="processor.js"></script>
+<script src="document-builder.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
+═══════════════════════════════════════════════════════════════════════════ -->
 <script>
-
-// ── CONFIGURACIÓN INLINE (equivalente a corrections-config.js para el browser) ──
-// En producción esto se importaría como módulo ES. Aquí se incluye inline
-// para compatibilidad con el entorno de Office Add-in sin bundler.
-
-const COLOR_MAP = {
-  1:{name:"Rojo",hex:"FF0000",type:"text"},
-  2:{name:"Amarillo",hex:"FFD966",type:"highlight"},
-  3:{name:"Verde claro",hex:"92D050",type:"highlight"},
-  4:{name:"Naranja",hex:"FF9900",type:"highlight"},
-  5:{name:"Turquesa",hex:"00B0F0",type:"highlight"},
-  6:{name:"Rosa",hex:"FF69B4",type:"bracket"},
-  7:{name:"Azul",hex:"0070C0",type:"text"},
-  8:{name:"Lavanda",hex:"C9B8FF",type:"highlight"},
-  9:{name:"Violeta",hex:"7030A0",type:"highlight"},
-};
-
-const CONFIG = {
-  model:"claude-sonnet-4-20250514",
-  maxTokens:2048,
-  wordsPerToken:0.75,
-  inputPricePerToken:0.000003,
-  outputPricePerToken:0.000015,
-  chunkSizeWords:1500,
-  chunkOverlapWords:150,
-  coherenceChunkSizeWords:80000,
-  revisionSuffix:"REVISION",
-  statsSuffix:"ESTADISTICAS",
-};
-
-const GROUPS = [
-  {id:"pronouns",  label:"Pronombres y deixis"},
-  {id:"lexicon",   label:"Léxico y vocabulario"},
-  {id:"style",     label:"Estilo y fluidez"},
-  {id:"grammar",   label:"Gramática"},
-  {id:"orthotypo", label:"Ortotipografía"},
-  {id:"coherence", label:"Coherencia narrativa", requiresFullDoc:true},
-];
-
-const CORRECTIONS = [
-  {id:"leismo", groupId:"pronouns", label:"Leísmos, laísmos y loísmos", desc:"Uso incorrecto de le, la, lo como complemento", colorId:1, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector experto en español. Analiza el siguiente texto en busca de leísmos, laísmos y loísmos: usos incorrectos de los pronombres le, la y lo.\nRecuerda:\n- "lo/la" son complemento directo (CD)\n- "le" es complemento indirecto (CI)\n- Leísmo: usar "le" donde corresponde "lo/la". Ej: "Le vi ayer" → "Lo vi ayer"\n- Laísmo: usar "la" donde corresponde "le". Ej: "La dije que viniera" → "Le dije que viniera"\n- Loísmo: usar "lo" donde corresponde "le". Ej: "Lo di el libro" → "Le di el libro"\nIgnora el leísmo de persona masculina singular si es el único caso.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"type":"leismo|laismo|loismo","originalText":"fragmento exacto","correction":"forma correcta","explanation":"explicación breve"}]}\nSi no encuentras ningún error: {"findings":[]}`},
-
-  {id:"ambiguedad_pronominal", groupId:"pronouns", label:"Ambigüedades pronominales", desc:"Pronombres con referente poco claro", colorId:8, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector experto en español. Analiza el texto en busca de ambigüedades pronominales: casos en que pronombres como él, ella, lo, la, le, se, su no tienen un referente claro porque pueden aplicarse a más de un personaje o elemento en la misma frase o párrafo.\nPresta atención a escenas con varios personajes. Solo señala casos genuinamente ambiguos donde el lector no pueda saber a quién se refiere el pronombre.\nNO señales:\n- Pronombres cuyo referente es claro por contexto\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría)\n- Frases donde el sujeto es obvio\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","pronoun":"pronombre ambiguo","possibleReferents":["ref1","ref2"],"explanation":"por qué es ambiguo","suggestion":"posible reformulación"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"repeticion_lexica", groupId:"lexicon", label:"Repeticiones léxicas cercanas", desc:"Misma palabra repetida en corta distancia", colorId:2, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de repeticiones léxicas cercanas: la misma palabra (o su raíz) repetida en un radio de 3-5 líneas, sin intención estilística. No señales artículos, preposiciones, conjunciones, ni repeticiones deliberadas.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"word":"palabra base","occurrences":["fragmento 1","fragmento 2"],"explanation":"breve explicación","synonyms":["sin1","sin2","sin3"]}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"verbos_comedin", groupId:"lexicon", label:"Verbos comodín", desc:"Abuso de hacer, poner, tener, dar, haber…", colorId:4, includesSynonyms:true, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de verbos comodín usados en exceso: hacer, poner, tener, dar, haber, decir, ver, ir, venir, coger, cuando podría usarse un verbo más preciso. Solo señala casos donde empobrezca claramente el estilo.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","verb":"verbo comodín","explanation":"por qué es mejorable","alternatives":["alt1","alt2","alt3"]}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"sustantivos_genericos", groupId:"lexicon", label:"Sustantivos genéricos", desc:"Abuso de cosa, tema, aspecto, situación…", colorId:4, includesSynonyms:true, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de sustantivos genéricos: cosa, tema, aspecto, situación, elemento, cuestión, problema, algo, asunto, hecho, usados donde podría emplearse un término más concreto.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","genericWord":"palabra genérica","explanation":"por qué es mejorable","alternatives":["alt1","alt2","alt3"]}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"muletillas", groupId:"lexicon", label:"Muletillas narrativas", desc:"Expresiones repetidas que no aportan valor", colorId:4, includesSynonyms:true, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de muletillas: palabras o expresiones que aparecen con demasiada frecuencia y no aportan información nueva. Ej: "en cierto modo", "de alguna manera", "de repente" repetido, "entonces", "básicamente", "realmente". Solo señala las que aparezcan al menos 2 veces o sean claramente innecesarias.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"expression":"muletilla","occurrences":["fragmento 1","fragmento 2"],"explanation":"por qué es muletilla","alternatives":["alt1","alt2","eliminar"]}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"pleonasmos", groupId:"lexicon", label:"Pleonasmos", desc:"Palabras innecesarias que repiten información", colorId:4, includesSynonyms:true, directFix:false,
-   prompt:`Eres un corrector experto en español. Analiza el texto en busca de pleonasmos: palabras innecesarias que repiten información ya contenida. Ej: "subir arriba", "bajar abajo", "entrar dentro", "salir fuera", "ver con mis propios ojos", "volver a reincidir".\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","explanation":"por qué es redundante","correction":"forma sin redundancia"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"adverbios_mente", groupId:"style", label:"Abuso de adverbios en -mente", desc:"Acumulación de adverbios terminados en -mente", colorId:3, includesSynonyms:true, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de uso excesivo de adverbios en -mente. Señala: 1) Acumulaciones de dos o más adverbios en -mente cercanos. 2) Adverbios en -mente que podrían sustituirse por una construcción más elegante. No señales los que sean la mejor opción en su contexto.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","adverbs":["adv1","adv2"],"explanation":"por qué revisarlo","alternatives":["alt1","alt2","alt3"]}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"voz_pasiva", groupId:"style", label:"Voz pasiva innecesaria", desc:"Construcciones pasivas que podrían ser activas", colorId:5, includesSynonyms:true, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de construcciones en voz pasiva que resultarían más naturales en voz activa. Señala tanto la pasiva perifrástica ("fue abierto por") como la pasiva refleja innecesaria ("se abrió"). No señales cuando sea la opción más natural o sin agente claro.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento en voz pasiva","explanation":"por qué revisarlo","activeVersion":"reformulación en voz activa"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"frases_largas", groupId:"style", label:"Frases demasiado largas", desc:"Oraciones de +40 palabras que dificultan la lectura", colorId:6, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de frases excesivamente largas (más de 40 palabras, o más cortas pero con estructura subordinada muy compleja) que dificulten la comprensión o rompan el ritmo.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"frase completa exacta","wordCount":45,"explanation":"por qué dificulta la lectura","suggestion":"cómo dividirla o simplificarla"}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"nombres_propios", groupId:"style", label:"Exceso de nombres propios", desc:"Repetición excesiva de nombres propios cercanos", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de nombres propios que se repiten con demasiada frecuencia en un fragmento corto, cuando podrían sustituirse por pronombres u otras referencias.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"name":"nombre propio","occurrences":["fragmento 1","fragmento 2"],"explanation":"por qué resulta excesivo","suggestion":"cómo aligerarlo"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"ritmo_narrativo", groupId:"style", label:"Ritmo narrativo", desc:"Desequilibrios de ritmo entre escena y longitud de frases", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un editor literario experto en español. Analiza el texto en busca de desequilibrios de ritmo: 1) Frases largas en escenas de acción/tensión. 2) Frases muy cortas en escenas descriptivas/de atmósfera. 3) Párrafos con densidad muy desigual sin intención estilística.\nNO señales:\n- Textos muy breves (menos de 100 palabras) donde no hay suficiente contexto para evaluar el ritmo\n- Errores gramaticales como leísmos que no tienen que ver con el ritmo\n- Frases cortas que son perfectamente válidas estilísticamente\n- Textos que no tienen suficiente extensión para determinar si hay un desequilibrio real\nSolo señala casos donde el desequilibrio sea CLARO, EVIDENTE y PERJUDICIAL para la lectura.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","sceneType":"acción|descripción|diálogo|reflexión","issue":"descripción del desequilibrio","suggestion":"cómo mejorar el ritmo"}]}\nSi no encuentras ninguno o el texto es demasiado corto para evaluarlo: {"findings":[]}`},
-
-  {id:"gerundios", groupId:"grammar", label:"Gerundios incorrectos", desc:"Gerundio de posterioridad y otros usos incorrectos", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de gerundios incorrectos: 1) Gerundio de posterioridad: acción posterior a la principal. Ej: "Salió de casa, encontrando a Juan". 2) Gerundio especificativo: "Una ley regulando el tráfico" → "que regula". 3) Gerundio como adjetivo: "Una caja conteniendo libros".\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","gerund":"gerundio problemático","errorType":"posterioridad|especificativo|adjetivo","explanation":"por qué es incorrecto","correction":"reformulación correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"dequeismo", groupId:"grammar", label:"Dequeísmo y queísmo", desc:"Uso incorrecto de 'de que' / omisión incorrecta", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de: 1) Dequeísmo: "de que" donde solo corresponde "que". Ej: "Pienso de que..." → "Pienso que...". 2) Queísmo: omitir "de" donde es necesaria. Ej: "Estoy seguro que..." → "Estoy seguro de que...".\nNO señales:\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría)\n- Usos correctos de "de que" después de verbos que lo requieren\n- Frases que contienen errores de otro tipo pero no dequeísmo ni queísmo\nSolo señala si encuentras exactamente una construcción "de que" incorrecta o una omisión incorrecta de "de".\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"dequeismo|queismo","explanation":"explicación breve","correction":"forma correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"concordancia", groupId:"grammar", label:"Concordancia de género y número", desc:"Errores de concordancia sujeto-verbo o sustantivo-adjetivo", colorId:7, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector gramatical experto en español. Analiza el texto en busca de errores de concordancia: 1) Sujeto-verbo: el verbo no concuerda en número con el sujeto. 2) Sustantivo-adjetivo: el adjetivo no concuerda en género o número. Ignora sujetos compuestos o colectivos con concordancia flexible.\nNO señales:\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría). Por ejemplo, "La dije" es un laísmo, NO un error de concordancia.\n- Errores de otro tipo que no sean estrictamente de concordancia entre sujeto-verbo o sustantivo-adjetivo\n- Cualquier frase que simplemente te parezca incorrecta por otros motivos\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"sujeto-verbo|sustantivo-adjetivo","explanation":"descripción del error","correction":"forma correcta"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"tiempos_verbales", groupId:"grammar", label:"Inconsistencia de tiempos verbales", desc:"Mezcla no intencional de indefinido e imperfecto", colorId:5, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector literario experto en español. Analiza el texto en busca de posibles inconsistencias en tiempos verbales del pasado: mezclas no intencionales de pretérito indefinido (canté) e imperfecto (cantaba) dentro de una misma escena. Solo señala los que parezcan descuidos, no los cambios intencionales.\nNO señales:\n- Errores de leísmo, laísmo o loísmo (eso lo analiza otra categoría)\n- Frases con otros tipos de errores gramaticales que no sean de tiempo verbal\n- Cambios de tiempo verbal que son correctos y habituales (descripción en imperfecto + acción en indefinido)\nSolo marca si hay un cambio de tiempo verbal que rompa la coherencia temporal de la escena.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","verbsFound":["verbo indefinido","verbo imperfecto"],"explanation":"por qué podría ser descuido","suggestion":"cómo resolverlo"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"ortotipografia_pura", groupId:"orthotypo", label:"Ortotipografía pura", desc:"Guiones, comillas, puntos suspensivos, mayúsculas, signos ¿¡, espaciado", colorId:null, includesSynonyms:false, directFix:true,
-   prompt:`Eres un corrector ortotipográfico experto en español. Analiza el texto ÚNICAMENTE en busca de errores tipográficos y ortotipográficos. Corrige:\n1. Guiones de diálogo: guion corto (-) en lugar de raya (—)\n2. Comillas inglesas ("") en lugar de españolas («»)\n3. Tres puntos separados (...) en lugar del carácter tipográfico (…)\n4. Signos de apertura omitidos (¿ ¡)\n5. Espacio ANTES de coma, punto, punto y coma, dos puntos (NO después)\n6. Falta de mayúscula al inicio de párrafo o tras punto final\nNO corrijas NUNCA:\n- Errores gramaticales como leísmos, laísmos o loísmos. Por ejemplo, "La dije" es un laísmo gramatical, NO un error ortotipográfico. NO lo corrijas aquí.\n- Errores de concordancia, dequeísmo, gerundios ni ningún otro error gramatical\n- Estilo, vocabulario o estructura de las frases\nSolo señala y corrige errores puramente tipográficos.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"errorType":"guion|comillas|puntos_suspensivos|signo_apertura|espaciado|mayusculas","originalText":"fragmento exacto","correction":"fragmento corregido","isFirstOccurrence":true,"explanation":"solo si isFirstOccurrence: explicación breve"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"puntuacion_dialogo", groupId:"orthotypo", label:"Problemas de puntuación en diálogo", desc:"Errores de puntuación en intervenciones y acotaciones", colorId:6, includesSynonyms:false, directFix:false,
-   prompt:`Eres un corrector ortotipográfico experto en español. Analiza el texto en busca de errores de puntuación en diálogos: 1) Falta de raya antes de la acotación: —Hola. dijo → —Hola —dijo. 2) Punto incorrecto antes de acotación. 3) Coma innecesaria antes de raya de cierre. 4) Mayúscula incorrecta en verbo de acotación. 5) Punto tras interrogación/exclamación: —¿Vienes?. → —¿Vienes? 6) Falta de punto tras acotación cuando el diálogo continúa. 7) Coma innecesaria después de interrogación.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"fragmento exacto","errorType":"descripción breve del error","correction":"fragmento corregido","explanation":"explicación breve de la regla"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-
-  {id:"coherencia_personajes", groupId:"coherence", label:"Coherencia de personajes", desc:"Contradicciones en experiencias, habilidades o rasgos físicos", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto narrativo en busca de contradicciones en la caracterización de personajes: 1) Experiencias que se contradicen (afirma que es la primera vez pero ya lo hizo antes). 2) Habilidades que aparecen y desaparecen sin explicación. 3) Rasgos físicos que cambian sin justificación. 4) Conocimiento que un personaje no debería tener.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"characterName":"nombre del personaje","contradictionType":"experiencia|habilidad|rasgo_fisico|conocimiento","occurrence1":{"text":"fragmento exacto","location":"ubicación"},"occurrence2":{"text":"fragmento contradictorio","location":"ubicación"},"explanation":"descripción de la contradicción"}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"coherencia_temporal", groupId:"coherence", label:"Coherencia temporal", desc:"Inconsistencias en la línea de tiempo del relato", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto en busca de inconsistencias temporales: 1) Referencias temporales contradictorias. 2) Edades que no encajan con fechas mencionadas. 3) Estaciones del año contradictorias en el mismo período. 4) Eventos en orden imposible.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"inconsistencyType":"referencia_temporal|edad|estacion|orden_eventos","occurrence1":{"text":"fragmento exacto","location":"ubicación"},"occurrence2":{"text":"fragmento contradictorio","location":"ubicación"},"explanation":"descripción de la inconsistencia"}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"coherencia_objetos", groupId:"coherence", label:"Coherencia de objetos y espacios", desc:"Objetos que desaparecen o espacios que cambian sin explicación", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto en busca de inconsistencias en objetos o espacios: 1) Objeto importante que desaparece sin explicación. 2) Personaje usa un objeto que no podía tener. 3) Distribución de espacios que cambia entre escenas. 4) Personaje lleva algo que olvidó, perdió o entregó antes.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"itemOrSpace":"nombre del objeto/espacio","inconsistencyType":"objeto_desaparece|objeto_imposible|espacio_cambia","occurrence1":{"text":"fragmento exacto","location":"ubicación"},"occurrence2":{"text":"fragmento contradictorio","location":"ubicación"},"explanation":"descripción"}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"coherencia_conocimiento", groupId:"coherence", label:"Coherencia de conocimiento", desc:"Personajes que saben cosas que no deberían saber aún", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto en busca de inconsistencias en el conocimiento de personajes: 1) Un personaje sabe algo que aún no le han contado. 2) Un personaje actúa como si no supiera algo que vivió. 3) El narrador revela información que el personaje focal no podría conocer.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"characterName":"personaje","knowledgeIssue":"descripción","occurrence1":{"text":"fragmento","location":"ubicación"},"occurrence2":{"text":"fragmento contradictorio","location":"ubicación"},"explanation":"descripción"}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"tono_voz", groupId:"coherence", label:"Tono y voz narrativa", desc:"Cambios bruscos de registro o ruptura del punto de vista", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto en busca de inconsistencias CLARAS en tono y voz narrativa: 1) Cambios bruscos e injustificados de registro (de formal a muy coloquial). 2) El narrador rompe explícitamente el punto de vista establecido. 3) Cambios de persona narrativa no justificados. 4) Intrusiones del autor que rompen la ficción.\nNO señales:\n- Textos breves (menos de 200 palabras) donde es imposible evaluar el tono con fiabilidad\n- Errores gramaticales como leísmos que no tienen que ver con el tono\n- Variaciones de tono que podrían ser intencionales\n- Textos sin contexto suficiente para determinar el tono establecido\nSolo señala inconsistencias MUY CLARAS Y EVIDENTES.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"issueType":"cambio_registro|ruptura_pov|cambio_persona|intrusion_autor","establishedTone":"descripción del tono establecido","occurrence":{"text":"fragmento con la ruptura","location":"ubicación"},"explanation":"descripción"}]}\nSi no encuentras ninguna inconsistencia CLARA: {"findings":[]}`},
-
-  {id:"nombres_inconsistentes", groupId:"coherence", label:"Inconsistencia de nombres propios", desc:"El mismo nombre escrito de formas distintas", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un corrector experto en español. Analiza el texto en busca de inconsistencias en la grafía de nombres propios: el mismo nombre escrito de formas distintas (con o sin tilde, mayúsculas/minúsculas, grafías diferentes).\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"name":"nombre afectado","variants":["variante1","variante2"],"occurrences":[{"text":"fragmento","location":"ubicación"},{"text":"fragmento","location":"ubicación"}],"recommendedForm":"forma recomendada","explanation":"descripción"}]}\nSi no encuentras ninguna: {"findings":[]}`},
-
-  {id:"pov", groupId:"coherence", label:"Cambios de punto de vista (POV)", desc:"Saltos entre perspectivas sin transición clara", colorId:9, includesSynonyms:false, directFix:false, requiresFullDoc:true,
-   prompt:`Eres un editor literario experto. Analiza el texto en busca de cambios no controlados de punto de vista (POV): 1) En focalización fija, saltar a pensamientos de otro personaje sin transición. 2) En tercera persona limitada, el narrador accede a info que el personaje focal no puede saber. 3) Cabeza-hopping: cambiar de POV varias veces dentro de una escena.\nNO señales:\n- Textos breves (menos de 200 palabras) donde no hay suficiente contexto para determinar el POV establecido\n- Errores gramaticales como leísmos que no tienen que ver con el POV\n- Narrador omnisciente, que por definición puede acceder a todos los personajes\n- Casos donde el POV no está claramente establecido\nSolo señala cambios de POV MUY CLAROS Y EVIDENTES en textos suficientemente largos.\n\nTexto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"focalCharacter":"personaje cuyo POV se usaba","intrudingCharacter":"personaje cuyo POV irrumpe","occurrence":{"text":"fragmento con el cambio","location":"ubicación"},"explanation":"descripción del problema"}]}\nSi no encuentras ninguno: {"findings":[]}`},
-];
+// Aliases locales — los módulos ya están cargados como window.*
+const COLOR_MAP        = window.PLUMIA_COLOR_MAP;
+const CONFIG           = window.PLUMIA_CONFIG;
+const GROUPS           = window.PLUMIA_GROUPS;
+const CORRECTIONS      = window.PLUMIA_CORRECTIONS;
+const PlumiaProcessor  = window.PlumiaProcessor;
+const DocumentBuilder  = window.DocumentBuilder;
+const buildCommentText = window.buildCommentText;
 
 // ── ESTADO ───────────────────────────────────────────────────────────────────
 const state = {
@@ -1126,6 +1037,8 @@ const state = {
   coherenceAccepted: false,  // true si respondió Sí
   completedChecks:  0,
   totalChecks:      0,
+  estimatedCostUSD: 0,
+  estimatedCostEUR: 0,
 };
 
 // ── INICIALIZACIÓN ────────────────────────────────────────────────────────────
@@ -1676,6 +1589,10 @@ async function requestCostEstimate() {
   const totalEUR         = totalUSD / eurRate;
   const totalTokens      = Math.ceil((inputTokens + outputTokens) * multiplier);
 
+  // Guardar en state para mostrar en pantalla de resultados
+  state.estimatedCostUSD = totalUSD;
+  state.estimatedCostEUR = totalEUR;
+
   // Mostrar popup
   document.getElementById('costWords').textContent   = state.wordCount.toLocaleString('es-ES');
   document.getElementById('costChecks').textContent  = numCorrections;
@@ -1819,15 +1736,20 @@ function resumeFromError() {
 function showDoneScreen(output, allResults) {
   const totalFindings = allResults.reduce((sum, r) => sum + r.findings.length, 0);
 
+  // Mostrar coste estimado
+  const costText = `$${state.estimatedCostUSD.toFixed(4)}  /  ${state.estimatedCostEUR.toFixed(4)} €`;
+  document.getElementById('doneCost').textContent = costText;
+
   if (output.mode === 'marked') {
     document.getElementById('doneDesc').textContent =
-      `Se han aplicado ${totalFindings} marcas al documento con comentarios explicativos.`;
-    // Mostrar instrucciones de guardar como
+      `Se han aplicado ${totalFindings} marcas al documento con comentarios y resumen al final.`;
     document.getElementById('saveAsInstructions').style.display = 'block';
     document.getElementById('saveAsName').textContent = output.revisionName + '.docx';
   } else {
-    document.getElementById('doneDesc').textContent = 'Análisis completado. Genera el informe de estadísticas.';
-    document.getElementById('saveAsInstructions').style.display = 'none';
+    document.getElementById('doneDesc').textContent =
+      `Se ha añadido el informe de incidencias al final del documento.`;
+    document.getElementById('saveAsInstructions').style.display = 'block';
+    document.getElementById('saveAsName').textContent = output.statsName + '.docx';
   }
 
   const statsHTML = allResults
@@ -1893,805 +1815,9 @@ async function getDocumentName() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// REDUCCIÓN DE COSTES — 3 estrategias
-// ═══════════════════════════════════════════════════════════════════════════
 
-// ── 1. DICCIONARIO LOCAL DE SINÓNIMOS ────────────────────────────────────────
-// Claude solo detecta la palabra problemática. Los sinónimos se añaden aquí
-// localmente, sin coste de tokens de salida.
-const SYNONYMS_DB = {
-  // Verbos comodín → alternativas más precisas
-  verbos: {
-    'hacer':    ['realizar','efectuar','ejecutar','llevar a cabo','elaborar','producir'],
-    'poner':    ['colocar','depositar','situar','ubicar','instalar','fijar'],
-    'tener':    ['poseer','contar con','disponer de','mantener','albergar'],
-    'dar':      ['entregar','ofrecer','proporcionar','facilitar','ceder','aportar'],
-    'decir':    ['afirmar','señalar','indicar','comentar','sostener','revelar','susurrar','gritar','musitar'],
-    'ver':      ['observar','contemplar','advertir','percibir','distinguir','divisar'],
-    'ir':       ['dirigirse','encaminarse','acudir','trasladarse','avanzar'],
-    'venir':    ['llegar','acercarse','aproximarse','aparecer','presentarse'],
-    'coger':    ['tomar','agarrar','asir','sostener','sujetar','recoger'],
-    'haber':    ['existir','encontrarse','hallarse','presentarse'],
-    'quedar':   ['permanecer','mantenerse','quedarse','persistir','continuar'],
-    'poner los ojos en blanco': ['alzar los ojos con desdén','girar los ojos'],
-    'hizo una sonrisa': ['sonrió','esbozó una sonrisa','dibujó una sonrisa'],
-    'hacer un movimiento': ['moverse','agitarse','gesticular'],
-    'hacer una pregunta': ['preguntar','inquirir','interrogar','cuestionar'],
-    'hacer un gesto': ['gesticular','señalar','indicar'],
-  },
-  // Sustantivos genéricos → alternativas más concretas
-  sustantivos: {
-    'cosa':      ['objeto','elemento','asunto','cuestión','hecho','detalle'],
-    'tema':      ['asunto','cuestión','materia','problema','punto'],
-    'aspecto':   ['faceta','dimensión','elemento','característica','rasgo'],
-    'situación': ['circunstancia','contexto','escenario','momento','coyuntura'],
-    'elemento':  ['componente','parte','factor','ingrediente','pieza'],
-    'algo':      ['cierta cosa','determinado objeto','un detalle','algo concreto'],
-    'asunto':    ['cuestión','materia','problema','tema','punto'],
-    'problema':  ['dificultad','conflicto','inconveniente','obstáculo','reto'],
-    'hecho':     ['suceso','acontecimiento','evento','circunstancia'],
-  },
-  // Adverbios en -mente → construcciones alternativas
-  adverbios: {
-    'lentamente':      ['despacio','con calma','poco a poco','pausadamente','con parsimonia'],
-    'rápidamente':     ['deprisa','a toda velocidad','con rapidez','velozmente','enseguida'],
-    'fijamente':       ['con la vista fija','sin apartar la mirada','clavando los ojos'],
-    'tranquilamente':  ['con calma','sin prisa','serenamente','sosegadamente'],
-    'finalmente':      ['al fin','por fin','al cabo','en definitiva','al final'],
-    'realmente':       ['en realidad','de verdad','verdaderamente','de hecho'],
-    'claramente':      ['con claridad','de forma clara','sin duda','evidentemente'],
-    'simplemente':     ['solo','tan solo','sin más','a secas'],
-    'absolutamente':   ['del todo','por completo','totalmente','en absoluto'],
-    'obviamente':      ['claro está','por supuesto','evidentemente','sin duda'],
-    'exactamente':     ['con exactitud','con precisión','justo','a la perfección'],
-    'básicamente':     ['en esencia','fundamentalmente','en el fondo','principalmente'],
-    'totalmente':      ['por completo','del todo','enteramente','completamente'],
-    'completamente':   ['del todo','por entero','íntegramente','en su totalidad'],
-    'profundamente':   ['con intensidad','en lo más hondo','hondamente','de raíz'],
-    'silenciosamente': ['en silencio','sin hacer ruido','sin emitir sonido'],
-    'nerviosamente':   ['con los nervios a flor de piel','visiblemente tenso','inquieto'],
-    'suavemente':      ['con suavidad','delicadamente','con delicadeza','con tiento'],
-    'bruscamente':     ['de repente','abruptamente','de golpe','sin previo aviso'],
-    'insistentemente': ['con insistencia','con empeño','una y otra vez','sin tregua'],
-  },
-  // Muletillas → alternativas o eliminar
-  muletillas: {
-    'en cierto modo':     ['de alguna forma','en cierta manera','de cierto modo','hasta cierto punto'],
-    'de alguna manera':   ['de algún modo','en cierta forma','de cierto modo'],
-    'de repente':         ['de pronto','súbitamente','inesperadamente','de improviso'],
-    'en ese momento':     ['entonces','en aquel instante','en ese instante','justo entonces'],
-    'de hecho':           ['en realidad','lo cierto es que','realmente','en efecto'],
-    'sin embargo':        ['pero','no obstante','aunque','a pesar de ello','con todo'],
-    'a pesar de todo':    ['aun así','con todo','no obstante'],
-    'por supuesto':       ['claro','naturalmente','desde luego','sin duda'],
-    'en definitiva':      ['en resumen','en fin','al final','en conclusión'],
-    'al fin y al cabo':   ['en definitiva','al final','después de todo'],
-    'básicamente':        ['en esencia','fundamentalmente','en el fondo'],
-    'claramente':         ['es evidente que','sin duda','a todas luces'],
-  },
-};
-
-// Función para enriquecer findings con sinónimos del diccionario local
-function enrichWithLocalSynonyms(findings, correctionId) {
-  return findings.map(f => {
-    let synonyms = [];
-    const word = (f.word || f.verb || f.genericWord || f.expression || '').toLowerCase();
-
-    if (correctionId === 'verbos_comedin') {
-      synonyms = SYNONYMS_DB.verbos[word] || SYNONYMS_DB.verbos[(f.originalText||'').toLowerCase()] || [];
-    } else if (correctionId === 'sustantivos_genericos') {
-      synonyms = SYNONYMS_DB.sustantivos[word] || [];
-    } else if (correctionId === 'adverbios_mente') {
-      const adv = (f.adverbs||[f.originalText])[0]?.toLowerCase() || word;
-      synonyms = SYNONYMS_DB.adverbios[adv] || [];
-    } else if (correctionId === 'muletillas') {
-      synonyms = SYNONYMS_DB.muletillas[word] || SYNONYMS_DB.muletillas[(f.expression||'').toLowerCase()] || [];
-    }
-
-    if (synonyms.length > 0) {
-      return { ...f, alternatives: synonyms, synonyms };
-    }
-    return f;
-  });
-}
-
-// ── 2. MOTOR LOCAL DE ORTOTIPOGRAFÍA (sin llamada a la API) ─────────────────
-// Detecta y corrige errores tipográficos mecánicos con regex, a coste cero.
-function runLocalOrtotypography(text) {
-  const findings = [];
-
-  // Guiones de diálogo: guion corto al inicio de línea o tras salto
-  const guionRegex = /(?:^|\n)[ \t]*-(?!\-)/gm;
-  let m;
-  const guionMatches = [];
-  while ((m = guionRegex.exec(text)) !== null) {
-    const fragment = text.substring(Math.max(0, m.index), Math.min(text.length, m.index + 30));
-    guionMatches.push(fragment.trim());
-  }
-  if (guionMatches.length > 0) {
-    findings.push({
-      errorType: 'guion',
-      originalText: guionMatches[0],
-      correction: guionMatches[0].replace(/^-/, '—'),
-      isFirstOccurrence: true,
-      explanation: `Se han detectado ${guionMatches.length} guión(es) corto(s) que deberían ser rayas (—) en los diálogos.`,
-      correctionId: 'ortotipografia_pura', colorId: null, label: 'Ortotipografía pura', directFix: true,
-    });
-  }
-
-  // Comillas inglesas
-  const comillasRegex = /[""][^""]+[""]/g;
-  const comillasMatches = [];
-  while ((m = comillasRegex.exec(text)) !== null) comillasMatches.push(m[0]);
-  if (comillasMatches.length > 0) {
-    findings.push({
-      errorType: 'comillas',
-      originalText: comillasMatches[0],
-      correction: comillasMatches[0].replace(/[""]/g, (c) => c === '\u201c' || c === '"' ? '«' : '»'),
-      isFirstOccurrence: true,
-      explanation: `Se han detectado ${comillasMatches.length} uso(s) de comillas inglesas (""). En español se usan las angulares («»).`,
-      correctionId: 'ortotipografia_pura', colorId: null, label: 'Ortotipografía pura', directFix: true,
-    });
-  }
-
-  // Puntos suspensivos: tres puntos separados
-  const puntosMatches = (text.match(/\.{3}/g) || []);
-  if (puntosMatches.length > 0) {
-    findings.push({
-      errorType: 'puntos_suspensivos',
-      originalText: '...',
-      correction: '…',
-      isFirstOccurrence: true,
-      explanation: `Se han detectado ${puntosMatches.length} uso(s) de tres puntos separados (...). El carácter correcto es el punto suspensivo tipográfico (…).`,
-      correctionId: 'ortotipografia_pura', colorId: null, label: 'Ortotipografía pura', directFix: true,
-    });
-  }
-
-  // Espacio antes de signos de puntuación
-  const espacioRegex = / [,;:.!?]/g;
-  const espacioMatches = (text.match(espacioRegex) || []);
-  if (espacioMatches.length > 0) {
-    findings.push({
-      errorType: 'espaciado',
-      originalText: espacioMatches[0],
-      correction: espacioMatches[0].trim(),
-      isFirstOccurrence: true,
-      explanation: `Se han detectado ${espacioMatches.length} espacio(s) antes de signo(s) de puntuación. Se eliminarán.`,
-      correctionId: 'ortotipografia_pura', colorId: null, label: 'Ortotipografía pura', directFix: true,
-    });
-  }
-
-  // Interrogación o exclamación sin apertura
-  const aperturaRegex = /(?<![¿¡])\b[A-ZÁÉÍÓÚÜÑ][^.!?]*[?!]/g;
-  const aperturaMatches = [];
-  while ((m = aperturaRegex.exec(text)) !== null) {
-    if (!m[0].startsWith('¿') && !m[0].startsWith('¡')) {
-      aperturaMatches.push(m[0].substring(0, 40));
-    }
-  }
-  if (aperturaMatches.length > 0) {
-    const isQ = aperturaMatches[0].endsWith('?');
-    findings.push({
-      errorType: 'signo_apertura',
-      originalText: aperturaMatches[0],
-      correction: (isQ ? '¿' : '¡') + aperturaMatches[0],
-      isFirstOccurrence: true,
-      explanation: `Se han detectado ${aperturaMatches.length} frase(s) interrogativa(s) o exclamativa(s) sin signo de apertura (¿ o ¡).`,
-      correctionId: 'ortotipografia_pura', colorId: null, label: 'Ortotipografía pura', directFix: true,
-    });
-  }
-
-  return findings;
-}
-
-// ── 3. GRUPOS DE CORRECCIONES PARA API (reduce llamadas) ─────────────────────
-// En lugar de 1 llamada por corrección, agrupamos varias en 1 sola llamada.
-// Ahorro estimado: 40-60% en número de llamadas (y tokens de prompt).
-const API_CORRECTION_GROUPS = [
-  {
-    groupKey: 'pronouns_grammar',
-    label: 'Pronombres y gramática',
-    ids: ['leismo', 'ambiguedad_pronominal', 'concordancia', 'dequeismo'],
-    buildPrompt: (text) => `Eres un corrector experto en español. Analiza el siguiente texto y devuelve CUATRO análisis en un solo JSON:
-1. "leismo": leísmos, laísmos y loísmos (uso incorrecto de le/la/lo)
-2. "ambiguedad": pronombres ambiguos (referente poco claro, solo cuando haya 2+ personajes)
-3. "concordancia": errores de concordancia sujeto-verbo o sustantivo-adjetivo (NO señales leísmos como concordancia)
-4. "dequeismo": dequeísmo (de que de más) o queísmo (de que faltante)
-
-IMPORTANTE: Cada categoría debe analizar SOLO lo que le corresponde. Un laísmo como "La dije" NO es concordancia ni dequeísmo.
-
-Texto:
-${text}
-
-Responde ÚNICAMENTE con este JSON exacto:
-{"leismo":{"findings":[{"type":"leismo|laismo|loismo","originalText":"fragmento","correction":"corrección","explanation":"explicación"}]},"ambiguedad":{"findings":[{"originalText":"fragmento","pronoun":"pronombre","possibleReferents":["ref1","ref2"],"explanation":"por qué","suggestion":"reformulación"}]},"concordancia":{"findings":[{"originalText":"fragmento","errorType":"sujeto-verbo|sustantivo-adjetivo","explanation":"descripción","correction":"corrección"}]},"dequeismo":{"findings":[{"originalText":"fragmento","errorType":"dequeismo|queismo","explanation":"explicación","correction":"corrección"}]}}
-Si no hay errores en una categoría, devuelve findings:[].`,
-  },
-  {
-    groupKey: 'lexicon',
-    label: 'Léxico y vocabulario',
-    ids: ['repeticion_lexica', 'verbos_comedin', 'sustantivos_genericos', 'muletillas', 'pleonasmos'],
-    buildPrompt: (text) => `Eres un corrector de estilo experto en español. Analiza el texto y devuelve CINCO análisis:
-1. "repeticion": misma palabra repetida en radio de 3-5 líneas sin intención estilística (excluye artículos, preposiciones)
-2. "verbos": verbos comodín usados donde podría emplearse uno más específico (hacer, poner, tener, dar…). Solo devuelve la palabra problemática, NO los sinónimos.
-3. "sustantivos": sustantivos genéricos (cosa, tema, aspecto, situación…). Solo devuelve la palabra, NO sinónimos.
-4. "muletillas": expresiones repetidas sin valor (en cierto modo, de alguna manera…). Solo devuelve la expresión, NO alternativas.
-5. "pleonasmos": redundancias (subir arriba, entrar dentro, salir fuera…)
-
-Texto:
-${text}
-
-Responde ÚNICAMENTE con este JSON:
-{"repeticion":{"findings":[{"word":"palabra base","occurrences":["frag1","frag2"],"explanation":"explicación"}]},"verbos":{"findings":[{"originalText":"fragmento","verb":"verbo comodín","explanation":"por qué"}]},"sustantivos":{"findings":[{"originalText":"fragmento","genericWord":"palabra","explanation":"por qué"}]},"muletillas":{"findings":[{"expression":"muletilla","occurrences":["frag1","frag2"],"explanation":"por qué"}]},"pleonasmos":{"findings":[{"originalText":"fragmento","explanation":"por qué","correction":"corrección"}]}}
-Si no hay errores en una categoría: findings:[].`,
-  },
-  {
-    groupKey: 'style',
-    label: 'Estilo y fluidez',
-    ids: ['adverbios_mente', 'voz_pasiva', 'frases_largas', 'nombres_propios'],
-    buildPrompt: (text) => `Eres un corrector de estilo experto en español. Analiza el texto y devuelve CUATRO análisis:
-1. "adverbios": adverbios en -mente en exceso o sustituibles. Solo devuelve el adverbio, NO alternativas.
-2. "voz_pasiva": voz pasiva que podría ser activa (NO señales leísmos ni otros errores gramaticales)
-3. "frases_largas": frases de más de 40 palabras que dificulten la lectura
-4. "nombres": nombres propios repetidos excesivamente en un fragmento corto
-
-Texto:
-${text}
-
-Responde ÚNICAMENTE con este JSON:
-{"adverbios":{"findings":[{"originalText":"fragmento","adverbs":["adv1"],"explanation":"por qué"}]},"voz_pasiva":{"findings":[{"originalText":"fragmento","explanation":"por qué","activeVersion":"versión activa"}]},"frases_largas":{"findings":[{"originalText":"frase completa","wordCount":45,"explanation":"por qué","suggestion":"cómo dividir"}]},"nombres":{"findings":[{"name":"nombre","occurrences":["frag1","frag2"],"explanation":"por qué","suggestion":"cómo aligerar"}]}}
-Si no hay errores en una categoría: findings:[].`,
-  },
-  {
-    groupKey: 'grammar2',
-    label: 'Gramática',
-    ids: ['gerundios', 'tiempos_verbales'],
-    buildPrompt: (text) => `Eres un corrector gramatical experto en español. Analiza el texto y devuelve DOS análisis:
-1. "gerundios": gerundios incorrectos (posterioridad, especificativo, adjetivo). NO señales leísmos ni otros errores.
-2. "tiempos": mezclas no intencionales de indefinido e imperfecto. Solo señala descuidos claros. NO señales leísmos ni errores gramaticales de otro tipo.
-
-Texto:
-${text}
-
-Responde ÚNICAMENTE con este JSON:
-{"gerundios":{"findings":[{"originalText":"fragmento","gerund":"gerundio","errorType":"posterioridad|especificativo|adjetivo","explanation":"por qué","correction":"corrección"}]},"tiempos":{"findings":[{"originalText":"fragmento","verbsFound":["v1","v2"],"explanation":"por qué","suggestion":"cómo resolverlo"}]}}
-Si no hay errores: findings:[].`,
-  },
-  {
-    groupKey: 'dialogo',
-    label: 'Diálogo',
-    ids: ['puntuacion_dialogo'],
-    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='puntuacion_dialogo').prompt.replace('{TEXT}', text),
-  },
-  {
-    groupKey: 'ritmo',
-    label: 'Ritmo narrativo',
-    ids: ['ritmo_narrativo'],
-    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='ritmo_narrativo').prompt.replace('{TEXT}', text),
-  },
-];
-
-// IDs que se procesan localmente sin llamar a la API
-const LOCAL_ONLY_IDS = ['ortotipografia_pura'];
-
-// ═══════════════════════════════════════════════════════════════════════════
-// PLUMIA PROCESSOR — integrado desde processor.js
-// ═══════════════════════════════════════════════════════════════════════════
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const ANTHROPIC_VERSION = '2023-06-01';
-const STORAGE_KEY_PROGRESS = 'plumia_analysis_progress';
-
-class PlumiaProcessor {
-  constructor(apiKey, selectedIds, outputMode, onProgress, onChunkComplete, onError) {
-    this.apiKey = apiKey; this.selectedIds = selectedIds;
-    this.outputMode = outputMode; this.onProgress = onProgress;
-    this.onChunkComplete = onChunkComplete; this.onError = onError;
-    this.aborted = false;
-  }
-
-  async extractTextFromDocument() {
-    return new Promise((resolve, reject) => {
-      Word.run(async (ctx) => {
-        try {
-          const sel = ctx.document.getSelection();
-          sel.load('text'); await ctx.sync();
-          const selectedText = sel.text.trim();
-          if (selectedText && selectedText.length > 10 && !state.forceFullDoc) {
-            resolve({ text: selectedText, isSelection: true, wordCount: this._countWords(selectedText) });
-            return;
-          }
-          const body = ctx.document.body;
-          body.load('paragraphs'); await ctx.sync();
-          const items = body.paragraphs.items;
-          items.forEach(p => p.load('text, style'));
-          await ctx.sync();
-          const extracted = []; let insideTOC = false;
-          for (const para of items) {
-            const style = (para.style || '').toLowerCase();
-            const text  = (para.text  || '').trim();
-            if (!text) continue;
-            if (style.includes('toc') || style.includes('tabla de contenido') || style.includes('índice')) insideTOC = true;
-            if (insideTOC && (style.includes('heading') || style.includes('normal') || style.includes('cuerpo'))) insideTOC = false;
-            const excluded = insideTOC || style.includes('toc') || style.includes('header') ||
-              style.includes('footer') || style.includes('encabezado') || style.includes('pie de p') ||
-              style.includes('footnote') || style.includes('endnote') || style.includes('comment');
-            if (!excluded) extracted.push(text);
-          }
-          const fullText = extracted.join('\n\n');
-          resolve({ text: fullText, isSelection: false, wordCount: this._countWords(fullText) });
-        } catch(e) { reject(new Error('Error al leer el documento: ' + e.message)); }
-      });
-    });
-  }
-
-  async _callAPI(prompt) {
-    const resp = await fetch(ANTHROPIC_API_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':this.apiKey,
-        'anthropic-version':ANTHROPIC_VERSION,'anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({ model:CONFIG.model, max_tokens:CONFIG.maxTokens,
-        messages:[{role:'user', content:prompt}] })
-    });
-    if (!resp.ok) {
-      const d = await resp.json().catch(()=>({}));
-      const msg = d.error?.message || `HTTP ${resp.status}`;
-      if (resp.status===401) throw new Error('API_KEY_INVALID: '+msg);
-      if (resp.status===429) throw new Error('RATE_LIMIT: '+msg);
-      throw new Error('API_ERROR: '+msg);
-    }
-    const data = await resp.json();
-    const raw  = data.content?.[0]?.text || '';
-    const clean = raw.replace(/```json\n?|\n?```/g,'').trim();
-    try { return JSON.parse(clean); } catch { return {findings:[]}; }
-  }
-
-  _splitIntoChunks(text, size, overlap) {
-    const words = text.split(/\s+/);
-    if (words.length <= size) return [text];
-    const chunks = []; let start = 0;
-    while (start < words.length) {
-      const end = Math.min(start + size, words.length);
-      chunks.push(words.slice(start, end).join(' '));
-      start = end - overlap;
-      if (start >= words.length) break;
-    }
-    return chunks;
-  }
-
-  _splitByChapters(text) {
-    const pat = /^(cap[íi]tulo\s+\d+|chapter\s+\d+|parte\s+\d+|\d+\.\s+[A-ZÁÉÍÓÚ])/im;
-    const lines = text.split('\n'); const chapters = [];
-    let title = 'Inicio', curr = [];
-    for (const line of lines) {
-      if (pat.test(line.trim())) {
-        if (curr.length) chapters.push({title, text:curr.join('\n')});
-        title = line.trim(); curr = [];
-      } else { curr.push(line); }
-    }
-    if (curr.length) chapters.push({title, text:curr.join('\n')});
-    return chapters.length > 1 ? chapters : [{title:'Documento completo', text}];
-  }
-
-  async analyze(text, isSelection) {
-    const selectedIds = this.selectedIds;
-    const allResults  = [];
-
-    // ── PASO 1: Ortotipografía local (sin API, coste cero) ──────────────────
-    if (selectedIds.includes('ortotipografia_pura')) {
-      this.onProgress(2, 'Verificando ortotipografía (local, sin coste)…');
-      const localFindings = runLocalOrtotypography(text);
-      allResults.push({
-        correctionId: 'ortotipografia_pura',
-        label: 'Ortotipografía pura',
-        groupId: 'orthotypo',
-        colorId: null,
-        findings: localFindings,
-      });
-      this.onChunkComplete(allResults);
-    }
-
-    // ── PASO 2: Coherencia narrativa (siempre individual, doc completo) ─────
-    const coherenceIds = selectedIds.filter(id => {
-      const c = CORRECTIONS.find(x => x.id === id);
-      return c && c.requiresFullDoc;
-    });
-
-    const coherenceTotal = coherenceIds.length;
-    for (let ci = 0; ci < coherenceIds.length; ci++) {
-      if (this.aborted) break;
-      const corr = CORRECTIONS.find(c => c.id === coherenceIds[ci]);
-      const pct = Math.round(5 + (ci / Math.max(coherenceTotal, 1)) * 30);
-      this.onProgress(pct, `Coherencia narrativa: ${corr.label}…`);
-      try {
-        const chunks = this._countWords(text) > CONFIG.coherenceChunkSizeWords
-          ? this._splitByChapters(text)
-          : [{ title: 'Documento', text }];
-        let findings = [];
-        for (const ch of chunks) {
-          if (this.aborted) break;
-          const r = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
-          (r.findings || []).forEach(f => findings.push({
-            ...f, correctionId: corr.id, colorId: corr.colorId,
-            label: corr.label, directFix: corr.directFix,
-          }));
-        }
-        allResults.push({ correctionId: corr.id, label: corr.label, groupId: corr.groupId, colorId: corr.colorId, findings });
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: ci, results: allResults });
-        this.onChunkComplete(allResults);
-      } catch(err) {
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: ci - 1, results: allResults });
-        this.onError(err, ci > 0, corr.label);
-        return allResults;
-      }
-    }
-
-    // ── PASO 3: Correcciones agrupadas (menos llamadas a la API) ────────────
-    const nonCoherenceIds = selectedIds.filter(id => !LOCAL_ONLY_IDS.includes(id) && !coherenceIds.includes(id));
-    const apiGroups = API_CORRECTION_GROUPS.filter(g =>
-      g.ids.some(id => nonCoherenceIds.includes(id))
-    );
-
-    const groupTotal = apiGroups.length;
-    for (let gi = 0; gi < apiGroups.length; gi++) {
-      if (this.aborted) break;
-      const group = apiGroups[gi];
-      const activeIds = group.ids.filter(id => nonCoherenceIds.includes(id));
-      const pct = Math.round(35 + (gi / Math.max(groupTotal, 1)) * 60);
-      this.onProgress(pct, `Analizando: ${group.label}…`);
-
-      try {
-        const chunks = this._splitIntoChunks(text, CONFIG.chunkSizeWords, CONFIG.chunkOverlapWords);
-
-        // Acumular resultados por correctionId
-        const accumulated = {};
-        activeIds.forEach(id => { accumulated[id] = []; });
-
-        for (const chunk of chunks) {
-          if (this.aborted) break;
-          let response;
-
-          if (group.ids.length === 1) {
-            // Grupo de 1 → prompt individual
-            const corr = CORRECTIONS.find(c => c.id === group.ids[0]);
-            response = await this._callAPI(corr.prompt.replace('{TEXT}', chunk));
-            const findings = (response.findings || []).map(f => ({
-              ...f, correctionId: corr.id, colorId: corr.colorId,
-              label: corr.label, directFix: corr.directFix,
-            }));
-            accumulated[corr.id].push(...findings);
-          } else {
-            // Prompt agrupado → parsear cada sección
-            response = await this._callAPI(group.buildPrompt(chunk));
-            this._parseGroupedResponse(response, group, activeIds, accumulated);
-          }
-        }
-
-        // Añadir resultados a allResults, enriquecer con sinónimos locales
-        for (const id of activeIds) {
-          const corr = CORRECTIONS.find(c => c.id === id);
-          let findings = this._dedupe(accumulated[id] || []);
-
-          // Enriquecer con sinónimos del diccionario local
-          if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
-            findings = enrichWithLocalSynonyms(findings, id);
-          }
-
-          allResults.push({
-            correctionId: id, label: corr.label,
-            groupId: corr.groupId, colorId: corr.colorId,
-            findings,
-          });
-        }
-
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: gi + coherenceIds.length, results: allResults });
-        this.onChunkComplete(allResults);
-
-      } catch(err) {
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: gi - 1 + coherenceIds.length, results: allResults });
-        this.onError(err, gi > 0 || coherenceIds.length > 0, group.label);
-        return allResults;
-      }
-    }
-
-    this._clearProgress();
-    this.onProgress(100, 'Análisis completado.');
-    return allResults;
-  }
-
-  _parseGroupedResponse(response, group, activeIds, accumulated) {
-    // Mapeo de claves del JSON agrupado a correctionIds
-    const keyMap = {
-      // pronouns_grammar
-      'leismo':       'leismo',
-      'ambiguedad':   'ambiguedad_pronominal',
-      'concordancia': 'concordancia',
-      'dequeismo':    'dequeismo',
-      // lexicon
-      'repeticion':   'repeticion_lexica',
-      'verbos':       'verbos_comedin',
-      'sustantivos':  'sustantivos_genericos',
-      'muletillas':   'muletillas',
-      'pleonasmos':   'pleonasmos',
-      // style
-      'adverbios':    'adverbios_mente',
-      'voz_pasiva':   'voz_pasiva',
-      'frases_largas':'frases_largas',
-      'nombres':      'nombres_propios',
-      // grammar2
-      'gerundios':    'gerundios',
-      'tiempos':      'tiempos_verbales',
-    };
-
-    for (const [key, corrId] of Object.entries(keyMap)) {
-      if (!activeIds.includes(corrId)) continue;
-      const corr = CORRECTIONS.find(c => c.id === corrId);
-      if (!corr) continue;
-      const section = response[key];
-      if (!section || !section.findings) continue;
-      section.findings.forEach(f => {
-        accumulated[corrId].push({
-          ...f, correctionId: corrId, colorId: corr.colorId,
-          label: corr.label, directFix: corr.directFix,
-        });
-      });
-    }
-  }
-
-  abort() { this.aborted = true; }
-
-  _dedupe(findings) {
-    const seen = new Set();
-    return findings.filter(f => {
-      const k = (f.originalText||'').trim().substring(0,60);
-      if (seen.has(k)) return false; seen.add(k); return true;
-    });
-  }
-
-  resolveOverlaps(allResults) {
-    const flat = [];
-    for (const r of allResults) for (const f of r.findings) flat.push({...f, colorId:r.colorId});
-    const grouped = {};
-    for (const f of flat) {
-      const k = (f.originalText||'').trim(); if (!k) continue;
-      if (!grouped[k]) grouped[k] = []; grouped[k].push(f);
-    }
-    const resolved = [];
-    for (const [, findings] of Object.entries(grouped)) {
-      if (findings.length === 1) { resolved.push({...findings[0], mergedFindings:[findings[0]]}); continue; }
-      const brackets = findings.filter(f => COLOR_MAP[f.colorId]?.type === 'bracket');
-      const colors   = findings.filter(f => COLOR_MAP[f.colorId]?.type !== 'bracket');
-      if (brackets.length && !colors.length) {
-        const outer = brackets.reduce((a,b) => a.colorId<=b.colorId?a:b);
-        resolved.push({...outer, mergedFindings:brackets});
-      } else if (brackets.length && colors.length) {
-        brackets.forEach(b => resolved.push({...b, mergedFindings:[b]}));
-        resolved.push({...colors[colors.length-1], mergedFindings:colors});
-      } else {
-        resolved.push({...colors[colors.length-1], mergedFindings:colors});
-      }
-    }
-    return resolved;
-  }
-
-  _countWords(t) { return (t||'').trim().split(/\s+/).filter(Boolean).length; }
-  _saveProgress(d) { try { localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(d)); } catch{} }
-  _loadProgress() { try { const r=localStorage.getItem(STORAGE_KEY_PROGRESS); return r?JSON.parse(r):null; } catch{return null;} }
-  _clearProgress() { try { localStorage.removeItem(STORAGE_KEY_PROGRESS); } catch{} }
-  getSavedProgress() { return this._loadProgress(); }
-  discardSavedProgress() { this._clearProgress(); }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// BUILD COMMENT TEXT — integrado desde processor.js
-// ═══════════════════════════════════════════════════════════════════════════
-function buildCommentText(mergedFindings) {
-  if (!mergedFindings || !mergedFindings.length) return '';
-  if (mergedFindings.length === 1) return _singleComment(mergedFindings[0]);
-  return mergedFindings.map((f,i) => `${i+1}) ${_singleComment(f)}`).join('\n');
-}
-
-function _singleComment(f) {
-  const label = f.label || f.correctionId || 'Error';
-  switch(f.correctionId) {
-    case 'leismo': case 'laismo': case 'loismo':
-      return `${label}: la forma correcta es «${f.correction}».`;
-    case 'ambiguedad_pronominal':
-      return `Ambigüedad pronominal: el pronombre «${f.pronoun}» puede referirse a ${(f.possibleReferents||[]).join(' o ')}. ${f.suggestion?'Posible revisión: '+f.suggestion:''}`;
-    case 'repeticion_lexica':
-      return `Repetición léxica: «${f.word}» aparece varias veces cerca. ${f.synonyms?.length?'Sinónimos: '+f.synonyms.join(', ')+'.':''}`;
-    case 'verbos_comedin':
-      return `Verbo comodín «${f.verb}»: ${f.explanation} Alternativas: ${(f.alternatives||[]).join(', ')}.`;
-    case 'sustantivos_genericos':
-      return `Sustantivo genérico «${f.genericWord}»: ${f.explanation} Alternativas: ${(f.alternatives||[]).join(', ')}.`;
-    case 'muletillas':
-      return `Muletilla «${f.expression}»: aparece repetidamente. ${f.alternatives?.filter(a=>a!=='eliminar').length?'Alternativas: '+f.alternatives.join(', ')+'.':'Valora eliminarla.'}`;
-    case 'pleonasmos':
-      return `Pleonasmo: ${f.explanation} Corrección: «${f.correction}».`;
-    case 'adverbios_mente':
-      return `Adverbio -mente: ${f.explanation} ${f.alternatives?.length?'Alternativas: '+f.alternatives.join(', ')+'.':''}`;
-    case 'voz_pasiva':
-      return `Voz pasiva: ${f.explanation} Posible versión activa: «${f.activeVersion}».`;
-    case 'frases_largas':
-      return `Frase larga (${f.wordCount} palabras): ${f.explanation} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
-    case 'nombres_propios':
-      return `Exceso de nombres propios: «${f.name}» se repite varias veces cerca. ${f.suggestion||''}`;
-    case 'ritmo_narrativo':
-      return `Ritmo narrativo: ${f.issue} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
-    case 'gerundios':
-      return `Gerundio incorrecto (${f.errorType}): ${f.explanation} Corrección: «${f.correction}».`;
-    case 'dequeismo':
-      return `${f.errorType==='dequeismo'?'Dequeísmo':'Queísmo'}: ${f.explanation} Corrección: «${f.correction}».`;
-    case 'concordancia':
-      return `Concordancia (${f.errorType}): ${f.explanation} Corrección: «${f.correction}».`;
-    case 'tiempos_verbales':
-      return `Tiempo verbal: ${f.explanation} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
-    case 'ortotipografia_pura':
-      return f.isFirstOccurrence ? `Ortotipografía corregida en todo el documento: ${f.explanation}` : null;
-    case 'puntuacion_dialogo':
-      return `Puntuación de diálogo (${f.errorType}): ${f.explanation} Corrección: «${f.correction}».`;
-    case 'coherencia_personajes': case 'coherencia_temporal': case 'coherencia_objetos':
-    case 'coherencia_conocimiento': case 'tono_voz': case 'nombres_inconsistentes': case 'pov':
-      return _coherenceComment(f);
-    default:
-      return `${label}: ${f.explanation||''}`;
-  }
-}
-
-function _coherenceComment(f) {
-  let c = `COHERENCIA — ${f.label||'Coherencia narrativa'}:\n`;
-  if (f.occurrence1) c += `· ${f.occurrence1.location||'Primera mención'}: «${f.occurrence1.text}»\n`;
-  if (f.occurrence2) c += `· ${f.occurrence2.location||'Segunda mención'}: «${f.occurrence2.text}»\n`;
-  return (c + (f.explanation||'')).trim();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// DOCUMENT BUILDER — integrado desde document-builder.js
-// ═══════════════════════════════════════════════════════════════════════════
-const WORD_HIGHLIGHT = {
-  'FFD966':'Yellow','92D050':'Green','FF9900':'Orange','00B0F0':'Cyan',
-  'FF69B4':'Pink','C9B8FF':'Violet','7030A0':'DarkMagenta',
-};
-
-class DocumentBuilder {
-  constructor(outputMode) { this.outputMode = outputMode; }
-
-  async getRevisionName(originalName) {
-    const base = originalName.replace(/\s*REVISION\s+V\.\d+\.\d+\s*/i,'').trim();
-    let version = 1;
-    const key = 'plumia_versions_' + base;
-    const saved = localStorage.getItem(key);
-    if (saved) version = parseInt(saved) + 1;
-    localStorage.setItem(key, version.toString());
-    return `${base} ${CONFIG.revisionSuffix} V.${version}.0`;
-  }
-
-  getStatsName(revisionName) {
-    return revisionName.replace(CONFIG.revisionSuffix, CONFIG.statsSuffix);
-  }
-
-  async applyMarkings(resolvedFindings) {
-    if (!resolvedFindings || !resolvedFindings.length) return;
-    await Word.run(async (ctx) => {
-      const body = ctx.document.body;
-      for (const finding of resolvedFindings) {
-        if (!finding.originalText) continue;
-        try {
-          const searchResults = body.search(finding.originalText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          searchResults.load('items'); await ctx.sync();
-          if (!searchResults.items.length) continue;
-          const targets = finding.correctionId === 'repeticion_lexica' ? searchResults.items : [searchResults.items[0]];
-          for (const range of targets) {
-            await this._applyMark(ctx, range, finding);
-          }
-          await ctx.sync();
-        } catch(e) { console.warn('Plumia: error marcando', finding.originalText, e); }
-      }
-    });
-  }
-
-  async _applyMark(ctx, range, finding) {
-    const colorEntry = finding.colorId ? COLOR_MAP[finding.colorId] : null;
-    if (finding.directFix) {
-      if (finding.correction) { range.insertText(finding.correction, 'Replace'); range.font.bold = true; }
-    } else if (colorEntry?.type === 'bracket') {
-      range.getRange('Start').insertText('[', 'Before');
-      range.getRange('End').insertText(']', 'After');
-    } else if (colorEntry?.type === 'highlight') {
-      range.font.highlightColor = WORD_HIGHLIGHT[colorEntry.hex] || 'Yellow';
-    } else if (colorEntry?.type === 'text') {
-      range.font.color = colorEntry.hex;
-    }
-    const commentText = buildCommentText(finding.mergedFindings || [finding]);
-    if (commentText) { try { range.insertComment(commentText); } catch(e) {} }
-  }
-
-  async highlightBrackets() {
-    await Word.run(async (ctx) => {
-      for (const char of ['[',']']) {
-        const results = ctx.document.body.search(char, {matchCase:true});
-        results.load('items'); await ctx.sync();
-        for (const r of results.items) { r.font.highlightColor = 'Pink'; r.font.bold = true; }
-      }
-      await ctx.sync();
-    });
-  }
-
-  async appendStatsReport(allResults) {
-    await Word.run(async (ctx) => {
-      const body = ctx.document.body;
-      body.insertBreak('Page', 'End');
-      const title = body.insertParagraph('INFORME DE ANÁLISIS — PLUMIA', 'End');
-      title.styleBuiltIn = Word.Style.heading1;
-      body.insertParagraph('', 'End');
-
-      // Leyenda
-      body.insertParagraph('Leyenda de colores', 'End').styleBuiltIn = Word.Style.heading2;
-      const usedColorIds = [...new Set(allResults.flatMap(r => r.findings.map(f => f.colorId)).filter(Boolean))];
-      for (const cid of usedColorIds) {
-        const ce = COLOR_MAP[cid]; if (!ce) continue;
-        const p = body.insertParagraph(`  ■  ${ce.name}  —  ${ce.description||''}`, 'End');
-        if (ce.type==='highlight') p.font.highlightColor = WORD_HIGHLIGHT[ce.hex]||'Yellow';
-        else if (ce.type==='text') p.font.color = ce.hex;
-        p.font.bold = true;
-      }
-      body.insertParagraph('', 'End');
-
-      // Resumen
-      const total = allResults.reduce((s,r)=>s+r.findings.length,0);
-      body.insertParagraph('Resumen por categoría', 'End').styleBuiltIn = Word.Style.heading2;
-      for (const result of allResults) {
-        if (!result.findings.length) continue;
-        const p = body.insertParagraph(`• ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`, 'End');
-        p.leftIndent = 360;
-      }
-      body.insertParagraph(`Total: ${total} incidencias detectadas`, 'End').font.bold = true;
-      body.insertParagraph('', 'End');
-
-      // Detalle por categoría — como listado, no tabla
-      body.insertParagraph('Detalle por categoría', 'End').styleBuiltIn = Word.Style.heading2;
-      for (const result of allResults) {
-        if (!result.findings.length) continue;
-        const sTitle = body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End');
-        sTitle.styleBuiltIn = Word.Style.heading3;
-
-        for (let i=0; i<result.findings.length; i++) {
-          const f = result.findings[i];
-          const preview = `«${(f.originalText||'').substring(0,80)}${(f.originalText||'').length>80?'…':''}»`;
-          const ip = body.insertParagraph(`${i+1}.  ${preview}`, 'End');
-          ip.leftIndent = 360; ip.font.bold = true;
-
-          const comment = buildCommentText([f]);
-          if (comment) {
-            const cp = body.insertParagraph(comment, 'End');
-            cp.leftIndent = 720; cp.font.italic = true; cp.font.size = 10;
-          }
-          body.insertParagraph('', 'End');
-        }
-      }
-      await ctx.sync();
-    });
-  }
-
-  async buildOutput(allResults, resolvedFindings, originalName, selectedIds) {
-    const revisionName = await this.getRevisionName(originalName);
-    const statsName    = this.getStatsName(revisionName);
-    if (this.outputMode === 'marked') {
-      await this.applyMarkings(resolvedFindings);
-      await this.highlightBrackets();
-      await this.appendStatsReport(allResults);
-      await Word.run(async ctx => { ctx.document.save(); await ctx.sync(); });
-      return { mode:'marked', revisionName, totalFindings:resolvedFindings.length,
-        message:`Documento de revisión generado: ${revisionName}` };
-    } else {
-      const total = allResults.reduce((s,r)=>s+r.findings.length,0);
-      return { mode:'report', statsName, totalFindings:total,
-        message:`Análisis completado. Genera el informe: ${statsName}` };
-    }
-  }
-}
-
-async function getProcessor() { return { PlumiaProcessor }; }
-async function getDocumentBuilder() { return { DocumentBuilder }; }
+async function getProcessor()      { return { PlumiaProcessor }; }
+async function getDocumentBuilder(){ return { DocumentBuilder }; }
 
 </script>
 </body>
