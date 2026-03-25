@@ -863,7 +863,29 @@ body{
   </div>
   <div class="progress-pct" id="progressPct">0%</div>
   <div class="progress-step-label" id="progressStepLabel"></div>
-  <button class="abort-btn" onclick="showStopPopup()">Detener análisis</button>
+
+  <!-- Panel de coste en tiempo real -->
+  <div id="liveMetrics" style="width:100%;margin-top:18px;display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="background:var(--sepia);border-radius:var(--radius);padding:9px 12px">
+        <div style="font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Coste real acumulado</div>
+        <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;transition:color .3s" id="liveCost">$0.0000</div>
+        <div style="font-size:9.5px;color:var(--muted);margin-top:2px" id="liveCostEUR">0.0000 €</div>
+      </div>
+      <div style="background:var(--sepia);border-radius:var(--radius);padding:9px 12px">
+        <div style="font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Palabras restantes</div>
+        <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;color:var(--ink)" id="liveWordsLeft">—</div>
+        <div style="font-size:9.5px;color:var(--muted);margin-top:2px" id="liveWordsTotal">de — totales</div>
+      </div>
+    </div>
+    <!-- Aviso de coste disparado -->
+    <div id="costWarningBanner" style="display:none;background:var(--err-bg);border:1px solid #f5c0c0;border-radius:var(--radius);padding:10px 13px;font-size:11.5px;color:var(--err);line-height:1.5">
+      <strong style="display:block;margin-bottom:3px">⚠ El coste supera el 30% del estimado</strong>
+      <span id="costWarningDetail"></span>
+    </div>
+  </div>
+
+  <button class="abort-btn" onclick="showStopPopup()" style="margin-top:16px">Detener análisis</button>
 </div>
 
 <!-- Popup confirmación detener análisis -->
@@ -1039,6 +1061,7 @@ const state = {
   totalChecks:      0,
   estimatedCostUSD: 0,
   estimatedCostEUR: 0,
+  totalWords:       0,
 };
 
 // ── INICIALIZACIÓN ────────────────────────────────────────────────────────────
@@ -1617,6 +1640,12 @@ async function confirmAndAnalyze() {
   hideAnalysisError();
 
   updateProgress(0, 'Extrayendo texto del documento…');
+  // Resetear panel de métricas en tiempo real
+  document.getElementById('liveMetrics').style.display = 'none';
+  document.getElementById('liveCost').textContent    = '$0.0000';
+  document.getElementById('liveCostEUR').textContent = '0.0000 €';
+  document.getElementById('liveCost').style.color    = '';
+  document.getElementById('costWarningBanner').style.display = 'none';
 
   try {
     // Importar processor dinámicamente (en producción se importaría como módulo)
@@ -1638,13 +1667,12 @@ async function runAnalysis() {
     state.outputFormat,
     (pct, msg) => {
       updateProgress(pct, msg);
-      // Actualizar contadores para el popup de detener
       state.totalChecks = state.selectedIds.size;
       state.completedChecks = Math.round((pct / 100) * state.totalChecks);
+      // Actualizar métricas en tiempo real tras cada llamada a la API
+      updateLiveMetrics(proc, pct);
     },
-    (partialResults) => {
-      // Guardado parcial progresivo
-    },
+    (partialResults) => {},
     (err, canResume, corrLabel) => handleAnalysisError(err, canResume, corrLabel)
   );
 
@@ -1653,6 +1681,9 @@ async function runAnalysis() {
   // Extraer texto
   updateProgress(2, 'Leyendo el documento…');
   const { text, isSelection, wordCount } = await proc.extractTextFromDocument();
+
+  // Guardar total de palabras para el contador en tiempo real
+  state.totalWords = wordCount;
 
   // Análisis
   const allResults = await proc.analyze(text, isSelection);
@@ -1681,6 +1712,60 @@ function updateProgress(pct, msg) {
   document.getElementById('progressStepLabel').textContent = msg || '';
   if (pct > 5) {
     document.getElementById('progressSubtitle').textContent = 'Analizando tu texto con Claude…';
+  }
+}
+
+function updateLiveMetrics(proc, pct) {
+  if (!proc) return;
+
+  // Mostrar panel cuando empieza el análisis real
+  const panel = document.getElementById('liveMetrics');
+  if (pct > 5) panel.style.display = 'block';
+
+  // Coste acumulado real
+  const realUSD = proc.getRealCostUSD();
+  const eurRate = state.estimatedCostUSD > 0
+    ? state.estimatedCostEUR / state.estimatedCostUSD
+    : 1 / 1.08;
+  const realEUR = realUSD * eurRate;
+
+  const costEl    = document.getElementById('liveCost');
+  const costEUREl = document.getElementById('liveCostEUR');
+  costEl.textContent    = '$' + realUSD.toFixed(4);
+  costEUREl.textContent = realEUR.toFixed(4) + ' €';
+
+  // Color según desviación respecto al estimado
+  const estimated = state.estimatedCostUSD || 0.0001;
+  const ratio     = realUSD / estimated;
+  if (ratio > 1.3) {
+    costEl.style.color = 'var(--err)';
+  } else if (ratio > 1.1) {
+    costEl.style.color = 'var(--warn)';
+  } else {
+    costEl.style.color = 'var(--ok)';
+  }
+
+  // Aviso si supera el 30%
+  const warningEl = document.getElementById('costWarningBanner');
+  if (ratio > 1.3 && realUSD > 0.0001) {
+    const pctOver = Math.round((ratio - 1) * 100);
+    const wordsLeft = state.totalWords - Math.round((pct / 100) * state.totalWords);
+    document.getElementById('costWarningDetail').textContent =
+      `Llevas $${realUSD.toFixed(4)} (${pctOver}% más de lo estimado). ` +
+      `Quedan ~${wordsLeft.toLocaleString('es-ES')} palabras por analizar.`;
+    warningEl.style.display = 'block';
+  } else {
+    warningEl.style.display = 'none';
+  }
+
+  // Palabras restantes
+  if (state.totalWords > 0) {
+    const wordsAnalyzed = Math.round((pct / 100) * state.totalWords);
+    const wordsLeft     = Math.max(0, state.totalWords - wordsAnalyzed);
+    document.getElementById('liveWordsLeft').textContent =
+      wordsLeft.toLocaleString('es-ES');
+    document.getElementById('liveWordsTotal').textContent =
+      'de ' + state.totalWords.toLocaleString('es-ES') + ' totales';
   }
 }
 
