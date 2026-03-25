@@ -166,7 +166,7 @@ body{
 .corr-entry-name{
   font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;
 }
-.corr-entry-description{font-size:11.5px;color:var(--mid);line-height:1.6;margin-bottom:5px}
+.corr-entry-desc{font-size:11.5px;color:var(--mid);line-height:1.6;margin-bottom:5px}
 .example-box{
   background:var(--sepia);border-left:2px solid var(--gold);
   border-radius:0 4px 4px 0;padding:7px 10px;
@@ -309,7 +309,7 @@ body{
   font-size:12px;font-weight:500;color:var(--ink);
   line-height:1.3;margin-bottom:2px;
 }
-.cb-description{font-size:10.5px;color:var(--muted);line-height:1.3}
+.cb-desc{font-size:10.5px;color:var(--muted);line-height:1.3}
 
 /* Contexto de selección */
 .selection-context{
@@ -412,7 +412,7 @@ body{
 .format-opt-label{
   font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;
 }
-.format-opt-description{font-size:11px;color:var(--muted);line-height:1.4}
+.format-opt-desc{font-size:11px;color:var(--muted);line-height:1.4}
 
 /* ── COST POPUP ──────────────────────────────────────────────────────────── */
 .overlay{
@@ -825,14 +825,14 @@ body{
           <div class="radio-circle"></div>
           <div>
             <div class="format-opt-label">Documento marcado con colores</div>
-            <div class="format-opt-description">Actualiza el documento actual con las incidencias resaltadas, comentarios explicativos y un listado resumen al final, para que puedas guardarlo con otro nombre.</div>
+            <div class="format-opt-desc">Actualiza el documento actual con las incidencias resaltadas, comentarios explicativos y un listado resumen al final, para que puedas guardarlo con otro nombre.</div>
           </div>
         </div>
         <div class="format-opt" id="format-report" onclick="selectFormat('report')">
           <div class="radio-circle"></div>
           <div>
             <div class="format-opt-label">Solo informe de estadísticas</div>
-            <div class="format-opt-description">Añade al final del documento el listado de incidencias por categoría, para que puedas guardarlo con otro nombre</div>
+            <div class="format-opt-desc">Añade al final del documento el listado de incidencias por categoría, para que puedas guardarlo con otro nombre</div>
           </div>
         </div>
       </div>
@@ -891,7 +891,7 @@ body{
 
   <!-- Coste real del análisis -->
   <div style="background:var(--sepia);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
-    <span style="font-size:11px;color:var(--mid)">Coste estimado del análisis</span>
+    <span style="font-size:11px;color:var(--mid)" id="doneCostLabel">Coste del análisis</span>
     <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--ink)" id="doneCost">—</span>
   </div>
 
@@ -1067,52 +1067,52 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 1 · Pronombres y deixis</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Leísmos, laísmos y loísmos</div>
-      <div class="corr-entry-description">Los usos incorrectos de le, la y lo pueden generar incorrecciones que distraen al lector. En la norma general del español, lo y la son complemento directo; le, indirecto.</div>
+      <div class="corr-entry-desc">Los usos incorrectos de le, la y lo pueden generar incorrecciones que distraen al lector. En la norma general del español, lo y la son complemento directo; le, indirecto.</div>
       <div class="example-box"><span class="ex-bad">La dije que viniera.</span><br><span class="ex-ok">Le dije que viniera.</span></div>
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Ambigüedades pronominales</div>
-      <div class="corr-entry-description">Pronombres como él, ella, lo, la cuyo referente no queda claro por la presencia de varios personajes cercanos.</div>
+      <div class="corr-entry-desc">Pronombres como él, ella, lo, la cuyo referente no queda claro por la presencia de varios personajes cercanos.</div>
       <div class="example-box"><span class="ex-bad">Juan habló con Pedro cuando él salió.</span><br><span class="ex-ok">Juan habló con Pedro cuando Pedro salió.</span></div>
     </div>
 
     <div class="corr-group-title">Grupo 2 · Léxico y vocabulario</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Repeticiones léxicas cercanas</div>
-      <div class="corr-entry-description">La misma palabra repetida en pocas líneas sin intención estilística produce sensación de descuido.</div>
+      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas sin intención estilística produce sensación de descuido.</div>
       <div class="example-box"><span class="ex-bad">Abrió la puerta y miró el pasillo. Miró a ambos lados.</span><br><span class="ex-ok">Abrió la puerta y observó el pasillo. Miró a ambos lados.</span></div>
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Verbos comodín · Sustantivos genéricos · Muletillas · Pleonasmos</div>
-      <div class="corr-entry-description">Verbos vagos (hacer, poner), sustantivos difusos (cosa, tema), expresiones repetidas sin valor y redundancias (subir arriba) que empobrecen el estilo.</div>
+      <div class="corr-entry-desc">Verbos vagos (hacer, poner), sustantivos difusos (cosa, tema), expresiones repetidas sin valor y redundancias (subir arriba) que empobrecen el estilo.</div>
       <div class="example-box"><span class="ex-bad">Hizo una sonrisa. / Subir arriba.</span><br><span class="ex-ok">Sonrió. / Subir.</span></div>
     </div>
 
     <div class="corr-group-title">Grupo 3 · Estilo y fluidez</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Adverbios en -mente · Voz pasiva · Frases largas · Exceso de nombres · Ritmo</div>
-      <div class="corr-entry-description">Acumulaciones que vuelven la prosa pesada, estructuras que frenan el ritmo o desequilibrios entre el tipo de escena y la longitud de las frases.</div>
+      <div class="corr-entry-desc">Acumulaciones que vuelven la prosa pesada, estructuras que frenan el ritmo o desequilibrios entre el tipo de escena y la longitud de las frases.</div>
       <div class="example-box"><span class="ex-bad">La puerta fue abierta por Carlos.</span><br><span class="ex-ok">Carlos abrió la puerta.</span></div>
     </div>
 
     <div class="corr-group-title">Grupo 4 · Gramática</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Gerundios · Dequeísmo · Concordancia · Tiempos verbales</div>
-      <div class="corr-entry-description">Errores gramaticales frecuentes: gerundio de posterioridad, preposición de sobra o ausente ante que, falta de acuerdo entre sujeto y verbo, y mezclas no intencionales de tiempos del pasado.</div>
+      <div class="corr-entry-desc">Errores gramaticales frecuentes: gerundio de posterioridad, preposición de sobra o ausente ante que, falta de acuerdo entre sujeto y verbo, y mezclas no intencionales de tiempos del pasado.</div>
       <div class="example-box"><span class="ex-bad">Salió de casa, encontrando a Juan.</span><br><span class="ex-ok">Salió de casa y encontró a Juan.</span></div>
     </div>
 
     <div class="corr-group-title">Grupo 5 · Ortotipografía</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Mayúsculas · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
-      <div class="corr-entry-description">Errores tipográficos que se corrigen directamente en el documento. Los cambios quedan marcados en negrita para que puedas identificarlos.</div>
+      <div class="corr-entry-desc">Errores tipográficos que se corrigen directamente en el documento. Los cambios quedan marcados en negrita para que puedas identificarlos.</div>
       <div class="example-box"><span class="ex-bad">-No voy - dijo Juan. / "Buenos días"</span><br><span class="ex-ok">—No voy —dijo Juan. / «Buenos días»</span></div>
     </div>
 
     <div class="corr-group-title">Grupo 6 · Coherencia narrativa <span class="tag coherence">Documento completo</span></div>
     <div class="corr-entry">
       <div class="corr-entry-name">Personajes · Temporal · Objetos · Conocimiento · Tono · Nombres · POV</div>
-      <div class="corr-entry-description">Detecta contradicciones entre capítulos: un personaje que sabe algo que aún no debería saber, un objeto que desaparece sin explicación, cambios de registro bruscos o saltos de punto de vista.</div>
+      <div class="corr-entry-desc">Detecta contradicciones entre capítulos: un personaje que sabe algo que aún no debería saber, un objeto que desaparece sin explicación, cambios de registro bruscos o saltos de punto de vista.</div>
       <div class="example-box"><span class="ex-bad">Cap.1: «Era la primera vez que tocaba un muerto.»<br>Cap.14: «Es la primera vez que toco un muerto.»</span></div>
     </div>
     <div class="note-box">⚠ Las opciones de coherencia narrativa requieren analizar el documento completo y pueden ser hasta 5× más costosas que el resto.</div>
@@ -1169,7 +1169,7 @@ function buildCorrectionsList() {
         <div class="cb-box"></div>
         <div class="cb-text">
           <div class="cb-label">${corr.label}</div>
-          <div class="cb-description">${corr.description}</div>
+          <div class="cb-desc">${corr.desc}</div>
         </div>
       </div>`;
     }
@@ -1666,7 +1666,13 @@ async function runAnalysis() {
   const originalName = await getDocumentName();
   const output = await builder.buildOutput(allResults, resolved, originalName, [...state.selectedIds]);
 
-  showDoneScreen(output, allResults);
+  // Obtener coste real de la API (tokens acumulados durante el análisis)
+  const realCostUSD = proc.getRealCostUSD();
+  const realCostEUR = realCostUSD / (state.estimatedCostEUR > 0 && state.estimatedCostUSD > 0
+    ? state.estimatedCostUSD / state.estimatedCostEUR
+    : 1.08);
+
+  showDoneScreen(output, allResults, realCostUSD, realCostEUR);
 }
 
 function updateProgress(pct, msg) {
@@ -1734,12 +1740,20 @@ function resumeFromError() {
 }
 
 // ── PANTALLA DE COMPLETADO ────────────────────────────────────────────────────
-function showDoneScreen(output, allResults) {
+function showDoneScreen(output, allResults, realCostUSD, realCostEUR) {
   const totalFindings = allResults.reduce((sum, r) => sum + r.findings.length, 0);
 
-  // Mostrar coste estimado
-  const costText = `$${state.estimatedCostUSD.toFixed(4)}  /  ${state.estimatedCostEUR.toFixed(4)} €`;
-  document.getElementById('doneCost').textContent = costText;
+  // Mostrar coste real (de la API) o estimado si algo falló
+  const costEl = document.getElementById('doneCost');
+  const costLabelEl = document.getElementById('doneCostLabel');
+  if (realCostUSD > 0) {
+    costEl.textContent = `$${realCostUSD.toFixed(4)}  /  ${realCostEUR.toFixed(4)} €`;
+    if (costLabelEl) costLabelEl.textContent = 'Coste real del análisis';
+  } else {
+    // Fallback al estimado si no se obtuvieron tokens reales
+    costEl.textContent = `$${state.estimatedCostUSD.toFixed(4)}  /  ${state.estimatedCostEUR.toFixed(4)} €`;
+    if (costLabelEl) costLabelEl.textContent = 'Coste estimado del análisis';
+  }
 
   if (output.mode === 'marked') {
     document.getElementById('doneDesc').textContent =

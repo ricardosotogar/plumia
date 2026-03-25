@@ -22,6 +22,28 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     this.outputMode = outputMode; this.onProgress = onProgress;
     this.onChunkComplete = onChunkComplete; this.onError = onError;
     this.aborted = false;
+    // Acumulador de tokens reales para calcular el coste final exacto
+    this.totalUsage = {
+      input_tokens: 0,
+      output_tokens: 0,
+      cache_read_input_tokens: 0,
+      cache_creation_input_tokens: 0,
+    };
+  }
+
+  // Calcula el coste real en USD a partir del uso acumulado
+  getRealCostUSD() {
+    const INPUT_PRICE         = 0.000003;   // $3 / 1M tokens
+    const OUTPUT_PRICE        = 0.000015;   // $15 / 1M tokens
+    const CACHE_WRITE_PRICE   = 0.00000375; // $3.75 / 1M tokens (crear caché)
+    const CACHE_READ_PRICE    = 0.0000003;  // $0.30 / 1M tokens (leer caché = 90% dto)
+
+    return (
+      this.totalUsage.input_tokens               * INPUT_PRICE +
+      this.totalUsage.output_tokens              * OUTPUT_PRICE +
+      this.totalUsage.cache_creation_input_tokens * CACHE_WRITE_PRICE +
+      this.totalUsage.cache_read_input_tokens    * CACHE_READ_PRICE
+    );
   }
 
   async extractTextFromDocument(forceFullDoc = false) {
@@ -128,6 +150,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     }
 
     const data = await resp.json();
+
+    // Acumular uso real de tokens para calcular el coste final exacto
+    if (data.usage) {
+      this.totalUsage.input_tokens                += data.usage.input_tokens                || 0;
+      this.totalUsage.output_tokens               += data.usage.output_tokens               || 0;
+      this.totalUsage.cache_read_input_tokens     += data.usage.cache_read_input_tokens     || 0;
+      this.totalUsage.cache_creation_input_tokens += data.usage.cache_creation_input_tokens || 0;
+    }
+
     const raw  = data.content?.[0]?.text || '';
 
     // Extraer el bloque JSON aunque Claude añada texto extra
