@@ -59,47 +59,90 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     });
   }
 
-  async _callAPI(prompt) {
-    // Guardia: si el prompt es demasiado largo, truncarlo (~120k palabras = ~160k tokens input)
-    const MAX_PROMPT_CHARS = 480000; // ~160k tokens de input a 3 chars/token aprox
-    const safePrompt = prompt.length > MAX_PROMPT_CHARS
-      ? prompt.substring(0, MAX_PROMPT_CHARS) + '\n\n[TEXTO TRUNCADO POR LONGITUD]\n\nResponde con el JSON solicitado basándote en lo analizado hasta aquí.'
-      : prompt;
+  // _callAPI acepta dos formas:
+  // 1. _callAPI(promptCompleto)           — compatibilidad hacia atrás (todo en user)
+  // 2. _callAPI(instrucciones, textoUser) — prompt caching (instrucciones en system)
+  //
+  // El prompt caching de Anthropic cachea el system prompt entre llamadas del mismo
+  // modelo. Las instrucciones fijas se cobran al 10% del precio normal en llamadas
+  // sucesivas, ahorrando ~50-70% en análisis de documentos largos.
+  async _callAPI(instructionsOrFullPrompt, userText = null) {
+    const useCache = userText !== null;
+
+    let systemContent, userContent;
+
+    if (useCache) {
+      // Modo cacheado: instrucciones en system, texto en user
+      const MAX_TEXT_CHARS = 400000;
+      const safeText = userText.length > MAX_TEXT_CHARS
+        ? userText.substring(0, MAX_TEXT_CHARS) + '\n\n[TEXTO TRUNCADO]'
+        : userText;
+
+      systemContent = [
+        {
+          type: 'text',
+          text: instructionsOrFullPrompt,
+          cache_control: { type: 'ephemeral' },  // ← activa el caché
+        }
+      ];
+      userContent = safeText;
+    } else {
+      // Modo clásico: todo en user (para prompts que no separan instrucciones de texto)
+      const MAX_CHARS = 480000;
+      const safePrompt = instructionsOrFullPrompt.length > MAX_CHARS
+        ? instructionsOrFullPrompt.substring(0, MAX_CHARS) + '\n\n[TEXTO TRUNCADO]\n\nResponde con el JSON solicitado basándote en lo analizado hasta aquí.'
+        : instructionsOrFullPrompt;
+      userContent = safePrompt;
+    }
+
+    const body = {
+      model: CONFIG.model,
+      max_tokens: CONFIG.maxTokens,
+      messages: [{ role: 'user', content: userContent }],
+    };
+    if (useCache) {
+      body.system = systemContent;
+    }
 
     const resp = await fetch(ANTHROPIC_API_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':this.apiKey,
-        'anthropic-version':ANTHROPIC_VERSION,'anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({ model:CONFIG.model, max_tokens:CONFIG.maxTokens,
-        messages:[{role:'user', content:safePrompt}] })
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': this.apiKey,
+        'anthropic-version': ANTHROPIC_VERSION,
+        'anthropic-beta': 'prompt-caching-2024-07-31',  // header requerido para caching
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify(body),
     });
+
     if (!resp.ok) {
-      const d = await resp.json().catch(()=>({}));
+      const d = await resp.json().catch(() => ({}));
       const msg = d.error?.message || `HTTP ${resp.status}`;
-      if (resp.status===401) throw new Error('API_KEY_INVALID: '+msg);
-      if (resp.status===429) throw new Error('RATE_LIMIT: '+msg);
-      throw new Error('API_ERROR: '+msg);
+      if (resp.status === 401) throw new Error('API_KEY_INVALID: ' + msg);
+      if (resp.status === 429) throw new Error('RATE_LIMIT: ' + msg);
+      throw new Error('API_ERROR: ' + msg);
     }
+
     const data = await resp.json();
     const raw  = data.content?.[0]?.text || '';
 
-    // Extraer el bloque JSON aunque Claude añada texto extra antes o después
-    const stripped = raw.replace(/```json\n?|\n?```/g,'').trim();
+    // Extraer el bloque JSON aunque Claude añada texto extra
+    const stripped = raw.replace(/```json\n?|\n?```/g, '').trim();
     const jsonMatch = stripped.match(/\{[\s\S]*\}/);
     const clean = jsonMatch ? jsonMatch[0] : '{}';
 
     try {
       return JSON.parse(clean);
     } catch {
-      // Último intento: reparar JSON roto (comillas sin cerrar, comas finales)
       try {
         const repaired = clean
-          .replace(/,\s*([}\]])/g, '$1')   // comas finales
-          .replace(/([{,]\s*)(\w+):/g, '$1"$2":'); // claves sin comillas
+          .replace(/,\s*([}\]])/g, '$1')
+          .replace(/([{,]\s*)(\w+):/g, '$1"$2":');
         return JSON.parse(repaired);
       } catch {
-        console.warn('Plumia: JSON inválido de la API, respuesta ignorada:', raw.substring(0,200));
-        return {findings:[]};
+        console.warn('Plumia: JSON inválido de la API:', raw.substring(0, 200));
+        return { findings: [] };
       }
     }
   }
@@ -179,7 +222,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         let findings = [];
         for (const ch of chunks) {
           if (this.aborted) break;
-          const r = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
+          // Separar instrucciones del texto para activar el caché en llamadas repetidas
+          const parts = corr.prompt.split('{TEXT}');
+          let r;
+          if (parts.length === 2) {
+            const instructions = parts[0].trim() + '\n\nTexto a analizar:';
+            r = await this._callAPI(instructions, ch.text + '\n\n' + parts[1].trim());
+          } else {
+            r = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
+          }
           (r.findings || []).forEach(f => findings.push({
             ...f, correctionId: corr.id, colorId: corr.colorId,
             label: corr.label, directFix: corr.directFix,
@@ -216,22 +267,39 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         const accumulated = {};
         activeIds.forEach(id => { accumulated[id] = []; });
 
-        for (const chunk of chunks) {
+        for (const ch of chunks) {
           if (this.aborted) break;
           let response;
 
           if (group.ids.length === 1) {
-            // Grupo de 1 → prompt individual
+            // Grupo de 1 → prompt individual con caching
             const corr = CORRECTIONS.find(c => c.id === group.ids[0]);
-            response = await this._callAPI(corr.prompt.replace('{TEXT}', chunk));
+            // Separar instrucciones del texto para activar el caché
+            const parts = corr.prompt.split('{TEXT}');
+            if (parts.length === 2) {
+              // Instrucciones en system (se cachean), texto en user
+              const instructions = parts[0].trim() + '\n\nTexto a analizar:';
+              response = await this._callAPI(instructions, ch.text + '\n\n' + parts[1].trim());
+            } else {
+              response = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
+            }
             const findings = (response.findings || []).map(f => ({
               ...f, correctionId: corr.id, colorId: corr.colorId,
               label: corr.label, directFix: corr.directFix,
             }));
             accumulated[corr.id].push(...findings);
           } else {
-            // Prompt agrupado → parsear cada sección
-            response = await this._callAPI(group.buildPrompt(chunk));
+            // Prompt agrupado → separar instrucciones del texto para caching
+            const fullPrompt = group.buildPrompt(chunk);
+            // El texto del chunk es la última parte — separar en el marcador "Texto:"
+            const textMarker = fullPrompt.lastIndexOf('\nTexto:\n');
+            if (textMarker !== -1) {
+              const instructions = fullPrompt.substring(0, textMarker).trim();
+              const userPart     = fullPrompt.substring(textMarker).trim();
+              response = await this._callAPI(instructions, userPart);
+            } else {
+              response = await this._callAPI(fullPrompt);
+            }
             this._parseGroupedResponse(response, group, activeIds, accumulated);
           }
         }
