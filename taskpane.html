@@ -403,6 +403,8 @@ const state = {
 Office.onReady(() => {
   buildManualContent();
   buildCorrectionsList();
+  // Inicializar estado visual de los checkboxes de grupo
+  setTimeout(() => updateAllGroupCheckboxes(), 0);
   checkSavedApiKey();
   checkSavedProgress();
 });
@@ -572,17 +574,23 @@ function updateGroupCheckbox(groupId) {
   if (!el) return;
 
   if (checked === 0) {
-    el.classList.remove('checked');
-    el.style.opacity = '1';
+    // Ninguno marcado — vacío
+    el.style.background   = 'white';
+    el.style.borderColor  = 'var(--rule)';
+    el.style.opacity      = '1';
+    el.innerHTML          = '';
   } else if (checked === total) {
-    el.classList.add('checked');
-    el.style.opacity = '1';
+    // Todos marcados — dorado con ✓
+    el.style.background   = 'var(--gold)';
+    el.style.borderColor  = 'var(--gold)';
+    el.style.opacity      = '1';
+    el.innerHTML          = '<span style="color:white;font-size:10px;font-weight:700;line-height:1">✓</span>';
   } else {
-    // Parcialmente seleccionado — mostrar medio estado
-    el.classList.remove('checked');
-    el.style.opacity = '0.5';
-    el.style.background = 'var(--gold)';
-    el.style.borderColor = 'var(--gold)';
+    // Parcialmente marcado — dorado semitransparente con línea
+    el.style.background   = 'var(--gold)';
+    el.style.borderColor  = 'var(--gold)';
+    el.style.opacity      = '0.5';
+    el.innerHTML          = '<span style="color:white;font-size:10px;font-weight:700;line-height:1">–</span>';
   }
 }
 
