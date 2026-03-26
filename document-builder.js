@@ -401,15 +401,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const statsName    = this.getStatsName(revisionName);
     if (this.outputMode === 'marked') {
       // Modo A: marcas + comentarios + resumen al final
+      // NO guardamos automáticamente — el usuario usa "Guardar como" con el nombre sugerido
       await this.applyMarkings(resolvedFindings);
       await this.highlightBrackets();
-      await this.appendStatsReport(allResults, false); // false = sin leyenda de colores aquí
-      await Word.run(async ctx => { ctx.document.save(); await ctx.sync(); });
+      await this.appendStatsReport(allResults, false);
       return { mode:'marked', revisionName, statsName, totalFindings:resolvedFindings.length };
     } else {
-      // Modo B: solo añadir el informe de incidencias al final (sin marcas)
+      // Modo B: solo informe al final
+      // NO guardamos automáticamente — el usuario usa "Guardar como"
       await this.appendStatsReport(allResults, false);
-      await Word.run(async ctx => { ctx.document.save(); await ctx.sync(); });
       return { mode:'report', revisionName, statsName,
         totalFindings: allResults.reduce((s,r)=>s+r.findings.length,0) };
     }
