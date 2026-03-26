@@ -247,9 +247,9 @@
   <div style="font-size:12px;color:var(--mid);margin-bottom:8px" id="doneDesc"></div>
 
   <!-- Coste real del análisis -->
-  <div style="background:var(--sepia);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
-    <span style="font-size:11px;color:var(--mid)" id="doneCostLabel">Coste del análisis</span>
-    <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--ink)" id="doneCost">—</span>
+  <div style="background:var(--sepia);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+    <span style="font-size:11px;color:var(--mid);white-space:nowrap" id="doneCostLabel">Coste del análisis</span>
+    <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--ink);text-align:right" id="doneCost">—</span>
   </div>
 
   <!-- Instrucciones guardar como (solo para modo marcado) -->
@@ -1135,8 +1135,8 @@ function updateLiveMetrics(proc, pct) {
 
   const costEl    = document.getElementById('liveCost');
   const costEUREl = document.getElementById('liveCostEUR');
-  costEl.textContent    = '$' + realUSD.toFixed(4);
-  costEUREl.textContent = realEUR.toFixed(4) + ' €';
+  costEl.textContent    = realEUR.toFixed(4) + ' €';
+  costEUREl.textContent = '($' + realUSD.toFixed(4) + ')';
 
   // Color según desviación respecto al estimado
   const estimated = state.estimatedCostUSD || 0.0001;
@@ -1237,11 +1237,11 @@ function showDoneScreen(output, allResults, realCostUSD, realCostEUR) {
   const costLabelEl = document.getElementById('doneCostLabel');
 
   if (realCostUSD > 0) {
-    costEl.textContent    = `$${realCostUSD.toFixed(4)}  /  ${realCostEUR.toFixed(4)} €`;
+    costEl.textContent    = `${realCostEUR.toFixed(4)} €  /  $${realCostUSD.toFixed(4)}`;
     if (costLabelEl) costLabelEl.textContent = 'Coste real del análisis';
   } else if (state.estimatedCostUSD > 0) {
     // No se hicieron llamadas a la API (solo ortotipografía local) → mostrar estimado
-    costEl.textContent    = `$${state.estimatedCostUSD.toFixed(4)}  /  ${state.estimatedCostEUR.toFixed(4)} €`;
+    costEl.textContent    = `${state.estimatedCostEUR.toFixed(4)} €  /  $${state.estimatedCostUSD.toFixed(4)}`;
     if (costLabelEl) costLabelEl.textContent = 'Coste estimado (sin llamadas API)';
   } else {
     costEl.textContent = '$0.0000  /  0.0000 €';

@@ -85,50 +85,13 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     });
   }
 
-  // _callAPI acepta dos formas:
-  // 1. _callAPI(promptCompleto)           — compatibilidad hacia atrás (todo en user)
-  // 2. _callAPI(instrucciones, textoUser) — prompt caching (instrucciones en system)
-  //
-  // El prompt caching de Anthropic cachea el system prompt entre llamadas del mismo
-  // modelo. Las instrucciones fijas se cobran al 10% del precio normal en llamadas
-  // sucesivas, ahorrando ~50-70% en análisis de documentos largos.
-  async _callAPI(instructionsOrFullPrompt, userText = null) {
-    const useCache = userText !== null;
-
-    let systemContent, userContent;
-
-    if (useCache) {
-      // Modo cacheado: instrucciones en system, texto en user
-      const MAX_TEXT_CHARS = 400000;
-      const safeText = userText.length > MAX_TEXT_CHARS
-        ? userText.substring(0, MAX_TEXT_CHARS) + '\n\n[TEXTO TRUNCADO]'
-        : userText;
-
-      systemContent = [
-        {
-          type: 'text',
-          text: instructionsOrFullPrompt,
-          cache_control: { type: 'ephemeral' },  // ← activa el caché
-        }
-      ];
-      userContent = safeText;
-    } else {
-      // Modo clásico: todo en user (para prompts que no separan instrucciones de texto)
-      const MAX_CHARS = 480000;
-      const safePrompt = instructionsOrFullPrompt.length > MAX_CHARS
-        ? instructionsOrFullPrompt.substring(0, MAX_CHARS) + '\n\n[TEXTO TRUNCADO]\n\nResponde con el JSON solicitado basándote en lo analizado hasta aquí.'
-        : instructionsOrFullPrompt;
-      userContent = safePrompt;
-    }
-
-    const body = {
-      model: CONFIG.model,
-      max_tokens: CONFIG.maxTokens,
-      messages: [{ role: 'user', content: userContent }],
-    };
-    if (useCache) {
-      body.system = systemContent;
-    }
+  // Realiza una llamada a la API de Anthropic y devuelve el JSON parseado.
+  // Trunca el prompt si es demasiado largo para evitar errores de contexto.
+  async _callAPI(prompt) {
+    const MAX_CHARS = 480000;
+    const safePrompt = prompt.length > MAX_CHARS
+      ? prompt.substring(0, MAX_CHARS) + '\n\n[TEXTO TRUNCADO]\n\nResponde con el JSON solicitado basándote en lo analizado hasta aquí.'
+      : prompt;
 
     const resp = await fetch(ANTHROPIC_API_URL, {
       method: 'POST',
@@ -136,15 +99,17 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         'Content-Type': 'application/json',
         'x-api-key': this.apiKey,
         'anthropic-version': ANTHROPIC_VERSION,
-        'anthropic-beta': 'prompt-caching-2024-07-31',  // header requerido para caching
         'anthropic-dangerous-direct-browser-access': 'true',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        model: CONFIG.model,
+        max_tokens: CONFIG.maxTokens,
+        messages: [{ role: 'user', content: safePrompt }],
+      }),
     });
 
     if (!resp.ok) {
       const d = await resp.json().catch(() => ({}));
-      // Acumular usage incluso en error (Anthropic a veces lo incluye)
       if (d.usage) {
         this.totalUsage.input_tokens  += d.usage.input_tokens  || 0;
         this.totalUsage.output_tokens += d.usage.output_tokens || 0;
@@ -157,17 +122,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
     const data = await resp.json();
 
-    // Acumular uso real de tokens para calcular el coste final exacto
+    // Acumular uso real de tokens
     if (data.usage) {
-      this.totalUsage.input_tokens                += data.usage.input_tokens                || 0;
-      this.totalUsage.output_tokens               += data.usage.output_tokens               || 0;
-      this.totalUsage.cache_read_input_tokens     += data.usage.cache_read_input_tokens     || 0;
-      this.totalUsage.cache_creation_input_tokens += data.usage.cache_creation_input_tokens || 0;
+      this.totalUsage.input_tokens  += data.usage.input_tokens  || 0;
+      this.totalUsage.output_tokens += data.usage.output_tokens || 0;
     }
 
-    const raw  = data.content?.[0]?.text || '';
+    const raw = data.content?.[0]?.text || '';
 
-    // Extraer el bloque JSON aunque Claude añada texto extra
+    // Extraer bloque JSON aunque Claude añada texto extra
     const stripped = raw.replace(/```json\n?|\n?```/g, '').trim();
     const jsonMatch = stripped.match(/\{[\s\S]*\}/);
     const clean = jsonMatch ? jsonMatch[0] : '{}';
@@ -271,15 +234,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         let findings = [];
         for (const ch of chunks) {
           if (this.aborted) break;
-          // Separar instrucciones del texto para activar el caché en llamadas repetidas
-          const parts = corr.prompt.split('{TEXT}');
-          let r;
-          if (parts.length === 2) {
-            const instructions = parts[0].trim() + '\n\nTexto a analizar:';
-            r = await this._callAPI(instructions, ch.text + '\n\n' + parts[1].trim());
-          } else {
-            r = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
-          }
+          const r = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
           (r.findings || []).forEach(f => findings.push({
             ...f, correctionId: corr.id, colorId: corr.colorId,
             label: corr.label, directFix: corr.directFix,
@@ -322,34 +277,17 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           let response;
 
           if (group.ids.length === 1) {
-            // Grupo de 1 → prompt individual con caching
+            // Grupo de 1 → prompt individual
             const corr = CORRECTIONS.find(c => c.id === group.ids[0]);
-            // Separar instrucciones del texto para activar el caché
-            const parts = corr.prompt.split('{TEXT}');
-            if (parts.length === 2) {
-              // Instrucciones en system (se cachean), texto en user
-              const instructions = parts[0].trim() + '\n\nTexto a analizar:';
-              response = await this._callAPI(instructions, ch.text + '\n\n' + parts[1].trim());
-            } else {
-              response = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
-            }
+            response = await this._callAPI(corr.prompt.replace('{TEXT}', ch));
             const findings = (response.findings || []).map(f => ({
               ...f, correctionId: corr.id, colorId: corr.colorId,
               label: corr.label, directFix: corr.directFix,
             }));
             accumulated[corr.id].push(...findings);
           } else {
-            // Prompt agrupado → separar instrucciones del texto para caching
-            const fullPrompt = group.buildPrompt(chunk);
-            // El texto del chunk es la última parte — separar en el marcador "Texto:"
-            const textMarker = fullPrompt.lastIndexOf('\nTexto:\n');
-            if (textMarker !== -1) {
-              const instructions = fullPrompt.substring(0, textMarker).trim();
-              const userPart     = fullPrompt.substring(textMarker).trim();
-              response = await this._callAPI(instructions, userPart);
-            } else {
-              response = await this._callAPI(fullPrompt);
-            }
+            // Prompt agrupado
+            response = await this._callAPI(group.buildPrompt(ch));
             this._parseGroupedResponse(response, group, activeIds, accumulated);
           }
         }
@@ -447,9 +385,44 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     });
   }
 
+  // Normaliza todos los findings para que tengan originalText consistente
+  normalizeFindings(allResults) {
+    return allResults.map(result => ({
+      ...result,
+      findings: result.findings.map(f => {
+        let text = f.originalText || '';
+
+        // Tipos con estructura distinta
+        if (!text) {
+          if (f.occurrences && f.occurrences.length > 0) {
+            // repeticion_lexica, muletillas, nombres_propios: tiene occurrences[]
+            text = f.occurrences[0];
+          } else if (f.occurrence1 && f.occurrence1.text) {
+            // coherencia: occurrence1.text
+            text = f.occurrence1.text;
+          } else if (f.occurrence && f.occurrence.text) {
+            // tono_voz, pov: occurrence.text
+            text = f.occurrence.text;
+          } else if (f.frase) {
+            text = f.frase;
+          }
+        }
+
+        // Limpiar: quitar saltos de línea y truncar a 80 chars (Word no busca newlines)
+        text = (text || '').replace(/[\r\n]+/g, ' ').trim();
+        if (text.length > 80) text = text.substring(0, 80);
+
+        return { ...f, originalText: text };
+      })
+    }));
+  }
+
   resolveOverlaps(allResults) {
+    // Normalizar primero para garantizar originalText en todos los findings
+    const normalized = this.normalizeFindings(allResults);
+
     const flat = [];
-    for (const r of allResults) for (const f of r.findings) flat.push({...f, colorId:r.colorId});
+    for (const r of normalized) for (const f of r.findings) flat.push({...f, colorId:r.colorId, label:r.label});
     const grouped = {};
     for (const f of flat) {
       const k = (f.originalText||'').trim(); if (!k) continue;

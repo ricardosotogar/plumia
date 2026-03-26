@@ -88,31 +88,58 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   async applyMarkings(resolvedFindings) {
     if (!resolvedFindings || !resolvedFindings.length) return;
 
-    // Separar ortotipografía (requiere reemplazo global) del resto
+    // Separar ortotipografía del resto
     const ortotypoFindings = resolvedFindings.filter(f => f.directFix);
-    const otherFindings    = resolvedFindings.filter(f => !f.directFix);
+    const otherFindings    = resolvedFindings.filter(f => !f.directFix && f.originalText);
 
-    // Aplicar ortotipografía con reemplazos globales dedicados
     if (ortotypoFindings.length > 0) {
       await this.applyOrtotypography();
     }
 
-    // Aplicar marcas de color y comentarios al resto
-    if (otherFindings.length > 0) {
+    if (otherFindings.length === 0) return;
+
+    // Aplicar marcas en lotes de 10 para evitar timeouts de Word
+    const BATCH = 10;
+    for (let i = 0; i < otherFindings.length; i += BATCH) {
+      const batch = otherFindings.slice(i, i + BATCH);
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
-        for (const finding of otherFindings) {
-          if (!finding.originalText) continue;
+        for (const finding of batch) {
+          // Limpiar: quitar saltos de línea, colapsar espacios, limitar a 80 chars
+          const rawText = (finding.originalText || '').replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim();
+          const searchText = rawText.substring(0, 80).trim();
+          if (!searchText || searchText.length < 3) continue;
           try {
-            const searchResults = body.search(finding.originalText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-            searchResults.load('items'); await ctx.sync();
-            if (!searchResults.items.length) continue;
-            const targets = finding.correctionId === 'repeticion_lexica' ? searchResults.items : [searchResults.items[0]];
-            for (const range of targets) {
-              await this._applyMark(ctx, range, finding);
+            const sr = body.search(searchText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            sr.load('items'); await ctx.sync();
+            if (!sr.items.length) {
+              // Si no encontró el texto exacto, intentar con los primeros 40 chars
+              const shorter = searchText.substring(0, 40);
+              if (shorter !== searchText && shorter.length >= 5) {
+                const sr2 = body.search(shorter, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+                sr2.load('items'); await ctx.sync();
+                if (sr2.items.length) {
+                  await this._applyMark(ctx, sr2.items[0], finding);
+                }
+              }
+              continue;
+            }
+
+            // Para repeticiones léxicas, marcar todas las ocurrencias
+            if (finding.correctionId === 'repeticion_lexica') {
+              const toMark = finding.mergedFindings?.[0]?.occurrences || [];
+              // Marcar hasta 3 ocurrencias para evitar sobrecargar el documento
+              const limit = Math.min(sr.items.length, 3);
+              for (let j = 0; j < limit; j++) {
+                await this._applyMark(ctx, sr.items[j], finding);
+              }
+            } else {
+              await this._applyMark(ctx, sr.items[0], finding);
             }
             await ctx.sync();
-          } catch(e) { console.warn('Plumia: error marcando', finding.originalText, e); }
+          } catch(e) {
+            console.warn('Plumia: error marcando «' + searchText.substring(0,30) + '»:', e.message);
+          }
         }
       });
     }
@@ -335,8 +362,17 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
         for (let i = 0; i < result.findings.length; i++) {
           const f = result.findings[i];
-          const rawText = (f.originalText || '').replace(/\n+/g, ' ↵ ').trim();
-          const preview = `«${rawText.substring(0,100)}${rawText.length>100?'…':''}»`;
+          // Normalizar originalText para el informe (mismo proceso que en normalizeFindings)
+          let rawText = f.originalText || '';
+          if (!rawText) {
+            if (f.occurrences?.[0]) rawText = f.occurrences[0];
+            else if (f.occurrence1?.text) rawText = f.occurrence1.text;
+            else if (f.occurrence?.text) rawText = f.occurrence.text;
+          }
+          rawText = rawText.replace(/[\r\n]+/g, ' ').trim();
+          const preview = rawText
+            ? `«${rawText.substring(0,100)}${rawText.length>100?'…':''}»`
+            : '(sin texto de referencia)';
 
           // Línea del hallazgo con tamaño fijo para evitar herencia del heading3
           const numPara = body.insertParagraph(`${i+1}.  ${preview}`, 'End');
