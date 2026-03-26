@@ -208,14 +208,14 @@ window.PLUMIA.API_GROUPS = [
 1. "leismo": leísmos, laísmos y loísmos (uso incorrecto de le/la/lo como complemento directo o indirecto)
 2. "ambiguedad": pronombres ambiguos (referente poco claro, solo cuando haya 2+ personajes en la misma frase)
 
-IMPORTANTE: Solo señala errores reales y claros. Si no hay errores, devuelve findings:[].
+IMPORTANTE: Solo señala errores reales en el texto. Ignora los ejemplos didácticos etiquetados como "Correcto:" o "Incorrecto:". Devuelve MÁXIMO 10 hallazgos por categoría.
 
 Texto:
 ${text}
 
 Responde ÚNICAMENTE con este JSON:
 {"leismo":{"findings":[{"type":"leismo|laismo|loismo","originalText":"fragmento exacto","correction":"corrección","explanation":"explicación"}]},"ambiguedad":{"findings":[{"originalText":"fragmento exacto","pronoun":"pronombre","possibleReferents":["ref1","ref2"],"explanation":"por qué","suggestion":"reformulación"}]}}
-Si no hay errores en una categoría: findings:[].`,
+Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categoría: findings:[].`,
   },
   {
     groupKey: 'grammar',
@@ -232,7 +232,7 @@ ${text}
 
 Responde ÚNICAMENTE con este JSON:
 {"concordancia":{"findings":[{"originalText":"fragmento exacto","errorType":"sujeto-verbo|sustantivo-adjetivo","explanation":"descripción","correction":"corrección"}]},"dequeismo":{"findings":[{"originalText":"fragmento exacto","errorType":"dequeismo|queismo","explanation":"explicación","correction":"corrección"}]}}
-Si no hay errores en una categoría: findings:[].`,
+Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categoría: findings:[].`,
   },
   {
     groupKey: 'lexicon_a',
@@ -248,7 +248,7 @@ ${text}
 
 Responde ÚNICAMENTE con este JSON:
 {"repeticion":{"findings":[{"word":"palabra base","occurrences":["frag1","frag2"],"explanation":"explicación"}]},"verbos":{"findings":[{"originalText":"fragmento exacto","verb":"verbo comodín","explanation":"por qué"}]},"sustantivos":{"findings":[{"originalText":"fragmento exacto","genericWord":"palabra","explanation":"por qué"}]}}
-Si no hay errores en una categoría: findings:[].`,
+Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categoría: findings:[].`,
   },
   {
     groupKey: 'lexicon_b',
@@ -263,7 +263,7 @@ ${text}
 
 Responde ÚNICAMENTE con este JSON:
 {"muletillas":{"findings":[{"expression":"muletilla","occurrences":["frag1","frag2"],"explanation":"por qué"}]},"pleonasmos":{"findings":[{"originalText":"fragmento exacto","explanation":"por qué","correction":"corrección"}]}}
-Si no hay errores en una categoría: findings:[].`,
+Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categoría: findings:[].`,
   },
   {
     groupKey: 'style',
@@ -280,7 +280,7 @@ ${text}
 
 Responde ÚNICAMENTE con este JSON:
 {"adverbios":{"findings":[{"originalText":"fragmento","adverbs":["adv1"],"explanation":"por qué"}]},"voz_pasiva":{"findings":[{"originalText":"fragmento","explanation":"por qué","activeVersion":"versión activa"}]},"frases_largas":{"findings":[{"originalText":"frase completa","wordCount":45,"explanation":"por qué","suggestion":"cómo dividir"}]},"nombres":{"findings":[{"name":"nombre","occurrences":["frag1","frag2"],"explanation":"por qué","suggestion":"cómo aligerar"}]}}
-Si no hay errores en una categoría: findings:[].`,
+Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categoría: findings:[].`,
   },
   {
     groupKey: 'grammar2',

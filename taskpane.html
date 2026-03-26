@@ -512,9 +512,11 @@ function buildCorrectionsList() {
   for (const group of GROUPS) {
     const groupCorrections = CORRECTIONS.filter(c => c.groupId === group.id);
     const isCoherence = group.id === 'coherence';
+    const groupIds = groupCorrections.map(c => c.id);
 
     html += `<div class="group-block">
-      <div class="group-header">
+      <div class="group-header" style="cursor:pointer" onclick="toggleGroup('${group.id}')" title="Marcar/desmarcar todo el grupo">
+        <div class="cb-box" id="group-cb-${group.id}" style="flex-shrink:0;margin-right:6px"></div>
         ${group.label}
         <span class="group-badge ${isCoherence ? 'coherence-badge' : ''}">
           ${isCoherence ? 'Doc. completo' : groupCorrections.length + ' opciones'}
@@ -527,7 +529,7 @@ function buildCorrectionsList() {
         <div class="cb-box"></div>
         <div class="cb-text">
           <div class="cb-label">${corr.label}</div>
-          <div class="cb-desc">${corr.desc}</div>
+          <div class="cb-description">${corr.description}</div>
         </div>
       </div>`;
     }
@@ -536,6 +538,56 @@ function buildCorrectionsList() {
   }
 
   container.innerHTML = html;
+}
+
+function toggleGroup(groupId) {
+  const groupCorrections = CORRECTIONS.filter(c => c.groupId === groupId);
+  const allChecked = groupCorrections.every(c => state.selectedIds.has(c.id));
+
+  groupCorrections.forEach(c => {
+    const el = document.getElementById('check-' + c.id);
+    if (!el || el.classList.contains('disabled')) return;
+    if (allChecked) {
+      state.selectedIds.delete(c.id);
+      el.classList.remove('checked');
+    } else {
+      state.selectedIds.add(c.id);
+      el.classList.add('checked');
+    }
+  });
+
+  updateGroupCheckbox(groupId);
+  state.coherenceAnswered = false;
+  state.coherenceAccepted = false;
+  document.getElementById('coherenceDismissed').classList.remove('visible');
+  updateCoherenceState();
+  updateAnalyzeButton();
+}
+
+function updateGroupCheckbox(groupId) {
+  const groupCorrections = CORRECTIONS.filter(c => c.groupId === groupId);
+  const checked = groupCorrections.filter(c => state.selectedIds.has(c.id)).length;
+  const total   = groupCorrections.length;
+  const el = document.getElementById('group-cb-' + groupId);
+  if (!el) return;
+
+  if (checked === 0) {
+    el.classList.remove('checked');
+    el.style.opacity = '1';
+  } else if (checked === total) {
+    el.classList.add('checked');
+    el.style.opacity = '1';
+  } else {
+    // Parcialmente seleccionado — mostrar medio estado
+    el.classList.remove('checked');
+    el.style.opacity = '0.5';
+    el.style.background = 'var(--gold)';
+    el.style.borderColor = 'var(--gold)';
+  }
+}
+
+function updateAllGroupCheckboxes() {
+  GROUPS.forEach(g => updateGroupCheckbox(g.id));
 }
 
 // ── NAVEGACIÓN ────────────────────────────────────────────────────────────────
@@ -731,6 +783,7 @@ function toggleCorrection(id) {
 
   updateCoherenceState();
   updateAnalyzeButton();
+  updateAllGroupCheckboxes();
 }
 
 function selectAll(checked) {
@@ -753,6 +806,7 @@ function selectAll(checked) {
 
   updateCoherenceState();
   updateAnalyzeButton();
+  updateAllGroupCheckboxes();
 }
 
 function updateCoherenceState() {

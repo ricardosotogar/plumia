@@ -376,9 +376,18 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
       } catch(err) {
         this._saveProgress({ text: text.substring(0, 100), completedIndex: gi - 1 + coherenceIds.length, results: allResults });
-        this.errored = true;
-        this.onError(err, gi > 0 || coherenceIds.length > 0, group.label);
-        return allResults;
+        // Errores fatales (autenticación, rate limit) → parar todo
+        if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('RATE_LIMIT')) {
+          this.errored = true;
+          this.onError(err, gi > 0 || coherenceIds.length > 0, group.label);
+          return allResults;
+        }
+        // Otros errores (JSON inválido, timeout, etc.) → avisar y continuar con el siguiente grupo
+        console.warn('Plumia: grupo fallido, continuando:', group.label, err.message);
+        this.onProgress(
+          Math.round(35 + (gi / Math.max(groupTotal, 1)) * 60),
+          `⚠ ${group.label}: respuesta inválida, se omite. Continuando…`
+        );
       }
     }
 
