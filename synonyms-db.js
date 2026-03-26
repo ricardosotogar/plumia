@@ -201,23 +201,38 @@ window.PLUMIA.runLocalOrtotypography = function(text) {
 // Ahorro estimado: 40-60% en número de llamadas (y tokens de prompt).
 window.PLUMIA.API_GROUPS = [
   {
-    groupKey: 'pronouns_grammar',
-    label: 'Pronombres y gramática',
-    ids: ['leismo', 'ambiguedad_pronominal', 'concordancia', 'dequeismo'],
-    buildPrompt: (text) => `Eres un corrector experto en español. Analiza el siguiente texto y devuelve CUATRO análisis en un solo JSON:
-1. "leismo": leísmos, laísmos y loísmos (uso incorrecto de le/la/lo)
-2. "ambiguedad": pronombres ambiguos (referente poco claro, solo cuando haya 2+ personajes)
-3. "concordancia": errores de concordancia sujeto-verbo o sustantivo-adjetivo (NO señales leísmos como concordancia)
-4. "dequeismo": dequeísmo (de que de más) o queísmo (de que faltante)
+    groupKey: 'pronouns',
+    label: 'Pronombres',
+    ids: ['leismo', 'ambiguedad_pronominal'],
+    buildPrompt: (text) => `Eres un corrector experto en español. Analiza el texto y devuelve DOS análisis:
+1. "leismo": leísmos, laísmos y loísmos (uso incorrecto de le/la/lo como complemento directo o indirecto)
+2. "ambiguedad": pronombres ambiguos (referente poco claro, solo cuando haya 2+ personajes en la misma frase)
 
-IMPORTANTE: Cada categoría debe analizar SOLO lo que le corresponde. Un laísmo como "La dije" NO es concordancia ni dequeísmo.
+IMPORTANTE: Solo señala errores reales y claros. Si no hay errores, devuelve findings:[].
 
 Texto:
 ${text}
 
-Responde ÚNICAMENTE con este JSON exacto:
-{"leismo":{"findings":[{"type":"leismo|laismo|loismo","originalText":"fragmento","correction":"corrección","explanation":"explicación"}]},"ambiguedad":{"findings":[{"originalText":"fragmento","pronoun":"pronombre","possibleReferents":["ref1","ref2"],"explanation":"por qué","suggestion":"reformulación"}]},"concordancia":{"findings":[{"originalText":"fragmento","errorType":"sujeto-verbo|sustantivo-adjetivo","explanation":"descripción","correction":"corrección"}]},"dequeismo":{"findings":[{"originalText":"fragmento","errorType":"dequeismo|queismo","explanation":"explicación","correction":"corrección"}]}}
-Si no hay errores en una categoría, devuelve findings:[].`,
+Responde ÚNICAMENTE con este JSON:
+{"leismo":{"findings":[{"type":"leismo|laismo|loismo","originalText":"fragmento exacto","correction":"corrección","explanation":"explicación"}]},"ambiguedad":{"findings":[{"originalText":"fragmento exacto","pronoun":"pronombre","possibleReferents":["ref1","ref2"],"explanation":"por qué","suggestion":"reformulación"}]}}
+Si no hay errores en una categoría: findings:[].`,
+  },
+  {
+    groupKey: 'grammar',
+    label: 'Gramática',
+    ids: ['concordancia', 'dequeismo'],
+    buildPrompt: (text) => `Eres un corrector gramatical experto en español. Analiza el texto y devuelve DOS análisis:
+1. "concordancia": errores de concordancia sujeto-verbo o sustantivo-adjetivo. NO señales leísmos ni laísmos como concordancia.
+2. "dequeismo": dequeísmo (de que de más) o queísmo (de que faltante)
+
+IMPORTANTE: Un laísmo como "La dije" NO es concordancia. Solo señala errores gramaticales estrictos.
+
+Texto:
+${text}
+
+Responde ÚNICAMENTE con este JSON:
+{"concordancia":{"findings":[{"originalText":"fragmento exacto","errorType":"sujeto-verbo|sustantivo-adjetivo","explanation":"descripción","correction":"corrección"}]},"dequeismo":{"findings":[{"originalText":"fragmento exacto","errorType":"dequeismo|queismo","explanation":"explicación","correction":"corrección"}]}}
+Si no hay errores en una categoría: findings:[].`,
   },
   {
     groupKey: 'lexicon_a',

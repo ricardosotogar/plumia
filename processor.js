@@ -22,6 +22,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     this.outputMode = outputMode; this.onProgress = onProgress;
     this.onChunkComplete = onChunkComplete; this.onError = onError;
     this.aborted = false;
+    this.errored = false; // true si el análisis se interrumpió por error
     // Acumulador de tokens reales para calcular el coste final exacto
     this.totalUsage = {
       input_tokens: 0,
@@ -289,6 +290,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         this.onChunkComplete(allResults);
       } catch(err) {
         this._saveProgress({ text: text.substring(0, 100), completedIndex: ci - 1, results: allResults });
+        this.errored = true;
         this.onError(err, ci > 0, corr.label);
         return allResults;
       }
@@ -374,6 +376,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
       } catch(err) {
         this._saveProgress({ text: text.substring(0, 100), completedIndex: gi - 1 + coherenceIds.length, results: allResults });
+        this.errored = true;
         this.onError(err, gi > 0 || coherenceIds.length > 0, group.label);
         return allResults;
       }
@@ -387,9 +390,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   _parseGroupedResponse(response, group, activeIds, accumulated) {
     // Mapeo de claves del JSON agrupado a correctionIds
     const keyMap = {
-      // pronouns_grammar
+      // pronouns group
       'leismo':       'leismo',
       'ambiguedad':   'ambiguedad_pronominal',
+      // grammar group
       'concordancia': 'concordancia',
       'dequeismo':    'dequeismo',
       // lexicon_a

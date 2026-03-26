@@ -1023,6 +1023,9 @@ async function runAnalysis() {
   // Análisis
   const allResults = await proc.analyze(text, isSelection);
 
+  // Si el análisis se interrumpió por error, no generar output parcial
+  if (proc.errored) return;
+
   // Construir output
   updateProgress(98, 'Generando documento de revisión…');
   const { DocumentBuilder } = await getDocumentBuilder();
