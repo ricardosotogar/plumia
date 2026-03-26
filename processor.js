@@ -235,10 +235,12 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         for (const ch of chunks) {
           if (this.aborted) break;
           const r = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
-          (r.findings || []).forEach(f => findings.push({
-            ...f, correctionId: corr.id, colorId: corr.colorId,
-            label: corr.label, directFix: corr.directFix,
-          }));
+          (r.findings || []).forEach(f => {
+            const originalText = this._extractOriginalText(f);
+            if (!originalText) return;
+            findings.push({ ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
+              label: corr.label, directFix: corr.directFix });
+          });
         }
         allResults.push({ correctionId: corr.id, label: corr.label, groupId: corr.groupId, colorId: corr.colorId, findings });
         this._saveProgress({ text: text.substring(0, 100), completedIndex: ci, results: allResults });
@@ -277,13 +279,14 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           let response;
 
           if (group.ids.length === 1) {
-            // Grupo de 1 → prompt individual
             const corr = CORRECTIONS.find(c => c.id === group.ids[0]);
             response = await this._callAPI(corr.prompt.replace('{TEXT}', ch));
-            const findings = (response.findings || []).map(f => ({
-              ...f, correctionId: corr.id, colorId: corr.colorId,
-              label: corr.label, directFix: corr.directFix,
-            }));
+            const findings = (response.findings || []).map(f => {
+              const originalText = this._extractOriginalText(f);
+              if (!originalText) return null;
+              return { ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
+                label: corr.label, directFix: corr.directFix };
+            }).filter(Boolean);
             accumulated[corr.id].push(...findings);
           } else {
             // Prompt agrupado
@@ -334,30 +337,27 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     return allResults;
   }
 
+  // Extrae originalText de cualquier estructura de finding (normalización temprana)
+  _extractOriginalText(f) {
+    let text = f.originalText || '';
+    if (!text) {
+      if (f.occurrences?.[0])       text = f.occurrences[0];
+      else if (f.occurrence1?.text) text = f.occurrence1.text;
+      else if (f.occurrence?.text)  text = f.occurrence.text;
+      else if (f.frase)             text = f.frase;
+    }
+    // Limpiar saltos de línea y truncar a 80 chars (Word no busca newlines)
+    return text.replace(/[\r\n]+/g, ' ').trim().substring(0, 80);
+  }
+
   _parseGroupedResponse(response, group, activeIds, accumulated) {
-    // Mapeo de claves del JSON agrupado a correctionIds
     const keyMap = {
-      // pronouns group
-      'leismo':       'leismo',
-      'ambiguedad':   'ambiguedad_pronominal',
-      // grammar group
-      'concordancia': 'concordancia',
-      'dequeismo':    'dequeismo',
-      // lexicon_a
-      'repeticion':   'repeticion_lexica',
-      'verbos':       'verbos_comedin',
-      'sustantivos':  'sustantivos_genericos',
-      // lexicon_b
-      'muletillas':   'muletillas',
-      'pleonasmos':   'pleonasmos',
-      // style
-      'adverbios':    'adverbios_mente',
-      'voz_pasiva':   'voz_pasiva',
-      'frases_largas':'frases_largas',
-      'nombres':      'nombres_propios',
-      // grammar2
-      'gerundios':    'gerundios',
-      'tiempos':      'tiempos_verbales',
+      'leismo':'leismo','ambiguedad':'ambiguedad_pronominal',
+      'concordancia':'concordancia','dequeismo':'dequeismo',
+      'repeticion':'repeticion_lexica','verbos':'verbos_comedin','sustantivos':'sustantivos_genericos',
+      'muletillas':'muletillas','pleonasmos':'pleonasmos',
+      'adverbios':'adverbios_mente','voz_pasiva':'voz_pasiva','frases_largas':'frases_largas','nombres':'nombres_propios',
+      'gerundios':'gerundios','tiempos':'tiempos_verbales',
     };
 
     for (const [key, corrId] of Object.entries(keyMap)) {
@@ -365,11 +365,18 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const corr = CORRECTIONS.find(c => c.id === corrId);
       if (!corr) continue;
       const section = response[key];
-      if (!section || !section.findings) continue;
+      if (!section || !Array.isArray(section.findings)) continue;
       section.findings.forEach(f => {
+        // Normalizar originalText AQUÍ, antes de deduplicar
+        const originalText = this._extractOriginalText(f);
+        if (!originalText) return; // descartar findings sin texto localizable
         accumulated[corrId].push({
-          ...f, correctionId: corrId, colorId: corr.colorId,
-          label: corr.label, directFix: corr.directFix,
+          ...f,
+          originalText,
+          correctionId: corrId,
+          colorId:      corr.colorId,
+          label:        corr.label,
+          directFix:    corr.directFix,
         });
       });
     }
