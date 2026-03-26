@@ -544,6 +544,7 @@ function buildCorrectionsList() {
 
 function toggleGroup(groupId) {
   const groupCorrections = CORRECTIONS.filter(c => c.groupId === groupId);
+  // Si TODOS están marcados → desmarcar todos. Si no → marcar todos.
   const allChecked = groupCorrections.every(c => state.selectedIds.has(c.id));
 
   groupCorrections.forEach(c => {
@@ -558,39 +559,42 @@ function toggleGroup(groupId) {
     }
   });
 
-  updateGroupCheckbox(groupId);
   state.coherenceAnswered = false;
   state.coherenceAccepted = false;
-  document.getElementById('coherenceDismissed').classList.remove('visible');
+  const dismissed = document.getElementById('coherenceDismissed');
+  if (dismissed) dismissed.classList.remove('visible');
+
+  updateGroupCheckbox(groupId);
   updateCoherenceState();
   updateAnalyzeButton();
 }
 
 function updateGroupCheckbox(groupId) {
-  const groupCorrections = CORRECTIONS.filter(c => c.groupId === groupId);
-  const checked = groupCorrections.filter(c => state.selectedIds.has(c.id)).length;
-  const total   = groupCorrections.length;
   const el = document.getElementById('group-cb-' + groupId);
   if (!el) return;
 
-  if (checked === 0) {
-    // Ninguno marcado — vacío
-    el.style.background   = 'white';
-    el.style.borderColor  = 'var(--rule)';
-    el.style.opacity      = '1';
-    el.innerHTML          = '';
-  } else if (checked === total) {
-    // Todos marcados — dorado con ✓
-    el.style.background   = 'var(--gold)';
-    el.style.borderColor  = 'var(--gold)';
-    el.style.opacity      = '1';
-    el.innerHTML          = '<span style="color:white;font-size:10px;font-weight:700;line-height:1">✓</span>';
+  const groupCorrections = CORRECTIONS.filter(c => c.groupId === groupId);
+  const total   = groupCorrections.length;
+  const checked = groupCorrections.filter(c => state.selectedIds.has(c.id)).length;
+
+  // Reset inline styles first
+  el.style.cssText = 'width:16px;height:16px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:6px;transition:all .15s;';
+
+  if (checked === total && total > 0) {
+    // Todos marcados
+    el.style.background  = 'var(--gold)';
+    el.style.border      = '1.5px solid var(--gold)';
+    el.innerHTML = '<span style="color:white;font-size:10px;font-weight:700">✓</span>';
+  } else if (checked > 0) {
+    // Parcialmente marcados — guión, fondo dorado atenuado
+    el.style.background  = 'rgba(176,125,46,0.35)';
+    el.style.border      = '1.5px solid var(--gold)';
+    el.innerHTML = '<span style="color:var(--gold);font-size:11px;font-weight:700;line-height:1">–</span>';
   } else {
-    // Parcialmente marcado — dorado semitransparente con línea
-    el.style.background   = 'var(--gold)';
-    el.style.borderColor  = 'var(--gold)';
-    el.style.opacity      = '0.5';
-    el.innerHTML          = '<span style="color:white;font-size:10px;font-weight:700;line-height:1">–</span>';
+    // Ninguno marcado
+    el.style.background  = 'white';
+    el.style.border      = '1.5px solid var(--rule)';
+    el.innerHTML = '';
   }
 }
 
