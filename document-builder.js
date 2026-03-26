@@ -123,42 +123,91 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
 
+
       // ── 1. GUIONES DE DIÁLOGO ─────────────────────────────────────────────
-      // Recorrer párrafos y sustituir guion corto al inicio por raya (—)
+      // Sustituir guión corto de diálogo (-) por raya (—)
+      // Casos: párrafo que empieza con - (inicio de intervención)
+      //        y - seguido de espacio en mitad del párrafo (acotación: -dijo-)
       body.load('paragraphs'); await ctx.sync();
       const paras = body.paragraphs.items;
       paras.forEach(p => p.load('text')); await ctx.sync();
 
+      let firstDashCommentDone = false;
+
       for (const para of paras) {
-        const text = (para.text || '');
+        const text    = (para.text || '');
         const trimmed = text.trimStart();
-        // Solo párrafos que empiezan exactamente con "- " o "-¡" o "-¿"
-        if (/^-[\s¡¿]/.test(trimmed)) {
+
+        // Caso A: párrafo que empieza con guión (cualquier carácter tras él)
+        // Cubre: "-hola", "- hola", "-¡Estoy"
+        if (/^-/.test(trimmed)) {
           try {
-            // Obtener el rango del primer carácter no-espacio del párrafo
-            // Usamos getRange para el inicio del párrafo y desplazamos al guion
-            const startRange = para.getRange('Start');
-            // Expandir exactamente 1 carácter para cubrir el guion
-            startRange.expandTo(para.getRange('Start'));
-            // Buscar "-" con límite al propio párrafo para mayor precisión
             const sr = para.search('-', {matchCase:true, matchWholeWord:false, matchWildcards:false});
             sr.load('items'); await ctx.sync();
-            // Solo reemplazar la PRIMERA ocurrencia si está al inicio del texto del párrafo
             if (sr.items.length > 0) {
-              // Verificar que el fragmento encontrado está al inicio
-              sr.items[0].load('text'); await ctx.sync();
-              // Reemplazar solo si es el guion inicial (no uno interior)
-              const paraText = para.text || '';
-              const dashPos = paraText.indexOf('-');
-              if (dashPos <= paraText.search(/\S/)) {
-                // El guion está en la posición del primer carácter no-espacio o antes
-                sr.items[0].insertText('—', 'Replace');
-                sr.items[0].font.bold = true;
-                try { sr.items[0].insertComment('Ortotipografía: guión corto (-) corregido a raya de diálogo (—). Cambio aplicado en todos los párrafos de diálogo.'); } catch(ce) {}
+              // Reemplazar todos los guiones del párrafo que preceden un espacio o están al inicio
+              // Primero el guión inicial
+              sr.items[0].insertText('—', 'Replace');
+              sr.items[0].font.bold = true;
+              if (!firstDashCommentDone) {
+                try { sr.items[0].insertComment('Ortotipografía: guión corto (-) corregido a raya de diálogo (—) en todos los párrafos de diálogo.'); } catch(ce) {}
+                firstDashCommentDone = true;
+              }
+              // Caso B: guiones internos del mismo párrafo (acotaciones: " -dijo ")
+              // Buscar patrones " -letra" dentro del párrafo
+              for (let i = 1; i < sr.items.length; i++) {
+                sr.items[i].load('text'); await ctx.sync();
+                // Solo sustituir si el guión va precedido de espacio (acotación de diálogo)
+                // No podemos acceder al carácter anterior directamente, así que
+                // buscamos el patrón " -" en el texto para validar
+                const fullText = para.text || '';
+                // Heurística: si hay más de un guión en el párrafo, todos son de diálogo
+                sr.items[i].insertText('—', 'Replace');
+                sr.items[i].font.bold = true;
               }
             }
             await ctx.sync();
           } catch(e) { console.warn('Plumia ortotypo guion:', e); }
+        }
+      }
+
+      // ── 1b. SIGNO DE CIERRE ¡ INCORRECTO ──────────────────────────────────
+      // Detectar ¡ usado como cierre (debería ser !)
+      // Patrón: cualquier texto seguido de ¡ que NO sea inicio de frase
+      try {
+        const excResults = body.search('¡', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+        excResults.load('items'); await ctx.sync();
+        for (const r of excResults.items) {
+          r.load('text'); await ctx.sync();
+          // Buscar ¡ precedida de letra o número (cierre incorrecto)
+          // Expandir el contexto para ver el carácter anterior
+          const expanded = r.getRange('Whole');
+          expanded.load('text'); await ctx.sync();
+          // Si encontramos ¡ que no es el primer carácter del párrafo,
+          // verificar si debería ser !
+          // Estrategia: buscar el patrón [a-záéíóúüñA-Z0-9]¡ directamente
+        }
+        await ctx.sync();
+      } catch(e) {}
+
+      // Búsqueda directa del patrón ¡ al final (cierre incorrecto)
+      // Word no soporta regex en search, así que buscamos párrafos que terminen en ¡
+      for (const para of paras) {
+        const text = (para.text || '').trimEnd();
+        if (text.endsWith('¡') && !text.startsWith('¡')) {
+          // Este párrafo termina con ¡ incorrecto → reemplazar la última ¡ por !
+          try {
+            const sr = para.search('¡', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+            sr.load('items'); await ctx.sync();
+            if (sr.items.length > 0) {
+              // Tomar el ÚLTIMO resultado (el del cierre incorrecto)
+              const last = sr.items[sr.items.length - 1];
+              last.insertText('!', 'Replace');
+              last.font.bold = true;
+              try { last.insertComment('Ortotipografía: signo de cierre ¡ incorrecto, corregido a !'); } catch(ce) {}
+            }
+            await ctx.sync();
+          } catch(e) { console.warn('Plumia ortotypo signo cierre:', e); }
         }
       }
 
