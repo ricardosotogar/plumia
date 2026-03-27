@@ -321,7 +321,45 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     });
   }
 
-  async appendStatsReport(allResults) {
+  // Construye un mapa de texto → número de página aproximado
+  // Estrategia: cuenta palabras acumuladas en párrafos del documento y divide por
+  // ~250 palabras/página (estimación razonable para cuerpo de texto a 12pt)
+  async buildPageMap(findings) {
+    const pageMap = {};
+    const WORDS_PER_PAGE = 250;
+    try {
+      await Word.run(async (ctx) => {
+        const body = ctx.document.body;
+        body.load('paragraphs'); await ctx.sync();
+        const paras = body.paragraphs.items;
+        paras.forEach(p => p.load('text')); await ctx.sync();
+
+        // Construir índice de posición acumulada por párrafo
+        let wordCount = 0;
+        const paraPositions = paras.map(p => {
+          const words = (p.text || '').trim().split(/\s+/).filter(Boolean).length;
+          const startWord = wordCount;
+          wordCount += words;
+          return { text: (p.text || '').trim(), startWord };
+        });
+
+        // Para cada finding, buscar en qué párrafo aparece y calcular página
+        for (const f of findings) {
+          const searchText = (f.originalText || '').substring(0, 60).toLowerCase();
+          if (!searchText || searchText.length < 3) continue;
+          if (pageMap[f.originalText]) continue; // ya calculado
+
+          const match = paraPositions.find(p => p.text.toLowerCase().includes(searchText));
+          if (match) {
+            pageMap[f.originalText] = Math.max(1, Math.ceil((match.startWord + 1) / WORDS_PER_PAGE));
+          }
+        }
+      });
+    } catch(e) { console.warn('Plumia: no se pudo calcular páginas:', e); }
+    return pageMap;
+  }
+
+  async appendStatsReport(allResults, pageMap = {}) {
     const total = allResults.reduce((s,r)=>s+r.findings.length,0);
     if (total === 0) return; // nada que añadir
 
@@ -375,7 +413,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             : '(sin texto de referencia)';
 
           // Línea del hallazgo con tamaño fijo para evitar herencia del heading3
-          const numPara = body.insertParagraph(`${i+1}.  ${preview}`, 'End');
+          const pageNum = pageMap[f.originalText];
+          const pageSuffix = pageNum ? `  — pág. ${pageNum}` : '';
+          const numPara = body.insertParagraph(`${i+1}.  ${preview}${pageSuffix}`, 'End');
           numPara.font.bold = true;
           numPara.font.size = 11;
           numPara.font.italic = false;
@@ -399,17 +439,18 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   async buildOutput(allResults, resolvedFindings, originalName, selectedIds) {
     const revisionName = await this.getRevisionName(originalName);
     const statsName    = this.getStatsName(revisionName);
+
+    // Construir mapa de posiciones de página antes de modificar el documento
+    const allFindings = allResults.flatMap(r => r.findings);
+    const pageMap = await this.buildPageMap(allFindings);
+
     if (this.outputMode === 'marked') {
-      // Modo A: marcas + comentarios + resumen al final
-      // NO guardamos automáticamente — el usuario usa "Guardar como" con el nombre sugerido
       await this.applyMarkings(resolvedFindings);
       await this.highlightBrackets();
-      await this.appendStatsReport(allResults, false);
+      await this.appendStatsReport(allResults, pageMap);
       return { mode:'marked', revisionName, statsName, totalFindings:resolvedFindings.length };
     } else {
-      // Modo B: solo informe al final
-      // NO guardamos automáticamente — el usuario usa "Guardar como"
-      await this.appendStatsReport(allResults, false);
+      await this.appendStatsReport(allResults, pageMap);
       return { mode:'report', revisionName, statsName,
         totalFindings: allResults.reduce((s,r)=>s+r.findings.length,0) };
     }

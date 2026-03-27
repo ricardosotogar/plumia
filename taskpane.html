@@ -464,8 +464,8 @@ function getManualHTML() {
 
     <div class="corr-group-title">Grupo 5 · Ortotipografía</div>
     <div class="corr-entry">
-      <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Mayúsculas · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
-      <div class="corr-entry-desc">Errores tipográficos que se corrigen directamente en el documento. Los cambios quedan marcados en negrita para que puedas identificarlos.</div>
+      <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
+      <div class="corr-entry-desc">Errores tipográficos que se corrigen directamente en el documento. Los cambios quedan marcados en negrita para que puedas identificarlos fácilmente.</div>
       <div class="example-box"><span class="ex-bad">-No voy - dijo Juan. / "Buenos días"</span><br><span class="ex-ok">—No voy —dijo Juan. / «Buenos días»</span></div>
     </div>
 
@@ -483,12 +483,29 @@ function getManualHTML() {
     <div class="ws-body">
       <p>Plumia envía tu texto a la API de <strong>Claude Sonnet</strong> (Anthropic), un modelo de IA con comprensión profunda del español. El análisis se realiza de forma segura: el texto se transmite cifrado y no se almacena ni se usa para entrenar ningún modelo.</p>
       <p><strong>¿Qué texto se analiza?</strong> Si seleccionas texto antes de lanzar el análisis, solo se envía ese fragmento. Si no hay nada seleccionado, se analiza el documento completo excluyendo el índice, encabezados, pies de página y notas al pie.</p>
-      <p>El coste aproximado es de <strong>$0,001 por página</strong>. Antes de cada análisis se muestra una estimación del coste para que puedas decidir.</p>
     </div>
   </div>
 
   <div class="welcome-section">
-    <div class="ws-title">C — Plumia no reescribe tu texto</div>
+    <div class="ws-title">C — Coste del análisis</div>
+    <div class="ws-body">
+      <p>Plumia usa tu propia clave de API de Anthropic. El coste se cobra directamente en tu cuenta de Anthropic, no a través de Plumia.</p>
+      <p><strong>Estimación previa:</strong> Antes de iniciar el análisis, Plumia calcula y muestra una estimación del coste en euros y dólares según el número de palabras y las opciones seleccionadas. Esto te permite decidir antes de comprometer ningún gasto.</p>
+      <p><strong>Coste real durante el análisis:</strong> Una vez iniciado, la pantalla de progreso muestra en tiempo real el coste acumulado (en € y $) y las palabras que quedan por analizar. Ambos valores se actualizan tras cada llamada a la API. Si el coste supera en más de un 30% la estimación inicial, aparece un aviso en rojo para que puedas decidir si continuar.</p>
+      <p><strong>Coste final:</strong> Al terminar, la pantalla de resultados muestra el coste real total cobrado por la API. El coste orientativo es de <strong>~0,001 € por página</strong>, aunque varía según las opciones activadas y la longitud del documento.</p>
+    </div>
+  </div>
+
+  <div class="welcome-section">
+    <div class="ws-title">D — Durante el análisis</div>
+    <div class="ws-body">
+      <p>El análisis se divide en grupos de correcciones. Verás una barra de progreso con el grupo que se está analizando en cada momento. Puedes <strong>cancelar en cualquier momento</strong> pulsando el botón «Detener análisis» — en ese caso se mostrará el resultado parcial con las categorías que ya se hayan analizado, y se te indicará qué grupos quedaron pendientes.</p>
+      <p>Si el análisis se interrumpe por un error de red o de la API, Plumia guarda el progreso automáticamente para que puedas retomarlo desde el mismo punto en la siguiente sesión, sin volver a pagar por lo ya analizado.</p>
+    </div>
+  </div>
+
+  <div class="welcome-section">
+    <div class="ws-title">E — Plumia no reescribe tu texto</div>
     <div class="note-box">Plumia señala, no corrige. Tu voz como escritor es intocable.</div>
     <div class="ws-body">
       <p>Plumia no propone cambios automáticos ni altera tu estilo. Señala exactamente dónde hay un posible problema y explica por qué conviene revisarlo. Para algunos tipos de error (adverbios, verbos comodín, voz pasiva) ofrece alternativas orientativas como punto de partida, no como imposición.</p>
@@ -496,12 +513,12 @@ function getManualHTML() {
   </div>
 
   <div class="welcome-section">
-    <div class="ws-title">D — Resultados</div>
+    <div class="ws-title">F — Resultados</div>
     <div class="ws-body">
-      <p>Al finalizar el análisis, Plumia modifica el documento actual y te muestra el nombre sugerido para guardarlo como copia. Puedes elegir entre dos formatos:</p>
-      <p><strong>Opción A — Documento marcado con colores:</strong> Resalta las incidencias directamente en el texto con colores y comentarios de Word explicando cada una, más un informe resumen al final del documento.</p>
-      <p><strong>Opción B — Solo informe de estadísticas:</strong> Añade al final del documento el listado completo de incidencias por categoría, sin modificar el texto.</p>
-      <p>En ambos casos, usa <strong>Archivo → Guardar como</strong> con el nombre sugerido para conservar el original sin cambios.</p>
+      <p>Al finalizar el análisis, Plumia modifica el documento actual aplicando las marcas y añadiendo el informe al final. El documento original <strong>no se guarda automáticamente</strong> — usa <strong>Archivo → Guardar como</strong> con el nombre sugerido para conservar el original intacto.</p>
+      <p><strong>Opción A — Documento marcado con colores:</strong> Resalta las incidencias directamente en el texto con colores y comentarios de Word explicando cada una, más un informe resumen al final.</p>
+      <p><strong>Opción B — Solo informe de estadísticas:</strong> Añade al final únicamente el listado de incidencias por categoría, con el número de página aproximado de cada hallazgo, sin modificar el texto.</p>
+      <p>El informe incluye el número de página aproximado de cada incidencia para facilitar su localización en documentos largos.</p>
     </div>
   </div>`;
 }
