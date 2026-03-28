@@ -1118,19 +1118,77 @@ async function requestCostEstimate() {
     eurRate = data.rates?.EUR || 1.08;
   } catch {}
 
-  // Calcular coste
-  const wordsPerToken    = 0.75;
-  const inputPrice       = 0.000003;
-  const outputPrice      = 0.000015;
-  const textTokens       = Math.ceil(state.wordCount / wordsPerToken);
-  const promptTokensAvg  = 300;
-  const numCorrections   = state.selectedIds.size;
-  const inputTokens      = numCorrections * (textTokens + promptTokensAvg);
-  const outputTokens     = numCorrections * Math.ceil(textTokens * 0.15);
-  const multiplier       = hasCoherence ? 1.8 : 1.0;
-  const totalUSD         = ((inputTokens * inputPrice) + (outputTokens * outputPrice)) * multiplier;
-  const totalEUR         = totalUSD / eurRate;
-  const totalTokens      = Math.ceil((inputTokens + outputTokens) * multiplier);
+  // ── CÁLCULO DE COSTE ESTIMADO ──────────────────────────────────────────────
+  // Refleja la arquitectura real: correcciones agrupadas + chunks de 3000 palabras
+  // Las correcciones de coherencia reciben el documento completo de una vez.
+
+  const WORDS_PER_TOKEN    = 0.75;
+  const INPUT_PRICE        = 0.000003;   // $3 / 1M tokens input
+  const OUTPUT_PRICE       = 0.000015;   // $15 / 1M tokens output
+  const CACHE_DISCOUNT     = 0.10;       // tokens cacheados cuestan 10% del precio normal
+  const CHUNK_SIZE         = 3000;       // palabras por chunk
+  const OUTPUT_RATIO       = 0.20;       // tokens de output ≈ 20% del input
+
+  const wc               = state.wordCount;
+  const numChunks        = Math.max(1, Math.ceil(wc / CHUNK_SIZE));
+  const selectedIds      = [...state.selectedIds];
+
+  // Separar correcciones en coherencia vs. resto
+  const coherenceIds    = selectedIds.filter(id => {
+    const c = CORRECTIONS.find(x => x.id === id);
+    return c && c.requiresFullDoc;
+  });
+  const nonCoherenceIds = selectedIds.filter(id => !coherenceIds.includes(id) && id !== 'ortotipografia_pura');
+
+  // Grupos de API que se activarán (de API_GROUPS)
+  const activeGroups    = window.PLUMIA.API_GROUPS.filter(g =>
+    g.ids.some(id => nonCoherenceIds.includes(id))
+  );
+  const numApiGroups    = activeGroups.length;
+
+  // Tokens de prompt por llamada (instrucciones fijas ≈ 400 tokens, se cachean en chunk 2+)
+  const PROMPT_TOKENS_BASE = 400;
+
+  // ── Correcciones normales (chunked) ──────────────────────────────────────
+  // Primera llamada de cada grupo: prompt completo
+  // Llamadas siguientes: prompt cacheado (10% del precio)
+  let normalInputTokens  = 0;
+  let normalOutputTokens = 0;
+
+  if (numApiGroups > 0) {
+    const textTokensPerChunk = Math.ceil(CHUNK_SIZE / WORDS_PER_TOKEN);
+    // Primera chunk: prompt completo
+    normalInputTokens  += numApiGroups * (PROMPT_TOKENS_BASE + textTokensPerChunk);
+    normalOutputTokens += numApiGroups * Math.ceil(textTokensPerChunk * OUTPUT_RATIO);
+    // Chunks siguientes: prompt cacheado (10%)
+    if (numChunks > 1) {
+      const extraChunks = numChunks - 1;
+      normalInputTokens  += numApiGroups * extraChunks * (PROMPT_TOKENS_BASE * CACHE_DISCOUNT + textTokensPerChunk);
+      normalOutputTokens += numApiGroups * extraChunks * Math.ceil(textTokensPerChunk * OUTPUT_RATIO);
+    }
+  }
+
+  // ── Correcciones de coherencia (documento completo, sin chunking) ─────────
+  let coherenceInputTokens  = 0;
+  let coherenceOutputTokens = 0;
+
+  if (coherenceIds.length > 0) {
+    const coherenceChunkSize  = window.PLUMIA.CONFIG.coherenceChunkSizeWords || 80000;
+    const coherenceChunks     = Math.max(1, Math.ceil(wc / coherenceChunkSize));
+    const fullDocTokens       = Math.ceil(wc / WORDS_PER_TOKEN);
+    const tokensPerChunk      = Math.ceil(fullDocTokens / coherenceChunks);
+    // Coherencia: prompt completo (tokens de instrucciones ~600) + texto, output es JSON corto (~5% del input)
+    const COHERENCE_PROMPT    = 600;
+    const COHERENCE_OUT_RATIO = 0.05;
+    coherenceInputTokens  = coherenceIds.length * coherenceChunks * (COHERENCE_PROMPT + tokensPerChunk);
+    coherenceOutputTokens = coherenceIds.length * coherenceChunks * Math.ceil(tokensPerChunk * COHERENCE_OUT_RATIO);
+  }
+
+  const totalInputTokens  = normalInputTokens  + coherenceInputTokens;
+  const totalOutputTokens = normalOutputTokens + coherenceOutputTokens;
+  const totalUSD          = (totalInputTokens * INPUT_PRICE) + (totalOutputTokens * OUTPUT_PRICE);
+  const totalEUR          = totalUSD / eurRate;
+  const totalTokens       = totalInputTokens + totalOutputTokens;
 
   // Guardar en state para mostrar en pantalla de resultados
   state.estimatedCostUSD = totalUSD;
@@ -1138,7 +1196,7 @@ async function requestCostEstimate() {
 
   // Mostrar popup
   document.getElementById('costWords').textContent   = state.wordCount.toLocaleString('es-ES');
-  document.getElementById('costChecks').textContent  = numCorrections;
+  document.getElementById('costChecks').textContent  = selectedIds.length;
   document.getElementById('costUSD').textContent     = '$' + totalUSD.toFixed(4);
   document.getElementById('costEUR').textContent     = totalEUR.toFixed(4) + ' €';
   document.getElementById('costTokens').textContent  = totalTokens.toLocaleString('es-ES') + ' tokens';
