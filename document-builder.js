@@ -32,11 +32,18 @@ function _singleComment(f) {
     case 'sustantivos_genericos':
       return `Sustantivo genérico «${f.genericWord}»: ${f.explanation} Alternativas: ${(f.alternatives||[]).join(', ')}.`;
     case 'muletillas':
-      return `Muletilla «${f.expression}»: aparece repetidamente. ${f.alternatives?.filter(a=>a!=='eliminar').length?'Alternativas: '+f.alternatives.join(', ')+'.':'Valora eliminarla.'}`;
+      return `Muletilla «${f.expression}»: puede no estar aportando nada al texto. ${f.explanation ? f.explanation+' ' : ''}${f.alternatives?.filter(a=>a!=='eliminar').length ? 'Alternativas: '+f.alternatives.filter(a=>a!=='eliminar').join(', ')+'.' : 'Valora eliminarla o sustituirla por algo más concreto.'}`;
     case 'pleonasmos':
       return `Pleonasmo: ${f.explanation} Corrección: «${f.correction}».`;
-    case 'adverbios_mente':
-      return `Adverbio -mente: ${f.explanation} ${f.alternatives?.length?'Alternativas: '+f.alternatives.join(', ')+'.':''}`;
+    case 'adverbios_mente': {
+      const _adv  = (f.adverbs||[f.adverb]).filter(Boolean).join(', ');
+      const _eval = (f.evaluation||f.explanation||'').toLowerCase().includes('adecuad') ? 'Adecuado' : 'Mejorable';
+      const _alts = (f.alternatives||f.synonyms||[]).filter(Boolean);
+      let _c = `Adverbio en -mente${_adv?' «'+_adv+'»':''}: ${_eval}.`;
+      if (f.explanation) _c += ' ' + f.explanation;
+      if (_alts.length && _eval === 'Mejorable') _c += ' Alternativas narrativas: ' + _alts.join('; ') + '.';
+      return _c;
+    }
     case 'voz_pasiva':
       return `Voz pasiva: ${f.explanation} Posible versión activa: «${f.activeVersion}».`;
     case 'frases_largas':

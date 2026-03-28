@@ -427,46 +427,96 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 1 · Pronombres y deixis</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Leísmos, laísmos y loísmos</div>
-      <div class="corr-entry-desc">Los usos incorrectos de le, la y lo pueden generar incorrecciones que distraen al lector. En la norma general del español, lo y la son complemento directo; le, indirecto.</div>
-      <div class="example-box"><span class="ex-bad">La dije que viniera.</span><br><span class="ex-ok">Le dije que viniera.</span></div>
+      <div class="corr-entry-desc">Usos incorrectos de le, la y lo. Regla general: <em>lo/la</em> = complemento directo; <em>le</em> = complemento indirecto.</div>
+      <div class="example-box">
+        <span class="ex-bad">La dije que viniera.</span> <span style="color:var(--muted);font-size:10px">laísmo</span><br>
+        <span class="ex-ok">Le dije que viniera.</span><br><br>
+        <span class="ex-bad">A tu hermano le vi ayer.</span> <span style="color:var(--muted);font-size:10px">leísmo</span><br>
+        <span class="ex-ok">A tu hermano lo vi ayer.</span><br><br>
+        <span class="ex-bad">A Juan lo compré un libro.</span> <span style="color:var(--muted);font-size:10px">loísmo</span><br>
+        <span class="ex-ok">A Juan le compré un libro.</span>
+      </div>
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Ambigüedades pronominales</div>
-      <div class="corr-entry-desc">Pronombres como él, ella, lo, la cuyo referente no queda claro por la presencia de varios personajes cercanos.</div>
-      <div class="example-box"><span class="ex-bad">Juan habló con Pedro cuando él salió.</span><br><span class="ex-ok">Juan habló con Pedro cuando Pedro salió.</span></div>
+      <div class="corr-entry-desc">Pronombres cuyo referente no queda claro cuando hay varios personajes o elementos cercanos.</div>
+      <div class="example-box">
+        <span class="ex-bad">Juan habló con Pedro cuando él salió.</span><br>
+        <span class="ex-ok">Juan habló con Pedro cuando Pedro salió.</span><br><br>
+        <span class="ex-bad">La madre abrazó a la hija y ella lloró.</span><br>
+        <span class="ex-ok">La madre abrazó a la hija y la niña lloró.</span>
+      </div>
     </div>
 
     <div class="corr-group-title">Grupo 2 · Léxico y vocabulario</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Repeticiones léxicas cercanas</div>
-      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas sin intención estilística produce sensación de descuido.</div>
-      <div class="example-box"><span class="ex-bad">Abrió la puerta y miró el pasillo. Miró a ambos lados.</span><br><span class="ex-ok">Abrió la puerta y observó el pasillo. Miró a ambos lados.</span></div>
+      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas sin intención estilística. Las repeticiones anafóricas intencionadas (recurso literario) no se señalan.</div>
+      <div class="example-box">
+        <span class="ex-bad">Abrió la puerta. Cruzó la puerta despacio. La puerta crujió.</span><br>
+        <span class="ex-ok">Abrió la puerta. La cruzó despacio. Los goznes crujieron.</span><br><br>
+        <span class="ex-bad">Pensó que era tarde. Pensó que debería irse.</span><br>
+        <span class="ex-ok">Pensó que era tarde. Debería irse.</span>
+      </div>
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Verbos comodín · Sustantivos genéricos · Muletillas · Pleonasmos</div>
-      <div class="corr-entry-desc">Verbos vagos (hacer, poner), sustantivos difusos (cosa, tema), expresiones repetidas sin valor y redundancias (subir arriba) que empobrecen el estilo.</div>
-      <div class="example-box"><span class="ex-bad">Hizo una sonrisa. / Subir arriba.</span><br><span class="ex-ok">Sonrió. / Subir.</span></div>
+      <div class="corr-entry-desc">Palabras que empobrecen el estilo: verbos vagos, sustantivos difusos, expresiones vacías y redundancias.</div>
+      <div class="example-box">
+        <span class="ex-bad">Hizo una sonrisa. / Puso los ojos en blanco.</span><br>
+        <span class="ex-ok">Sonrió. / Alzó los ojos.</span><br><br>
+        <span class="ex-bad">Hay algo en esa cosa que no entiendo.</span><br>
+        <span class="ex-ok">Hay algo en ese objeto que no entiendo.</span><br><br>
+        <span class="ex-bad">De repente llegó. De repente todo cambió.</span><br>
+        <span class="ex-ok">Llegó de improviso. Súbitamente todo cambió.</span><br><br>
+        <span class="ex-bad">Subió arriba. / Salió fuera.</span><br>
+        <span class="ex-ok">Subió. / Salió.</span>
+      </div>
     </div>
 
     <div class="corr-group-title">Grupo 3 · Estilo y fluidez</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Adverbios en -mente · Voz pasiva · Frases largas · Exceso de nombres · Ritmo</div>
-      <div class="corr-entry-desc">Acumulaciones que vuelven la prosa pesada, estructuras que frenan el ritmo o desequilibrios entre el tipo de escena y la longitud de las frases.</div>
-      <div class="example-box"><span class="ex-bad">La puerta fue abierta por Carlos.</span><br><span class="ex-ok">Carlos abrió la puerta.</span></div>
+      <div class="corr-entry-desc">Cada adverbio en -mente se evalúa individualmente: si aporta valor literario (adecuado) o si puede sustituirse por algo más expresivo (mejorable). También detecta pasivas, frases de +40 palabras y ritmo desequilibrado.</div>
+      <div class="example-box">
+        <span class="ex-bad">Cerró la puerta suavemente.</span> <span style="color:var(--muted);font-size:10px">mejorable</span><br>
+        <span class="ex-ok">Cerró la puerta con sumo cuidado. / Con un sigilo casi reverencial.</span><br><br>
+        <span class="ex-bad">Caminaba lentamente, como si cada paso pesara.</span> <span style="color:var(--muted);font-size:10px">adecuado, no se señala</span><br><br>
+        <span class="ex-bad">La puerta fue abierta por Carlos.</span><br>
+        <span class="ex-ok">Carlos abrió la puerta.</span>
+      </div>
     </div>
 
     <div class="corr-group-title">Grupo 4 · Gramática</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Gerundios · Dequeísmo · Concordancia · Tiempos verbales</div>
-      <div class="corr-entry-desc">Errores gramaticales frecuentes: gerundio de posterioridad, preposición de sobra o ausente ante que, falta de acuerdo entre sujeto y verbo, y mezclas no intencionales de tiempos del pasado.</div>
-      <div class="example-box"><span class="ex-bad">Salió de casa, encontrando a Juan.</span><br><span class="ex-ok">Salió de casa y encontró a Juan.</span></div>
+      <div class="corr-entry-desc">Errores gramaticales que pueden pasar inadvertidos: gerundio de posterioridad, de que incorrecto, desacuerdo sujeto-verbo, y mezclas de tiempos.</div>
+      <div class="example-box">
+        <span class="ex-bad">Salió de casa, encontrando a Juan.</span> <span style="color:var(--muted);font-size:10px">gerundio de posterioridad</span><br>
+        <span class="ex-ok">Salió de casa y encontró a Juan.</span><br><br>
+        <span class="ex-bad">Pienso de que tienes razón.</span> <span style="color:var(--muted);font-size:10px">dequeísmo</span><br>
+        <span class="ex-ok">Pienso que tienes razón.</span><br><br>
+        <span class="ex-bad">Los alumnos llegó tarde.</span> <span style="color:var(--muted);font-size:10px">concordancia</span><br>
+        <span class="ex-ok">Los alumnos llegaron tarde.</span><br><br>
+        <span class="ex-bad">Entró en la sala y miraba por la ventana.</span> <span style="color:var(--muted);font-size:10px">mezcla de tiempos</span><br>
+        <span class="ex-ok">Entró en la sala y miró por la ventana.</span>
+      </div>
     </div>
 
     <div class="corr-group-title">Grupo 5 · Ortotipografía</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
-      <div class="corr-entry-desc">Errores tipográficos que se corrigen directamente en el documento. Los cambios quedan marcados en negrita para que puedas identificarlos fácilmente.</div>
-      <div class="example-box"><span class="ex-bad">-No voy - dijo Juan. / "Buenos días"</span><br><span class="ex-ok">—No voy —dijo Juan. / «Buenos días»</span></div>
+      <div class="corr-entry-desc">Correcciones tipográficas directas en el documento. Los cambios quedan marcados en <strong>negrita</strong> para identificarlos fácilmente.</div>
+      <div class="example-box">
+        <span class="ex-bad">-No voy -dijo Juan.</span><br>
+        <span class="ex-ok">—No voy —dijo Juan.</span><br><br>
+        <span class="ex-bad">"Buenos días, señora"</span><br>
+        <span class="ex-ok">«Buenos días, señora»</span><br><br>
+        <span class="ex-bad">Espera aquí . No tardo...</span><br>
+        <span class="ex-ok">Espera aquí. No tardo…</span><br><br>
+        <span class="ex-bad">¡Estoy enfadado¡</span><br>
+        <span class="ex-ok">¡Estoy enfadado!</span>
+      </div>
     </div>
 
     <div class="corr-group-title">Grupo 6 · Coherencia narrativa <span class="tag coherence">Documento completo</span></div>
@@ -481,7 +531,7 @@ function getManualHTML() {
   <div class="welcome-section">
     <div class="ws-title">B — Cómo funciona</div>
     <div class="ws-body">
-      <p>Plumia envía tu texto a la API de <strong>Claude Sonnet</strong> (Anthropic), un modelo de IA con comprensión profunda del español. El análisis se realiza de forma segura: el texto se transmite cifrado y no se almacena ni se usa para entrenar ningún modelo.</p>
+      <p>Plumia envía tu texto a la API de <strong>Claude Sonnet</strong> (Anthropic), un modelo de IA con comprensión profunda del español. <strong style="color:var(--err)">El análisis se realiza de forma segura: el texto se transmite cifrado y no se almacena ni se usa para entrenar ningún modelo.</strong></p>
       <p><strong>¿Qué texto se analiza?</strong> Si seleccionas texto antes de lanzar el análisis, solo se envía ese fragmento. Si no hay nada seleccionado, se analiza el documento completo excluyendo el índice, encabezados, pies de página y notas al pie.</p>
     </div>
   </div>

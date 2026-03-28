@@ -221,7 +221,7 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categorí
     label: 'Estilo y fluidez',
     ids: ['adverbios_mente', 'voz_pasiva', 'frases_largas', 'nombres_propios'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector de estilo experto en español. Analiza el texto y devuelve CUATRO análisis:
-1. "adverbios": adverbios terminados en "-mente" que sean excesivos o sustituibles. Ej: "lentamente, pausadamente, cuidadosamente" acumulados. Devuelve el fragmento EXACTO que los contiene.
+1. "adverbios": adverbios terminados en "-mente". Evalúa cada uno: "Adecuado" si aporta valor literario, "Mejorable" si es débil o sustituible. Para los mejorables propone 2 alternativas sin adverbios (verbos precisos, acciones, recursos narrativos). No elimines los que funcionen bien.
 2. "voz_pasiva": voz pasiva que podría ser activa. Ej: "La carta fue escrita por Elena" → "Elena escribió la carta". "El informe ha sido revisado por el director" → "El director ha revisado el informe". Devuelve el fragmento EXACTO.
 3. "frases_largas": frases de más de 40 palabras que dificulten la lectura.
 4. "nombres": nombres propios repetidos excesivamente. Ej: "Carlos" aparece 5 veces en 2 líneas.
@@ -230,7 +230,7 @@ Texto:
 ${text}
 
 Responde ÚNICAMENTE con este JSON:
-{"adverbios":{"findings":[{"originalText":"fragmento exacto con los adverbios","adverbs":["adv1","adv2"],"explanation":"por qué revisarlo"}]},"voz_pasiva":{"findings":[{"originalText":"fragmento exacto en pasiva","explanation":"por qué revisarlo","activeVersion":"versión activa"}]},"frases_largas":{"findings":[{"originalText":"frase completa exacta","wordCount":45,"explanation":"por qué","suggestion":"cómo dividir"}]},"nombres":{"findings":[{"name":"nombre","occurrences":["frag1","frag2"],"explanation":"por qué","suggestion":"cómo aligerar"}]}}
+{"adverbios":{"findings":[{"originalText":"fragmento exacto","adverb":"adverbio detectado","evaluation":"Adecuado|Mejorable","explanation":"por qué","alternatives":["alt1","alt2"]}]},"voz_pasiva":{"findings":[{"originalText":"fragmento exacto en pasiva","explanation":"por qué revisarlo","activeVersion":"versión activa"}]},"frases_largas":{"findings":[{"originalText":"frase completa exacta","wordCount":45,"explanation":"por qué","suggestion":"cómo dividir"}]},"nombres":{"findings":[{"name":"nombre","occurrences":["frag1","frag2"],"explanation":"por qué","suggestion":"cómo aligerar"}]}}
 Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categoría: findings:[].`,
   },
   {
