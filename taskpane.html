@@ -1381,6 +1381,9 @@ function handleAnalysisError(err, canResume, corrLabel) {
   if (err.message?.includes('API_KEY_INVALID')) {
     title = 'Clave de API inválida';
     text  = 'Revisa tu clave en console.anthropic.com';
+  } else if (err.message?.includes('INSUFFICIENT_CREDITS')) {
+    title = 'Saldo insuficiente';
+    text  = 'Tu cuenta de Anthropic no tiene crédito suficiente para completar el análisis. Recárgala en console.anthropic.com → Billing y vuelve a intentarlo. El análisis se puede retomar desde donde se interrumpió.';
   } else if (err.message?.includes('RATE_LIMIT')) {
     title = 'Límite de uso alcanzado';
     text  = 'Espera unos segundos e inténtalo de nuevo';

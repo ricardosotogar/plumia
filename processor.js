@@ -117,6 +117,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const msg = d.error?.message || `HTTP ${resp.status}`;
       if (resp.status === 401) throw new Error('API_KEY_INVALID: ' + msg);
       if (resp.status === 429) throw new Error('RATE_LIMIT: ' + msg);
+      if (resp.status === 402 || msg.toLowerCase().includes('credit') || msg.toLowerCase().includes('balance') || msg.toLowerCase().includes('insufficient')) {
+        throw new Error('INSUFFICIENT_CREDITS: ' + msg);
+      }
       throw new Error('API_ERROR: ' + msg);
     }
 
@@ -318,7 +321,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       } catch(err) {
         this._saveProgress({ text: text.substring(0, 100), completedIndex: gi - 1 + coherenceIds.length, results: allResults });
         // Errores fatales (autenticación, rate limit) → parar todo
-        if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('RATE_LIMIT')) {
+        if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('RATE_LIMIT') || err.message?.includes('INSUFFICIENT_CREDITS')) {
           this.errored = true;
           this.onError(err, gi > 0 || coherenceIds.length > 0, group.label);
           return allResults;
