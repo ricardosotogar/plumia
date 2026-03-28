@@ -430,7 +430,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 1 · Pronombres y deixis</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Leísmos, laísmos y loísmos</div>
-      <div class="corr-entry-desc">Usos incorrectos de le, la y lo. Regla general: <em>lo/la</em> = complemento directo; <em>le</em> = complemento indirecto.</div>
+      <div class="corr-entry-desc">Usos incorrectos de le, la y lo. Se marca en rojo solo el pronombre erróneo con ◆ rojo.</div>
       <div class="example-box">
         <span class="ex-bad">La dije que viniera.</span> <em>→</em> <span class="ex-ok">Le dije que viniera.</span> <span style="color:var(--muted);font-size:10px">laísmo</span><br>
         <span class="ex-bad">A Juan lo compré un libro.</span> <em>→</em> <span class="ex-ok">A Juan le compré un libro.</span> <span style="color:var(--muted);font-size:10px">loísmo</span>
@@ -438,7 +438,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Ambigüedades pronominales</div>
-      <div class="corr-entry-desc">Pronombres cuyo referente no queda claro cuando hay varios personajes o elementos cercanos.</div>
+      <div class="corr-entry-desc">Pronombres cuyo referente no queda claro. Se marca la frase con ◆¹…◆² en lavanda.</div>
       <div class="example-box">
         <span class="ex-bad">Juan habló con Pedro cuando él salió.</span><br>
         <span class="ex-ok">Juan habló con Pedro cuando Pedro salió.</span>
@@ -448,7 +448,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 2 · Léxico y vocabulario</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Repeticiones léxicas cercanas</div>
-      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas sin intención estilística.</div>
+      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas. Se resalta en amarillo con ◆ amarillo.</div>
       <div class="example-box">
         <span class="ex-bad">Abrió la puerta. Cruzó la puerta. La puerta crujió.</span><br>
         <span class="ex-ok">Abrió la puerta. La cruzó. Los goznes crujieron.</span>
@@ -456,7 +456,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Verbos comodín</div>
-      <div class="corr-entry-desc">Verbos vagos (hacer, poner, tener, dar…) donde podría usarse uno más preciso.</div>
+      <div class="corr-entry-desc">Verbos vagos (hacer, poner, tener, dar…). Se resalta en naranja el verbo con ◆ naranja.</div>
       <div class="example-box">
         <span class="ex-bad">Hizo una sonrisa. / Puso los ojos en blanco.</span><br>
         <span class="ex-ok">Sonrió. / Alzó los ojos.</span>
@@ -464,7 +464,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Sustantivos genéricos</div>
-      <div class="corr-entry-desc">Sustantivos difusos (cosa, tema, aspecto…) que pueden concretarse.</div>
+      <div class="corr-entry-desc">Sustantivos difusos (cosa, tema, aspecto…). Se resalta en naranja con ◆ naranja.</div>
       <div class="example-box">
         <span class="ex-bad">Esa cosa no me cuadraba. / El tema era complicado.</span><br>
         <span class="ex-ok">Ese detalle no me cuadraba. / El asunto era complicado.</span>
@@ -472,7 +472,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Muletillas narrativas</div>
-      <div class="corr-entry-desc">Expresiones que pueden no aportar nada al texto: de repente, en cierto modo, básicamente…</div>
+      <div class="corr-entry-desc">Expresiones que pueden no aportar nada al texto: de repente, básicamente… Se resalta en naranja con ◆ naranja.</div>
       <div class="example-box">
         <span class="ex-bad">De repente llamaron. De repente todo cambió.</span><br>
         <span class="ex-ok">Llamaron. De pronto todo cambió.</span>
@@ -480,7 +480,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Pleonasmos</div>
-      <div class="corr-entry-desc">Redundancias donde una palabra ya contiene el significado de la otra.</div>
+      <div class="corr-entry-desc">Redundancias como «subió arriba». Se resalta en naranja la palabra redundante con ◆ naranja.</div>
       <div class="example-box">
         <span class="ex-bad">Subió arriba. / Entró dentro. / Sus propios ojos.</span><br>
         <span class="ex-ok">Subió. / Entró. / Sus ojos.</span>
@@ -490,7 +490,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 3 · Estilo y fluidez</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Adverbios en -mente</div>
-      <div class="corr-entry-desc">Evalúa cada adverbio en -mente: adecuado (aporta valor) o mejorable (sustituible por algo más expresivo).</div>
+      <div class="corr-entry-desc">Evalúa cada adverbio en -mente: adecuado o mejorable. Se resalta en verde el adverbio con ◆ verde.</div>
       <div class="example-box">
         <span class="ex-bad">Cerró la puerta suavemente.</span> <span style="color:var(--muted);font-size:10px">mejorable</span><br>
         <span class="ex-ok">Cerró la puerta con sumo cuidado.</span>
@@ -498,7 +498,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Voz pasiva innecesaria</div>
-      <div class="corr-entry-desc">Construcciones pasivas que resultarían más naturales en voz activa.</div>
+      <div class="corr-entry-desc">Construcciones pasivas innecesarias. Se delimita la frase con ◆¹…◆² en turquesa.</div>
       <div class="example-box">
         <span class="ex-bad">La carta fue escrita por Elena.</span><br>
         <span class="ex-ok">Elena escribió la carta.</span>
@@ -506,7 +506,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Frases demasiado largas</div>
-      <div class="corr-entry-desc">Oraciones de más de 40 palabras que dificultan la lectura.</div>
+      <div class="corr-entry-desc">Oraciones de más de 40 palabras. Se delimita la frase con ◆¹…◆² en rosa.</div>
       <div class="example-box">
         <span class="ex-bad">Cuando por fin llegó al destino después de horas de camino, cansado y con los pies doloridos por la larga marcha que había emprendido al amanecer sin desayunar…</span><br>
         <span class="ex-ok">Llegó exhausto. Había caminado desde el amanecer sin desayunar, sin saber muy bien hacia dónde se dirigía.</span>
@@ -514,7 +514,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Exceso de nombres propios</div>
-      <div class="corr-entry-desc">Un nombre propio repetido demasiadas veces en poco espacio.</div>
+      <div class="corr-entry-desc">Nombre propio repetido en poco espacio. Se resalta en azul el nombre con ◆ azul.</div>
       <div class="example-box">
         <span class="ex-bad">Carlos llegó. Carlos se sentó. Carlos abrió el libro. Carlos empezó a leer.</span><br>
         <span class="ex-ok">Carlos llegó y se sentó. Abrió el libro y empezó a leer.</span>
@@ -522,7 +522,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Ritmo narrativo</div>
-      <div class="corr-entry-desc">Desequilibrios entre el tipo de escena y la longitud de las frases.</div>
+      <div class="corr-entry-desc">Desequilibrios de ritmo entre escena y frases. Se delimita la frase con ◆¹…◆² en rosa.</div>
       <div class="example-box">
         <span class="ex-bad">Corrió. Saltó. Cayó.</span> <span style="color:var(--muted);font-size:10px">frases telegráficas en escena descriptiva de calma</span><br>
         <span class="ex-ok">Corrió hacia la orilla, saltó el muro con un impulso y cayó sobre la hierba húmeda.</span>
@@ -532,7 +532,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 4 · Gramática</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Gerundios incorrectos</div>
-      <div class="corr-entry-desc">Gerundio de posterioridad (acción que ocurre después de la principal) y otros usos incorrectos.</div>
+      <div class="corr-entry-desc">Gerundio de posterioridad y otros usos incorrectos. Se resalta en azul el gerundio con ◆ azul.</div>
       <div class="example-box">
         <span class="ex-bad">Salió de casa, encontrando a Juan en la escalera.</span><br>
         <span class="ex-ok">Salió de casa y encontró a Juan en la escalera.</span>
@@ -540,7 +540,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Dequeísmo y queísmo</div>
-      <div class="corr-entry-desc">«de que» donde sobra, o ausencia de «de» donde es necesaria.</div>
+      <div class="corr-entry-desc">«de que» donde sobra o falta. Se resalta en azul la expresión con ◆ azul.</div>
       <div class="example-box">
         <span class="ex-bad">Pienso de que tienes razón. / Estoy seguro que vendrá.</span><br>
         <span class="ex-ok">Pienso que tienes razón. / Estoy seguro de que vendrá.</span>
@@ -548,7 +548,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Concordancia</div>
-      <div class="corr-entry-desc">Falta de acuerdo entre sujeto y verbo, o entre sustantivo y adjetivo.</div>
+      <div class="corr-entry-desc">Falta de acuerdo entre sujeto y verbo o sustantivo y adjetivo. Se delimita la frase con ◆¹…◆² en rosa.</div>
       <div class="example-box">
         <span class="ex-bad">Los alumnos llegó tarde. / Hubieron problemas.</span><br>
         <span class="ex-ok">Los alumnos llegaron tarde. / Hubo problemas.</span>
@@ -556,7 +556,7 @@ function getManualHTML() {
     </div>
     <div class="corr-entry">
       <div class="corr-entry-name">Tiempos verbales</div>
-      <div class="corr-entry-desc">Mezclas no intencionales de indefinido e imperfecto en la misma escena.</div>
+      <div class="corr-entry-desc">Mezclas no intencionales de tiempos verbales. Se delimita la frase con ◆¹…◆² en turquesa.</div>
       <div class="example-box">
         <span class="ex-bad">Entró en la sala y miraba por la ventana.</span><br>
         <span class="ex-ok">Entró en la sala y miró por la ventana.</span>
@@ -566,7 +566,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 5 · Ortotipografía</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
-      <div class="corr-entry-desc">Correcciones tipográficas directas en el documento. Los caracteres corregidos quedan en <strong>negrita</strong> para identificarlos. No usan el sistema de colores ni el símbolo ◆.</div>
+      <div class="corr-entry-desc">Correcciones directas en el documento (guiones → rayas, comillas, etc.). Los cambios quedan en <strong>negrita</strong>. La primera corrección de cada tipo lleva un ◆ negro con comentario.</div>
       <div class="example-box">
         <span class="ex-bad">-No voy -dijo Juan. / "Buenos días"</span><br>
         <span class="ex-ok">—No voy —dijo Juan. / «Buenos días»</span>
@@ -576,7 +576,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 6 · Coherencia narrativa <span class="tag coherence">Documento completo</span></div>
     <div class="corr-entry">
       <div class="corr-entry-name">Personajes · Temporal · Objetos · Conocimiento · Tono · Nombres · POV</div>
-      <div class="corr-entry-desc">Detecta contradicciones entre capítulos: un personaje que sabe algo que aún no debería saber, un objeto que desaparece sin explicación, cambios de registro bruscos o saltos de punto de vista.</div>
+      <div class="corr-entry-desc">Contradicciones entre partes del texto: personajes, objetos, tono, punto de vista. Se delimita el fragmento con ◆¹…◆² en violeta.</div>
       <div class="example-box"><span class="ex-bad">Cap.1: «Era la primera vez que tocaba un muerto.»<br>Cap.14: «Es la primera vez que toco un muerto.»</span></div>
     </div>
     <div class="note-box">⚠ Las opciones de coherencia narrativa requieren analizar el documento completo y pueden ser hasta 5× más costosas que el resto.</div>
@@ -617,13 +617,78 @@ function getManualHTML() {
   </div>
 
   <div class="welcome-section">
-    <div class="ws-title">F — Resultados</div>
+    <div class="ws-title">F — Cómo se marcan los errores</div>
     <div class="ws-body">
-      <p>Al finalizar el análisis, Plumia modifica el documento actual aplicando las marcas y añadiendo el informe al final. El documento original <strong>no se guarda automáticamente</strong> — usa <strong>Archivo → Guardar como</strong> con el nombre sugerido para conservar el original intacto.</p>
-      <p><strong>Opción A — Documento marcado con colores:</strong> Cada incidencia se resalta en el texto con un color según su tipo. Justo después del fragmento marcado aparece el símbolo <strong>◆</strong> en el color del error — al hacer clic sobre él se abre el comentario de Word con la explicación. Si un mismo fragmento tiene varios tipos de error, aparecen varios <strong>◆</strong> de distintos colores. Además se añade un informe resumen al final del documento.</p>
-      <p><strong>Opción B — Solo informe de estadísticas:</strong> Añade al final únicamente el listado de incidencias por categoría, con el número de página aproximado, sin modificar el texto.</p>
-      <p><strong>Leyenda de colores:</strong> 🔴 Rojo = leísmos · 🟡 Amarillo = repeticiones · 🟢 Verde = adverbios -mente · 🟠 Naranja = verbos/sustantivos/muletillas/pleonasmos · 🔵 Turquesa = voz pasiva/tiempos · 🩷 Rosa = frases largas/diálogo · 💙 Azul = nombres/gerundios/concordancia/ritmo · 🟣 Violeta = coherencia narrativa</p>
+      <p>Al finalizar el análisis, Plumia modifica el documento actual y añade un informe al final. El original <strong>no se guarda automáticamente</strong> — usa <strong>Archivo → Guardar como</strong> con el nombre sugerido.</p>
+
+      <p><strong>Opción A — Documento marcado:</strong> Plumia señala los errores directamente en el texto usando el símbolo <strong>◆</strong> y colores. Al hacer clic sobre el símbolo ◆ se abre el comentario de Word con la explicación y sugerencias. Además se añade un informe resumen al final.</p>
+
+      <p><strong>Opción B — Solo informe:</strong> Sin tocar el texto, añade al final el listado de incidencias por categoría con número de página aproximado.</p>
     </div>
+
+    <div class="corr-group-title">Sistema de marcado — ◆ y colores</div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#CC0000">◆ Rojo — Leísmos, laísmos y loísmos</div>
+      <div class="corr-entry-desc">Se marca en rojo solo el pronombre incorrecto (la, le, lo). El símbolo ◆ rojo aparece justo antes del pronombre. El comentario explica la forma correcta.</div>
+      <div class="example-box"><span style="color:#CC0000">◆</span><span style="color:#CC0000"><strong>la</strong></span> dije que viniera. <em>→ comentario: «Le dije que viniera»</em></div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#B8860B">◆ Amarillo — Repeticiones léxicas</div>
+      <div class="corr-entry-desc">Se resalta en amarillo la primera repetición de la palabra problemática. El símbolo ◆ aparece antes de la palabra resaltada.</div>
+      <div class="example-box">Abrió la <span style="background:#FFD966;padding:0 2px">◆ puerta</span>. Cruzó la <span style="background:#FFD966;padding:0 2px">puerta</span>.</div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#2E7D00">◆ Verde — Adverbios en -mente</div>
+      <div class="corr-entry-desc">Se resalta en verde solo el adverbio. El símbolo ◆ aparece antes. El comentario indica si es adecuado o mejorable, con alternativas narrativas en caso de serlo.</div>
+      <div class="example-box">Cerró la puerta <span style="background:#92D050;padding:0 2px">◆ suavemente</span>. <em>→ mejorable: «con sumo cuidado»</em></div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#CC5500">◆ Naranja — Verbos comodín · Sustantivos genéricos · Muletillas · Pleonasmos</div>
+      <div class="corr-entry-desc">Se resalta en naranja la palabra problemática concreta. El símbolo ◆ aparece antes.</div>
+      <div class="example-box"><span style="background:#FF9900;padding:0 2px">◆ hizo</span> una sonrisa. / Subió <span style="background:#FF9900;padding:0 2px">◆ arriba</span>.</div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#0097C8">◆¹ ◆² Turquesa — Voz pasiva · Tiempos verbales</div>
+      <div class="corr-entry-desc">Sin resaltado. Se inserta ◆¹ antes de la frase y ◆² al final para delimitar el fragmento. El comentario va en ◆¹.</div>
+      <div class="example-box"><span style="color:#0097C8">◆¹</span> La carta fue escrita por Elena la semana pasada. <span style="color:#0097C8">◆²</span></div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#C0006A">◆¹ ◆² Rosa — Frases largas · Puntuación diálogo · Ritmo · Concordancia</div>
+      <div class="corr-entry-desc">Sin resaltado (salvo concordancia, que resalta la primera palabra). ◆¹ antes y ◆² después delimitan la frase. Si coinciden varios de estos errores en la misma frase, el comentario los agrupa todos.</div>
+      <div class="example-box"><span style="color:#C0006A">◆¹</span> Cuando por fin llegó al destino después de horas… <span style="color:#C0006A">◆²</span></div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#0055A0">◆ Azul — Exceso de nombres propios · Gerundios · Dequeísmo</div>
+      <div class="corr-entry-desc">Se resalta en azul la palabra o expresión problemática. El símbolo ◆ aparece antes.</div>
+      <div class="example-box">Salió de casa <span style="background:#0070C0;color:white;padding:0 2px">◆ encontrando</span> a Juan.</div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#5020A0">◆¹ ◆² Lavanda — Ambigüedades pronominales</div>
+      <div class="corr-entry-desc">Sin resaltado. ◆¹ y ◆² delimitan la frase ambigua. El comentario indica los posibles referentes y sugiere reformulación.</div>
+      <div class="example-box"><span style="color:#5020A0">◆¹</span> Juan habló con Pedro cuando él salió. <span style="color:#5020A0">◆²</span></div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name" style="color:#6B2197">◆¹ ◆² Violeta — Coherencia narrativa</div>
+      <div class="corr-entry-desc">Sin resaltado. ◆¹ y ◆² delimitan el fragmento con la contradicción. El comentario cita la ubicación de ambas menciones contradictorias.</div>
+      <div class="example-box"><span style="color:#6B2197">◆¹</span> Era la primera vez que lo veía. <span style="color:#6B2197">◆²</span> <em>→ contradice cap.1</em></div>
+    </div>
+
+    <div class="corr-entry">
+      <div class="corr-entry-name">◆ Negro — Ortotipografía pura</div>
+      <div class="corr-entry-desc">Los errores tipográficos se corrigen directamente en el documento (guiones → rayas, comillas inglesas → españolas, ¡ de cierre, espacios antes de puntuación). La primera corrección de cada tipo lleva un ◆ negro con un comentario explicando que el cambio se aplica en todo el documento. Las correcciones quedan en <strong>negrita</strong>.</div>
+      <div class="example-box"><span style="font-weight:600">◆ —No voy —dijo Juan. / «Buenos días»</span></div>
+    </div>
+
+    <div class="note-box">Si en un mismo fragmento coinciden varios tipos de error, Plumia puede mostrar varios ◆ de distintos colores. Para errores de tipo frase que coincidan (frases largas, ritmo, diálogo, concordancia, ambigüedad, coherencia), el comentario los agrupa en uno solo.</div>
   </div>`;
 }
 
