@@ -210,19 +210,20 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       d.font.bold            = true;
       d.font.highlightColor  = 'None';
       d.font.size            = 18; // 9pt en half-points
+      await ctx.sync(); // sync 1: commit replacement + styling
+
       if (commentText) {
+        const safeComment = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
         try {
-          // insertComment on a search result range
-          d.insertComment(commentText);
+          d.insertComment(safeComment);
+          await ctx.sync(); // sync 2: commit comment
         } catch(e) {
-          // Fallback: try on the paragraph
           try {
-            const cp = d.paragraphs.getFirst();
-            cp.getRange().insertComment(commentText);
+            d.paragraphs.getFirst().insertComment(safeComment);
+            await ctx.sync();
           } catch(e2) {}
         }
       }
-      await ctx.sync();
     }
   }
 
@@ -298,28 +299,59 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     await this._insertDiamond(ctx, body, target.getRange('Start'), 'Before', colorHex, commentText, null);
   }
 
-  // Inserta ◆¹ antes de la frase y ◆² después, sin resaltado
-  // IMPORTANTE: insertar primero el ◆² (al final) y luego el ◆¹ (al inicio)
-  // para que la inserción del primero no invalide la posición del segundo.
+  // Inserta ◆¹ antes de la frase y ◆² después, sin resaltado.
+  // CLAVE: insertar AMBOS marcadores sin ningún ctx.sync() entre ellos
+  // para evitar que el range quede stale y el segundo marcador no se encuentre.
   async _applyBracketsMark(ctx, body, range, finding, colorHex, commentText) {
-    // Paso 1: marcar el final con un marcador temporal antes de modificar nada
-    const endMarker = `\u00A7PLMend${this._markerIdx}\u00A7`;
-    range.getRange('End').insertText(endMarker, 'After');
-    await ctx.sync();
+    const idx  = this._markerIdx;
+    this._markerIdx += 2; // reservar 2 índices
 
-    // Paso 2: insertar ◆¹ al inicio (con comentario)
-    await this._insertDiamond(ctx, body, range.getRange('Start'), 'Before', colorHex, commentText, '\u00B9');
+    // Marcadores SIN caracteres especiales de Word (sin §, sin [])
+    const startM = `PLMstart${idx}PLMstart`;
+    const endM   = `PLMend${idx}PLMend`;
 
-    // Paso 3: encontrar el marcador de fin y reemplazarlo con ◆²
-    const endMr = body.search(endMarker, {matchCase:true, matchWholeWord:false, matchWildcards:false});
-    endMr.load('items'); await ctx.sync();
-    if (endMr.items.length > 0) {
-      const d = endMr.items[0];
-      d.insertText('\u25C6\u00B2', 'Replace');
-      d.font.color          = colorHex;
-      d.font.bold           = true;
-      d.font.highlightColor = 'None';
-      d.font.size           = 18;
+    // ATÓMICO: ambas inserciones en cola antes de cualquier sync
+    // End primero para que insertar en Start no desplace End
+    range.getRange('End').insertText(endM, 'After');
+    range.getRange('Start').insertText(startM, 'Before');
+    await ctx.sync(); // un único sync para ambas inserciones
+
+    // ── Reemplazar marcador de inicio → ◆¹ ──────────────────────────────────
+    const smr = body.search(startM, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+    smr.load('items'); await ctx.sync();
+    if (smr.items.length > 0) {
+      const ds = smr.items[0];
+      ds.insertText('\u25C6\u00B9', 'Replace'); // ◆¹
+      ds.font.color          = colorHex;
+      ds.font.bold           = true;
+      ds.font.highlightColor = 'None';
+      ds.font.size           = 18;
+      await ctx.sync(); // sync: commit replacement + styling
+
+      if (commentText) {
+        const safeComment = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
+        try {
+          ds.insertComment(safeComment);
+          await ctx.sync();
+        } catch(e) {
+          try {
+            ds.paragraphs.getFirst().insertComment(safeComment);
+            await ctx.sync();
+          } catch(e2) {}
+        }
+      }
+    }
+
+    // ── Reemplazar marcador de fin → ◆² ─────────────────────────────────────
+    const emr = body.search(endM, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+    emr.load('items'); await ctx.sync();
+    if (emr.items.length > 0) {
+      const de = emr.items[0];
+      de.insertText('\u25C6\u00B2', 'Replace'); // ◆²
+      de.font.color          = colorHex;
+      de.font.bold           = true;
+      de.font.highlightColor = 'None';
+      de.font.size           = 18;
       await ctx.sync();
     }
   }
@@ -572,19 +604,25 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       title.font.size = 28;
       title.font.color = '1a1a2e';
 
+      // Párrafo reset después del título para cortar herencia de 28pt
+      const rp0 = body.insertParagraph('', 'End');
+      rp0.font.size = 22; rp0.font.bold = false;
+
       const h2a = body.insertParagraph('Resumen por categor\u00EDa', 'End');
       h2a.font.bold = true; h2a.font.size = 24; h2a.font.color = '1a1a2e';
       for (const result of allResults) {
         if (!result.findings.length) continue;
-        body.insertParagraph(
+        const bp = body.insertParagraph(
           `\u2022 ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`,
           'End'
         );
+        bp.font.size = 22; bp.font.bold = false; bp.font.color = '222222';
       }
       const totalPara = body.insertParagraph(`Total: ${total} incidencias detectadas`, 'End');
-      totalPara.font.bold = true;
+      totalPara.font.bold = true; totalPara.font.size = 22; totalPara.font.color = '1a1a2e';
 
-      body.insertParagraph('', 'End');
+      const rp1 = body.insertParagraph('', 'End');
+      rp1.font.size = 22; rp1.font.bold = false;
       const h2b = body.insertParagraph('Detalle por categor\u00EDa', 'End');
       h2b.font.bold = true; h2b.font.size = 24; h2b.font.color = '1a1a2e';
 
@@ -613,16 +651,21 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
           const numPara = body.insertParagraph(`${i+1}.  ${preview}${pageSuffix}`, 'End');
           numPara.font.bold   = true;
-          numPara.font.size   = 22; // 11pt
+          numPara.font.size   = 22;
           numPara.font.italic = false;
+          numPara.font.color  = '0f3460';
 
           const comment = buildCommentText([f]);
           if (comment) {
-            const comPara = body.insertParagraph(comment, 'End');
-            comPara.font.size   = 20; // 10pt
+            const comPara = body.insertParagraph(comment.replace(/[\r\n]+/g, '\n').substring(0, 600), 'End');
+            comPara.font.size   = 20;
             comPara.font.italic = false;
             comPara.font.bold   = false;
+            comPara.font.color  = '0f3460';
           }
+          // Reset para cortar herencia de tamaño al siguiente párrafo
+          const sep = body.insertParagraph('', 'End');
+          sep.font.size = 20; sep.font.bold = false;
         }
         body.insertParagraph('', 'End');
       }
