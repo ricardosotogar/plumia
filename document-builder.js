@@ -302,30 +302,77 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   async _applyMark(ctx, range, finding) {
-    const colorEntry = finding.colorId ? COLOR_MAP[finding.colorId] : null;
+    const mergedFindings = finding.mergedFindings || [finding];
+
     if (finding.directFix) {
       if (finding.correction) { range.insertText(finding.correction, 'Replace'); range.font.bold = true; }
-    } else if (colorEntry?.type === 'bracket') {
-      range.getRange('Start').insertText('[', 'Before');
-      range.getRange('End').insertText(']', 'After');
-    } else if (colorEntry?.type === 'highlight') {
+      return;
+    }
+
+    // ── 1. Aplicar color/resaltado al texto marcado ───────────────────────
+    const colorEntry = finding.colorId ? COLOR_MAP[finding.colorId] : null;
+    if (colorEntry?.type === 'highlight' || colorEntry?.type === 'bracket') {
+      // bracket ya no usa corchetes — usa resaltado como los demás
       range.font.highlightColor = WORD_HIGHLIGHT[colorEntry.hex] || 'Yellow';
     } else if (colorEntry?.type === 'text') {
       range.font.color = colorEntry.hex;
     }
-    const commentText = buildCommentText(finding.mergedFindings || [finding]);
-    if (commentText) { try { range.insertComment(commentText); } catch(e) {} }
+
+    // ── 2. Insertar ◆ después del rango, uno por color distinto ──────────
+    // Agrupar mergedFindings por colorId para insertar un ◆ por color
+    const byColor = {};
+    for (const f of mergedFindings) {
+      const cid = f.colorId || finding.colorId;
+      if (!byColor[cid]) byColor[cid] = [];
+      byColor[cid].push(f);
+    }
+
+    // Comentario unificado con todos los errores
+    const commentText = buildCommentText(mergedFindings);
+
+    // Insertar los ◆ al final del rango
+    const colorIds = Object.keys(byColor);
+    for (let i = 0; i < colorIds.length; i++) {
+      const cid   = colorIds[i];
+      const ce    = COLOR_MAP[cid];
+      const hex   = ce?.hex || (colorEntry?.hex || '555555');
+      const isFirst = i === 0;
+
+      // Insertar el símbolo ◆ justo después del texto
+      range.getRange('End').insertText('◆', 'After');
+      await ctx.sync();
+
+      // Buscar el ◆ recién insertado en el párrafo del rango
+      try {
+        const para = range.paragraphs.getLast();
+        para.load('text'); await ctx.sync();
+        const diamonds = para.search('◆', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+        diamonds.load('items'); await ctx.sync();
+        if (diamonds.items.length > 0) {
+          // El último ◆ encontrado es el que acabamos de insertar
+          const d = diamonds.items[diamonds.items.length - 1];
+          // Aplicar color del tipo de error
+          if (ce?.type === 'highlight' || ce?.type === 'bracket') {
+            d.font.color = '#' + hex;
+          } else {
+            d.font.color = hex;
+          }
+          d.font.bold = true;
+          d.font.size = 9; // más pequeño para no molestar
+          // El comentario va solo en el primer ◆ (contiene todos los errores)
+          if (isFirst && commentText) {
+            try { d.insertComment(commentText); } catch(e) {}
+          }
+          await ctx.sync();
+        }
+      } catch(e) {
+        console.warn('Plumia: error insertando ◆:', e.message);
+      }
+    }
   }
 
   async highlightBrackets() {
-    await Word.run(async (ctx) => {
-      for (const char of ['[',']']) {
-        const results = ctx.document.body.search(char, {matchCase:true});
-        results.load('items'); await ctx.sync();
-        for (const r of results.items) { r.font.highlightColor = 'Pink'; r.font.bold = true; }
-      }
-      await ctx.sync();
-    });
+    // Ya no se usan corchetes — método mantenido por compatibilidad pero vacío
   }
 
   // Construye un mapa de texto → número de página aproximado

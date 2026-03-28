@@ -566,7 +566,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 5 · Ortotipografía</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
-      <div class="corr-entry-desc">Correcciones tipográficas directas en el documento. Los cambios quedan marcados en <strong>negrita</strong> para identificarlos fácilmente.</div>
+      <div class="corr-entry-desc">Correcciones tipográficas directas en el documento. Los caracteres corregidos quedan en <strong>negrita</strong> para identificarlos. No usan el sistema de colores ni el símbolo ◆.</div>
       <div class="example-box">
         <span class="ex-bad">-No voy -dijo Juan. / "Buenos días"</span><br>
         <span class="ex-ok">—No voy —dijo Juan. / «Buenos días»</span>
@@ -620,9 +620,9 @@ function getManualHTML() {
     <div class="ws-title">F — Resultados</div>
     <div class="ws-body">
       <p>Al finalizar el análisis, Plumia modifica el documento actual aplicando las marcas y añadiendo el informe al final. El documento original <strong>no se guarda automáticamente</strong> — usa <strong>Archivo → Guardar como</strong> con el nombre sugerido para conservar el original intacto.</p>
-      <p><strong>Opción A — Documento marcado con colores:</strong> Resalta las incidencias directamente en el texto con colores y comentarios de Word explicando cada una, más un informe resumen al final.</p>
-      <p><strong>Opción B — Solo informe de estadísticas:</strong> Añade al final únicamente el listado de incidencias por categoría, con el número de página aproximado de cada hallazgo, sin modificar el texto.</p>
-      <p>El informe incluye el número de página aproximado de cada incidencia para facilitar su localización en documentos largos.</p>
+      <p><strong>Opción A — Documento marcado con colores:</strong> Cada incidencia se resalta en el texto con un color según su tipo. Justo después del fragmento marcado aparece el símbolo <strong>◆</strong> en el color del error — al hacer clic sobre él se abre el comentario de Word con la explicación. Si un mismo fragmento tiene varios tipos de error, aparecen varios <strong>◆</strong> de distintos colores. Además se añade un informe resumen al final del documento.</p>
+      <p><strong>Opción B — Solo informe de estadísticas:</strong> Añade al final únicamente el listado de incidencias por categoría, con el número de página aproximado, sin modificar el texto.</p>
+      <p><strong>Leyenda de colores:</strong> 🔴 Rojo = leísmos · 🟡 Amarillo = repeticiones · 🟢 Verde = adverbios -mente · 🟠 Naranja = verbos/sustantivos/muletillas/pleonasmos · 🔵 Turquesa = voz pasiva/tiempos · 🩷 Rosa = frases largas/diálogo · 💙 Azul = nombres/gerundios/concordancia/ritmo · 🟣 Violeta = coherencia narrativa</p>
     </div>
   </div>`;
 }
