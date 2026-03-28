@@ -247,9 +247,12 @@
   <div style="font-size:12px;color:var(--mid);margin-bottom:8px" id="doneDesc"></div>
 
   <!-- Coste real del análisis -->
-  <div style="background:var(--sepia);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px">
-    <span style="font-size:11px;color:var(--mid);white-space:nowrap" id="doneCostLabel">Coste del análisis</span>
-    <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--ink);text-align:right" id="doneCost">—</span>
+  <div style="background:var(--sepia);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px">
+    <div style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px" id="doneCostLabel">Coste del análisis</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--ink)" id="doneCostEUR">—</span>
+      <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mid)" id="doneCostUSD">—</span>
+    </div>
   </div>
 
   <!-- Instrucciones guardar como (solo para modo marcado) -->
@@ -1412,19 +1415,22 @@ function showDoneScreen(output, allResults, realCostUSD, realCostEUR) {
   const totalFindings = allResults.reduce((sum, r) => sum + r.findings.length, 0);
 
   // Mostrar coste real (de la API) o estimado si algo falló
-  const costEl      = document.getElementById('doneCost');
-  const costLabelEl = document.getElementById('doneCostLabel');
+  const eurEl    = document.getElementById('doneCostEUR');
+  const usdEl    = document.getElementById('doneCostUSD');
+  const labelEl  = document.getElementById('doneCostLabel');
 
   if (realCostUSD > 0) {
-    costEl.textContent    = `${realCostEUR.toFixed(4)} €  /  $${realCostUSD.toFixed(4)}`;
-    if (costLabelEl) costLabelEl.textContent = 'Coste real del análisis';
+    eurEl.textContent  = `${realCostEUR.toFixed(4)} €`;
+    usdEl.textContent  = `$${realCostUSD.toFixed(4)}`;
+    if (labelEl) labelEl.textContent = 'Coste real del análisis';
   } else if (state.estimatedCostUSD > 0) {
-    // No se hicieron llamadas a la API (solo ortotipografía local) → mostrar estimado
-    costEl.textContent    = `${state.estimatedCostEUR.toFixed(4)} €  /  $${state.estimatedCostUSD.toFixed(4)}`;
-    if (costLabelEl) costLabelEl.textContent = 'Coste estimado (sin llamadas API)';
+    eurEl.textContent  = `${state.estimatedCostEUR.toFixed(4)} €`;
+    usdEl.textContent  = `$${state.estimatedCostUSD.toFixed(4)}`;
+    if (labelEl) labelEl.textContent = 'Coste estimado (sin llamadas API)';
   } else {
-    costEl.textContent = '$0.0000  /  0.0000 €';
-    if (costLabelEl) costLabelEl.textContent = 'Sin coste (análisis local)';
+    eurEl.textContent  = '0.0000 €';
+    usdEl.textContent  = '$0.0000';
+    if (labelEl) labelEl.textContent = 'Sin coste (análisis local)';
   }
 
   if (output.mode === 'marked') {
