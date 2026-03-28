@@ -210,7 +210,18 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       d.font.bold            = true;
       d.font.highlightColor  = 'None';
       d.font.size            = 18; // 9pt en half-points
-      if (commentText) { try { d.insertComment(commentText); } catch(e) {} }
+      if (commentText) {
+        try {
+          // insertComment on a search result range
+          d.insertComment(commentText);
+        } catch(e) {
+          // Fallback: try on the paragraph
+          try {
+            const cp = d.paragraphs.getFirst();
+            cp.getRange().insertComment(commentText);
+          } catch(e2) {}
+        }
+      }
       await ctx.sync();
     }
   }
@@ -288,11 +299,29 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // Inserta ◆¹ antes de la frase y ◆² después, sin resaltado
+  // IMPORTANTE: insertar primero el ◆² (al final) y luego el ◆¹ (al inicio)
+  // para que la inserción del primero no invalide la posición del segundo.
   async _applyBracketsMark(ctx, body, range, finding, colorHex, commentText) {
-    // Insertar ◆¹ antes
+    // Paso 1: marcar el final con un marcador temporal antes de modificar nada
+    const endMarker = `\u00A7PLMend${this._markerIdx}\u00A7`;
+    range.getRange('End').insertText(endMarker, 'After');
+    await ctx.sync();
+
+    // Paso 2: insertar ◆¹ al inicio (con comentario)
     await this._insertDiamond(ctx, body, range.getRange('Start'), 'Before', colorHex, commentText, '\u00B9');
-    // Insertar ◆² después
-    await this._insertDiamond(ctx, body, range.getRange('End'),   'After',  colorHex, null,        '\u00B2');
+
+    // Paso 3: encontrar el marcador de fin y reemplazarlo con ◆²
+    const endMr = body.search(endMarker, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+    endMr.load('items'); await ctx.sync();
+    if (endMr.items.length > 0) {
+      const d = endMr.items[0];
+      d.insertText('\u25C6\u00B2', 'Replace');
+      d.font.color          = colorHex;
+      d.font.bold           = true;
+      d.font.highlightColor = 'None';
+      d.font.size           = 18;
+      await ctx.sync();
+    }
   }
 
   // ── ENTRY POINT DE MARCADO ────────────────────────────────────────────────
@@ -539,9 +568,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       body.insertBreak('Page', 'End');
 
       const title = body.insertParagraph('INFORME DE INCIDENCIAS \u2014 PLUMIA', 'End');
-      title.styleBuiltIn = Word.Style.heading1;
+      title.font.bold = true;
+      title.font.size = 28;
+      title.font.color = '1a1a2e';
 
-      body.insertParagraph('Resumen por categor\u00EDa', 'End').styleBuiltIn = Word.Style.heading2;
+      const h2a = body.insertParagraph('Resumen por categor\u00EDa', 'End');
+      h2a.font.bold = true; h2a.font.size = 24; h2a.font.color = '1a1a2e';
       for (const result of allResults) {
         if (!result.findings.length) continue;
         body.insertParagraph(
@@ -553,14 +585,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       totalPara.font.bold = true;
 
       body.insertParagraph('', 'End');
-      body.insertParagraph('Detalle por categor\u00EDa', 'End').styleBuiltIn = Word.Style.heading2;
+      const h2b = body.insertParagraph('Detalle por categor\u00EDa', 'End');
+      h2b.font.bold = true; h2b.font.size = 24; h2b.font.color = '1a1a2e';
 
       for (const result of allResults) {
         if (!result.findings.length) continue;
         const catTitle = body.insertParagraph(
           `${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End'
         );
-        catTitle.styleBuiltIn = Word.Style.heading3;
+        catTitle.font.bold = true; catTitle.font.size = 22; catTitle.font.color = '0f3460';
 
         for (let i = 0; i < result.findings.length; i++) {
           const f = result.findings[i];
