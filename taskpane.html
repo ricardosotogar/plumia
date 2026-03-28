@@ -429,12 +429,8 @@ function getManualHTML() {
       <div class="corr-entry-name">Leísmos, laísmos y loísmos</div>
       <div class="corr-entry-desc">Usos incorrectos de le, la y lo. Regla general: <em>lo/la</em> = complemento directo; <em>le</em> = complemento indirecto.</div>
       <div class="example-box">
-        <span class="ex-bad">La dije que viniera.</span> <span style="color:var(--muted);font-size:10px">laísmo</span><br>
-        <span class="ex-ok">Le dije que viniera.</span><br><br>
-        <span class="ex-bad">A tu hermano le vi ayer.</span> <span style="color:var(--muted);font-size:10px">leísmo</span><br>
-        <span class="ex-ok">A tu hermano lo vi ayer.</span><br><br>
-        <span class="ex-bad">A Juan lo compré un libro.</span> <span style="color:var(--muted);font-size:10px">loísmo</span><br>
-        <span class="ex-ok">A Juan le compré un libro.</span>
+        <span class="ex-bad">La dije que viniera.</span> <em>→</em> <span class="ex-ok">Le dije que viniera.</span> <span style="color:var(--muted);font-size:10px">laísmo</span><br>
+        <span class="ex-bad">A Juan lo compré un libro.</span> <em>→</em> <span class="ex-ok">A Juan le compré un libro.</span> <span style="color:var(--muted);font-size:10px">loísmo</span>
       </div>
     </div>
     <div class="corr-entry">
@@ -442,63 +438,124 @@ function getManualHTML() {
       <div class="corr-entry-desc">Pronombres cuyo referente no queda claro cuando hay varios personajes o elementos cercanos.</div>
       <div class="example-box">
         <span class="ex-bad">Juan habló con Pedro cuando él salió.</span><br>
-        <span class="ex-ok">Juan habló con Pedro cuando Pedro salió.</span><br><br>
-        <span class="ex-bad">La madre abrazó a la hija y ella lloró.</span><br>
-        <span class="ex-ok">La madre abrazó a la hija y la niña lloró.</span>
+        <span class="ex-ok">Juan habló con Pedro cuando Pedro salió.</span>
       </div>
     </div>
 
     <div class="corr-group-title">Grupo 2 · Léxico y vocabulario</div>
     <div class="corr-entry">
       <div class="corr-entry-name">Repeticiones léxicas cercanas</div>
-      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas sin intención estilística. Las repeticiones anafóricas intencionadas (recurso literario) no se señalan.</div>
+      <div class="corr-entry-desc">La misma palabra repetida en pocas líneas sin intención estilística.</div>
       <div class="example-box">
-        <span class="ex-bad">Abrió la puerta. Cruzó la puerta despacio. La puerta crujió.</span><br>
-        <span class="ex-ok">Abrió la puerta. La cruzó despacio. Los goznes crujieron.</span><br><br>
-        <span class="ex-bad">Pensó que era tarde. Pensó que debería irse.</span><br>
-        <span class="ex-ok">Pensó que era tarde. Debería irse.</span>
+        <span class="ex-bad">Abrió la puerta. Cruzó la puerta. La puerta crujió.</span><br>
+        <span class="ex-ok">Abrió la puerta. La cruzó. Los goznes crujieron.</span>
       </div>
     </div>
     <div class="corr-entry">
-      <div class="corr-entry-name">Verbos comodín · Sustantivos genéricos · Muletillas · Pleonasmos</div>
-      <div class="corr-entry-desc">Palabras que empobrecen el estilo: verbos vagos, sustantivos difusos, expresiones vacías y redundancias.</div>
+      <div class="corr-entry-name">Verbos comodín</div>
+      <div class="corr-entry-desc">Verbos vagos (hacer, poner, tener, dar…) donde podría usarse uno más preciso.</div>
       <div class="example-box">
         <span class="ex-bad">Hizo una sonrisa. / Puso los ojos en blanco.</span><br>
-        <span class="ex-ok">Sonrió. / Alzó los ojos.</span><br><br>
-        <span class="ex-bad">Hay algo en esa cosa que no entiendo.</span><br>
-        <span class="ex-ok">Hay algo en ese objeto que no entiendo.</span><br><br>
-        <span class="ex-bad">De repente llegó. De repente todo cambió.</span><br>
-        <span class="ex-ok">Llegó de improviso. Súbitamente todo cambió.</span><br><br>
-        <span class="ex-bad">Subió arriba. / Salió fuera.</span><br>
-        <span class="ex-ok">Subió. / Salió.</span>
+        <span class="ex-ok">Sonrió. / Alzó los ojos.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Sustantivos genéricos</div>
+      <div class="corr-entry-desc">Sustantivos difusos (cosa, tema, aspecto…) que pueden concretarse.</div>
+      <div class="example-box">
+        <span class="ex-bad">Esa cosa no me cuadraba. / El tema era complicado.</span><br>
+        <span class="ex-ok">Ese detalle no me cuadraba. / El asunto era complicado.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Muletillas narrativas</div>
+      <div class="corr-entry-desc">Expresiones que pueden no aportar nada al texto: de repente, en cierto modo, básicamente…</div>
+      <div class="example-box">
+        <span class="ex-bad">De repente llamaron. De repente todo cambió.</span><br>
+        <span class="ex-ok">Llamaron. De pronto todo cambió.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Pleonasmos</div>
+      <div class="corr-entry-desc">Redundancias donde una palabra ya contiene el significado de la otra.</div>
+      <div class="example-box">
+        <span class="ex-bad">Subió arriba. / Entró dentro. / Sus propios ojos.</span><br>
+        <span class="ex-ok">Subió. / Entró. / Sus ojos.</span>
       </div>
     </div>
 
     <div class="corr-group-title">Grupo 3 · Estilo y fluidez</div>
     <div class="corr-entry">
-      <div class="corr-entry-name">Adverbios en -mente · Voz pasiva · Frases largas · Exceso de nombres · Ritmo</div>
-      <div class="corr-entry-desc">Cada adverbio en -mente se evalúa individualmente: si aporta valor literario (adecuado) o si puede sustituirse por algo más expresivo (mejorable). También detecta pasivas, frases de +40 palabras y ritmo desequilibrado.</div>
+      <div class="corr-entry-name">Adverbios en -mente</div>
+      <div class="corr-entry-desc">Evalúa cada adverbio en -mente: adecuado (aporta valor) o mejorable (sustituible por algo más expresivo).</div>
       <div class="example-box">
         <span class="ex-bad">Cerró la puerta suavemente.</span> <span style="color:var(--muted);font-size:10px">mejorable</span><br>
-        <span class="ex-ok">Cerró la puerta con sumo cuidado. / Con un sigilo casi reverencial.</span><br><br>
-        <span class="ex-bad">Caminaba lentamente, como si cada paso pesara.</span> <span style="color:var(--muted);font-size:10px">adecuado, no se señala</span><br><br>
-        <span class="ex-bad">La puerta fue abierta por Carlos.</span><br>
-        <span class="ex-ok">Carlos abrió la puerta.</span>
+        <span class="ex-ok">Cerró la puerta con sumo cuidado.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Voz pasiva innecesaria</div>
+      <div class="corr-entry-desc">Construcciones pasivas que resultarían más naturales en voz activa.</div>
+      <div class="example-box">
+        <span class="ex-bad">La carta fue escrita por Elena.</span><br>
+        <span class="ex-ok">Elena escribió la carta.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Frases demasiado largas</div>
+      <div class="corr-entry-desc">Oraciones de más de 40 palabras que dificultan la lectura.</div>
+      <div class="example-box">
+        <span class="ex-bad">Cuando por fin llegó al destino después de horas de camino, cansado y con los pies doloridos por la larga marcha que había emprendido al amanecer sin desayunar…</span><br>
+        <span class="ex-ok">Llegó exhausto. Había caminado desde el amanecer sin desayunar, sin saber muy bien hacia dónde se dirigía.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Exceso de nombres propios</div>
+      <div class="corr-entry-desc">Un nombre propio repetido demasiadas veces en poco espacio.</div>
+      <div class="example-box">
+        <span class="ex-bad">Carlos llegó. Carlos se sentó. Carlos abrió el libro. Carlos empezó a leer.</span><br>
+        <span class="ex-ok">Carlos llegó y se sentó. Abrió el libro y empezó a leer.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Ritmo narrativo</div>
+      <div class="corr-entry-desc">Desequilibrios entre el tipo de escena y la longitud de las frases.</div>
+      <div class="example-box">
+        <span class="ex-bad">Corrió. Saltó. Cayó.</span> <span style="color:var(--muted);font-size:10px">frases telegráficas en escena descriptiva de calma</span><br>
+        <span class="ex-ok">Corrió hacia la orilla, saltó el muro con un impulso y cayó sobre la hierba húmeda.</span>
       </div>
     </div>
 
     <div class="corr-group-title">Grupo 4 · Gramática</div>
     <div class="corr-entry">
-      <div class="corr-entry-name">Gerundios · Dequeísmo · Concordancia · Tiempos verbales</div>
-      <div class="corr-entry-desc">Errores gramaticales que pueden pasar inadvertidos: gerundio de posterioridad, de que incorrecto, desacuerdo sujeto-verbo, y mezclas de tiempos.</div>
+      <div class="corr-entry-name">Gerundios incorrectos</div>
+      <div class="corr-entry-desc">Gerundio de posterioridad (acción que ocurre después de la principal) y otros usos incorrectos.</div>
       <div class="example-box">
-        <span class="ex-bad">Salió de casa, encontrando a Juan.</span> <span style="color:var(--muted);font-size:10px">gerundio de posterioridad</span><br>
-        <span class="ex-ok">Salió de casa y encontró a Juan.</span><br><br>
-        <span class="ex-bad">Pienso de que tienes razón.</span> <span style="color:var(--muted);font-size:10px">dequeísmo</span><br>
-        <span class="ex-ok">Pienso que tienes razón.</span><br><br>
-        <span class="ex-bad">Los alumnos llegó tarde.</span> <span style="color:var(--muted);font-size:10px">concordancia</span><br>
-        <span class="ex-ok">Los alumnos llegaron tarde.</span><br><br>
-        <span class="ex-bad">Entró en la sala y miraba por la ventana.</span> <span style="color:var(--muted);font-size:10px">mezcla de tiempos</span><br>
+        <span class="ex-bad">Salió de casa, encontrando a Juan en la escalera.</span><br>
+        <span class="ex-ok">Salió de casa y encontró a Juan en la escalera.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Dequeísmo y queísmo</div>
+      <div class="corr-entry-desc">«de que» donde sobra, o ausencia de «de» donde es necesaria.</div>
+      <div class="example-box">
+        <span class="ex-bad">Pienso de que tienes razón. / Estoy seguro que vendrá.</span><br>
+        <span class="ex-ok">Pienso que tienes razón. / Estoy seguro de que vendrá.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Concordancia</div>
+      <div class="corr-entry-desc">Falta de acuerdo entre sujeto y verbo, o entre sustantivo y adjetivo.</div>
+      <div class="example-box">
+        <span class="ex-bad">Los alumnos llegó tarde. / Hubieron problemas.</span><br>
+        <span class="ex-ok">Los alumnos llegaron tarde. / Hubo problemas.</span>
+      </div>
+    </div>
+    <div class="corr-entry">
+      <div class="corr-entry-name">Tiempos verbales</div>
+      <div class="corr-entry-desc">Mezclas no intencionales de indefinido e imperfecto en la misma escena.</div>
+      <div class="example-box">
+        <span class="ex-bad">Entró en la sala y miraba por la ventana.</span><br>
         <span class="ex-ok">Entró en la sala y miró por la ventana.</span>
       </div>
     </div>
@@ -508,14 +565,8 @@ function getManualHTML() {
       <div class="corr-entry-name">Guiones · Comillas · Puntos suspensivos · Signos ¿¡ · Espaciado · Puntuación de diálogo</div>
       <div class="corr-entry-desc">Correcciones tipográficas directas en el documento. Los cambios quedan marcados en <strong>negrita</strong> para identificarlos fácilmente.</div>
       <div class="example-box">
-        <span class="ex-bad">-No voy -dijo Juan.</span><br>
-        <span class="ex-ok">—No voy —dijo Juan.</span><br><br>
-        <span class="ex-bad">"Buenos días, señora"</span><br>
-        <span class="ex-ok">«Buenos días, señora»</span><br><br>
-        <span class="ex-bad">Espera aquí . No tardo...</span><br>
-        <span class="ex-ok">Espera aquí. No tardo…</span><br><br>
-        <span class="ex-bad">¡Estoy enfadado¡</span><br>
-        <span class="ex-ok">¡Estoy enfadado!</span>
+        <span class="ex-bad">-No voy -dijo Juan. / "Buenos días"</span><br>
+        <span class="ex-ok">—No voy —dijo Juan. / «Buenos días»</span>
       </div>
     </div>
 
