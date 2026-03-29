@@ -160,7 +160,12 @@ window.PLUMIA.API_GROUPS = [
     label: 'Pronombres',
     ids: ['leismo', 'ambiguedad_pronominal'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector experto en español. Analiza el texto y devuelve DOS análisis:
-1. "leismo": leísmos, laísmos y loísmos (uso incorrecto de le/la/lo). Ej: "La dije" es laísmo (debe ser "Le dije"). "Lo di un golpe" es loísmo (debe ser "Le di").
+1. "leismo": leísmos, laísmos y loísmos — uso de la/lo donde debe ir le (o viceversa).
+Regla: le = complemento indirecto (CI). la/lo = complemento directo (CD).
+Ejemplos de LAÍSMO (la/las como CI — incorrecto): "La dije que viniera" → "Le dije". "Su madre la llamó" → "Su madre le llamó". "La contó la historia" → "Le contó".
+Ejemplos de LOÍSMO (lo/los como CI — incorrecto): "Lo avisé del problema" → "Le avisé". "Lo dijeron la verdad" → "Les dijeron".
+Ejemplos de LEÍSMO (le/les como CD masculino — incorrecto): "Le vi ayer" → "Lo vi ayer".
+ATENCIÓN: "llamar a alguien" toma CI en España → "le llamé" (correcto), "la llamé" (laísmo si el referente es femenino el sujeto es ella). Analiza cada caso con cuidado.
 2. "ambiguedad": pronombres ambiguos donde el referente no queda claro. REQUISITO: debe haber 2 o más referentes posibles del MISMO GÉNERO GRAMATICAL en la misma frase o frase anterior. Si el pronombre es masculino (él, lo, le) solo puede ser ambiguo si hay 2+ referentes masculinos. Si el pronombre es femenino (ella, la, le) solo si hay 2+ referentes femeninos. EXCLUYE frases donde hay un único referente del género correcto aunque haya otros del género opuesto. EXCLUYE frases donde el error sea de leísmo/laísmo/loísmo — no confundas errores de pronombre con ambigüedad.
 
 Texto:
@@ -191,7 +196,7 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores: findings:[].`,
     ids: ['repeticion_lexica', 'verbos_comedin', 'sustantivos_genericos'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector de estilo experto en español. Analiza el texto y devuelve TRES análisis:
 1. "repeticion": misma palabra de contenido repetida 3 o más veces DENTRO DEL MISMO PÁRRAFO o en párrafos inmediatamente consecutivos sin intención estilística. EXCLUYE: pronombres, artículos, preposiciones, conjunciones, adverbios. EXCLUYE palabras que aparecen solo 1-2 veces aunque estén cerca. Solo señala repeticiones realmente llamativas que empeoren el estilo.
-2. "verbos": verbos claramente vagos donde existe uno más específico. Ej: "Hizo una sonrisa" → "Sonrió". "Puso los ojos en blanco" → "Alzó los ojos". EXCLUYE verbos comunes ya precisos: mirar, ver, decir, hablar, entrar, salir, llegar, estar, tener, ir, venir, saber. NO señales un verbo solo porque pueda sustituirse — señálalo solo si el original es notablemente genérico. Devuelve el fragmento EXACTO.
+2. "verbos": verbos comodín donde el verbo es claramente vago y existe uno más específico y expresivo. Ej: "Hizo una sonrisa" → "Sonrió". "Puso los ojos en blanco" → "Alzó los ojos". "Hizo un gesto" → "Gesticuló". CRITERIO: señala solo verbos genéricos como hacer, poner, tener, dar, coger usados donde podría ir un verbo más preciso. NO señales verbos que ya son específicos para la acción descrita. Devuelve el fragmento EXACTO.
 3. "sustantivos": sustantivos claramente vagos y sustituibles por términos concretos. Ej: "esa cosa" → "ese objeto". SOLO señala: cosa, tema, asunto, aspecto, elemento, situación cuando sean claramente intercambiables y empobrezcan el texto. EXCLUYE: palabras usadas en su sentido preciso, expresiones idiomáticas, frases hechas. Devuelve el fragmento EXACTO.
 
 Texto:

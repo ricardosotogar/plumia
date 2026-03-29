@@ -141,7 +141,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   _getKeyText(f) {
     switch(f.correctionId) {
       case 'adverbios_mente':       return ((f.adverbs||[]).concat([f.adverb]).filter(Boolean))[0] || f.originalText;
-      case 'repeticion_lexica':     return f.word || f.originalText;
+      case 'repeticion_lexica':     return (f.occurrences?.[0]) || f.word || f.originalText;
       case 'verbos_comedin':        return f.verb || f.originalText;
       case 'sustantivos_genericos': return f.genericWord || f.originalText;
       case 'muletillas':            return f.expression || f.originalText;
@@ -182,10 +182,13 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       if (!psr2.items.length) return;
       const target = psr2.items[0];
       target.font.color = colorHex;
-      const mk = `PLMX${this._markerIdx++}X`;
-      target.getRange('Start').insertText(mk, 'Before');
+      const idxFb = this._markerIdx++;
+      const mkFb  = `PLMX${idxFb}X`;
+      const mkcFb = commentText ? `PLMK${idxFb}K` : null;
+      if (mkcFb) target.getRange('Start').insertText(mkcFb, 'Before');
+      target.getRange('Start').insertText(mkFb, 'Before');
       await ctx.sync();
-      this._pendingMarkers.push({marker:mk, superscript:null, colorHex, commentText});
+      this._pendingMarkers.push({markerSymbol:mkFb, markerComment:mkcFb, superscript:null, colorHex, commentText});
       return;
     }
 
@@ -198,10 +201,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (!psr.items.length) return;
     const target = psr.items[Math.min(nBefore, psr.items.length-1)];
     target.font.color = colorHex;
-    const mk = `PLMX${this._markerIdx++}X`;
-    target.getRange('Start').insertText(mk, 'Before');
+    const idx = this._markerIdx++;
+    const mks = `PLMX${idx}X`;
+    const mkc = commentText ? `PLMK${idx}K` : null;
+    // Insertar PLMX + PLMK (comment anchor) juntos antes del pronombre
+    if (mkc) target.getRange('Start').insertText(mkc, 'Before');
+    target.getRange('Start').insertText(mks, 'Before');
     await ctx.sync();
-    this._pendingMarkers.push({marker:mk, superscript:null, colorHex, commentText});
+    this._pendingMarkers.push({markerSymbol:mks, markerComment:mkc, superscript:null, colorHex, commentText});
   }
 
   // ── PASADA 1B: insertar marcador antes de palabra clave ──────────────────
@@ -225,22 +232,31 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (!items.length) return;
     const target = items[0];
     if (hl) target.font.highlightColor = hl;
-    const mk = `PLMX${this._markerIdx++}X`;
-    target.getRange('Start').insertText(mk, 'Before');
+    const idx = this._markerIdx++;
+    const mks = `PLMX${idx}X`;
+    const mkc = commentText ? `PLMK${idx}K` : null;
+    if (mkc) target.getRange('Start').insertText(mkc, 'Before');
+    target.getRange('Start').insertText(mks, 'Before');
     await ctx.sync();
-    this._pendingMarkers.push({marker:mk, superscript:null, colorHex, commentText});
+    this._pendingMarkers.push({markerSymbol:mks, markerComment:mkc, superscript:null, colorHex, commentText});
   }
 
   // ── PASADA 1C: insertar marcadores de inicio y fin ────────────────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    const mks = `PLMX${this._markerIdx++}X`; // inicio
-    const mke = `PLMX${this._markerIdx++}X`; // fin
-    // ATÓMICO: fin primero, luego inicio — un solo sync
+    const idxs = this._markerIdx++;
+    const idxe = this._markerIdx++;
+    const mks  = `PLMX${idxs}X`; // inicio → ◆¹
+    const mke  = `PLMX${idxe}X`; // fin    → ◆²
+    const mkc  = commentText ? `PLMK${idxs}K` : null; // ancla de comentario
+
+    // ATÓMICO: fin primero, luego inicio + ancla comentario — un solo sync
     range.getRange('End').insertText(mke, 'After');
+    if (mkc) range.getRange('Start').insertText(mkc, 'Before');
     range.getRange('Start').insertText(mks, 'Before');
     await ctx.sync();
-    this._pendingMarkers.push({marker:mks, superscript:'\u00B9', colorHex, commentText});
-    this._pendingMarkers.push({marker:mke, superscript:'\u00B2', colorHex, commentText:null});
+
+    this._pendingMarkers.push({markerSymbol:mks, markerComment:mkc, superscript:'\u00B9', colorHex, commentText});
+    this._pendingMarkers.push({markerSymbol:mke, markerComment:null, superscript:'\u00B2', colorHex, commentText:null});
   }
 
   // ── PASADA 1: aplicar un finding ─────────────────────────────────────────
@@ -271,34 +287,42 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ── PASADA 2: reemplazar UN marcador con ◆ en Word.run fresco ────────────
+  // Estrategia: cada ◆ que lleva comentario tiene DOS marcadores en el documento:
+  //   PLMX14X → se reemplaza por ◆ (símbolo visual)
+  //   PLMK14K → se usa para anclar el comentario y luego se borra
+  // Los marcadores de ◆² solo tienen PLMX, nunca PLMK.
   async _replaceSingleMarker(pending) {
-    const {marker, superscript, colorHex, commentText} = pending;
+    const {markerSymbol, markerComment, superscript, colorHex, commentText} = pending;
     const symbol = '\u25C6' + (superscript || '');
+
+    // Word.run 1: reemplazar PLMX → ◆
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
-      const sr = body.search(marker, {matchCase:true,matchWholeWord:false,matchWildcards:false});
+      const sr = body.search(markerSymbol, {matchCase:true,matchWholeWord:false,matchWildcards:false});
       sr.load('items'); await ctx.sync();
-      if (!sr.items.length) {
-        console.warn('Plumia: marcador no encontrado:', marker);
-        return;
-      }
+      if (!sr.items.length) { console.warn('Plumia: no encontrado:', markerSymbol); return; }
       const d = sr.items[0];
-
-      // CRÍTICO: insertar el comentario ANTES de reemplazar el marcador.
-      // Una vez que llamamos insertText('Replace') + sync, el range d queda inválido.
-      if (commentText) {
-        const safe = commentText.replace(/[\r\n]+/g,' | ').substring(0, 400);
-        try { d.insertComment(safe); } catch(e) {}
-      }
-
-      // Reemplazar marcador por ◆ y estilizar — todo en un único sync
       d.insertText(symbol, 'Replace');
-      d.font.color          = colorHex;
-      d.font.bold           = true;
-      d.font.highlightColor = 'None';
-      d.font.size           = 18;
+      d.font.color = colorHex; d.font.bold = true;
+      d.font.highlightColor = 'None'; d.font.size = 18;
       await ctx.sync();
     });
+
+    // Word.run 2: insertar comentario en PLMK y borrarlo
+    if (markerComment && commentText) {
+      await Word.run(async (ctx) => {
+        const body = ctx.document.body;
+        const sr = body.search(markerComment, {matchCase:true,matchWholeWord:false,matchWildcards:false});
+        sr.load('items'); await ctx.sync();
+        if (!sr.items.length) return;
+        const d = sr.items[0];
+        const safe = commentText.replace(/[\r\n]+/g,' | ').substring(0, 400);
+        try { d.insertComment(safe); } catch(e) { console.warn('Plumia comment:', e.message); }
+        // Borrar el marcador de comentario (reemplazar por texto vacío)
+        d.insertText('', 'Replace');
+        await ctx.sync();
+      });
+    }
   }
 
   // ── APPLY MARKINGS ────────────────────────────────────────────────────────
