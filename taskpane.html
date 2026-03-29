@@ -1297,9 +1297,10 @@ async function requestCostEstimate() {
 function closeCostPopup(e) {
   if (!e || e.target === document.getElementById('costOverlay')) {
     document.getElementById('costOverlay').classList.remove('visible');
-    // Recalcular palabras para que el siguiente "Calcular coste" sea preciso
-    // (el usuario puede haber cambiado la selección entre opens del popup)
-    state.wordCount = 0;
+    // Al cerrar el popup sincronizar estado: si el usuario cancela antes de analizar,
+    // resetear forceFullDoc si ya no hay coherencia marcada, y actualizar el banner.
+    _syncForceFullDoc();
+    updateAnalyzeButton();
   }
 }
 
