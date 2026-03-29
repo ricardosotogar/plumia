@@ -161,24 +161,43 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── PASADA 1A: insertar marcador antes del pronombre ─────────────────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
-    if (!pronoun) return;
+
+    // Si no podemos aislar el pronombre, marcar la frase completa como word mark
+    if (!pronoun) {
+      await this._markWord(ctx, body, range, finding, colorHex, commentText);
+      return;
+    }
+
     const para = range.paragraphs.getFirst();
     para.load('text'); await ctx.sync();
     const paraText  = para.text || '';
     const origLower = (finding.originalText||'').toLowerCase();
     const pLower    = pronoun.toLowerCase();
     const origPos   = paraText.toLowerCase().indexOf(origLower);
-    if (origPos === -1) return;
+
+    if (origPos === -1) {
+      // Fallback: buscar el pronombre directamente en el párrafo
+      const psr2 = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
+      psr2.load('items'); await ctx.sync();
+      if (!psr2.items.length) return;
+      const target = psr2.items[0];
+      target.font.color = colorHex;
+      const mk = `PLMX${this._markerIdx++}X`;
+      target.getRange('Start').insertText(mk, 'Before');
+      await ctx.sync();
+      this._pendingMarkers.push({marker:mk, superscript:null, colorHex, commentText});
+      return;
+    }
+
     const pInOrig    = origLower.indexOf(pLower);
     const absPos     = origPos + pInOrig;
     const before     = paraText.substring(0, absPos);
     const nBefore    = (before.match(new RegExp('\\b'+pLower+'\\b','gi'))||[]).length;
     const psr = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
     psr.load('items'); await ctx.sync();
-    if (psr.items.length <= nBefore) return;
-    const target = psr.items[nBefore];
+    if (!psr.items.length) return;
+    const target = psr.items[Math.min(nBefore, psr.items.length-1)];
     target.font.color = colorHex;
-    // Insertar marcador antes
     const mk = `PLMX${this._markerIdx++}X`;
     target.getRange('Start').insertText(mk, 'Before');
     await ctx.sync();
@@ -264,28 +283,21 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         return;
       }
       const d = sr.items[0];
-      // Guardar referencia al párrafo ANTES de reemplazar
-      const para = d.paragraphs.getFirst();
-      para.load('text'); await ctx.sync();
 
-      // Reemplazar marcador por ◆
+      // CRÍTICO: insertar el comentario ANTES de reemplazar el marcador.
+      // Una vez que llamamos insertText('Replace') + sync, el range d queda inválido.
+      if (commentText) {
+        const safe = commentText.replace(/[\r\n]+/g,' | ').substring(0, 400);
+        try { d.insertComment(safe); } catch(e) {}
+      }
+
+      // Reemplazar marcador por ◆ y estilizar — todo en un único sync
       d.insertText(symbol, 'Replace');
       d.font.color          = colorHex;
       d.font.bold           = true;
       d.font.highlightColor = 'None';
       d.font.size           = 18;
       await ctx.sync();
-
-      // Comentario anclado al inicio del párrafo (más fiable que el range del ◆)
-      if (commentText) {
-        const safe = commentText.replace(/[\r\n]+/g,' | ').substring(0, 400);
-        try {
-          para.getRange('Start').insertComment(safe);
-          await ctx.sync();
-        } catch(e) {
-          try { d.insertComment(safe); await ctx.sync(); } catch(e2) {}
-        }
-      }
     });
   }
 
@@ -466,39 +478,31 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
       // Título — sync inmediato para cortar herencia de tamaño
       const title = body.insertParagraph('INFORME DE INCIDENCIAS \u2014 PLUMIA','End');
-      title.styleBuiltIn = Word.Style.normal;
       title.font.bold=true; title.font.size=28; title.font.color='1a1a2e';
       await ctx.sync();
 
       // Reset explícito
-      const rp0 = body.insertParagraph('','End');
-      rp0.styleBuiltIn=Word.Style.normal; rp0.font.size=22; rp0.font.bold=false;
+      const rp0 = body.insertParagraph('','End'); rp0.font.size=22; rp0.font.bold=false;
 
       // Resumen
-      const h2a = body.insertParagraph('Resumen por categor\u00EDa','End');
-      h2a.styleBuiltIn=Word.Style.normal; h2a.font.bold=true; h2a.font.size=24; h2a.font.color='1a1a2e';
+      const h2a = body.insertParagraph('Resumen por categor\u00EDa','End'); h2a.font.bold=true; h2a.font.size=24; h2a.font.color='1a1a2e';
 
       for (const result of allResults) {
         if (!result.findings.length) continue;
-        const bp = body.insertParagraph(`\u2022 ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`, 'End');
-        bp.styleBuiltIn=Word.Style.normal; bp.font.size=22; bp.font.bold=false; bp.font.color='222222';
+        const bp = body.insertParagraph(`\u2022 ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`, 'End'); bp.font.size=22; bp.font.bold=false; bp.font.color='222222';
       }
 
-      const tp = body.insertParagraph(`Total: ${total} incidencias detectadas`,'End');
-      tp.styleBuiltIn=Word.Style.normal; tp.font.bold=true; tp.font.size=22; tp.font.color='1a1a2e';
+      const tp = body.insertParagraph(`Total: ${total} incidencias detectadas`,'End'); tp.font.bold=true; tp.font.size=22; tp.font.color='1a1a2e';
 
       await ctx.sync(); // sync antes del detalle
 
-      const rp1 = body.insertParagraph('','End');
-      rp1.styleBuiltIn=Word.Style.normal; rp1.font.size=22; rp1.font.bold=false;
+      const rp1 = body.insertParagraph('','End'); rp1.font.size=22; rp1.font.bold=false;
 
-      const h2b = body.insertParagraph('Detalle por categor\u00EDa','End');
-      h2b.styleBuiltIn=Word.Style.normal; h2b.font.bold=true; h2b.font.size=24; h2b.font.color='1a1a2e';
+      const h2b = body.insertParagraph('Detalle por categor\u00EDa','End'); h2b.font.bold=true; h2b.font.size=24; h2b.font.color='1a1a2e';
 
       for (const result of allResults) {
         if (!result.findings.length) continue;
-        const ct = body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End');
-        ct.styleBuiltIn=Word.Style.normal; ct.font.bold=true; ct.font.size=22; ct.font.color='0f3460';
+        const ct = body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End'); ct.font.bold=true; ct.font.size=22; ct.font.color='0f3460';
 
         for (let i=0; i<result.findings.length; i++) {
           const f = result.findings[i];
@@ -513,20 +517,16 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           const page    = pageMap[f.originalText];
           const suffix  = page ? `  \u2014 p\u00E1g. ${page}` : '';
 
-          const np = body.insertParagraph(`${i+1}.  ${preview}${suffix}`,'End');
-          np.styleBuiltIn=Word.Style.normal; np.font.bold=true; np.font.size=22; np.font.italic=false; np.font.color='0f3460';
+          const np = body.insertParagraph(`${i+1}.  ${preview}${suffix}`,'End'); np.font.bold=true; np.font.size=22; np.font.italic=false; np.font.color='0f3460';
 
           const comment = buildCommentText([f]);
           if (comment) {
-            const cp = body.insertParagraph(comment.replace(/[\r\n]+/g,'\n').substring(0,600),'End');
-            cp.styleBuiltIn=Word.Style.normal; cp.font.size=20; cp.font.italic=false; cp.font.bold=false; cp.font.color='333333';
+            const cp = body.insertParagraph(comment.replace(/[\r\n]+/g,'\n').substring(0,600),'End'); cp.font.size=20; cp.font.italic=false; cp.font.bold=false; cp.font.color='333333';
           }
-          const sep = body.insertParagraph('','End');
-          sep.styleBuiltIn=Word.Style.normal; sep.font.size=20; sep.font.bold=false;
+          const sep = body.insertParagraph('','End'); sep.font.size=20; sep.font.bold=false;
         }
 
-        const gap = body.insertParagraph('','End');
-        gap.styleBuiltIn=Word.Style.normal; gap.font.size=22; gap.font.bold=false;
+        const gap = body.insertParagraph('','End'); gap.font.size=22; gap.font.bold=false;
       }
 
       await ctx.sync();

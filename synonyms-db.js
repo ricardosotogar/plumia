@@ -190,9 +190,9 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores: findings:[].`,
     label: 'Léxico — repeticiones y verbos',
     ids: ['repeticion_lexica', 'verbos_comedin', 'sustantivos_genericos'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector de estilo experto en español. Analiza el texto y devuelve TRES análisis:
-1. "repeticion": misma palabra repetida en 3-5 líneas sin intención estilística. Ej: "puerta" repetida 4 veces seguidas.
+1. "repeticion": misma palabra de contenido repetida en 3-5 líneas sin intención estilística. Ej: "puerta" repetida 4 veces seguidas. EXCLUYE pronombres (él, ella, lo, la, le, se, su, sus, yo, tú, nos, os), artículos, preposiciones, conjunciones, y adverbios comunes como "no", "ya", "así".
 2. "verbos": verbos comodín donde hay uno más específico. Ej: "Hizo una sonrisa" → debería ser "Sonrió". "Puso los ojos en blanco" → "Alzó los ojos". Devuelve el fragmento EXACTO del texto.
-3. "sustantivos": sustantivos genéricos sustituibles. Ej: "esa cosa" → "ese objeto". "el tema" → "el asunto". Devuelve el fragmento EXACTO.
+3. "sustantivos": sustantivos genéricos claramente vagos y sustituibles por términos más precisos. Ej: "esa cosa" → "ese objeto". SOLO señala palabras como cosa, tema, asunto, aspecto, elemento, situación, hecho cuando sean claramente intercambiables por algo más concreto en ese contexto. NO señales expresiones idiomáticas ni frases donde la palabra sea necesaria ("nada concreto", "alguna cosa", etc.). Devuelve el fragmento EXACTO.
 
 Texto:
 ${text}

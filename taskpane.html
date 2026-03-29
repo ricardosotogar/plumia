@@ -203,9 +203,10 @@
   <div id="liveMetrics" style="width:100%;margin-top:18px;display:none">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
       <div style="background:var(--sepia);border-radius:var(--radius);padding:9px 12px">
-        <div style="font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Coste acumulado</div>
-        <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;transition:color .3s" id="liveCost">$0.0000</div>
-        <div style="font-size:9.5px;color:var(--muted);margin-top:2px" id="liveCostEUR">0.0000 €</div>
+        <div style="font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Coste real</div>
+        <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;transition:color .3s" id="liveCost">0.0000 €</div>
+        <div style="font-size:9.5px;color:var(--muted);margin-top:2px" id="liveCostEUR">$0.0000</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px" id="liveCostEstRef"></div>
       </div>
       <div style="background:var(--sepia);border-radius:var(--radius);padding:9px 12px">
         <div style="font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Palabras restantes</div>
@@ -249,9 +250,9 @@
   <!-- Coste real del análisis -->
   <div style="background:var(--sepia);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px">
     <div style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px" id="doneCostLabel">Coste del análisis</div>
-    <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
       <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--ink)" id="doneCostEUR">—</span>
-      <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mid)" id="doneCostUSD">—</span>
+      <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mid);margin-left:6px" id="doneCostUSD">—</span>
     </div>
   </div>
 
@@ -1313,9 +1314,11 @@ async function confirmAndAnalyze() {
   updateProgress(0, 'Extrayendo texto del documento…');
   // Resetear panel de métricas en tiempo real
   document.getElementById('liveMetrics').style.display = 'none';
-  document.getElementById('liveCost').textContent    = '$0.0000';
-  document.getElementById('liveCostEUR').textContent = '0.0000 €';
+  document.getElementById('liveCost').textContent    = '0.0000 €';
+  document.getElementById('liveCostEUR').textContent = '$0.0000';
   document.getElementById('liveCost').style.color    = '';
+  const estRef = document.getElementById('liveCostEstRef');
+  if (estRef) estRef.textContent = '';
   document.getElementById('costWarningBanner').style.display = 'none';
 
   try {
@@ -1405,8 +1408,12 @@ function updateLiveMetrics(proc, pct) {
 
   const costEl    = document.getElementById('liveCost');
   const costEUREl = document.getElementById('liveCostEUR');
+  const costEstEl = document.getElementById('liveCostEstRef');
   costEl.textContent    = realEUR.toFixed(4) + ' €';
-  costEUREl.textContent = '($' + realUSD.toFixed(4) + ')';
+  costEUREl.textContent = '$' + realUSD.toFixed(4);
+  if (costEstEl && state.estimatedCostEUR > 0) {
+    costEstEl.textContent = `Estimado: ${state.estimatedCostEUR.toFixed(4)} €`;
+  }
 
   // Color según desviación respecto al estimado
   const estimated = state.estimatedCostUSD || 0.0001;
