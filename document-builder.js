@@ -315,7 +315,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     this._pendingMarkers = [];
 
     // ── PASADA 1: insertar todos los marcadores de texto ───────────────────
-    const BATCH = 8;
+    // BATCH=1: cada finding en su propio Word.run para evitar que inserciones
+    // simultáneas desplacen marcadores de otros findings del mismo lote.
+    const BATCH = 1;
     for (let i = 0; i < others.length; i += BATCH) {
       const batch = others.slice(i, i + BATCH);
       await Word.run(async (ctx) => {

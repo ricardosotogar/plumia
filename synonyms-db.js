@@ -161,7 +161,7 @@ window.PLUMIA.API_GROUPS = [
     ids: ['leismo', 'ambiguedad_pronominal'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector experto en español. Analiza el texto y devuelve DOS análisis:
 1. "leismo": leísmos, laísmos y loísmos (uso incorrecto de le/la/lo). Ej: "La dije" es laísmo (debe ser "Le dije"). "Lo di un golpe" es loísmo (debe ser "Le di").
-2. "ambiguedad": pronombres ambiguos (referente poco claro con 2+ personajes)
+2. "ambiguedad": pronombres ambiguos donde el referente no queda claro. REQUISITO: debe haber 2 o más referentes posibles del MISMO GÉNERO GRAMATICAL en la misma frase o frase anterior. Si el pronombre es masculino (él, lo, le) solo puede ser ambiguo si hay 2+ referentes masculinos. Si el pronombre es femenino (ella, la, le) solo si hay 2+ referentes femeninos. EXCLUYE frases donde hay un único referente del género correcto aunque haya otros del género opuesto. EXCLUYE frases donde el error sea de leísmo/laísmo/loísmo — no confundas errores de pronombre con ambigüedad.
 
 Texto:
 ${text}
@@ -190,9 +190,9 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores: findings:[].`,
     label: 'Léxico — repeticiones y verbos',
     ids: ['repeticion_lexica', 'verbos_comedin', 'sustantivos_genericos'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector de estilo experto en español. Analiza el texto y devuelve TRES análisis:
-1. "repeticion": misma palabra de contenido repetida en 3-5 líneas sin intención estilística. Ej: "puerta" repetida 4 veces seguidas. EXCLUYE pronombres (él, ella, lo, la, le, se, su, sus, yo, tú, nos, os), artículos, preposiciones, conjunciones, y adverbios comunes como "no", "ya", "así".
-2. "verbos": verbos comodín donde hay uno más específico. Ej: "Hizo una sonrisa" → debería ser "Sonrió". "Puso los ojos en blanco" → "Alzó los ojos". Devuelve el fragmento EXACTO del texto.
-3. "sustantivos": sustantivos genéricos claramente vagos y sustituibles por términos más precisos. Ej: "esa cosa" → "ese objeto". SOLO señala palabras como cosa, tema, asunto, aspecto, elemento, situación, hecho cuando sean claramente intercambiables por algo más concreto en ese contexto. NO señales expresiones idiomáticas ni frases donde la palabra sea necesaria ("nada concreto", "alguna cosa", etc.). Devuelve el fragmento EXACTO.
+1. "repeticion": misma palabra de contenido repetida 3 o más veces DENTRO DEL MISMO PÁRRAFO o en párrafos inmediatamente consecutivos sin intención estilística. EXCLUYE: pronombres, artículos, preposiciones, conjunciones, adverbios. EXCLUYE palabras que aparecen solo 1-2 veces aunque estén cerca. Solo señala repeticiones realmente llamativas que empeoren el estilo.
+2. "verbos": verbos claramente vagos donde existe uno más específico. Ej: "Hizo una sonrisa" → "Sonrió". "Puso los ojos en blanco" → "Alzó los ojos". EXCLUYE verbos comunes ya precisos: mirar, ver, decir, hablar, entrar, salir, llegar, estar, tener, ir, venir, saber. NO señales un verbo solo porque pueda sustituirse — señálalo solo si el original es notablemente genérico. Devuelve el fragmento EXACTO.
+3. "sustantivos": sustantivos claramente vagos y sustituibles por términos concretos. Ej: "esa cosa" → "ese objeto". SOLO señala: cosa, tema, asunto, aspecto, elemento, situación cuando sean claramente intercambiables y empobrezcan el texto. EXCLUYE: palabras usadas en su sentido preciso, expresiones idiomáticas, frases hechas. Devuelve el fragmento EXACTO.
 
 Texto:
 ${text}
@@ -206,7 +206,7 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categorí
     label: 'Léxico — muletillas y pleonasmos',
     ids: ['muletillas', 'pleonasmos'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector de estilo experto en español. Analiza el texto y devuelve DOS análisis:
-1. "muletillas": expresiones que se repiten sin aportar valor. Ej: "De repente" aparece 2 veces, "de alguna manera", "básicamente", "de hecho". Devuelve el fragmento EXACTO donde aparece.
+1. "muletillas": expresiones que se repiten sin aportar valor. Ej: "De repente" aparece 2 veces, "de alguna manera", "básicamente", "de hecho". EXCLUYE conjunciones y conectores gramaticales (aunque, pero, sin embargo, porque, cuando, si, que, como, mientras). Solo señala expresiones que el autor podría eliminar o sustituir sin perder significado gramatical. Devuelve el fragmento EXACTO donde aparece.
 2. "pleonasmos": redundancias donde se repite información. Ej: "subió arriba" (arriba es redundante), "bajó abajo", "entró dentro", "salió fuera", "volvió a reincidir", "sus propios ojos". Devuelve el fragmento EXACTO.
 
 Texto:
@@ -222,9 +222,9 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categorí
     ids: ['adverbios_mente', 'voz_pasiva', 'frases_largas', 'nombres_propios'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector de estilo experto en español. Analiza el texto y devuelve CUATRO análisis:
 1. "adverbios": adverbios terminados en "-mente". Evalúa cada uno: "Adecuado" si aporta valor literario, "Mejorable" si es débil o sustituible. Para los mejorables propone 2 alternativas sin adverbios (verbos precisos, acciones, recursos narrativos). No elimines los que funcionen bien.
-2. "voz_pasiva": voz pasiva que podría ser activa. Ej: "La carta fue escrita por Elena" → "Elena escribió la carta". "El informe ha sido revisado por el director" → "El director ha revisado el informe". Devuelve el fragmento EXACTO.
+2. "voz_pasiva": voz pasiva perifrástica real (con ser/estar + participio + agente explícito o implícito). Ej: "La carta fue escrita por Elena" → "Elena escribió la carta". EXCLUYE construcciones activas aunque tengan pronombres indirectos (como "alguien lo había avisado" — esto es activa). EXCLUYE frases que contienen leísmos/laísmos/loísmos — evalúa la estructura sintáctica ignorando el error de pronombre. Devuelve el fragmento EXACTO.
 3. "frases_largas": frases de más de 40 palabras que dificulten la lectura.
-4. "nombres": nombres propios repetidos excesivamente. Ej: "Carlos" aparece 5 veces en 2 líneas.
+4. "nombres": nombre propio que aparece 4 o más veces DENTRO DEL MISMO PÁRRAFO. Ej: "Carlos" aparece 5 veces en el mismo párrafo. EXCLUYE nombres que aparecen en párrafos distintos aunque sean cercanos — la repetición en distintos párrafos es menos llamativa.
 
 Texto:
 ${text}
