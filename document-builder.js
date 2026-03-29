@@ -308,7 +308,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await ctx.sync();
     });
 
-    // Word.run 2: insertar comentario en PLMK y borrarlo
+    // Word.run 2: insertar comentario en PLMK y hacerlo invisible
     if (markerComment && commentText) {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
@@ -317,9 +317,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         if (!sr.items.length) return;
         const d = sr.items[0];
         const safe = commentText.replace(/[\r\n]+/g,' | ').substring(0, 400);
+        // Insertar comentario y sincronizar antes de tocar el range
         try { d.insertComment(safe); } catch(e) { console.warn('Plumia comment:', e.message); }
-        // Borrar el marcador de comentario (reemplazar por texto vacío)
-        d.insertText('', 'Replace');
+        await ctx.sync();
+        // Hacer el marcador invisible (no se puede borrar un range con comentario anclado)
+        d.font.color = 'FFFFFF'; // blanco
+        d.font.size  = 2;        // 1pt — prácticamente invisible
         await ctx.sync();
       });
     }
