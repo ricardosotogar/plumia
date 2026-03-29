@@ -750,6 +750,9 @@ function toggleGroup(groupId) {
   const dismissed = document.getElementById('coherenceDismissed');
   if (dismissed) dismissed.classList.remove('visible');
 
+  // Si ya no hay ningún item de coherencia marcado, cancelar el forceFullDoc
+  _syncForceFullDoc();
+
   updateGroupCheckbox(groupId);
   updateCoherenceState();
   updateAnalyzeButton();
@@ -979,6 +982,9 @@ function toggleCorrection(id) {
   state.coherenceAccepted = false;
   document.getElementById('coherenceDismissed').classList.remove('visible');
 
+  // Si ya no hay ningún item de coherencia marcado, cancelar el forceFullDoc
+  _syncForceFullDoc();
+
   updateCoherenceState();
   updateAnalyzeButton();
   updateAllGroupCheckboxes();
@@ -1108,6 +1114,19 @@ function _uncheckCoherenceItems() {
   }
   // Actualizar también el checkbox de cabecera del grupo coherencia
   updateGroupCheckbox('coherence');
+}
+
+// Resetea forceFullDoc si ya no hay ningún item de coherencia seleccionado
+function _syncForceFullDoc() {
+  const hasCoherence = [...state.selectedIds].some(id => {
+    const c = CORRECTIONS.find(x => x.id === id);
+    return c && c.requiresFullDoc;
+  });
+  if (!hasCoherence) {
+    state.forceFullDoc = false;
+    // Actualizar el banner de contexto para reflejar que volvemos a selección
+    updateSelectionContext();
+  }
 }
 
 function updateAnalyzeButton() {
