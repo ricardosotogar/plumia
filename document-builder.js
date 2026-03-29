@@ -5,8 +5,6 @@
 //   Pasada 2: reemplaza cada marcador con ◆ en un Word.run fresco
 // ============================================================================
 (function() {
-var COLOR_MAP  = window.PLUMIA.COLOR_MAP;
-var CONFIG     = window.PLUMIA.CONFIG;
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',

@@ -1106,6 +1106,8 @@ function _uncheckCoherenceItems() {
     const el = document.getElementById('check-' + id);
     if (el) el.classList.remove('checked');
   }
+  // Actualizar también el checkbox de cabecera del grupo coherencia
+  updateGroupCheckbox('coherence');
 }
 
 function updateAnalyzeButton() {
@@ -1224,7 +1226,8 @@ async function requestCostEstimate() {
   let normalOutputTokens = 0;
 
   if (numApiGroups > 0) {
-    const textTokensPerChunk = Math.ceil(CHUNK_SIZE / WORDS_PER_TOKEN);
+    const wordsInChunk       = Math.min(wc, CHUNK_SIZE); // el último (y único) chunk puede ser menor
+    const textTokensPerChunk = Math.ceil(wordsInChunk / WORDS_PER_TOKEN);
     // Primera chunk: prompt completo
     normalInputTokens  += numApiGroups * (PROMPT_TOKENS_BASE + textTokensPerChunk);
     normalOutputTokens += numApiGroups * Math.ceil(textTokensPerChunk * OUTPUT_RATIO);
@@ -1275,6 +1278,9 @@ async function requestCostEstimate() {
 function closeCostPopup(e) {
   if (!e || e.target === document.getElementById('costOverlay')) {
     document.getElementById('costOverlay').classList.remove('visible');
+    // Recalcular palabras para que el siguiente "Calcular coste" sea preciso
+    // (el usuario puede haber cambiado la selección entre opens del popup)
+    state.wordCount = 0;
   }
 }
 
