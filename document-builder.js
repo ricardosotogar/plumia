@@ -1,8 +1,9 @@
 // ============================================================================
-// PLUMIA — document-builder.js  v5
-// Arquitectura de DOS PASADAS para marcado fiable en Word JS API:
-//   Pasada 1: inserta marcadores de texto únicos en el documento
-//   Pasada 2: reemplaza cada marcador con ◆ en un Word.run fresco
+// PLUMIA — document-builder.js  v6
+// Arquitectura de PASADA ÚNICA para marcado fiable en Word JS API:
+//   Inserta ◆ directamente, lo estiliza e inserta comentario en el mismo sync.
+//   Elimina la arquitectura de marcadores intermedios (PLMX…) que causaba
+//   que los marcadores no se reemplazasen y los comentarios no apareciesen.
 // ============================================================================
 (function() {
 
@@ -115,12 +116,32 @@ function _singleComment(f) {
   }
 }
 
+// ── Helpers para insertar ◆ con estilo y comentario ──────────────────────────
+
+// Inserta texto ◆ en una posición, lo estiliza.
+// `where` es 'Before'|'After', `anchor` es el Range de referencia.
+// Devuelve el Range del símbolo insertado.
+function _insertSymbol(anchor, where, symbol, colorHex) {
+  const sym = anchor.insertText(symbol, where);
+  sym.font.color          = colorHex;
+  sym.font.bold           = true;
+  sym.font.highlightColor = 'None';
+  sym.font.size           = 18;
+  return sym;
+}
+
+// Intenta insertar un comentario en un Range, tragando errores.
+function _tryComment(range, commentText) {
+  if (!commentText) return;
+  const safe = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
+  try { range.insertComment(safe); } catch(e) { console.warn('Plumia comment:', e.message); }
+}
+
+
 // ── DOCUMENTBUILDER ───────────────────────────────────────────────────────────
 window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   constructor(outputMode) {
-    this.outputMode      = outputMode;
-    this._markerIdx      = 0;
-    this._pendingMarkers = []; // {marker, superscript, colorHex, commentText, isEnd}
+    this.outputMode = outputMode;
   }
 
   async getRevisionName(n) { return n.replace(/\s*REVISION\s*/i,'').trim() + ' REVISION'; }
@@ -158,11 +179,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     }
   }
 
-  // ── PASADA 1A: insertar marcador antes del pronombre ─────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PASADA ÚNICA: marcar, estilizar y comentar en el mismo Word.run
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── Pronombre (leísmo): ◆ antes del pronombre, color al pronombre ────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
 
-    // Si no podemos aislar el pronombre, marcar la frase completa como word mark
     if (!pronoun) {
       await this._markWord(ctx, body, range, finding, colorHex, commentText);
       return;
@@ -175,48 +199,39 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const pLower    = pronoun.toLowerCase();
     const origPos   = paraText.toLowerCase().indexOf(origLower);
 
+    let target;
     if (origPos === -1) {
-      // Fallback: buscar el pronombre directamente en el párrafo
       const psr2 = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr2.load('items'); await ctx.sync();
       if (!psr2.items.length) return;
-      const target = psr2.items[0];
-      target.font.color = colorHex;
-      const idxFb = this._markerIdx++;
-      const mkFb  = `PLMX${idxFb}X`;
-      const mkcFb = commentText ? `PLMK${idxFb}K` : null;
-      if (mkcFb) target.getRange('Start').insertText(mkcFb, 'Before');
-      target.getRange('Start').insertText(mkFb, 'Before');
-      await ctx.sync();
-      this._pendingMarkers.push({markerSymbol:mkFb, markerComment:mkcFb, superscript:null, colorHex, commentText});
-      return;
+      target = psr2.items[0];
+    } else {
+      const pInOrig = origLower.indexOf(pLower);
+      const absPos  = origPos + pInOrig;
+      const before  = paraText.substring(0, absPos);
+      const nBefore = (before.match(new RegExp('\\b'+pLower+'\\b','gi'))||[]).length;
+      const psr = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
+      psr.load('items'); await ctx.sync();
+      if (!psr.items.length) return;
+      target = psr.items[Math.min(nBefore, psr.items.length-1)];
     }
 
-    const pInOrig    = origLower.indexOf(pLower);
-    const absPos     = origPos + pInOrig;
-    const before     = paraText.substring(0, absPos);
-    const nBefore    = (before.match(new RegExp('\\b'+pLower+'\\b','gi'))||[]).length;
-    const psr = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
-    psr.load('items'); await ctx.sync();
-    if (!psr.items.length) return;
-    const target = psr.items[Math.min(nBefore, psr.items.length-1)];
+    // Colorear el pronombre
     target.font.color = colorHex;
-    const idx = this._markerIdx++;
-    const mks = `PLMX${idx}X`;
-    const mkc = commentText ? `PLMK${idx}K` : null;
-    // Insertar PLMX + PLMK (comment anchor) juntos antes del pronombre
-    if (mkc) target.getRange('Start').insertText(mkc, 'Before');
-    target.getRange('Start').insertText(mks, 'Before');
+
+    // Insertar ◆ ANTES del pronombre y añadir comentario al pronombre
+    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+    _tryComment(target, commentText);
     await ctx.sync();
-    this._pendingMarkers.push({markerSymbol:mks, markerComment:mkc, superscript:null, colorHex, commentText});
   }
 
-  // ── PASADA 1B: insertar marcador antes de palabra clave ──────────────────
+  // ── Palabra clave (highlight): ◆ antes de la palabra, highlight ──────────
   async _markWord(ctx, body, range, finding, colorHex, commentText) {
     const corrId  = finding.correctionId;
     const keyText = this._getKeyText(finding);
     if (!keyText || keyText.length < 2) return;
-    const hl = HIGHLIGHT[corrId];
+
+    const hl   = HIGHLIGHT[corrId];
     const para = range.paragraphs.getFirst();
     let items;
     try {
@@ -224,57 +239,59 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       sr.load('items'); await ctx.sync();
       items = sr.items;
     } catch(e) { items = []; }
+
     if (!items.length) {
       const sr2 = body.search(keyText, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
       items = sr2.items;
     }
     if (!items.length) return;
+
     const target = items[0];
     if (hl) target.font.highlightColor = hl;
-    const idx = this._markerIdx++;
-    const mks = `PLMX${idx}X`;
-    const mkc = commentText ? `PLMK${idx}K` : null;
-    if (mkc) target.getRange('Start').insertText(mkc, 'Before');
-    target.getRange('Start').insertText(mks, 'Before');
+
+    // Insertar ◆ ANTES de la palabra y añadir comentario directamente
+    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+    _tryComment(target, commentText);
     await ctx.sync();
-    this._pendingMarkers.push({markerSymbol:mks, markerComment:mkc, superscript:null, colorHex, commentText});
   }
 
-  // ── PASADA 1C: insertar marcadores de inicio y fin ────────────────────────
+  // ── Corchetes (bracket): ◆¹ antes, ◆² después ───────────────────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    const idxs = this._markerIdx++;
-    const idxe = this._markerIdx++;
-    const mks  = `PLMX${idxs}X`; // inicio → ◆¹
-    const mke  = `PLMX${idxe}X`; // fin    → ◆²
-    const mkc  = commentText ? `PLMK${idxs}K` : null; // ancla de comentario
-
-    // ATÓMICO: fin primero, luego inicio + ancla comentario — un solo sync
-    range.getRange('End').insertText(mke, 'After');
-    if (mkc) range.getRange('Start').insertText(mkc, 'Before');
-    range.getRange('Start').insertText(mks, 'Before');
+    // IMPORTANTE: insertar fin PRIMERO, luego inicio.
+    // Si invertimos el orden, la inserción de ◆¹ desplaza el rango y ◆² queda mal.
+    _insertSymbol(range.getRange('End'),   'After',  '\u25C6\u00B2', colorHex);
+    _insertSymbol(range.getRange('Start'), 'Before', '\u25C6\u00B9', colorHex);
+    _tryComment(range, commentText);
     await ctx.sync();
-
-    this._pendingMarkers.push({markerSymbol:mks, markerComment:mkc, superscript:'\u00B9', colorHex, commentText});
-    this._pendingMarkers.push({markerSymbol:mke, markerComment:null, superscript:'\u00B2', colorHex, commentText:null});
   }
 
-  // ── PASADA 1: aplicar un finding ─────────────────────────────────────────
+  // ── Aplicar un finding individual ─────────────────────────────────────────
   async _applyFinding(ctx, body, finding) {
     const corrId   = finding.correctionId;
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
-    const search   = (finding.originalText||'').replace(/[\r\n]+/g,' ').trim();
+    let search = (finding.originalText||'').replace(/[\r\n]+/g,' ').trim();
     if (!search || search.length < 3) return;
 
-    const sr = body.search(search.substring(0,80), {matchCase:false,matchWholeWord:false,matchWildcards:false});
+    // Truncar en límite de PALABRA (solo espacio) para evitar que ◆² parta una palabra
+    if (search.length > 80) {
+      const cut = search.substring(0, 80);
+      const lastSpace = cut.lastIndexOf(' ');
+      search = lastSpace > 30 ? cut.substring(0, lastSpace).trimEnd() : cut;
+    }
+
+    const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
     sr.load('items'); await ctx.sync();
     let range;
     if (sr.items.length) {
       range = sr.items[0];
     } else {
-      const shorter = search.substring(0,40);
+      // Fallback: buscar con texto más corto, también en frontera de palabra
+      let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
+      const lastSp = shorter.lastIndexOf(' ');
+      if (lastSp > 15) shorter = shorter.substring(0, lastSp).trimEnd();
       const sr2 = body.search(shorter, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
       if (!sr2.items.length) return;
@@ -284,48 +301,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (corrId === 'leismo')            await this._markPronoun (ctx, body, range, finding, colorHex, comment);
     else if (BRACKET_TYPES.has(corrId)) await this._markBrackets(ctx, body, range, finding, colorHex, comment);
     else                                await this._markWord    (ctx, body, range, finding, colorHex, comment);
-  }
-
-  // ── PASADA 2: reemplazar UN marcador con ◆ en Word.run fresco ────────────
-  // Estrategia: cada ◆ que lleva comentario tiene DOS marcadores en el documento:
-  //   PLMX14X → se reemplaza por ◆ (símbolo visual)
-  //   PLMK14K → se usa para anclar el comentario y luego se borra
-  // Los marcadores de ◆² solo tienen PLMX, nunca PLMK.
-  async _replaceSingleMarker(pending) {
-    const {markerSymbol, markerComment, superscript, colorHex, commentText} = pending;
-    const symbol = '\u25C6' + (superscript || '');
-
-    // Word.run 1: reemplazar PLMX → ◆
-    await Word.run(async (ctx) => {
-      const body = ctx.document.body;
-      const sr = body.search(markerSymbol, {matchCase:true,matchWholeWord:false,matchWildcards:false});
-      sr.load('items'); await ctx.sync();
-      if (!sr.items.length) { console.warn('Plumia: no encontrado:', markerSymbol); return; }
-      const d = sr.items[0];
-      d.insertText(symbol, 'Replace');
-      d.font.color = colorHex; d.font.bold = true;
-      d.font.highlightColor = 'None'; d.font.size = 18;
-      await ctx.sync();
-    });
-
-    // Word.run 2: insertar comentario en PLMK y hacerlo invisible
-    if (markerComment && commentText) {
-      await Word.run(async (ctx) => {
-        const body = ctx.document.body;
-        const sr = body.search(markerComment, {matchCase:true,matchWholeWord:false,matchWildcards:false});
-        sr.load('items'); await ctx.sync();
-        if (!sr.items.length) return;
-        const d = sr.items[0];
-        const safe = commentText.replace(/[\r\n]+/g,' | ').substring(0, 400);
-        // Insertar comentario y sincronizar antes de tocar el range
-        try { d.insertComment(safe); } catch(e) { console.warn('Plumia comment:', e.message); }
-        await ctx.sync();
-        // Hacer el marcador invisible (no se puede borrar un range con comentario anclado)
-        d.font.color = 'FFFFFF'; // blanco
-        d.font.size  = 2;        // 1pt — prácticamente invisible
-        await ctx.sync();
-      });
-    }
   }
 
   // ── APPLY MARKINGS ────────────────────────────────────────────────────────
@@ -338,28 +313,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (ortotypo.length) await this.applyOrtotypography();
     if (!others.length)  return;
 
-    this._markerIdx      = 0;
-    this._pendingMarkers = [];
-
-    // ── PASADA 1: insertar todos los marcadores de texto ───────────────────
-    // BATCH=1: cada finding en su propio Word.run para evitar que inserciones
-    // simultáneas desplacen marcadores de otros findings del mismo lote.
-    const BATCH = 1;
-    for (let i = 0; i < others.length; i += BATCH) {
-      const batch = others.slice(i, i + BATCH);
+    // PASADA ÚNICA: cada finding en su propio Word.run.
+    // Insertar ◆, estilizar y añadir comentario — todo en el mismo sync.
+    for (let i = 0; i < others.length; i++) {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
-        for (const f of batch) {
-          try { await this._applyFinding(ctx, body, f); }
-          catch(e) { console.warn('Plumia P1:', (f.originalText||'').substring(0,30), e.message); }
-        }
+        try { await this._applyFinding(ctx, body, others[i]); }
+        catch(e) { console.warn('Plumia mark:', (others[i].originalText||'').substring(0,30), e.message); }
       });
-    }
-
-    // ── PASADA 2: reemplazar cada marcador con ◆ en Word.run fresco ────────
-    for (const pending of this._pendingMarkers) {
-      try { await this._replaceSingleMarker(pending); }
-      catch(e) { console.warn('Plumia P2:', pending.marker, e.message); }
     }
   }
 
@@ -384,12 +345,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             const sr = para.search('-', {matchCase:true,matchWholeWord:false,matchWildcards:false});
             sr.load('items'); await ctx.sync();
             if (sr.items.length) {
-              sr.items[0].insertText('—','Replace'); sr.items[0].font.bold=true;
+              sr.items[0].insertText('\u2014','Replace'); sr.items[0].font.bold=true;
               if (!firstDashDone) {
-                try { sr.items[0].insertComment('Ortotipografía: guión corto (-) corregido a raya (—) en todo el documento.'); } catch(e){}
+                try { sr.items[0].insertComment('Ortotipograf\u00EDa: gui\u00F3n corto (-) corregido a raya (\u2014) en todo el documento.'); } catch(e){}
                 firstDashDone = true;
               }
-              for (let i=1;i<sr.items.length;i++) { sr.items[i].insertText('—','Replace'); sr.items[i].font.bold=true; }
+              for (let i=1;i<sr.items.length;i++) { sr.items[i].insertText('\u2014','Replace'); sr.items[i].font.bold=true; }
             }
             await ctx.sync();
           } catch(e) {}
@@ -403,7 +364,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         for (const r of isr.items) {
           r.load('text'); await ctx.sync();
           const t = r.text||'';
-          if (t.length>=3) { r.insertText(' —'+t.charAt(t.length-1),'Replace'); r.font.bold=true; }
+          if (t.length>=3) { r.insertText(' \u2014'+t.charAt(t.length-1),'Replace'); r.font.bold=true; }
         }
         await ctx.sync();
       } catch(e) {}
@@ -411,15 +372,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       // 3. ¡ usado como cierre (letra+¡)
       paras.forEach(p=>p.load('text')); await ctx.sync();
       for (const para of paras) {
-        const m = (para.text||'').match(/(\w)(¡)/);
+        const m = (para.text||'').match(/(\w)(\u00A1)/);
         if (m) {
           try {
-            const sr = para.search(m[1]+'¡', {matchCase:true,matchWholeWord:false,matchWildcards:false});
+            const sr = para.search(m[1]+'\u00A1', {matchCase:true,matchWholeWord:false,matchWildcards:false});
             sr.load('items'); await ctx.sync();
             for (const r of sr.items) {
               r.insertText(m[1]+'!','Replace'); r.font.bold=true;
               if (!firstExclDone) {
-                try { r.insertComment('Ortotipografía: signo de cierre ¡ corregido a !'); } catch(e){}
+                try { r.insertComment('Ortotipograf\u00EDa: signo de cierre \u00A1 corregido a !'); } catch(e){}
                 firstExclDone=true;
               }
             }
@@ -434,7 +395,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         qr.load('items'); await ctx.sync();
         for (let i=0;i<qr.items.length;i++) {
           qr.items[i].insertText(i%2===0?'\u00AB':'\u00BB','Replace'); qr.items[i].font.bold=true;
-          if (i===0) { try { qr.items[i].insertComment('Ortotipografía: comillas inglesas corregidas a «»'); } catch(e){} }
+          if (i===0) { try { qr.items[i].insertComment('Ortotipograf\u00EDa: comillas inglesas corregidas a \u00AB\u00BB'); } catch(e){} }
         }
         await ctx.sync();
       } catch(e) {}
@@ -505,15 +466,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const body = ctx.document.body;
       body.insertBreak('Page','End');
 
-      // Título — sync inmediato para cortar herencia de tamaño
       const title = body.insertParagraph('INFORME DE INCIDENCIAS \u2014 PLUMIA','End');
       title.font.bold=true; title.font.size=28; title.font.color='1a1a2e';
       await ctx.sync();
 
-      // Reset explícito
       const rp0 = body.insertParagraph('','End'); rp0.font.size=22; rp0.font.bold=false;
 
-      // Resumen
       const h2a = body.insertParagraph('Resumen por categor\u00EDa','End'); h2a.font.bold=true; h2a.font.size=24; h2a.font.color='1a1a2e';
 
       for (const result of allResults) {
@@ -523,7 +481,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
       const tp = body.insertParagraph(`Total: ${total} incidencias detectadas`,'End'); tp.font.bold=true; tp.font.size=22; tp.font.color='1a1a2e';
 
-      await ctx.sync(); // sync antes del detalle
+      await ctx.sync();
 
       const rp1 = body.insertParagraph('','End'); rp1.font.size=22; rp1.font.bold=false;
 
