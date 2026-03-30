@@ -1,11 +1,11 @@
 // ============================================================================
 // PLUMIA — document-builder.js  v7.01
-// Arquitectura de PASADA ÚNICA — un solo ctx.sync() por finding.
-// Patrón:
-//   1) Colorear/highlight la palabra (si aplica)
-//   2) Insertar ◆ → devuelve symRange
-//   3) insertComment sobre symRange (el propio ◆)
-//   4) UN SOLO await ctx.sync()
+// Arquitectura de PASADA ÚNICA.
+// Patrón word/pronoun (un solo sync):
+//   1) Colorear/highlight → 2) insertText ◆ → 3) comment en ◆ → 4) sync
+// Patrón brackets (dos syncs, porque font ops en ◆² interfieren con ◆¹):
+//   1) insertText plano ◆² y ◆¹ (sin font) → 2) sync
+//   3) Estilizar sym1/sym2 + comment en sym1 → 4) sync
 // ============================================================================
 (function() {
 
@@ -124,7 +124,7 @@ function _singleComment(f) {
 // Helpers
 // ══════════════════════════════════════════════════════════════════════════════
 
-// Inserta el símbolo ◆ y lo estiliza. Devuelve el Range del ◆ insertado.
+// Inserta símbolo ◆, lo estiliza, y devuelve su Range.
 function _insertSymbol(anchor, where, symbol, colorHex) {
   const sym = anchor.insertText(symbol, where);
   sym.font.color          = colorHex;
@@ -134,7 +134,15 @@ function _insertSymbol(anchor, where, symbol, colorHex) {
   return sym;
 }
 
-// Inserta un comentario de Word sobre un Range. Traga errores.
+// Estiliza un Range ya insertado (para el patrón de dos syncs de brackets).
+function _styleSymbol(range, colorHex) {
+  range.font.color          = colorHex;
+  range.font.bold           = true;
+  range.font.highlightColor = 'None';
+  range.font.size           = 18;
+}
+
+// Inserta un comentario de Word sobre un Range.
 function _tryComment(range, commentText) {
   if (!commentText) return;
   const safe = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
@@ -182,14 +190,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // PASADA ÚNICA — Todo encolado, UN SOLO ctx.sync() al final de cada método.
-  //   1) Colorear/highlight el texto (si aplica)
-  //   2) Insertar ◆ → devuelve symRange
-  //   3) insertComment sobre symRange (el propio ◆)
-  //   4) await ctx.sync()
+  // PASADA ÚNICA
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // ── Pronombre (leísmo): colorear → ◆ antes → comentario en ◆ ─────────────
+  // ── Pronombre (leísmo): colorear → ◆ → comment en ◆ → sync ──────────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
     if (!pronoun) {
@@ -221,14 +225,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       target = psr.items[Math.min(nBefore, psr.items.length-1)];
     }
 
-    // Todo encolado — un solo sync al final
-    target.font.color = colorHex;                                           // 1. Colorear pronombre
-    const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex); // 2. ◆ antes
-    _tryComment(symRange, commentText);                                     // 3. Comentario en el ◆
-    await ctx.sync();                                                       // 4. Ejecutar todo
+    // Todo encolado — un solo sync
+    target.font.color = colorHex;
+    const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+    _tryComment(symRange, commentText);
+    await ctx.sync();
   }
 
-  // ── Palabra clave: highlight → ◆ antes → comentario en ◆ ─────────────────
+  // ── Palabra clave: highlight → ◆ → comment en ◆ → sync ──────────────────
   async _markWord(ctx, body, range, finding, colorHex, commentText) {
     const corrId  = finding.correctionId;
     const keyText = this._getKeyText(finding);
@@ -252,20 +256,30 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const target = items[0];
 
-    // Todo encolado — un solo sync al final
-    if (hl) target.font.highlightColor = hl;                                // 1. Highlight
-    const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex); // 2. ◆ antes
-    _tryComment(symRange, commentText);                                     // 3. Comentario en el ◆
-    await ctx.sync();                                                       // 4. Ejecutar todo
+    // Todo encolado — un solo sync
+    if (hl) target.font.highlightColor = hl;
+    const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+    _tryComment(symRange, commentText);
+    await ctx.sync();
   }
 
-  // ── Brackets: ◆² al final → ◆¹ al inicio → comentario en ◆¹ ─────────────
+  // ── Brackets: TEXTO PLANO primero → sync → estilizar + comment → sync ────
+  // Las operaciones de font sobre ◆² interfieren con la inserción de ◆¹ si
+  // van todas en la misma cola. Por eso insertamos TEXTO PLANO (sin font)
+  // primero — esto funciona igual que v5 — y luego estilizamos.
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    // Todo encolado — un solo sync al final
-    _insertSymbol(range.getRange('End'), 'After', '\u25C6\u00B2', colorHex);              // 1. ◆² al final
-    const sym1 = _insertSymbol(range.getRange('Start'), 'Before', '\u25C6\u00B9', colorHex); // 2. ◆¹ al inicio
-    _tryComment(sym1, commentText);                                                        // 3. Comentario en ◆¹
-    await ctx.sync();                                                                      // 4. Ejecutar todo
+    // Fase 1: insertar TEXTO PLANO en ambos extremos (sin operaciones de font)
+    // El orden importa: End primero, luego Start (como en v5, donde funcionaba)
+    const sym2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
+    const sym1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
+    await ctx.sync();
+
+    // Fase 2: estilizar ambos símbolos y añadir comentario en ◆¹
+    // sym1 y sym2 siguen siendo referencias válidas tras el sync
+    _styleSymbol(sym1, colorHex);
+    _tryComment(sym1, commentText);
+    _styleSymbol(sym2, colorHex);
+    await ctx.sync();
   }
 
   // ── Aplicar un finding individual ─────────────────────────────────────────
@@ -314,7 +328,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (ortotypo.length) await this.applyOrtotypography();
     if (!others.length)  return;
 
-    // Cada finding en su propio Word.run aislado
     for (let i = 0; i < others.length; i++) {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
@@ -337,7 +350,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       let firstDashDone = false;
       let firstExclDone = false;
 
-      // 1. Guiones al inicio de párrafo → raya
       for (const para of paras) {
         const trimmed = (para.text||'').trimStart();
         if (/^-/.test(trimmed)) {
@@ -357,7 +369,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         }
       }
 
-      // 2. Guiones internos (" -letra") → raya
       try {
         const isr = body.search(' -[a-zA-Z]', {matchCase:false,matchWholeWord:false,matchWildcards:true});
         isr.load('items'); await ctx.sync();
@@ -369,7 +380,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         await ctx.sync();
       } catch(e) {}
 
-      // 3. ¡ usado como cierre (letra+¡)
       paras.forEach(p=>p.load('text')); await ctx.sync();
       for (const para of paras) {
         const m = (para.text||'').match(/(\w)(\u00A1)/);
@@ -389,7 +399,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         }
       }
 
-      // 4. Comillas rectas → españolas
       try {
         const qr = body.search('"', {matchCase:true,matchWholeWord:false,matchWildcards:false});
         qr.load('items'); await ctx.sync();
@@ -400,7 +409,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         await ctx.sync();
       } catch(e) {}
 
-      // 5. Comillas tipográficas curvas → españolas
       for (const [s,r] of [['\u201c','\u00AB'],['\u201d','\u00BB'],['\u2018','\u00AB'],['\u2019','\u00BB']]) {
         try {
           const sr = body.search(s,{matchCase:true,matchWholeWord:false,matchWildcards:false});
@@ -410,7 +418,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         } catch(e) {}
       }
 
-      // 6. Tres puntos → puntos suspensivos
       try {
         const dr = body.search('...',{matchCase:true,matchWholeWord:false,matchWildcards:false});
         dr.load('items'); await ctx.sync();
@@ -418,7 +425,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         await ctx.sync();
       } catch(e) {}
 
-      // 7. Espacio antes de puntuación
       for (const sign of [' ,', ' ;', ' :', ' .']) {
         try {
           const sr = body.search(sign,{matchCase:true,matchWholeWord:false,matchWildcards:false});
@@ -471,7 +477,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await ctx.sync();
 
       const rp0 = body.insertParagraph('','End'); rp0.font.size=22; rp0.font.bold=false;
-
       const h2a = body.insertParagraph('Resumen por categor\u00EDa','End'); h2a.font.bold=true; h2a.font.size=24; h2a.font.color='1a1a2e';
 
       for (const result of allResults) {

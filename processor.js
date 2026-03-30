@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v7.00
+// PLUMIA — processor.js  v7.01
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -184,10 +184,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     const selectedIds = this.selectedIds;
     const allResults  = [];
 
+    // ── Preservar texto de selección original ────────────────────────────────
+    // Si el usuario seleccionó un fragmento, las correcciones normales deben
+    // ejecutarse SOLO sobre ese fragmento. La coherencia narrativa necesita el
+    // documento completo, pero no debe contaminar el texto para el resto.
+    const selectionText      = text;
+    const selectionIsPartial = isSelection;
+    let coherenceText        = text; // por defecto = lo mismo
+
     // ── GARANTÍA requiresFullDoc ──────────────────────────────────────────────
-    // Si hay correcciones que requieren el documento completo pero se recibió
-    // solo una selección, re-extraer el documento completo automáticamente.
-    // Esto protege la lógica aunque se llame al motor directamente sin pasar por la UI.
     const hasFullDocRequired = selectedIds.some(id => {
       const c = CORRECTIONS.find(x => x.id === id);
       return c && c.requiresFullDoc;
@@ -196,9 +201,8 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     if (hasFullDocRequired && isSelection) {
       this.onProgress(1, 'Coherencia narrativa requiere el documento completo. Extrayendo…');
       try {
-        const fullDoc = await this.extractTextFromDocument(true); // true = forzar doc completo
-        text = fullDoc.text;
-        isSelection = false;
+        const fullDoc = await this.extractTextFromDocument(true);
+        coherenceText = fullDoc.text; // solo para coherencia
       } catch(e) {
         throw new Error('No se pudo extraer el documento completo para el análisis de coherencia: ' + e.message);
       }
@@ -207,7 +211,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     // ── PASO 1: Ortotipografía local (sin API, coste cero) ──────────────────
     if (selectedIds.includes('ortotipografia_pura')) {
       this.onProgress(2, 'Verificando ortotipografía (local, sin coste)…');
-      const localFindings = runLocalOrtotypography(text);
+      const localFindings = runLocalOrtotypography(selectionText);
       allResults.push({
         correctionId: 'ortotipografia_pura',
         label: 'Ortotipografía pura',
@@ -231,9 +235,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const pct = Math.round(5 + (ci / Math.max(coherenceTotal, 1)) * 30);
       this.onProgress(pct, `Coherencia narrativa: ${corr.label}…`);
       try {
-        const chunks = this._countWords(text) > CONFIG.coherenceChunkSizeWords
-          ? this._splitByChapters(text)
-          : [{ title: 'Documento', text }];
+        const chunks = this._countWords(coherenceText) > CONFIG.coherenceChunkSizeWords
+          ? this._splitByChapters(coherenceText)
+          : [{ title: 'Documento', text: coherenceText }];
         let findings = [];
         for (const ch of chunks) {
           if (this.aborted) break;
@@ -246,10 +250,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           });
         }
         allResults.push({ correctionId: corr.id, label: corr.label, groupId: corr.groupId, colorId: corr.colorId, findings });
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: ci, results: allResults });
+        this._saveProgress({ text: coherenceText.substring(0, 100), completedIndex: ci, results: allResults });
         this.onChunkComplete(allResults);
       } catch(err) {
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: ci - 1, results: allResults });
+        this._saveProgress({ text: coherenceText.substring(0, 100), completedIndex: ci - 1, results: allResults });
         this.errored = true;
         this.onError(err, ci > 0, corr.label);
         return allResults;
@@ -271,7 +275,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       this.onProgress(pct, `Analizando: ${group.label}…`);
 
       try {
-        const chunks = this._splitIntoChunks(text, CONFIG.chunkSizeWords, CONFIG.chunkOverlapWords);
+        const chunks = this._splitIntoChunks(selectionText, CONFIG.chunkSizeWords, CONFIG.chunkOverlapWords);
 
         // Acumular resultados por correctionId
         const accumulated = {};
@@ -315,11 +319,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           });
         }
 
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: gi + coherenceIds.length, results: allResults });
+        this._saveProgress({ text: selectionText.substring(0, 100), completedIndex: gi + coherenceIds.length, results: allResults });
         this.onChunkComplete(allResults);
 
       } catch(err) {
-        this._saveProgress({ text: text.substring(0, 100), completedIndex: gi - 1 + coherenceIds.length, results: allResults });
+        this._saveProgress({ text: selectionText.substring(0, 100), completedIndex: gi - 1 + coherenceIds.length, results: allResults });
         // Errores fatales (autenticación, rate limit) → parar todo
         if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('RATE_LIMIT') || err.message?.includes('INSUFFICIENT_CREDITS')) {
           this.errored = true;
