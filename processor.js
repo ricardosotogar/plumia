@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js
+// PLUMIA — processor.js  v7.00
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -349,8 +349,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       else if (f.occurrence?.text)  text = f.occurrence.text;
       else if (f.frase)             text = f.frase;
     }
-    // Limpiar saltos de línea y truncar a 80 chars (Word no busca newlines)
-    return text.replace(/[\r\n]+/g, ' ').trim().substring(0, 80);
+    // Limpiar saltos de línea
+    text = text.replace(/[\r\n]+/g, ' ').trim();
+    // Truncar a ~75 chars en frontera de palabra (Word no busca newlines)
+    if (text.length > 75) {
+      const cut = text.substring(0, 75);
+      const lastSpace = cut.lastIndexOf(' ');
+      text = lastSpace > 30 ? cut.substring(0, lastSpace).trimEnd() : cut;
+    }
+    return text;
   }
 
   _parseGroupedResponse(response, group, activeIds, accumulated) {
