@@ -374,6 +374,8 @@
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
 ═══════════════════════════════════════════════════════════════════════════ -->
 <script>
+// ── PLUMIA v7.00 ────────────────────────────────────────────────────────────
+console.log('Plumia taskpane v7.00 loaded');
 // Aliases locales — los módulos ya están cargados como window.*
 const COLOR_MAP        = window.PLUMIA.COLOR_MAP;
 const CONFIG           = window.PLUMIA.CONFIG;
@@ -1212,12 +1214,12 @@ async function requestCostEstimate() {
   // Refleja la arquitectura real: correcciones agrupadas + chunks de 3000 palabras
   // Las correcciones de coherencia reciben el documento completo de una vez.
 
-  const WORDS_PER_TOKEN    = 0.75;
+  const WORDS_PER_TOKEN    = 0.55;       // español es más denso: ~1.8 tokens/palabra (v7.00)
   const INPUT_PRICE        = 0.000003;   // $3 / 1M tokens input
   const OUTPUT_PRICE       = 0.000015;   // $15 / 1M tokens output
   const CACHE_DISCOUNT     = 0.10;       // tokens cacheados cuestan 10% del precio normal
   const CHUNK_SIZE         = 3000;       // palabras por chunk
-  const OUTPUT_RATIO       = 0.20;       // tokens de output ≈ 20% del input
+  const OUTPUT_RATIO       = 0.50;       // tokens de output ≈ 50% del input (JSON agrupado verbose)
 
   const wc               = state.wordCount;
   const numChunks        = Math.max(1, Math.ceil(wc / CHUNK_SIZE));
@@ -1236,8 +1238,8 @@ async function requestCostEstimate() {
   );
   const numApiGroups    = activeGroups.length;
 
-  // Tokens de prompt por llamada (instrucciones fijas ≈ 400 tokens, se cachean en chunk 2+)
-  const PROMPT_TOKENS_BASE = 400;
+  // Tokens de prompt por llamada (instrucciones SISTEMA + prompt agrupado ≈ 900 tokens, se cachean en chunk 2+)
+  const PROMPT_TOKENS_BASE = 900;
 
   // ── Correcciones normales (chunked) ──────────────────────────────────────
   // Primera llamada de cada grupo: prompt completo
@@ -1268,9 +1270,9 @@ async function requestCostEstimate() {
     const coherenceChunks     = Math.max(1, Math.ceil(wc / coherenceChunkSize));
     const fullDocTokens       = Math.ceil(wc / WORDS_PER_TOKEN);
     const tokensPerChunk      = Math.ceil(fullDocTokens / coherenceChunks);
-    // Coherencia: prompt completo (tokens de instrucciones ~600) + texto, output es JSON corto (~5% del input)
-    const COHERENCE_PROMPT    = 600;
-    const COHERENCE_OUT_RATIO = 0.05;
+    // Coherencia: prompt completo (tokens de instrucciones ~1000) + texto, output es JSON corto (~8% del input)
+    const COHERENCE_PROMPT    = 1000;
+    const COHERENCE_OUT_RATIO = 0.08;
     coherenceInputTokens  = coherenceIds.length * coherenceChunks * (COHERENCE_PROMPT + tokensPerChunk);
     coherenceOutputTokens = coherenceIds.length * coherenceChunks * Math.ceil(tokensPerChunk * COHERENCE_OUT_RATIO);
   }

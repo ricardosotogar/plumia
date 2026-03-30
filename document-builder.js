@@ -1,11 +1,14 @@
 // ============================================================================
-// PLUMIA — document-builder.js  v6
+// PLUMIA — document-builder.js  v7.00
 // Arquitectura de PASADA ÚNICA para marcado fiable en Word JS API:
 //   Inserta ◆ directamente, lo estiliza e inserta comentario en el mismo sync.
-//   Elimina la arquitectura de marcadores intermedios (PLMX…) que causaba
-//   que los marcadores no se reemplazasen y los comentarios no apareciesen.
+//   NO usa marcadores intermedios (PLMX/PLMK) — eso causaba que los marcadores
+//   quedasen visibles y los comentarios no apareciesen.
 // ============================================================================
 (function() {
+
+// Constante de versión verificable desde consola: window.PLUMIA.BUILDER_VERSION
+window.PLUMIA.BUILDER_VERSION = '7.00';
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
@@ -116,11 +119,12 @@ function _singleComment(f) {
   }
 }
 
-// ── Helpers para insertar ◆ con estilo y comentario ──────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// Helpers: insertar ◆ con estilo y comentario — sin marcadores intermedios
+// ══════════════════════════════════════════════════════════════════════════════
 
-// Inserta texto ◆ en una posición, lo estiliza.
-// `where` es 'Before'|'After', `anchor` es el Range de referencia.
-// Devuelve el Range del símbolo insertado.
+// Inserta el símbolo ◆ (con superíndice opcional) en `where` respecto a `anchor`.
+// Devuelve el Range del texto insertado (ya estilizado).
 function _insertSymbol(anchor, where, symbol, colorHex) {
   const sym = anchor.insertText(symbol, where);
   sym.font.color          = colorHex;
@@ -130,11 +134,11 @@ function _insertSymbol(anchor, where, symbol, colorHex) {
   return sym;
 }
 
-// Intenta insertar un comentario en un Range, tragando errores.
+// Inserta un comentario de Word en `range`. Traga errores silenciosamente.
 function _tryComment(range, commentText) {
   if (!commentText) return;
   const safe = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
-  try { range.insertComment(safe); } catch(e) { console.warn('Plumia comment:', e.message); }
+  try { range.insertComment(safe); } catch(e) { console.warn('Plumia comment fail:', e.message); }
 }
 
 
@@ -186,7 +190,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── Pronombre (leísmo): ◆ antes del pronombre, color al pronombre ────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
-
     if (!pronoun) {
       await this._markWord(ctx, body, range, finding, colorHex, commentText);
       return;
@@ -201,6 +204,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     let target;
     if (origPos === -1) {
+      // Fallback: buscar el pronombre directamente en el párrafo
       const psr2 = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr2.load('items'); await ctx.sync();
       if (!psr2.items.length) return;
@@ -216,11 +220,13 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       target = psr.items[Math.min(nBefore, psr.items.length-1)];
     }
 
-    // Colorear el pronombre
+    // Colorear el pronombre erróneo
     target.font.color = colorHex;
 
-    // Insertar ◆ ANTES del pronombre y añadir comentario al pronombre
+    // Insertar ◆ ANTES del pronombre — directamente, sin marcador intermedio
     _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+
+    // Comentario sobre el rango del pronombre (que sigue siendo válido)
     _tryComment(target, commentText);
     await ctx.sync();
   }
@@ -250,18 +256,22 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const target = items[0];
     if (hl) target.font.highlightColor = hl;
 
-    // Insertar ◆ ANTES de la palabra y añadir comentario directamente
+    // Insertar ◆ ANTES de la palabra — directamente, sin marcador intermedio
     _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+
+    // Comentario sobre el rango de la palabra (que sigue siendo válido)
     _tryComment(target, commentText);
     await ctx.sync();
   }
 
-  // ── Corchetes (bracket): ◆¹ antes, ◆² después ───────────────────────────
+  // ── Corchetes (bracket): ◆¹ antes del inicio, ◆² después del fin ────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    // IMPORTANTE: insertar fin PRIMERO, luego inicio.
-    // Si invertimos el orden, la inserción de ◆¹ desplaza el rango y ◆² queda mal.
+    // IMPORTANTE: insertar FIN primero, luego INICIO.
+    // Si se invierte, la inserción de ◆¹ desplaza el rango y ◆² queda mal posicionado.
     _insertSymbol(range.getRange('End'),   'After',  '\u25C6\u00B2', colorHex);
     _insertSymbol(range.getRange('Start'), 'Before', '\u25C6\u00B9', colorHex);
+
+    // Comentario sobre el rango original (sigue válido — no se ha reemplazado nada)
     _tryComment(range, commentText);
     await ctx.sync();
   }
@@ -274,7 +284,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     let search = (finding.originalText||'').replace(/[\r\n]+/g,' ').trim();
     if (!search || search.length < 3) return;
 
-    // Truncar en límite de PALABRA (solo espacio) para evitar que ◆² parta una palabra
+    // Truncar en frontera de PALABRA (solo espacio) para evitar cortar a mitad de palabra
     if (search.length > 80) {
       const cut = search.substring(0, 80);
       const lastSpace = cut.lastIndexOf(' ');
@@ -313,13 +323,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (ortotypo.length) await this.applyOrtotypography();
     if (!others.length)  return;
 
-    // PASADA ÚNICA: cada finding en su propio Word.run.
-    // Insertar ◆, estilizar y añadir comentario — todo en el mismo sync.
+    // PASADA ÚNICA: cada finding en su propio Word.run aislado.
+    // Dentro de cada Word.run se inserta ◆, se estiliza y se añade el
+    // comentario — todo antes del ctx.sync(). Sin marcadores intermedios.
     for (let i = 0; i < others.length; i++) {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
         try { await this._applyFinding(ctx, body, others[i]); }
-        catch(e) { console.warn('Plumia mark:', (others[i].originalText||'').substring(0,30), e.message); }
+        catch(e) { console.warn('Plumia v7 mark:', (others[i].originalText||'').substring(0,30), e.message); }
       });
     }
   }
