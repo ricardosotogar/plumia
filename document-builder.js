@@ -1,15 +1,15 @@
 // ============================================================================
-// PLUMIA — document-builder.js  v7.00
-// Arquitectura de PASADA ÚNICA para marcado fiable en Word JS API.
-// Claves:
-//   1) Comentario PRIMERO sobre el rango limpio, ANTES de insertar ◆
-//   2) En brackets, ctx.sync() entre ◆² y ◆¹ para que el rango se actualice
-//   3) NO usa marcadores intermedios (PLMX/PLMK)
+// PLUMIA — document-builder.js  v7.01
+// Arquitectura de PASADA ÚNICA — un solo ctx.sync() por finding.
+// Patrón:
+//   1) Colorear/highlight la palabra (si aplica)
+//   2) Insertar ◆ → devuelve symRange
+//   3) insertComment sobre symRange (el propio ◆)
+//   4) UN SOLO await ctx.sync()
 // ============================================================================
 (function() {
 
-// Constante de versión verificable: window.PLUMIA.BUILDER_VERSION
-window.PLUMIA.BUILDER_VERSION = '7.00';
+window.PLUMIA.BUILDER_VERSION = '7.01';
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
@@ -124,8 +124,7 @@ function _singleComment(f) {
 // Helpers
 // ══════════════════════════════════════════════════════════════════════════════
 
-// Inserta el símbolo ◆ (con superíndice opcional) y lo estiliza.
-// Devuelve el Range del texto insertado.
+// Inserta el símbolo ◆ y lo estiliza. Devuelve el Range del ◆ insertado.
 function _insertSymbol(anchor, where, symbol, colorHex) {
   const sym = anchor.insertText(symbol, where);
   sym.font.color          = colorHex;
@@ -135,7 +134,7 @@ function _insertSymbol(anchor, where, symbol, colorHex) {
   return sym;
 }
 
-// Inserta un comentario de Word en `range`. Traga errores silenciosamente.
+// Inserta un comentario de Word sobre un Range. Traga errores.
 function _tryComment(range, commentText) {
   if (!commentText) return;
   const safe = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
@@ -183,15 +182,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // PASADA ÚNICA — Orden crítico en cada método:
-  //   1) Comentario PRIMERO (sobre el rango limpio, aún no modificado)
-  //   2) ctx.sync() para confirmar el comentario
-  //   3) Insertar ◆ (el rango original puede desplazarse, pero el comentario
-  //      ya está anclado)
-  //   4) ctx.sync() final
+  // PASADA ÚNICA — Todo encolado, UN SOLO ctx.sync() al final de cada método.
+  //   1) Colorear/highlight el texto (si aplica)
+  //   2) Insertar ◆ → devuelve symRange
+  //   3) insertComment sobre symRange (el propio ◆)
+  //   4) await ctx.sync()
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // ── Pronombre (leísmo): comentario → ◆ antes del pronombre ───────────────
+  // ── Pronombre (leísmo): colorear → ◆ antes → comentario en ◆ ─────────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
     if (!pronoun) {
@@ -223,17 +221,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       target = psr.items[Math.min(nBefore, psr.items.length-1)];
     }
 
-    // 1) Comentario PRIMERO — el rango está limpio, no se ha insertado nada
-    _tryComment(target, commentText);
-    await ctx.sync();
-
-    // 2) Colorear pronombre e insertar ◆
-    target.font.color = colorHex;
-    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
-    await ctx.sync();
+    // Todo encolado — un solo sync al final
+    target.font.color = colorHex;                                           // 1. Colorear pronombre
+    const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex); // 2. ◆ antes
+    _tryComment(symRange, commentText);                                     // 3. Comentario en el ◆
+    await ctx.sync();                                                       // 4. Ejecutar todo
   }
 
-  // ── Palabra clave (highlight): comentario → ◆ antes de la palabra ────────
+  // ── Palabra clave: highlight → ◆ antes → comentario en ◆ ─────────────────
   async _markWord(ctx, body, range, finding, colorHex, commentText) {
     const corrId  = finding.correctionId;
     const keyText = this._getKeyText(finding);
@@ -257,29 +252,20 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const target = items[0];
 
-    // 1) Comentario PRIMERO — el rango está limpio
-    _tryComment(target, commentText);
-    await ctx.sync();
-
-    // 2) Highlight e insertar ◆
-    if (hl) target.font.highlightColor = hl;
-    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
-    await ctx.sync();
+    // Todo encolado — un solo sync al final
+    if (hl) target.font.highlightColor = hl;                                // 1. Highlight
+    const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex); // 2. ◆ antes
+    _tryComment(symRange, commentText);                                     // 3. Comentario en el ◆
+    await ctx.sync();                                                       // 4. Ejecutar todo
   }
 
-  // ── Corchetes (bracket): comentario → ◆² al final → sync → ◆¹ al inicio ─
+  // ── Brackets: ◆² al final → ◆¹ al inicio → comentario en ◆¹ ─────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    // 1) Comentario PRIMERO — el rango está limpio
-    _tryComment(range, commentText);
-    await ctx.sync();
-
-    // 2) Insertar ◆² al final — sync para que el rango se actualice
-    _insertSymbol(range.getRange('End'), 'After', '\u25C6\u00B2', colorHex);
-    await ctx.sync();
-
-    // 3) Insertar ◆¹ al inicio — ahora range.getRange('Start') es fiable
-    _insertSymbol(range.getRange('Start'), 'Before', '\u25C6\u00B9', colorHex);
-    await ctx.sync();
+    // Todo encolado — un solo sync al final
+    _insertSymbol(range.getRange('End'), 'After', '\u25C6\u00B2', colorHex);              // 1. ◆² al final
+    const sym1 = _insertSymbol(range.getRange('Start'), 'Before', '\u25C6\u00B9', colorHex); // 2. ◆¹ al inicio
+    _tryComment(sym1, commentText);                                                        // 3. Comentario en ◆¹
+    await ctx.sync();                                                                      // 4. Ejecutar todo
   }
 
   // ── Aplicar un finding individual ─────────────────────────────────────────
@@ -290,7 +276,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     let search = (finding.originalText||'').replace(/[\r\n]+/g,' ').trim();
     if (!search || search.length < 3) return;
 
-    // Truncar en frontera de palabra — margen de seguridad a 70 chars
+    // Truncar en frontera de palabra
     if (search.length >= 70) {
       const cut = search.substring(0, 70);
       const lastSpace = cut.lastIndexOf(' ');
@@ -303,7 +289,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (sr.items.length) {
       range = sr.items[0];
     } else {
-      // Fallback: buscar con texto más corto, en frontera de palabra
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
       const lastSp = shorter.lastIndexOf(' ');
@@ -334,7 +319,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
         try { await this._applyFinding(ctx, body, others[i]); }
-        catch(e) { console.warn('Plumia v7 mark:', (others[i].originalText||'').substring(0,30), e.message); }
+        catch(e) { console.warn('Plumia v7.01 mark:', (others[i].originalText||'').substring(0,30), e.message); }
       });
     }
   }
@@ -495,11 +480,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       }
 
       const tp = body.insertParagraph(`Total: ${total} incidencias detectadas`,'End'); tp.font.bold=true; tp.font.size=22; tp.font.color='1a1a2e';
-
       await ctx.sync();
 
       const rp1 = body.insertParagraph('','End'); rp1.font.size=22; rp1.font.bold=false;
-
       const h2b = body.insertParagraph('Detalle por categor\u00EDa','End'); h2b.font.bold=true; h2b.font.size=24; h2b.font.color='1a1a2e';
 
       for (const result of allResults) {
