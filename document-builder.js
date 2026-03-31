@@ -127,75 +127,37 @@ function _singleComment(f) {
 // Helpers
 // ══════════════════════════════════════════════════════════════════════════════
 
-function _insertSymbol(anchor, where, symbol, colorHex) {
-  const sym = anchor.insertText(symbol, where);
-  console.log('[DEBUG _insertSymbol] insertText OK, aplicando font.color');
-  sym.font.color = colorHex;
-  console.log('[DEBUG _insertSymbol] font.color OK, aplicando font.bold');
-  sym.font.bold = true;
-  console.log('[DEBUG _insertSymbol] font.bold OK, aplicando font.highlightColor=NoHighlight');
-  sym.font.highlightColor = 'NoHighlight';  // era 'None' → inválido en Word JS 1.1–1.3
-  console.log('[DEBUG _insertSymbol] font.highlightColor OK, aplicando font.size=18');
-  sym.font.size = 18;
-  console.log('[DEBUG _insertSymbol] todas las props OK — pendiente sync');
-  return sym;
+// Solo inserta el símbolo como texto — SIN operaciones de font.
+// MOTIVO: Word JS API rechaza (InvalidArgument en ctx.sync) cualquier operación
+// de font sobre rangos devueltos por insertText(). El estilizado se hace DESPUÉS
+// del sync, sobre el rango devuelto por body.search(), en _styleAndComment().
+function _insertSymbol(anchor, where, symbol) {
+  anchor.insertText(symbol, where);
 }
 
-function _styleSymbol(range, colorHex) {
-  console.log('[DEBUG _styleSymbol] aplicando font.color');
-  range.font.color = colorHex;
-  console.log('[DEBUG _styleSymbol] font.color OK, aplicando font.bold');
-  range.font.bold = true;
-  console.log('[DEBUG _styleSymbol] font.bold OK, aplicando font.highlightColor=NoHighlight');
-  range.font.highlightColor = 'NoHighlight';  // era 'None'
-  console.log('[DEBUG _styleSymbol] font.highlightColor OK, aplicando font.size=18');
-  range.font.size = 18;
-  console.log('[DEBUG _styleSymbol] todas las props OK — pendiente sync');
-}
-
-// Busca `searchPattern` en body, toma el último resultado, e inserta comentario.
-// Esto funciona porque insertComment SOLO acepta rangos de search(), no de insertText().
-async function _commentViaSearch(ctx, body, searchPattern, commentText) {
-  // DEBUG ─────────────────────────────────────────────────────────────────────
-  const patCodes = Array.from(searchPattern).map(c => 'U+' + c.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')).join(' ');
-  console.log('[DEBUG _commentViaSearch] pattern="' + searchPattern + '" codes=[' + patCodes + '] commentText=' + (commentText ? '"' + commentText.substring(0,80) + '…"' : 'VACÍO/NULL'));
-  // ───────────────────────────────────────────────────────────────────────────
-  if (!commentText) {
-    console.warn('[DEBUG] commentText vacío → no se inserta comentario');
-    return;
-  }
+// Busca `searchPattern` en el body (toma el último resultado = el más reciente),
+// aplica estilizado de font Y añade comentario sobre ese rango de search().
+// Los rangos de search() SÍ aceptan font ops e insertComment sin InvalidArgument.
+async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText) {
+  if (!searchPattern) return;
   try {
     const sr = body.search(searchPattern, {matchCase:true, matchWholeWord:false, matchWildcards:false});
     sr.load('items');
     await ctx.sync();
-    console.log('[DEBUG _commentViaSearch] search("' + searchPattern + '") → ' + sr.items.length + ' resultados');
+    console.log('[styleAndComment] search("' + searchPattern + '") → ' + sr.items.length + ' resultado(s)');
     if (!sr.items.length) {
-      console.warn('[DEBUG] ⚠ 0 resultados con matchCase:true → reintentando sin matchCase');
-      // Reintento sin matchCase por si el carácter especial falla con esa opción
-      const sr2 = body.search(searchPattern, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-      sr2.load('items');
-      await ctx.sync();
-      console.log('[DEBUG _commentViaSearch] reintento matchCase:false → ' + sr2.items.length + ' resultados');
-      if (!sr2.items.length) {
-        console.warn('[DEBUG] ⚠⚠ 0 resultados en ambos intentos para "' + searchPattern + '" — el comentario NO se insertará');
-        return;
-      }
-      const target2 = sr2.items[sr2.items.length - 1];
-      const safe2 = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
-      target2.insertComment(safe2);
-      await ctx.sync();
-      console.log('[DEBUG] ✅ Comentario añadido (reintento sin matchCase) en item ' + (sr2.items.length - 1));
+      console.warn('[styleAndComment] ⚠ 0 resultados — símbolo no estilizado ni comentado');
       return;
     }
-    // Tomar el último resultado (el más recientemente insertado, ya que
-    // procesamos findings secuencialmente de arriba a abajo del documento)
-    const target = sr.items[sr.items.length - 1];
-    const safe = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
-    target.insertComment(safe);
+    const target = sr.items[sr.items.length - 1]; // último = más recientemente insertado
+    target.font.color = colorHex;
+    target.font.bold  = true;
+    target.font.size  = 18;
+    if (commentText) target.insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
     await ctx.sync();
-    console.log('[DEBUG] ✅ Comentario añadido vía search("' + searchPattern + '") en item ' + (sr.items.length - 1));
+    console.log('[styleAndComment] ✅ font + comentario OK sobre "' + searchPattern + '"');
   } catch(e) {
-    console.warn('[DEBUG] ❌ _commentViaSearch excepción:', e.message, '| stack:', e.stack);
+    console.warn('[styleAndComment] ❌ excepción:', e.message);
   }
 }
 
@@ -248,30 +210,22 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── Pronombre (leísmo) ───────────────────────────────────────────────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
-    console.log('[DEBUG _markPronoun] pronoun="' + pronoun + '"');
     if (!pronoun) {
-      console.log('[DEBUG _markPronoun] sin pronombre → delegando a _markWord');
       await this._markWord(ctx, body, range, finding, colorHex, commentText);
       return;
     }
 
     const para = range.paragraphs.getFirst();
-    para.load('text');
-    console.log('[DEBUG _markPronoun] antes sync1 (cargar párrafo)');
-    await ctx.sync();
-    console.log('[DEBUG _markPronoun] sync1 OK, paraText="' + (para.text||'').substring(0,60) + '"');
+    para.load('text'); await ctx.sync();
     const paraText  = para.text || '';
     const origLower = (finding.originalText||'').toLowerCase();
     const pLower    = pronoun.toLowerCase();
     const origPos   = paraText.toLowerCase().indexOf(origLower);
 
     let target;
-    console.log('[DEBUG _markPronoun] origPos=' + origPos);
     if (origPos === -1) {
-      console.log('[DEBUG _markPronoun] origPos=-1, antes sync2 (buscar pronombre sin contexto)');
       const psr2 = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr2.load('items'); await ctx.sync();
-      console.log('[DEBUG _markPronoun] sync2 OK, items=' + psr2.items.length);
       if (!psr2.items.length) return;
       target = psr2.items[0];
     } else {
@@ -279,27 +233,18 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const absPos  = origPos + pInOrig;
       const before  = paraText.substring(0, absPos);
       const nBefore = (before.match(new RegExp('\\b'+pLower+'\\b','gi'))||[]).length;
-      console.log('[DEBUG _markPronoun] nBefore=' + nBefore + ', antes sync2 (buscar pronombre con contexto)');
       const psr = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr.load('items'); await ctx.sync();
-      console.log('[DEBUG _markPronoun] sync2 OK, items=' + psr.items.length);
       if (!psr.items.length) return;
       target = psr.items[Math.min(nBefore, psr.items.length-1)];
     }
 
-    // Fase 1: colorear + insertar ◆ (sin comentario)
-    console.log('[DEBUG _markPronoun] antes sync3 — aplicando target.font.color');
-    target.font.color = colorHex;
-    console.log('[DEBUG _markPronoun] target.font.color OK — llamando _insertSymbol');
-    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
-    console.log('[DEBUG _markPronoun] _insertSymbol encolado — haciendo ctx.sync()');
+    // Fase 1: solo insertar ◆ (sin font ops — ver comentario en _insertSymbol)
+    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6');
     await ctx.sync();
-    console.log('[DEBUG _markPronoun] sync3 OK, ◆ insertado');
 
-    // Fase 2: buscar "◆" + pronombre → comentario sobre el resultado de search()
-    console.log('[DEBUG _markPronoun] iniciando _commentViaSearch("◆' + pronoun + '")');
-    await _commentViaSearch(ctx, body, '\u25C6' + pronoun, commentText);
-    console.log('[DEBUG _markPronoun] _commentViaSearch completado');
+    // Fase 2: buscar ◆+pronombre → aplicar font + comentario sobre rango de search()
+    await _styleAndComment(ctx, body, '\u25C6' + pronoun, colorHex, commentText);
   }
 
   // ── Palabra clave ────────────────────────────────────────────────────────
@@ -326,38 +271,27 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const target = items[0];
 
-    // Fase 1: highlight + insertar ◆ (sin comentario)
+    // Fase 1: highlight sobre rango existente (OK) + solo insertar ◆
     if (hl) target.font.highlightColor = hl;
-    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+    _insertSymbol(target.getRange('Start'), 'Before', '\u25C6');
     await ctx.sync();
 
-    // Fase 2: buscar "◆" + primera palabra del keyText → comentario
+    // Fase 2: buscar ◆+primera_palabra → font + comentario
     const firstWord = keyText.split(/\s+/)[0] || keyText;
-    await _commentViaSearch(ctx, body, '\u25C6' + firstWord, commentText);
+    await _styleAndComment(ctx, body, '\u25C6' + firstWord, colorHex, commentText);
   }
 
   // ── Brackets ─────────────────────────────────────────────────────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    console.log('[DEBUG _markBrackets] correctionId=' + finding.correctionId + ' originalText="' + (finding.originalText||'').substring(0,50) + '"');
-    console.log('[DEBUG _markBrackets] commentText=' + (commentText ? '"' + commentText.substring(0,80) + '…"' : 'VACÍO/NULL'));
-
-    // FIX: insertar ◆² y ◆¹ CON estilizado en el mismo batch (antes del sync).
-    console.log('[DEBUG _markBrackets] insertando ◆²');
-    const sym2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
-    console.log('[DEBUG _markBrackets] ◆² encolado — llamando _styleSymbol(sym2)');
-    _styleSymbol(sym2, colorHex);
-    console.log('[DEBUG _markBrackets] _styleSymbol(sym2) OK — insertando ◆¹');
-    const sym1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
-    console.log('[DEBUG _markBrackets] ◆¹ encolado — llamando _styleSymbol(sym1)');
-    _styleSymbol(sym1, colorHex);
-    console.log('[DEBUG _markBrackets] _styleSymbol(sym1) OK — haciendo ctx.sync()');
+    // Fase 1: insertar ◆² al final y ◆¹ al inicio — sin font ops
+    range.getRange('End').insertText('\u25C6\u00B2', 'After');
+    range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
     await ctx.sync();
-    console.log('[DEBUG _markBrackets] Fase 1 OK: ◆¹ y ◆² insertados y estilizados en un solo sync');
 
-    // Fase 2: buscar "◆¹" → comentario sobre el resultado de search()
-    console.log('[DEBUG _markBrackets] Iniciando Fase 2: _commentViaSearch con "◆¹" (U+25C6 U+00B9)');
-    await _commentViaSearch(ctx, body, '\u25C6\u00B9', commentText);
-    console.log('[DEBUG _markBrackets] Fase 2 completada');
+    // Fase 2: buscar ◆¹ → font + comentario
+    await _styleAndComment(ctx, body, '\u25C6\u00B9', colorHex, commentText);
+    // Fase 3: buscar ◆² → solo font (sin comentario duplicado)
+    await _styleAndComment(ctx, body, '\u25C6\u00B2', colorHex, null);
   }
 
   // ── Aplicar un finding individual ─────────────────────────────────────────
@@ -365,10 +299,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const corrId   = finding.correctionId;
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
-    // DEBUG
-    console.log('[DEBUG _applyFinding] corrId=' + corrId + ' isBracket=' + BRACKET_TYPES.has(corrId));
-    console.log('[DEBUG _applyFinding] mergedFindings.length=' + (finding.mergedFindings||[finding]).length);
-    console.log('[DEBUG _applyFinding] comment=' + (comment ? '"' + comment.substring(0,100) + '…"' : 'VACÍO/NULL'));
     let search = (finding.originalText||'').replace(/[\r\n]+/g,' ').trim();
     if (!search || search.length < 3) return;
 
@@ -380,38 +310,18 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
     sr.load('items'); await ctx.sync();
-    console.log('[DEBUG _applyFinding] body.search("' + search.substring(0,50) + '…") → ' + sr.items.length + ' resultado(s)');
-    if (sr.items.length > 1) {
-      console.warn('[DEBUG] ⚠ COLISIÓN: ' + sr.items.length + ' ocurrencias del mismo texto en el doc. Se usará items[0], pero puede estar fuera de la selección.');
-    }
     let range;
     if (sr.items.length) {
       range = sr.items[0];
-      // Cargar el texto del párrafo donde se va a marcar, para confirmar que es el correcto
-      try {
-        const para = range.paragraphs.getFirst();
-        para.load('text'); await ctx.sync();
-        console.log('[DEBUG _applyFinding] Párrafo donde se marcará: "' + (para.text||'').substring(0,80) + '"');
-      } catch(e) { console.warn('[DEBUG] No se pudo cargar el párrafo del rango:', e.message); }
     } else {
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
       const lastSp = shorter.lastIndexOf(' ');
       if (lastSp > 15) shorter = shorter.substring(0, lastSp).trimEnd();
-      console.log('[DEBUG _applyFinding] Sin resultados exactos → reintentando con texto corto: "' + shorter + '"');
       const sr2 = body.search(shorter, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
-      console.log('[DEBUG _applyFinding] body.search corto → ' + sr2.items.length + ' resultado(s)');
-      if (!sr2.items.length) { console.warn('[DEBUG] ⚠ Sin resultados ni con texto corto. Finding descartado.'); return; }
-      if (sr2.items.length > 1) {
-        console.warn('[DEBUG] ⚠ COLISIÓN en búsqueda corta: ' + sr2.items.length + ' ocurrencias.');
-      }
+      if (!sr2.items.length) return;
       range = sr2.items[0];
-      try {
-        const para2 = range.paragraphs.getFirst();
-        para2.load('text'); await ctx.sync();
-        console.log('[DEBUG _applyFinding] Párrafo (texto corto): "' + (para2.text||'').substring(0,80) + '"');
-      } catch(e) {}
     }
 
     if (corrId === 'leismo')            await this._markPronoun (ctx, body, range, finding, colorHex, comment);
