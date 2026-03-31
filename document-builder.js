@@ -150,8 +150,14 @@ async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText)
       return;
     }
     const target = sr.items[sr.items.length - 1]; // último = más recientemente insertado
-    target.font.color = colorHex;
-    target.font.bold  = true;
+    // Buscar solo el ◆ DENTRO del rango → el estilado no afecta a la palabra adyacente
+    const symSr = target.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+    symSr.load('items');
+    await ctx.sync();
+    if (symSr.items.length) {
+      symSr.items[0].font.color = colorHex;
+      symSr.items[0].font.bold  = true;
+    }
     if (commentText) target.insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
     await ctx.sync();
     console.log('[styleAndComment] ✅ font + comentario OK sobre "' + searchPattern + '"');
