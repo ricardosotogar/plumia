@@ -1,9 +1,11 @@
 // ============================================================================
-// PLUMIA — synonyms-db.js
+// PLUMIA — synonyms-db.js  v8.00
 // Diccionario local de sinónimos, ortotipografía por regex, grupos de API
 // Depende de: corrections-config.js (window.PLUMIA.CORRECTIONS)
 // ============================================================================
 (function() {
+window.PLUMIA.SYNONYMS_VERSION = '8.00';
+console.log('📦 synonyms-db.js v8.00 cargado');
 var CORRECTIONS = window.PLUMIA.CORRECTIONS; // alias para buildPrompt lambdas
 
 // ── 1. DICCIONARIO LOCAL DE SINÓNIMOS ────────────────────────────────────────

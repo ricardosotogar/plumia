@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v7.01
+// PLUMIA — processor.js  v8.00
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -288,9 +288,13 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           if (group.ids.length === 1) {
             const corr = CORRECTIONS.find(c => c.id === group.ids[0]);
             response = await this._callAPI(corr.prompt.replace('{TEXT}', ch));
+            const chLower = ch.toLowerCase();
             const findings = (response.findings || []).map(f => {
               const originalText = this._extractOriginalText(f);
               if (!originalText) return null;
+              // Filtrar hallucinations: el texto debe existir en el chunk analizado
+              const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
+              if (check.length > 5 && !chLower.includes(check)) return null;
               return { ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
                 label: corr.label, directFix: corr.directFix };
             }).filter(Boolean);
@@ -298,7 +302,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           } else {
             // Prompt agrupado
             response = await this._callAPI(group.buildPrompt(ch));
-            this._parseGroupedResponse(response, group, activeIds, accumulated);
+            this._parseGroupedResponse(response, group, activeIds, accumulated, ch);
           }
         }
 
@@ -364,7 +368,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     return text;
   }
 
-  _parseGroupedResponse(response, group, activeIds, accumulated) {
+  _parseGroupedResponse(response, group, activeIds, accumulated, chunkText) {
     const keyMap = {
       'leismo':'leismo','ambiguedad':'ambiguedad_pronominal',
       'concordancia':'concordancia','dequeismo':'dequeismo',
@@ -373,6 +377,8 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       'adverbios':'adverbios_mente','voz_pasiva':'voz_pasiva','frases_largas':'frases_largas','nombres':'nombres_propios',
       'gerundios':'gerundios','tiempos':'tiempos_verbales',
     };
+
+    const chunkLower = chunkText ? chunkText.toLowerCase() : null;
 
     for (const [key, corrId] of Object.entries(keyMap)) {
       if (!activeIds.includes(corrId)) continue;
@@ -384,6 +390,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         // Normalizar originalText AQUÍ, antes de deduplicar
         const originalText = this._extractOriginalText(f);
         if (!originalText) return; // descartar findings sin texto localizable
+        // Filtrar hallucinations: el texto debe existir en el chunk analizado
+        if (chunkLower) {
+          const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
+          if (check.length > 5 && !chunkLower.includes(check)) return;
+        }
         accumulated[corrId].push({
           ...f,
           originalText,

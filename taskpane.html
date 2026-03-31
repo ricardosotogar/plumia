@@ -365,17 +365,17 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=7.02c"></script>
-<script src="synonyms-db.js?v=7.02c"></script>
-<script src="processor.js?v=7.02c"></script>
-<script src="document-builder.js?v=7.02c"></script>
+<script src="corrections-config.js?v=8.00"></script>
+<script src="synonyms-db.js?v=8.00"></script>
+<script src="processor.js?v=8.00"></script>
+<script src="document-builder.js?v=8.00"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
 ═══════════════════════════════════════════════════════════════════════════ -->
 <script>
-// ── PLUMIA v7.00 ────────────────────────────────────────────────────────────
-console.log('Plumia taskpane v7.00 loaded');
+// ── PLUMIA v8.00 ────────────────────────────────────────────────────────────
+console.log('Plumia taskpane v8.00 loaded');
 // Aliases locales — los módulos ya están cargados como window.*
 const COLOR_MAP        = window.PLUMIA.COLOR_MAP;
 const CONFIG           = window.PLUMIA.CONFIG;
@@ -1214,7 +1214,7 @@ async function requestCostEstimate() {
   // Refleja la arquitectura real: correcciones agrupadas + chunks de 3000 palabras
   // Las correcciones de coherencia reciben el documento completo de una vez.
 
-  const WORDS_PER_TOKEN    = 0.55;       // español es más denso: ~1.8 tokens/palabra (v7.00)
+  const WORDS_PER_TOKEN    = 0.55;       // español es más denso: ~1.8 tokens/palabra (v8.00)
   const INPUT_PRICE        = 0.000003;   // $3 / 1M tokens input
   const OUTPUT_PRICE       = 0.000015;   // $15 / 1M tokens output
   const CACHE_DISCOUNT     = 0.10;       // tokens cacheados cuestan 10% del precio normal

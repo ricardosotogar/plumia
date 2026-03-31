@@ -1,10 +1,12 @@
 // ============================================================================
-// PLUMIA — corrections-config.js
+// PLUMIA — corrections-config.js  v8.00
 // COLOR_MAP, CONFIG, GROUPS, CORRECTIONS — namespace window.PLUMIA
 // Expuesto como window.PLUMIA.* para compatibilidad con Office Add-in
 // ============================================================================
 (function() {
 window.PLUMIA = {};
+window.PLUMIA.CONFIG_VERSION = '8.00';
+console.log('📦 corrections-config.js v8.00 cargado');
 window.PLUMIA.COLOR_MAP = {
   1:{name:"Rojo",hex:"FF0000",type:"text"},
   2:{name:"Amarillo",hex:"FFD966",type:"highlight"},

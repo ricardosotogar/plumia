@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — document-builder.js  v7.02
+// PLUMIA — document-builder.js  v8.00
 // FIX CRÍTICO: insertComment() falla con InvalidArgument sobre rangos
 // devueltos por insertText(). Solución: tras insertar ◆ y hacer sync,
 // buscar el ◆ con search() y llamar insertComment sobre el resultado.
@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '7.02';
-console.log('📦 document-builder.js v7.02 cargado');
+window.PLUMIA.BUILDER_VERSION = '8.00';
+console.log('📦 document-builder.js v8.00 cargado');
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
@@ -152,7 +152,6 @@ async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText)
     const target = sr.items[sr.items.length - 1]; // último = más recientemente insertado
     target.font.color = colorHex;
     target.font.bold  = true;
-    target.font.size  = 18;
     if (commentText) target.insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
     await ctx.sync();
     console.log('[styleAndComment] ✅ font + comentario OK sobre "' + searchPattern + '"');
@@ -343,7 +342,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
         try { await this._applyFinding(ctx, body, others[i]); }
-        catch(e) { console.warn('Plumia v7.02 mark:', (others[i].originalText||'').substring(0,30), e.message); }
+        catch(e) { console.warn('Plumia v8.00 mark:', (others[i].originalText||'').substring(0,30), e.message); }
       });
     }
   }
@@ -484,26 +483,26 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       body.insertBreak('Page','End');
 
       const title = body.insertParagraph('INFORME DE INCIDENCIAS \u2014 PLUMIA','End');
-      title.font.bold=true; title.font.size=28; title.font.color='1a1a2e';
+      title.font.bold=true; title.font.size=14; title.font.color='1a1a2e';
       await ctx.sync();
 
-      const rp0 = body.insertParagraph('','End'); rp0.font.size=22; rp0.font.bold=false;
-      const h2a = body.insertParagraph('Resumen por categor\u00EDa','End'); h2a.font.bold=true; h2a.font.size=24; h2a.font.color='1a1a2e';
+      const rp0 = body.insertParagraph('','End'); rp0.font.size=12; rp0.font.bold=false;
+      const h2a = body.insertParagraph('Resumen por categor\u00EDa','End'); h2a.font.bold=true; h2a.font.size=13; h2a.font.color='1a1a2e';
 
       for (const result of allResults) {
         if (!result.findings.length) continue;
-        const bp = body.insertParagraph(`\u2022 ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`, 'End'); bp.font.size=22; bp.font.bold=false; bp.font.color='222222';
+        const bp = body.insertParagraph(`\u2022 ${result.label}: ${result.findings.length} incidencia${result.findings.length!==1?'s':''}`, 'End'); bp.font.size=12; bp.font.bold=false; bp.font.color='222222';
       }
 
-      const tp = body.insertParagraph(`Total: ${total} incidencias detectadas`,'End'); tp.font.bold=true; tp.font.size=22; tp.font.color='1a1a2e';
+      const tp = body.insertParagraph(`Total: ${total} incidencias detectadas`,'End'); tp.font.bold=true; tp.font.size=12; tp.font.color='1a1a2e';
       await ctx.sync();
 
-      const rp1 = body.insertParagraph('','End'); rp1.font.size=22; rp1.font.bold=false;
-      const h2b = body.insertParagraph('Detalle por categor\u00EDa','End'); h2b.font.bold=true; h2b.font.size=24; h2b.font.color='1a1a2e';
+      const rp1 = body.insertParagraph('','End'); rp1.font.size=12; rp1.font.bold=false;
+      const h2b = body.insertParagraph('Detalle por categor\u00EDa','End'); h2b.font.bold=true; h2b.font.size=13; h2b.font.color='1a1a2e';
 
       for (const result of allResults) {
         if (!result.findings.length) continue;
-        const ct = body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End'); ct.font.bold=true; ct.font.size=22; ct.font.color='0f3460';
+        const ct = body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End'); ct.font.bold=true; ct.font.size=13; ct.font.color='0f3460';
 
         for (let i=0; i<result.findings.length; i++) {
           const f = result.findings[i];
@@ -518,16 +517,16 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           const page    = pageMap[f.originalText];
           const suffix  = page ? `  \u2014 p\u00E1g. ${page}` : '';
 
-          const np = body.insertParagraph(`${i+1}.  ${preview}${suffix}`,'End'); np.font.bold=true; np.font.size=22; np.font.italic=false; np.font.color='0f3460';
+          const np = body.insertParagraph(`${i+1}.  ${preview}${suffix}`,'End'); np.font.bold=true; np.font.size=12; np.font.italic=false; np.font.color='0f3460';
 
           const comment = buildCommentText([f]);
           if (comment) {
-            const cp = body.insertParagraph(comment.replace(/[\r\n]+/g,'\n').substring(0,600),'End'); cp.font.size=20; cp.font.italic=false; cp.font.bold=false; cp.font.color='333333';
+            const cp = body.insertParagraph(comment.replace(/[\r\n]+/g,'\n').substring(0,600),'End'); cp.font.size=11; cp.font.italic=false; cp.font.bold=false; cp.font.color='333333';
           }
-          const sep = body.insertParagraph('','End'); sep.font.size=20; sep.font.bold=false;
+          const sep = body.insertParagraph('','End'); sep.font.size=11; sep.font.bold=false;
         }
 
-        const gap = body.insertParagraph('','End'); gap.font.size=22; gap.font.bold=false;
+        const gap = body.insertParagraph('','End'); gap.font.size=12; gap.font.bold=false;
       }
 
       await ctx.sync();
