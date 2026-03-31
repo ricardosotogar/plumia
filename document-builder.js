@@ -238,22 +238,30 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── Pronombre (leísmo) ───────────────────────────────────────────────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
+    console.log('[DEBUG _markPronoun] pronoun="' + pronoun + '"');
     if (!pronoun) {
+      console.log('[DEBUG _markPronoun] sin pronombre → delegando a _markWord');
       await this._markWord(ctx, body, range, finding, colorHex, commentText);
       return;
     }
 
     const para = range.paragraphs.getFirst();
-    para.load('text'); await ctx.sync();
+    para.load('text');
+    console.log('[DEBUG _markPronoun] antes sync1 (cargar párrafo)');
+    await ctx.sync();
+    console.log('[DEBUG _markPronoun] sync1 OK, paraText="' + (para.text||'').substring(0,60) + '"');
     const paraText  = para.text || '';
     const origLower = (finding.originalText||'').toLowerCase();
     const pLower    = pronoun.toLowerCase();
     const origPos   = paraText.toLowerCase().indexOf(origLower);
 
     let target;
+    console.log('[DEBUG _markPronoun] origPos=' + origPos);
     if (origPos === -1) {
+      console.log('[DEBUG _markPronoun] origPos=-1, antes sync2 (buscar pronombre sin contexto)');
       const psr2 = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr2.load('items'); await ctx.sync();
+      console.log('[DEBUG _markPronoun] sync2 OK, items=' + psr2.items.length);
       if (!psr2.items.length) return;
       target = psr2.items[0];
     } else {
@@ -261,19 +269,25 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const absPos  = origPos + pInOrig;
       const before  = paraText.substring(0, absPos);
       const nBefore = (before.match(new RegExp('\\b'+pLower+'\\b','gi'))||[]).length;
+      console.log('[DEBUG _markPronoun] nBefore=' + nBefore + ', antes sync2 (buscar pronombre con contexto)');
       const psr = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr.load('items'); await ctx.sync();
+      console.log('[DEBUG _markPronoun] sync2 OK, items=' + psr.items.length);
       if (!psr.items.length) return;
       target = psr.items[Math.min(nBefore, psr.items.length-1)];
     }
 
     // Fase 1: colorear + insertar ◆ (sin comentario)
+    console.log('[DEBUG _markPronoun] antes sync3 (insertar ◆ + font)');
     target.font.color = colorHex;
     _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
     await ctx.sync();
+    console.log('[DEBUG _markPronoun] sync3 OK, ◆ insertado');
 
     // Fase 2: buscar "◆" + pronombre → comentario sobre el resultado de search()
+    console.log('[DEBUG _markPronoun] iniciando _commentViaSearch("◆' + pronoun + '")');
     await _commentViaSearch(ctx, body, '\u25C6' + pronoun, commentText);
+    console.log('[DEBUG _markPronoun] _commentViaSearch completado');
   }
 
   // ── Palabra clave ────────────────────────────────────────────────────────
@@ -315,17 +329,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     console.log('[DEBUG _markBrackets] correctionId=' + finding.correctionId + ' originalText="' + (finding.originalText||'').substring(0,50) + '"');
     console.log('[DEBUG _markBrackets] commentText=' + (commentText ? '"' + commentText.substring(0,80) + '…"' : 'VACÍO/NULL'));
 
-    // Fase 1: insertar ◆² y ◆¹ como texto plano (sin font ops)
+    // FIX: insertar ◆² y ◆¹ CON estilizado en el mismo batch (antes del sync).
+    // Los rangos devueltos por insertText() son inválidos para escritura POST-sync
+    // (igual que con insertComment). La solución es aplicar font en el mismo batch.
     const sym2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
-    const sym1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
-    await ctx.sync();
-    console.log('[DEBUG _markBrackets] Fase 1 OK: ◆¹ y ◆² insertados');
-
-    // Fase 1b: estilizar (sin comentario todavía)
-    _styleSymbol(sym1, colorHex);
     _styleSymbol(sym2, colorHex);
+    const sym1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
+    _styleSymbol(sym1, colorHex);
     await ctx.sync();
-    console.log('[DEBUG _markBrackets] Fase 1b OK: símbolos estilizados');
+    console.log('[DEBUG _markBrackets] Fase 1 OK: ◆¹ y ◆² insertados y estilizados en un solo sync');
 
     // Fase 2: buscar "◆¹" → comentario sobre el resultado de search()
     console.log('[DEBUG _markBrackets] Iniciando Fase 2: _commentViaSearch con "◆¹" (U+25C6 U+00B9)');
