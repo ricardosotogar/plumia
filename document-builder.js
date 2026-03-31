@@ -1,15 +1,11 @@
 // ============================================================================
-// PLUMIA — document-builder.js  v7.01
-// Arquitectura de PASADA ÚNICA.
-// Patrón word/pronoun (un solo sync):
-//   1) Colorear/highlight → 2) insertText ◆ → 3) comment en ◆ → 4) sync
-// Patrón brackets (dos syncs, porque font ops en ◆² interfieren con ◆¹):
-//   1) insertText plano ◆² y ◆¹ (sin font) → 2) sync
-//   3) Estilizar sym1/sym2 + comment en sym1 → 4) sync
+// PLUMIA — document-builder.js  v7.01-debug
+// Versión con logs de diagnóstico en consola.
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '7.01';
+window.PLUMIA.BUILDER_VERSION = '7.01-debug';
+console.log('📦 document-builder.js v7.01-debug cargado');
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
@@ -124,7 +120,6 @@ function _singleComment(f) {
 // Helpers
 // ══════════════════════════════════════════════════════════════════════════════
 
-// Inserta símbolo ◆, lo estiliza, y devuelve su Range.
 function _insertSymbol(anchor, where, symbol, colorHex) {
   const sym = anchor.insertText(symbol, where);
   sym.font.color          = colorHex;
@@ -134,7 +129,6 @@ function _insertSymbol(anchor, where, symbol, colorHex) {
   return sym;
 }
 
-// Estiliza un Range ya insertado (para el patrón de dos syncs de brackets).
 function _styleSymbol(range, colorHex) {
   range.font.color          = colorHex;
   range.font.bold           = true;
@@ -142,11 +136,19 @@ function _styleSymbol(range, colorHex) {
   range.font.size           = 18;
 }
 
-// Inserta un comentario de Word sobre un Range.
-function _tryComment(range, commentText) {
-  if (!commentText) return;
+function _tryComment(range, commentText, debugLabel) {
+  if (!commentText) {
+    console.log(`  💬 [${debugLabel}] commentText vacío, skip`);
+    return;
+  }
   const safe = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
-  try { range.insertComment(safe); } catch(e) { console.warn('Plumia comment fail:', e.message); }
+  console.log(`  💬 [${debugLabel}] insertComment sobre range, texto: "${safe.substring(0,60)}…"`);
+  try {
+    range.insertComment(safe);
+    console.log(`  ✅ [${debugLabel}] insertComment encolado OK (pendiente sync)`);
+  } catch(e) {
+    console.error(`  ❌ [${debugLabel}] insertComment FALLÓ:`, e.message);
+  }
 }
 
 
@@ -190,13 +192,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // PASADA ÚNICA
+  // PASADA ÚNICA — con logs de debug
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // ── Pronombre (leísmo): colorear → ◆ → comment en ◆ → sync ──────────────
   async _markPronoun(ctx, body, range, finding, colorHex, commentText) {
     const pronoun = this._extractPronoun(finding);
+    console.log(`  🔤 _markPronoun: pronoun="${pronoun}", originalText="${(finding.originalText||'').substring(0,40)}"`);
     if (!pronoun) {
+      console.log(`  🔤 _markPronoun: no pronoun, fallback a _markWord`);
       await this._markWord(ctx, body, range, finding, colorHex, commentText);
       return;
     }
@@ -210,9 +213,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     let target;
     if (origPos === -1) {
+      console.log(`  🔤 _markPronoun: origPos=-1, buscando pronombre directo`);
       const psr2 = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr2.load('items'); await ctx.sync();
-      if (!psr2.items.length) return;
+      if (!psr2.items.length) { console.log(`  ⚠️ _markPronoun: pronombre no encontrado`); return; }
       target = psr2.items[0];
     } else {
       const pInOrig = origLower.indexOf(pLower);
@@ -221,22 +225,31 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const nBefore = (before.match(new RegExp('\\b'+pLower+'\\b','gi'))||[]).length;
       const psr = para.search(pronoun, {matchCase:false,matchWholeWord:true,matchWildcards:false});
       psr.load('items'); await ctx.sync();
-      if (!psr.items.length) return;
+      if (!psr.items.length) { console.log(`  ⚠️ _markPronoun: pronombre no encontrado en búsqueda`); return; }
       target = psr.items[Math.min(nBefore, psr.items.length-1)];
+      console.log(`  🔤 _markPronoun: encontrado en posición ${nBefore} de ${psr.items.length}`);
     }
 
-    // Todo encolado — un solo sync
+    // Encolar todo
+    console.log(`  🔤 _markPronoun: encolando font.color + insertSymbol + insertComment`);
     target.font.color = colorHex;
     const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
-    _tryComment(symRange, commentText);
-    await ctx.sync();
+    _tryComment(symRange, commentText, 'markPronoun');
+
+    console.log(`  🔤 _markPronoun: haciendo sync...`);
+    try {
+      await ctx.sync();
+      console.log(`  ✅ _markPronoun: sync OK`);
+    } catch(e) {
+      console.error(`  ❌ _markPronoun: sync FALLÓ:`, e.message);
+    }
   }
 
-  // ── Palabra clave: highlight → ◆ → comment en ◆ → sync ──────────────────
   async _markWord(ctx, body, range, finding, colorHex, commentText) {
     const corrId  = finding.correctionId;
     const keyText = this._getKeyText(finding);
-    if (!keyText || keyText.length < 2) return;
+    console.log(`  🏷️ _markWord: corrId="${corrId}", keyText="${(keyText||'').substring(0,30)}"`);
+    if (!keyText || keyText.length < 2) { console.log(`  ⚠️ _markWord: keyText demasiado corto`); return; }
 
     const hl   = HIGHLIGHT[corrId];
     const para = range.paragraphs.getFirst();
@@ -248,53 +261,76 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     } catch(e) { items = []; }
 
     if (!items.length) {
+      console.log(`  🏷️ _markWord: no encontrado en párrafo, buscando en body`);
       const sr2 = body.search(keyText, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
       items = sr2.items;
     }
-    if (!items.length) return;
+    if (!items.length) { console.log(`  ⚠️ _markWord: keyText no encontrado en ningún sitio`); return; }
 
     const target = items[0];
+    console.log(`  🏷️ _markWord: encontrado, ${items.length} resultados. hl=${hl||'none'}`);
 
-    // Todo encolado — un solo sync
+    // Encolar todo
     if (hl) target.font.highlightColor = hl;
     const symRange = _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
-    _tryComment(symRange, commentText);
-    await ctx.sync();
+    _tryComment(symRange, commentText, 'markWord');
+
+    console.log(`  🏷️ _markWord: haciendo sync...`);
+    try {
+      await ctx.sync();
+      console.log(`  ✅ _markWord: sync OK`);
+    } catch(e) {
+      console.error(`  ❌ _markWord: sync FALLÓ:`, e.message);
+    }
   }
 
-  // ── Brackets: TEXTO PLANO primero → sync → estilizar + comment → sync ────
-  // Las operaciones de font sobre ◆² interfieren con la inserción de ◆¹ si
-  // van todas en la misma cola. Por eso insertamos TEXTO PLANO (sin font)
-  // primero — esto funciona igual que v5 — y luego estilizamos.
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    // Fase 1: insertar TEXTO PLANO en ambos extremos (sin operaciones de font)
-    // El orden importa: End primero, luego Start (como en v5, donde funcionaba)
+    console.log(`  🔲 _markBrackets: originalText="${(finding.originalText||'').substring(0,40)}"`);
+
+    // Fase 1: TEXTO PLANO
+    console.log(`  🔲 _markBrackets Fase1: insertText plano ◆² y ◆¹...`);
     const sym2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
     const sym1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
-    await ctx.sync();
+    console.log(`  🔲 _markBrackets Fase1: haciendo sync...`);
+    try {
+      await ctx.sync();
+      console.log(`  ✅ _markBrackets Fase1: sync OK (ambos textos insertados)`);
+    } catch(e) {
+      console.error(`  ❌ _markBrackets Fase1: sync FALLÓ:`, e.message);
+      return;
+    }
 
-    // Fase 2: estilizar ambos símbolos y añadir comentario en ◆¹
-    // sym1 y sym2 siguen siendo referencias válidas tras el sync
+    // Fase 2: estilizar + comentario
+    console.log(`  🔲 _markBrackets Fase2: estilizar sym1 + comment + estilizar sym2...`);
     _styleSymbol(sym1, colorHex);
-    _tryComment(sym1, commentText);
+    _tryComment(sym1, commentText, 'markBrackets-sym1');
     _styleSymbol(sym2, colorHex);
-    await ctx.sync();
+    console.log(`  🔲 _markBrackets Fase2: haciendo sync...`);
+    try {
+      await ctx.sync();
+      console.log(`  ✅ _markBrackets Fase2: sync OK`);
+    } catch(e) {
+      console.error(`  ❌ _markBrackets Fase2: sync FALLÓ:`, e.message);
+    }
   }
 
-  // ── Aplicar un finding individual ─────────────────────────────────────────
   async _applyFinding(ctx, body, finding) {
     const corrId   = finding.correctionId;
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
     let search = (finding.originalText||'').replace(/[\r\n]+/g,' ').trim();
-    if (!search || search.length < 3) return;
 
-    // Truncar en frontera de palabra
+    console.log(`\n🔍 _applyFinding: corrId="${corrId}", search="${search.substring(0,50)}…", color=${colorHex}`);
+    console.log(`  📝 comment: "${(comment||'').substring(0,60)}…"`);
+
+    if (!search || search.length < 3) { console.log(`  ⚠️ search demasiado corto, skip`); return; }
+
     if (search.length >= 70) {
       const cut = search.substring(0, 70);
       const lastSpace = cut.lastIndexOf(' ');
       search = lastSpace > 25 ? cut.substring(0, lastSpace).trimEnd() : cut;
+      console.log(`  ✂️ truncado a: "${search}"`);
     }
 
     const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
@@ -302,39 +338,53 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     let range;
     if (sr.items.length) {
       range = sr.items[0];
+      console.log(`  🔍 encontrado: ${sr.items.length} resultado(s)`);
     } else {
+      console.log(`  🔍 no encontrado, probando fallback corto`);
       let shorter = search.substring(0, 40);
-      if (shorter.length < 5) return;
+      if (shorter.length < 5) { console.log(`  ⚠️ fallback demasiado corto`); return; }
       const lastSp = shorter.lastIndexOf(' ');
       if (lastSp > 15) shorter = shorter.substring(0, lastSp).trimEnd();
       const sr2 = body.search(shorter, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
-      if (!sr2.items.length) return;
+      if (!sr2.items.length) { console.log(`  ⚠️ fallback tampoco encontrado`); return; }
       range = sr2.items[0];
+      console.log(`  🔍 fallback encontrado con "${shorter}"`);
     }
 
-    if (corrId === 'leismo')            await this._markPronoun (ctx, body, range, finding, colorHex, comment);
-    else if (BRACKET_TYPES.has(corrId)) await this._markBrackets(ctx, body, range, finding, colorHex, comment);
-    else                                await this._markWord    (ctx, body, range, finding, colorHex, comment);
+    const isBracket = BRACKET_TYPES.has(corrId);
+    console.log(`  ➡️ tipo: ${corrId === 'leismo' ? 'PRONOUN' : isBracket ? 'BRACKET' : 'WORD'}`);
+
+    if (corrId === 'leismo')   await this._markPronoun (ctx, body, range, finding, colorHex, comment);
+    else if (isBracket)        await this._markBrackets(ctx, body, range, finding, colorHex, comment);
+    else                       await this._markWord    (ctx, body, range, finding, colorHex, comment);
   }
 
-  // ── APPLY MARKINGS ────────────────────────────────────────────────────────
   async applyMarkings(resolvedFindings) {
     if (!resolvedFindings || !resolvedFindings.length) return;
 
     const ortotypo = resolvedFindings.filter(f => f.directFix);
     const others   = resolvedFindings.filter(f => !f.directFix && f.originalText);
 
+    console.log(`\n════════════════════════════════════════`);
+    console.log(`📋 applyMarkings: ${others.length} findings (+ ${ortotypo.length} ortotipográficos)`);
+    console.log(`════════════════════════════════════════`);
+
     if (ortotypo.length) await this.applyOrtotypography();
     if (!others.length)  return;
 
     for (let i = 0; i < others.length; i++) {
+      console.log(`\n── Finding ${i+1}/${others.length} ──────────────────`);
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
         try { await this._applyFinding(ctx, body, others[i]); }
-        catch(e) { console.warn('Plumia v7.01 mark:', (others[i].originalText||'').substring(0,30), e.message); }
+        catch(e) { console.error(`❌ Finding ${i+1} ERROR GENERAL:`, e.message, e.stack); }
       });
     }
+
+    console.log(`\n════════════════════════════════════════`);
+    console.log(`✅ applyMarkings completado`);
+    console.log(`════════════════════════════════════════`);
   }
 
   async highlightBrackets() { /* vacío */ }
