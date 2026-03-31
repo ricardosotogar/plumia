@@ -146,13 +146,35 @@ function _styleSymbol(range, colorHex) {
 // Busca `searchPattern` en body, toma el último resultado, e inserta comentario.
 // Esto funciona porque insertComment SOLO acepta rangos de search(), no de insertText().
 async function _commentViaSearch(ctx, body, searchPattern, commentText) {
-  if (!commentText) return;
+  // DEBUG ─────────────────────────────────────────────────────────────────────
+  const patCodes = Array.from(searchPattern).map(c => 'U+' + c.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')).join(' ');
+  console.log('[DEBUG _commentViaSearch] pattern="' + searchPattern + '" codes=[' + patCodes + '] commentText=' + (commentText ? '"' + commentText.substring(0,80) + '…"' : 'VACÍO/NULL'));
+  // ───────────────────────────────────────────────────────────────────────────
+  if (!commentText) {
+    console.warn('[DEBUG] commentText vacío → no se inserta comentario');
+    return;
+  }
   try {
     const sr = body.search(searchPattern, {matchCase:true, matchWholeWord:false, matchWildcards:false});
     sr.load('items');
     await ctx.sync();
+    console.log('[DEBUG _commentViaSearch] search("' + searchPattern + '") → ' + sr.items.length + ' resultados');
     if (!sr.items.length) {
-      console.warn('Plumia: no se encontró "' + searchPattern + '" para comentario');
+      console.warn('[DEBUG] ⚠ 0 resultados con matchCase:true → reintentando sin matchCase');
+      // Reintento sin matchCase por si el carácter especial falla con esa opción
+      const sr2 = body.search(searchPattern, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      sr2.load('items');
+      await ctx.sync();
+      console.log('[DEBUG _commentViaSearch] reintento matchCase:false → ' + sr2.items.length + ' resultados');
+      if (!sr2.items.length) {
+        console.warn('[DEBUG] ⚠⚠ 0 resultados en ambos intentos para "' + searchPattern + '" — el comentario NO se insertará');
+        return;
+      }
+      const target2 = sr2.items[sr2.items.length - 1];
+      const safe2 = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
+      target2.insertComment(safe2);
+      await ctx.sync();
+      console.log('[DEBUG] ✅ Comentario añadido (reintento sin matchCase) en item ' + (sr2.items.length - 1));
       return;
     }
     // Tomar el último resultado (el más recientemente insertado, ya que
@@ -161,9 +183,9 @@ async function _commentViaSearch(ctx, body, searchPattern, commentText) {
     const safe = commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400);
     target.insertComment(safe);
     await ctx.sync();
-    console.log('  ✅ Comentario añadido vía search("' + searchPattern + '")');
+    console.log('[DEBUG] ✅ Comentario añadido vía search("' + searchPattern + '") en item ' + (sr.items.length - 1));
   } catch(e) {
-    console.warn('Plumia comment vía search falló:', e.message);
+    console.warn('[DEBUG] ❌ _commentViaSearch excepción:', e.message, '| stack:', e.stack);
   }
 }
 
@@ -290,18 +312,25 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
   // ── Brackets ─────────────────────────────────────────────────────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
+    console.log('[DEBUG _markBrackets] correctionId=' + finding.correctionId + ' originalText="' + (finding.originalText||'').substring(0,50) + '"');
+    console.log('[DEBUG _markBrackets] commentText=' + (commentText ? '"' + commentText.substring(0,80) + '…"' : 'VACÍO/NULL'));
+
     // Fase 1: insertar ◆² y ◆¹ como texto plano (sin font ops)
     const sym2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
     const sym1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
     await ctx.sync();
+    console.log('[DEBUG _markBrackets] Fase 1 OK: ◆¹ y ◆² insertados');
 
     // Fase 1b: estilizar (sin comentario todavía)
     _styleSymbol(sym1, colorHex);
     _styleSymbol(sym2, colorHex);
     await ctx.sync();
+    console.log('[DEBUG _markBrackets] Fase 1b OK: símbolos estilizados');
 
     // Fase 2: buscar "◆¹" → comentario sobre el resultado de search()
+    console.log('[DEBUG _markBrackets] Iniciando Fase 2: _commentViaSearch con "◆¹" (U+25C6 U+00B9)');
     await _commentViaSearch(ctx, body, '\u25C6\u00B9', commentText);
+    console.log('[DEBUG _markBrackets] Fase 2 completada');
   }
 
   // ── Aplicar un finding individual ─────────────────────────────────────────
@@ -309,6 +338,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const corrId   = finding.correctionId;
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
+    // DEBUG
+    console.log('[DEBUG _applyFinding] corrId=' + corrId + ' isBracket=' + BRACKET_TYPES.has(corrId));
+    console.log('[DEBUG _applyFinding] mergedFindings.length=' + (finding.mergedFindings||[finding]).length);
+    console.log('[DEBUG _applyFinding] comment=' + (comment ? '"' + comment.substring(0,100) + '…"' : 'VACÍO/NULL'));
     let search = (finding.originalText||'').replace(/[\r\n]+/g,' ').trim();
     if (!search || search.length < 3) return;
 
@@ -320,18 +353,38 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
     sr.load('items'); await ctx.sync();
+    console.log('[DEBUG _applyFinding] body.search("' + search.substring(0,50) + '…") → ' + sr.items.length + ' resultado(s)');
+    if (sr.items.length > 1) {
+      console.warn('[DEBUG] ⚠ COLISIÓN: ' + sr.items.length + ' ocurrencias del mismo texto en el doc. Se usará items[0], pero puede estar fuera de la selección.');
+    }
     let range;
     if (sr.items.length) {
       range = sr.items[0];
+      // Cargar el texto del párrafo donde se va a marcar, para confirmar que es el correcto
+      try {
+        const para = range.paragraphs.getFirst();
+        para.load('text'); await ctx.sync();
+        console.log('[DEBUG _applyFinding] Párrafo donde se marcará: "' + (para.text||'').substring(0,80) + '"');
+      } catch(e) { console.warn('[DEBUG] No se pudo cargar el párrafo del rango:', e.message); }
     } else {
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
       const lastSp = shorter.lastIndexOf(' ');
       if (lastSp > 15) shorter = shorter.substring(0, lastSp).trimEnd();
+      console.log('[DEBUG _applyFinding] Sin resultados exactos → reintentando con texto corto: "' + shorter + '"');
       const sr2 = body.search(shorter, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
-      if (!sr2.items.length) return;
+      console.log('[DEBUG _applyFinding] body.search corto → ' + sr2.items.length + ' resultado(s)');
+      if (!sr2.items.length) { console.warn('[DEBUG] ⚠ Sin resultados ni con texto corto. Finding descartado.'); return; }
+      if (sr2.items.length > 1) {
+        console.warn('[DEBUG] ⚠ COLISIÓN en búsqueda corta: ' + sr2.items.length + ' ocurrencias.');
+      }
       range = sr2.items[0];
+      try {
+        const para2 = range.paragraphs.getFirst();
+        para2.load('text'); await ctx.sync();
+        console.log('[DEBUG _applyFinding] Párrafo (texto corto): "' + (para2.text||'').substring(0,80) + '"');
+      } catch(e) {}
     }
 
     if (corrId === 'leismo')            await this._markPronoun (ctx, body, range, finding, colorHex, comment);
