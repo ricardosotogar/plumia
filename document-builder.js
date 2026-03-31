@@ -129,18 +129,28 @@ function _singleComment(f) {
 
 function _insertSymbol(anchor, where, symbol, colorHex) {
   const sym = anchor.insertText(symbol, where);
-  sym.font.color          = colorHex;
-  sym.font.bold           = true;
-  sym.font.highlightColor = 'None';
-  sym.font.size           = 18;
+  console.log('[DEBUG _insertSymbol] insertText OK, aplicando font.color');
+  sym.font.color = colorHex;
+  console.log('[DEBUG _insertSymbol] font.color OK, aplicando font.bold');
+  sym.font.bold = true;
+  console.log('[DEBUG _insertSymbol] font.bold OK, aplicando font.highlightColor=NoHighlight');
+  sym.font.highlightColor = 'NoHighlight';  // era 'None' → inválido en Word JS 1.1–1.3
+  console.log('[DEBUG _insertSymbol] font.highlightColor OK, aplicando font.size=18');
+  sym.font.size = 18;
+  console.log('[DEBUG _insertSymbol] todas las props OK — pendiente sync');
   return sym;
 }
 
 function _styleSymbol(range, colorHex) {
-  range.font.color          = colorHex;
-  range.font.bold           = true;
-  range.font.highlightColor = 'None';
-  range.font.size           = 18;
+  console.log('[DEBUG _styleSymbol] aplicando font.color');
+  range.font.color = colorHex;
+  console.log('[DEBUG _styleSymbol] font.color OK, aplicando font.bold');
+  range.font.bold = true;
+  console.log('[DEBUG _styleSymbol] font.bold OK, aplicando font.highlightColor=NoHighlight');
+  range.font.highlightColor = 'NoHighlight';  // era 'None'
+  console.log('[DEBUG _styleSymbol] font.highlightColor OK, aplicando font.size=18');
+  range.font.size = 18;
+  console.log('[DEBUG _styleSymbol] todas las props OK — pendiente sync');
 }
 
 // Busca `searchPattern` en body, toma el último resultado, e inserta comentario.
@@ -278,9 +288,11 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     }
 
     // Fase 1: colorear + insertar ◆ (sin comentario)
-    console.log('[DEBUG _markPronoun] antes sync3 (insertar ◆ + font)');
+    console.log('[DEBUG _markPronoun] antes sync3 — aplicando target.font.color');
     target.font.color = colorHex;
+    console.log('[DEBUG _markPronoun] target.font.color OK — llamando _insertSymbol');
     _insertSymbol(target.getRange('Start'), 'Before', '\u25C6', colorHex);
+    console.log('[DEBUG _markPronoun] _insertSymbol encolado — haciendo ctx.sync()');
     await ctx.sync();
     console.log('[DEBUG _markPronoun] sync3 OK, ◆ insertado');
 
@@ -330,12 +342,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     console.log('[DEBUG _markBrackets] commentText=' + (commentText ? '"' + commentText.substring(0,80) + '…"' : 'VACÍO/NULL'));
 
     // FIX: insertar ◆² y ◆¹ CON estilizado en el mismo batch (antes del sync).
-    // Los rangos devueltos por insertText() son inválidos para escritura POST-sync
-    // (igual que con insertComment). La solución es aplicar font en el mismo batch.
+    console.log('[DEBUG _markBrackets] insertando ◆²');
     const sym2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
+    console.log('[DEBUG _markBrackets] ◆² encolado — llamando _styleSymbol(sym2)');
     _styleSymbol(sym2, colorHex);
+    console.log('[DEBUG _markBrackets] _styleSymbol(sym2) OK — insertando ◆¹');
     const sym1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
+    console.log('[DEBUG _markBrackets] ◆¹ encolado — llamando _styleSymbol(sym1)');
     _styleSymbol(sym1, colorHex);
+    console.log('[DEBUG _markBrackets] _styleSymbol(sym1) OK — haciendo ctx.sync()');
     await ctx.sync();
     console.log('[DEBUG _markBrackets] Fase 1 OK: ◆¹ y ◆² insertados y estilizados en un solo sync');
 
