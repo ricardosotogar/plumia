@@ -236,6 +236,20 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       this.onChunkComplete(allResults);
     }
 
+    // ── PASO 1c: Aún/aun con tilde (local, sin API, coste cero) ──────────────
+    if (selectedIds.includes('aun_tilde')) {
+      this.onProgress(4, 'Verificando «aún/aun» con tilde (local, sin coste)…');
+      const aunFindings = window.PLUMIA.runLocalAunTilde(selectionText);
+      allResults.push({
+        correctionId: 'aun_tilde',
+        label: 'Uso de «aún» con tilde diacrítica',
+        groupId: 'grammar',
+        colorId: 7,
+        findings: aunFindings,
+      });
+      this.onChunkComplete(allResults);
+    }
+
     // ── PASO 2: Coherencia narrativa (siempre individual, doc completo) ─────
     const coherenceIds = selectedIds.filter(id => {
       const c = CORRECTIONS.find(x => x.id === id);

@@ -27,6 +27,7 @@ const SYMBOL_COLORS = {
   'tiempos_verbales':      '0055A0',
   'nombres_propios':       '0055A0',
   'gerundios':             '0055A0',
+  'aun_tilde':             '0055A0',
   'si_tilde':              '0055A0',
   'dequeismo':             '0055A0',
   'frases_largas':         'C0006A',
@@ -53,6 +54,7 @@ const HIGHLIGHT = {
   'pleonasmos':            'Orange',
   'nombres_propios':       'Blue',
   'gerundios':             'Blue',
+  'aun_tilde':             'Blue',
   'si_tilde':              'Blue',
   'dequeismo':             'Blue',
   'concordancia':          'Pink',
@@ -112,6 +114,10 @@ function _singleComment(f) {
       return f.isStartOfSentence
         ? `Número al inicio de frase: «${f.numStr}» debe escribirse con letras en texto literario → «${f.correctForm}».`
         : `Número en texto literario: «${f.numStr}» puede escribirse con letras → «${f.correctForm}». ${f.explanation||''}`;
+    case 'aun_tilde': {
+      const label = f.errorType === 'falta_tilde' ? 'Falta tilde' : 'Tilde sobrante';
+      return `Tilde diacrítica (${label}): ${f.explanation||''} Forma sugerida: «${f.correctForm||''}».`;
+    }
     case 'si_tilde': {
       const fn = f.function || '';
       const fnLabel = fn === 'adverbio_afirmacion'     ? 'adverbio de afirmación'

@@ -238,6 +238,75 @@ window.PLUMIA.runLocalSiTilde = function(text) {
   return findings;
 };
 
+// ── 2c. DETECCIÓN LOCAL: tilde diacrítica aún/aun ─────────────────────────────
+// Detecta patrones SEGUROS donde aún/aun se usa incorrectamente.
+// Sin autocorrección: solo marca y comenta para revisión.
+window.PLUMIA.runLocalAunTilde = function(text) {
+  const findings = [];
+
+  // Patrones donde falta la tilde: 'aun' → debería ser 'aún' (= todavía)
+  const missingAccentPatterns = [
+    {
+      re: /\baun\s+no\b/gi,
+      correctForm: 'aún no',
+      explanation: '«aun no»: cuando equivale a «todavía no», debe llevar tilde → «aún no».',
+    },
+  ];
+
+  for (const { re, correctForm, explanation } of missingAccentPatterns) {
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      if (/aún/i.test(m[0])) continue; // ya tiene tilde
+      const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 15)).replace(/[\r\n]+/g, ' ').trim();
+      findings.push({
+        originalText: ctx, aunForm: m[0], correctForm,
+        errorType: 'falta_tilde',
+        explanation,
+        correctionId: 'aun_tilde', colorId: 7, label: 'Uso de «aún» con tilde diacrítica', directFix: false,
+      });
+    }
+  }
+
+  // Patrones donde sobra la tilde: 'aún' → debería ser 'aun' (= incluso/aunque)
+  const extraAccentPatterns = [
+    {
+      re: /\baún\s+cuando\b/gi,
+      correctForm: 'aun cuando',
+      explanation: '«aún cuando»: como conjunción concesiva (= aunque/incluso cuando), no lleva tilde → «aun cuando».',
+    },
+    {
+      re: /\baún\s+así\b/gi,
+      correctForm: 'aun así',
+      explanation: '«aún así»: como locución concesiva (= incluso así/con todo), no lleva tilde → «aun así».',
+    },
+    {
+      re: /\bni\s+aún\b/gi,
+      correctForm: 'ni aun',
+      explanation: '«ni aún»: en la locución «ni aun» (= ni siquiera), no lleva tilde → «ni aun».',
+    },
+    {
+      re: /\baún\s+\S+(?:ando|iendo|yendo)\b/gi,
+      correctForm: 'aun + gerundio',
+      explanation: '«aún» + gerundio: en construcción concesiva (= incluso + gerundio), no lleva tilde → «aun».',
+    },
+  ];
+
+  for (const { re, correctForm, explanation } of extraAccentPatterns) {
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 15)).replace(/[\r\n]+/g, ' ').trim();
+      findings.push({
+        originalText: ctx, aunForm: m[0], correctForm,
+        errorType: 'tilde_sobrante',
+        explanation,
+        correctionId: 'aun_tilde', colorId: 7, label: 'Uso de «aún» con tilde diacrítica', directFix: false,
+      });
+    }
+  }
+
+  return findings;
+};
+
 // ── 3. GRUPOS DE CORRECCIONES PARA API ────────────────────────────────────────
 // IMPORTANTE para todos los prompts: el texto puede contener encabezados de sección
 // como "4. Verbos comodín" que NO son ejemplos didácticos sino simplemente títulos.
@@ -443,6 +512,6 @@ window.PLUMIA.runLocalNumerosLetras = function(text) {
   return findings;
 };
 
-window.PLUMIA.LOCAL_IDS = ['ortotipografia_pura', 'numeros_letras'];
+window.PLUMIA.LOCAL_IDS = ['ortotipografia_pura', 'numeros_letras', 'aun_tilde'];
 
 })();
