@@ -146,6 +146,34 @@ window.PLUMIA.runLocalOrtotypography = function(text) {
       explanation:`Se han detectado ${espacioMatches.length} espacio(s) antes de signo(s) de puntuación. Se eliminarán.`,
       correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
   }
+  // ── Regla 1: dos puntos sin espacio posterior ──────────────────────────────
+  const dpNoEspacio = [];
+  for (let _i = 0; _i < text.length - 1; _i++) {
+    if (text[_i] !== ':') continue;
+    const _prev = _i > 0 ? text[_i - 1] : '';
+    const _next = text[_i + 1];
+    if (/\d/.test(_prev) || /[\s:\/\d]/.test(_next)) continue;
+    dpNoEspacio.push(text.substring(Math.max(0, _i - 5), Math.min(text.length, _i + 15)).trim());
+  }
+  if (dpNoEspacio.length > 0) {
+    findings.push({ errorType:'dos_puntos_espacio', originalText:dpNoEspacio[0],
+      correction:null, isFirstOccurrence:true,
+      explanation:`Se han detectado ${dpNoEspacio.length} dos puntos sin espacio posterior. Se añadirá el espacio en todo el documento.`,
+      correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
+  }
+  // ── Regla 4: mayúscula inmediata tras ': ' (advertencia, sin corrección auto) ─
+  const dpMayus = [];
+  for (let _i = 0; _i < text.length - 2; _i++) {
+    if (text[_i] === ':' && text[_i + 1] === ' ' && /[A-ZÁÉÍÓÚÜÑ]/.test(text[_i + 2])) {
+      dpMayus.push(text.substring(_i, Math.min(text.length, _i + 20)).trim());
+    }
+  }
+  if (dpMayus.length > 0) {
+    findings.push({ errorType:'dos_puntos_mayuscula', originalText:dpMayus[0],
+      correction:null, isFirstOccurrence:true,
+      explanation:`Se han detectado ${dpMayus.length} posible(s) mayúscula(s) tras dos puntos. La norma general es minúscula, salvo citas textuales, saludos epistolares o listas formales.`,
+      correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
+  }
   return findings;
 };
 

@@ -449,6 +449,73 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           await ctx.sync();
         } catch(e) {}
       }
+
+      // ── REGLAS DOS PUNTOS ────────────────────────────────────────────────────
+      // Regla 1: añadir espacio tras ':' cuando falta (excluye dígitos y URLs)
+      // Regla 4: comentar mayúscula inmediata tras ': ' (sin corrección automática)
+      // Orden: Pasada 1 = Regla 4 sobre texto existente → Pasada 2 = Regla 1
+      // Así ':Ana' (falta espacio + mayúscula) recibe solo el comentario combinado
+      // y no se duplica con el comentario de Regla 4.
+      try {
+        const COMMENT_R1    = 'Ortotipografía: se han detectado dos puntos sin espacio posterior. Se ha añadido el espacio en todo el documento. Tras los dos puntos siempre debe ir un espacio antes del texto siguiente.';
+        const COMMENT_R1_R4 = 'Ortotipografía: dos puntos sin espacio posterior corregidos en todo el documento. Además, la norma general es usar minúscula tras dos puntos (salvo citas textuales, saludos epistolares o listas formales estructuradas). Revise si corresponde cambiar a minúscula.';
+        const COMMENT_R4    = 'Ortotipografía: la norma general en español es escribir en minúscula tras dos puntos. Solo se usa mayúscula en citas textuales, saludos epistolares o listas formales estructuradas. Revise si corresponde cambiar a minúscula.';
+
+        body.load('paragraphs'); await ctx.sync();
+        const dpParas = body.paragraphs.items;
+        dpParas.forEach(p => p.load('text')); await ctx.sync();
+
+        // ── PASADA 1: Regla 4 — comentar ': [A-Z]' ya existentes en el texto ──
+        for (const para of dpParas) {
+          const pt = para.text || '';
+          const r4seqs = new Set();
+          for (let i = 0; i < pt.length - 2; i++) {
+            if (pt[i] === ':' && pt[i+1] === ' ' && /[A-ZÁÉÍÓÚÜÑ]/.test(pt[i+2]))
+              r4seqs.add(': ' + pt[i+2]);
+          }
+          for (const seq of r4seqs) {
+            try {
+              const sr = para.search(seq, {matchCase:true,matchWholeWord:false,matchWildcards:false});
+              sr.load('items'); await ctx.sync();
+              for (const item of sr.items) { try { item.insertComment(COMMENT_R4); } catch(e){} }
+              await ctx.sync();
+            } catch(e) {}
+          }
+        }
+
+        // ── PASADA 2: Regla 1 — añadir espacio en ':X' (sin espacio tras ':') ──
+        dpParas.forEach(p => p.load('text')); await ctx.sync();
+        let firstR1Done = false;
+        for (const para of dpParas) {
+          const pt = para.text || '';
+          if (!pt.includes(':')) continue;
+          const r1actions = {}; // seq → isUppercase
+          for (let i = 0; i < pt.length - 1; i++) {
+            if (pt[i] !== ':') continue;
+            const prev = i > 0 ? pt[i-1] : '';
+            const next = pt[i+1];
+            if (/\d/.test(prev) || /[\s:\/\d]/.test(next)) continue; // excluir dígitos, URLs, ya espaciados
+            r1actions[':' + next] = /[A-ZÁÉÍÓÚÜÑ]/.test(next);
+          }
+          for (const [seq, isUpper] of Object.entries(r1actions)) {
+            try {
+              const sr = para.search(seq, {matchCase:true,matchWholeWord:false,matchWildcards:false});
+              sr.load('items'); await ctx.sync();
+              for (const item of sr.items) {
+                item.insertText(': ' + seq.charAt(1), 'Replace');
+                if (!firstR1Done) {
+                  try { item.insertComment(isUpper ? COMMENT_R1_R4 : COMMENT_R1); } catch(e) {}
+                  firstR1Done = true;
+                } else if (isUpper) {
+                  // No es la primera corrección de espacio, pero hay mayúscula → aviso Regla 4
+                  try { item.insertComment(COMMENT_R4); } catch(e) {}
+                }
+              }
+              await ctx.sync();
+            } catch(e) {}
+          }
+        }
+      } catch(e) { console.warn('[ortotypo] dos_puntos:', e.message); }
     });
   }
 
