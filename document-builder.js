@@ -27,6 +27,7 @@ const SYMBOL_COLORS = {
   'tiempos_verbales':      '0055A0',
   'nombres_propios':       '0055A0',
   'gerundios':             '0055A0',
+  'mi_tilde':              '0055A0',
   'aun_tilde':             '0055A0',
   'si_tilde':              '0055A0',
   'dequeismo':             '0055A0',
@@ -54,6 +55,7 @@ const HIGHLIGHT = {
   'pleonasmos':            'Orange',
   'nombres_propios':       'Blue',
   'gerundios':             'Blue',
+  'mi_tilde':              'Blue',
   'aun_tilde':             'Blue',
   'si_tilde':              'Blue',
   'dequeismo':             'Blue',
@@ -114,6 +116,13 @@ function _singleComment(f) {
       return f.isStartOfSentence
         ? `Número al inicio de frase: «${f.numStr}» debe escribirse con letras en texto literario → «${f.correctForm}».`
         : `Número en texto literario: «${f.numStr}» puede escribirse con letras → «${f.correctForm}». ${f.explanation||''}`;
+    case 'mi_tilde': {
+      const fnMi = f.function || '';
+      const fnMiLabel = fnMi === 'pronombre_personal' ? 'pronombre personal (tras preposición)'
+                      : fnMi === 'posesivo'           ? 'posesivo (ante sustantivo)'
+                      : fnMi;
+      return `Tilde diacrítica: «${f.miForm||f.originalText}» debe escribirse «${f.correctForm||''}» (${fnMiLabel}). ${f.explanation||''}`;
+    }
     case 'aun_tilde': {
       const label = f.errorType === 'falta_tilde' ? 'Falta tilde' : 'Tilde sobrante';
       return `Tilde diacrítica (${label}): ${f.explanation||''} Forma sugerida: «${f.correctForm||''}».`;
@@ -541,6 +550,144 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         }
       } catch(e) { console.warn('[ortotypo] dos_puntos:', e.message); }
+
+      // ── REGLAS: enseguida · prefijos sin guión · asignaturas · cargos ─────────
+      try {
+        // ── enseguida ──────────────────────────────────────────────────────────
+        const COMMENT_ENSEG = 'Ortotipografía: «en seguida» se escribe en una sola palabra: «enseguida». Corregido en todo el documento.';
+        let firstEnsegDone = false;
+        for (const [from, to] of [['En seguida','Enseguida'],['en seguida','enseguida']]) {
+          try {
+            const esr = body.search(from, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+            esr.load('items'); await ctx.sync();
+            for (const item of esr.items) {
+              item.insertText(to, 'Replace'); item.font.bold = true;
+              if (!firstEnsegDone) { try { item.insertComment(COMMENT_ENSEG); } catch(e){} firstEnsegDone = true; }
+            }
+            await ctx.sync();
+          } catch(e) {}
+        }
+
+        // ── Cargar párrafos para las reglas con detección JS ──────────────────
+        body.load('paragraphs'); await ctx.sync();
+        const rParas = body.paragraphs.items;
+        rParas.forEach(p => p.load('text')); await ctx.sync();
+
+        // ── Prefijos sin guión (excluye ante mayúsculas: anti-OTAN) ───────────
+        const COMMENT_PREF = 'Ortotipografía: los prefijos (anti-, ex-, sub-, pre-, post-…) van unidos sin guión, salvo ante nombre propio o numeral. Corregido en todo el documento.';
+        const PREFIJOS = ['anti','ex','sub','pre','post','co','auto','inter','super',
+                          'ultra','extra','sobre','vice','contra','semi','neo','pro',
+                          'trans','bi','mono','multi','pseudo','cuasi','macro','micro'];
+        let firstPrefDone = false;
+        for (const para of rParas) {
+          const pt = para.text || '';
+          if (!pt.includes('-')) continue;
+          const reps = new Map();
+          for (const pref of PREFIJOS) {
+            const re = new RegExp(`\\b(${pref})(-[a-záéíóúüñ])`, 'gi');
+            let m;
+            while ((m = re.exec(pt)) !== null) {
+              const frm = m[0], rep = m[1] + m[2].charAt(1);
+              if (!reps.has(frm)) reps.set(frm, rep);
+            }
+          }
+          for (const [frm, rep] of reps) {
+            try {
+              const sr = para.search(frm, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+              sr.load('items'); await ctx.sync();
+              for (const item of sr.items) {
+                item.insertText(rep, 'Replace'); item.font.bold = true;
+                if (!firstPrefDone) { try { item.insertComment(COMMENT_PREF); } catch(e){} firstPrefDone = true; }
+              }
+              await ctx.sync();
+            } catch(e) {}
+          }
+        }
+
+        // ── Asignaturas en minúscula (fuera de inicio de oración) ─────────────
+        const COMMENT_ASIG = 'Ortotipografía: los nombres de asignaturas se escriben en minúscula fuera de inicio de oración (p. ej., «matemáticas», «historia»). Corregido en todo el documento.';
+        const ASIG_LIST = [
+          'Matemáticas','Matemática','Física','Química','Historia','Geografía',
+          'Lengua','Literatura','Filosofía','Biología','Economía','Arte','Música',
+          'Religión','Inglés','Francés','Alemán','Latín','Griego',
+          'Tecnología','Informática','Plástica','Ética','Psicología','Sociología',
+        ];
+        let firstAsigDone = false;
+        for (const para of rParas) {
+          const pt = para.text || '';
+          const reps = new Map();
+          for (const asig of ASIG_LIST) {
+            let pos = -1;
+            while ((pos = pt.indexOf(asig, pos + 1)) !== -1) {
+              if (pos === 0) continue;
+              const before = pt.substring(0, pos);
+              if (/[.?!\u2026\u2014]\s+$/.test(before)) continue;
+              if (/[A-ZÁÉÍÓÚÜÑ]\w+\s+de\s+$/.test(before)) continue; // "Ministerio de Economía" → skip
+              const prevChar = pt[pos - 1];
+              const frm = prevChar + asig;
+              const rep = prevChar + asig.charAt(0).toLowerCase() + asig.slice(1);
+              if (!reps.has(frm)) reps.set(frm, rep);
+            }
+          }
+          for (const [frm, rep] of reps) {
+            try {
+              const sr = para.search(frm, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+              sr.load('items'); await ctx.sync();
+              for (const item of sr.items) {
+                item.insertText(rep, 'Replace'); item.font.bold = true;
+                if (!firstAsigDone) { try { item.insertComment(COMMENT_ASIG); } catch(e){} firstAsigDone = true; }
+              }
+              await ctx.sync();
+            } catch(e) {}
+          }
+        }
+
+        // ── Cargos públicos en minúscula (fuera de inicio de oración) ─────────
+        // Excluye cuando al cargo le sigue nombre propio: "el Rey Felipe" → skip
+        const COMMENT_CARGOS = 'Ortotipografía: los cargos e instituciones se escriben en minúscula (p. ej., «el rey», «la presidenta», «el ministro»). Corregido en todo el documento.';
+        const CARGOS_LIST = [
+          'Rey','Reyes','Reina','Reinas',
+          'Príncipe','Príncipes','Princesa','Princesas',
+          'Presidente','Presidentes','Presidenta','Presidentas',
+          'Ministro','Ministros','Ministra','Ministras',
+          'Alcalde','Alcaldes','Alcaldesa','Alcaldesas',
+          'Gobernador','Gobernadores','Gobernadora','Gobernadoras',
+          'Senador','Senadores','Senadora','Senadoras',
+          'Diputado','Diputados','Diputada','Diputadas',
+          'Embajador','Embajadores','Embajadora','Embajadoras',
+          'Rector','Rectores','Rectora','Rectoras',
+        ];
+        let firstCargosDone = false;
+        for (const para of rParas) {
+          const pt = para.text || '';
+          const reps = new Map();
+          for (const cargo of CARGOS_LIST) {
+            let pos = -1;
+            while ((pos = pt.indexOf(cargo, pos + 1)) !== -1) {
+              if (pos === 0) continue;
+              const before = pt.substring(0, pos);
+              if (/[.?!\u2026\u2014]\s+$/.test(before)) continue;
+              const after = pt.substring(pos + cargo.length);
+              if (/^\s+[A-ZÁÉÍÓÚÜÑ]/.test(after)) continue; // "el Rey Felipe" → skip
+              const prevChar = pt[pos - 1];
+              const frm = prevChar + cargo;
+              const rep = prevChar + cargo.charAt(0).toLowerCase() + cargo.slice(1);
+              if (!reps.has(frm)) reps.set(frm, rep);
+            }
+          }
+          for (const [frm, rep] of reps) {
+            try {
+              const sr = para.search(frm, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+              sr.load('items'); await ctx.sync();
+              for (const item of sr.items) {
+                item.insertText(rep, 'Replace'); item.font.bold = true;
+                if (!firstCargosDone) { try { item.insertComment(COMMENT_CARGOS); } catch(e){} firstCargosDone = true; }
+              }
+              await ctx.sync();
+            } catch(e) {}
+          }
+        }
+      } catch(e) { console.warn('[ortotypo] reglas nuevas:', e.message); }
     });
   }
 

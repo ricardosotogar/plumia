@@ -174,6 +174,85 @@ window.PLUMIA.runLocalOrtotypography = function(text) {
       explanation:`Se han detectado ${dpMayus.length} posible(s) mayúscula(s) tras dos puntos. La norma general es minúscula, salvo citas textuales, saludos epistolares o listas formales.`,
       correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
   }
+  // ── Regla: en seguida → enseguida ────────────────────────────────────────────
+  const ensegMatches = (text.match(/\ben\s+seguida\b/gi) || []);
+  if (ensegMatches.length > 0) {
+    findings.push({ errorType:'enseguida', originalText:ensegMatches[0],
+      correction:'enseguida', isFirstOccurrence:true,
+      explanation:`Se ha detectado «en seguida» en ${ensegMatches.length} ocasión(es). La forma correcta es la univerbada: «enseguida».`,
+      correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
+  }
+
+  // ── Regla: prefijos sin guión (excluye ante mayúsculas: anti-OTAN) ──────────
+  const PREF_RE = /\b(?:anti|ex|sub|pre|post|co|auto|inter|super|ultra|extra|sobre|vice|contra|semi|neo|pro|trans|bi|mono|multi|pseudo|cuasi|macro|micro)-[a-záéíóúüñ]/gi;
+  const prefixMatches = [];
+  let _pm;
+  while ((_pm = PREF_RE.exec(text)) !== null) prefixMatches.push(_pm[0]);
+  if (prefixMatches.length > 0) {
+    findings.push({ errorType:'prefijo_guion', originalText:prefixMatches[0],
+      correction:prefixMatches[0].replace('-',''), isFirstOccurrence:true,
+      explanation:`Se han detectado ${prefixMatches.length} prefijo(s) con guión. Los prefijos van unidos sin guión salvo ante nombre propio o numeral.`,
+      correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
+  }
+
+  // ── Regla: asignaturas en minúscula (fuera de inicio de oración) ─────────────
+  const ASIG_LIST = [
+    'Matemáticas','Matemática','Física','Química','Historia','Geografía',
+    'Lengua','Literatura','Filosofía','Biología','Economía','Arte','Música',
+    'Religión','Inglés','Francés','Alemán','Latín','Griego',
+    'Tecnología','Informática','Plástica','Ética','Psicología','Sociología',
+  ];
+  const asigWrong = [];
+  for (const _asig of ASIG_LIST) {
+    let _pos = -1;
+    while ((_pos = text.indexOf(_asig, _pos + 1)) !== -1) {
+      if (_pos === 0) continue;
+      const _before = text.substring(0, _pos);
+      if (/[.?!\u2026\u2014]\s+$/.test(_before) || /\n\s*$/.test(_before)) continue;
+      if (/[A-ZÁÉÍÓÚÜÑ]\w+\s+de\s+$/.test(_before)) continue; // "Ministerio de Economía" → skip
+      asigWrong.push(text.substring(Math.max(0, _pos - 10), Math.min(text.length, _pos + _asig.length + 10)).trim());
+    }
+  }
+  if (asigWrong.length > 0) {
+    findings.push({ errorType:'asignatura_mayuscula', originalText:asigWrong[0],
+      correction:null, isFirstOccurrence:true,
+      explanation:`Se han detectado ${asigWrong.length} nombre(s) de asignatura(s) con mayúscula fuera de inicio de oración. Los nombres de asignaturas se escriben en minúscula.`,
+      correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
+  }
+
+  // ── Regla: cargos públicos en minúscula (fuera de inicio de oración) ─────────
+  // Excluye cuando el cargo va seguido de nombre propio: "el Rey Felipe" → skip
+  const CARGOS_LIST = [
+    'Rey','Reyes','Reina','Reinas',
+    'Príncipe','Príncipes','Princesa','Princesas',
+    'Presidente','Presidentes','Presidenta','Presidentas',
+    'Ministro','Ministros','Ministra','Ministras',
+    'Alcalde','Alcaldes','Alcaldesa','Alcaldesas',
+    'Gobernador','Gobernadores','Gobernadora','Gobernadoras',
+    'Senador','Senadores','Senadora','Senadoras',
+    'Diputado','Diputados','Diputada','Diputadas',
+    'Embajador','Embajadores','Embajadora','Embajadoras',
+    'Rector','Rectores','Rectora','Rectoras',
+  ];
+  const cargosWrong = [];
+  for (const _cargo of CARGOS_LIST) {
+    let _pos = -1;
+    while ((_pos = text.indexOf(_cargo, _pos + 1)) !== -1) {
+      if (_pos === 0) continue;
+      const _before = text.substring(0, _pos);
+      if (/[.?!\u2026\u2014]\s+$/.test(_before) || /\n\s*$/.test(_before)) continue;
+      const _after = text.substring(_pos + _cargo.length);
+      if (/^\s+[A-ZÁÉÍÓÚÜÑ]/.test(_after)) continue; // "el Rey Felipe" → skip
+      cargosWrong.push(text.substring(Math.max(0, _pos - 10), Math.min(text.length, _pos + _cargo.length + 10)).trim());
+    }
+  }
+  if (cargosWrong.length > 0) {
+    findings.push({ errorType:'cargo_mayuscula', originalText:cargosWrong[0],
+      correction:null, isFirstOccurrence:true,
+      explanation:`Se han detectado ${cargosWrong.length} cargo(s) público(s) con mayúscula fuera de inicio de oración. Los cargos se escriben en minúscula según la RAE.`,
+      correctionId:'ortotipografia_pura', colorId:null, label:'Ortotipografía pura', directFix:true });
+  }
+
   return findings;
 };
 
@@ -233,6 +312,44 @@ window.PLUMIA.runLocalSiTilde = function(text) {
         correctionId: 'si_tilde', colorId: 7, label: 'Uso de «sí» con tilde diacrítica', directFix: false,
       });
     }
+  }
+
+  return findings;
+};
+
+// ── 2b2. DETECCIÓN LOCAL: tilde diacrítica mí/mi ─────────────────────────────
+// Detecta patrones SEGUROS donde 'mi' sin tilde tras preposición es pronombre
+// (lo que sigue es puntuación o fin de oración — imposible que sea posesivo).
+// La API cubre los casos ambiguos (para mi bien / para mí era difícil).
+window.PLUMIA.runLocalMiTilde = function(text) {
+  const findings = [];
+  const PREPS = 'a|para|de|por|sin|sobre|hacia|ante|contra|tras|desde|en|entre';
+
+  // Patrón 1: prep + mi + puntuación inmediata → pronombre seguro
+  const rePunct = new RegExp(`\\b(${PREPS})\\s+(mi)\\s*([,;:.!?])`, 'gi');
+  let m;
+  while ((m = rePunct.exec(text)) !== null) {
+    if (/mí/i.test(m[2])) continue; // ya tiene tilde
+    const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 10)).replace(/[\r\n]+/g, ' ').trim();
+    findings.push({
+      originalText: ctx, miForm: m[2], correctForm: 'mí',
+      function: 'pronombre_personal',
+      explanation: `«${m[1]} mi»: seguido de puntuación indica pronombre personal → debe llevar tilde: «${m[1]} mí».`,
+      correctionId: 'mi_tilde', colorId: 7, label: 'Uso de «mí» con tilde diacrítica', directFix: false,
+    });
+  }
+
+  // Patrón 2: prep + mi al final de línea o cadena → pronombre seguro
+  const reEnd = new RegExp(`\\b(${PREPS})\\s+(mi)\\s*$`, 'gim');
+  while ((m = reEnd.exec(text)) !== null) {
+    if (/mí/i.test(m[2])) continue;
+    const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 5)).replace(/[\r\n]+/g, ' ').trim();
+    findings.push({
+      originalText: ctx, miForm: m[2], correctForm: 'mí',
+      function: 'pronombre_personal',
+      explanation: `«${m[1]} mi»: al final de la frase indica pronombre personal → debe llevar tilde: «${m[1]} mí».`,
+      correctionId: 'mi_tilde', colorId: 7, label: 'Uso de «mí» con tilde diacrítica', directFix: false,
+    });
   }
 
   return findings;
@@ -412,6 +529,12 @@ ${text}
 Responde ÚNICAMENTE con este JSON:
 {"gerundios":{"findings":[{"originalText":"fragmento exacto","gerund":"gerundio","errorType":"posterioridad|especificativo|adjetivo","explanation":"por qué","correction":"corrección"}]},"tiempos":{"findings":[{"originalText":"fragmento exacto","verbsFound":["v1","v2"],"explanation":"por qué","suggestion":"cómo resolverlo"}]}}
 Si no hay errores: findings:[].`,
+  },
+  {
+    groupKey: 'mi_tilde',
+    label: 'Tilde diacrítica mí/mi',
+    ids: ['mi_tilde'],
+    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='mi_tilde').prompt.replace('{TEXT}', text),
   },
   {
     groupKey: 'si_tilde',

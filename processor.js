@@ -327,10 +327,14 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
                 label: corr.label, directFix: corr.directFix };
             }).filter(Boolean);
             accumulated[corr.id].push(...findings);
-            // Opción C: para si_tilde, fusionar también las detecciones locales (sin coste API)
+            // Opción C: fusionar detecciones locales con la respuesta API (sin coste extra)
             if (corr.id === 'si_tilde') {
               const localF = window.PLUMIA.runLocalSiTilde(ch);
               accumulated['si_tilde'].push(...localF);
+            }
+            if (corr.id === 'mi_tilde') {
+              const localF = window.PLUMIA.runLocalMiTilde(ch);
+              accumulated['mi_tilde'].push(...localF);
             }
           } else {
             // Prompt agrupado
