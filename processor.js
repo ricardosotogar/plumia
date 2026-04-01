@@ -222,6 +222,20 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       this.onChunkComplete(allResults);
     }
 
+    // ── PASO 1b: Números en letra (local, sin API, coste cero) ─────────────
+    if (selectedIds.includes('numeros_letras')) {
+      this.onProgress(3, 'Verificando números en letra (local, sin coste)…');
+      const numFindings = window.PLUMIA.runLocalNumerosLetras(selectionText);
+      allResults.push({
+        correctionId: 'numeros_letras',
+        label: 'Números en letra',
+        groupId: 'style',
+        colorId: 3,
+        findings: numFindings,
+      });
+      this.onChunkComplete(allResults);
+    }
+
     // ── PASO 2: Coherencia narrativa (siempre individual, doc completo) ─────
     const coherenceIds = selectedIds.filter(id => {
       const c = CORRECTIONS.find(x => x.id === id);
@@ -299,6 +313,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
                 label: corr.label, directFix: corr.directFix };
             }).filter(Boolean);
             accumulated[corr.id].push(...findings);
+            // Opción C: para si_tilde, fusionar también las detecciones locales (sin coste API)
+            if (corr.id === 'si_tilde') {
+              const localF = window.PLUMIA.runLocalSiTilde(ch);
+              accumulated['si_tilde'].push(...localF);
+            }
           } else {
             // Prompt agrupado
             response = await this._callAPI(group.buildPrompt(ch));

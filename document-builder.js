@@ -17,6 +17,7 @@ console.log('📦 document-builder.js v8.00 cargado');
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
   'adverbios_mente':       '2E7D00',
+  'numeros_letras':        'B8860B',
   'repeticion_lexica':     'B8860B',
   'verbos_comedin':        'CC5500',
   'sustantivos_genericos': 'CC5500',
@@ -26,6 +27,7 @@ const SYMBOL_COLORS = {
   'tiempos_verbales':      '0055A0',
   'nombres_propios':       '0055A0',
   'gerundios':             '0055A0',
+  'si_tilde':              '0055A0',
   'dequeismo':             '0055A0',
   'frases_largas':         'C0006A',
   'puntuacion_dialogo':    'C0006A',
@@ -43,6 +45,7 @@ const SYMBOL_COLORS = {
 
 const HIGHLIGHT = {
   'adverbios_mente':       'Green',
+  'numeros_letras':        'Yellow',
   'repeticion_lexica':     'Yellow',
   'verbos_comedin':        'Orange',
   'sustantivos_genericos': 'Orange',
@@ -50,6 +53,7 @@ const HIGHLIGHT = {
   'pleonasmos':            'Orange',
   'nombres_propios':       'Blue',
   'gerundios':             'Blue',
+  'si_tilde':              'Blue',
   'dequeismo':             'Blue',
   'concordancia':          'Pink',
 };
@@ -104,6 +108,20 @@ function _singleComment(f) {
       return `Ritmo narrativo: ${f.issue||f.explanation||''} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
     case 'gerundios':
       return `Gerundio incorrecto (${f.errorType||''}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
+    case 'numeros_letras':
+      return f.isStartOfSentence
+        ? `Número al inicio de frase: «${f.numStr}» debe escribirse con letras en texto literario → «${f.correctForm}».`
+        : `Número en texto literario: «${f.numStr}» puede escribirse con letras → «${f.correctForm}». ${f.explanation||''}`;
+    case 'si_tilde': {
+      const fn = f.function || '';
+      const fnLabel = fn === 'adverbio_afirmacion'     ? 'adverbio de afirmación'
+                    : fn === 'pronombre_reflexivo'      ? 'pronombre personal reflexivo'
+                    : fn === 'sustantivo'               ? 'sustantivo (aprobación)'
+                    : fn === 'condicional'              ? 'conjunción condicional'
+                    : fn === 'interrogativa_indirecta'  ? 'interrogativa indirecta'
+                    : fn;
+      return `Tilde diacrítica: «${f.siForm||f.originalText}» debe escribirse «${f.correctForm||''}» (${fnLabel}). ${f.explanation||''}`;
+    }
     case 'dequeismo':
       return `${f.errorType==='dequeismo'?'Dequeísmo':'Queísmo'}: ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'concordancia':
@@ -188,6 +206,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
   _getKeyText(f) {
     switch(f.correctionId) {
+      case 'numeros_letras':        return f.numStr || f.originalText;
       case 'adverbios_mente':       return ((f.adverbs||[]).concat([f.adverb]).filter(Boolean))[0] || f.originalText;
       case 'repeticion_lexica':     return (f.occurrences?.[0]) || f.word || f.originalText;
       case 'verbos_comedin':        return f.verb || f.originalText;

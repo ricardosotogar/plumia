@@ -177,6 +177,67 @@ window.PLUMIA.runLocalOrtotypography = function(text) {
   return findings;
 };
 
+// ── 2b. DETECCIÓN LOCAL: tilde diacrítica sí/si ───────────────────────────────
+// Detecta patrones SEGUROS donde 'si' sin tilde es inequívocamente incorrecto
+// (pronombre reflexivo en construcciones fijas). La API cubre los casos ambiguos.
+window.PLUMIA.runLocalSiTilde = function(text) {
+  const findings = [];
+
+  // ── Pronombre reflexivo (patrones inequívocos) ─────────────────────────────
+  const reflexivePatterns = [
+    { re: /\ben\s+si\b/gi,               hint: 'en sí'          },
+    { re: /\bpara\s+si\b/gi,             hint: 'para sí'        },
+    { re: /\bsobre\s+si\b/gi,            hint: 'sobre sí'       },
+    { re: /\bfuera\s+de\s+si\b/gi,       hint: 'fuera de sí'    },
+    { re: /\bde\s+si\s+mism[oa]s?\b/gi,  hint: 'de sí mismo/a'  },
+    { re: /\bpor\s+si\s+mism[oa]s?\b/gi, hint: 'por sí mismo/a' },
+    { re: /\bpor\s+si\s+sol[oa]s?\b/gi,  hint: 'por sí solo/a'  },
+  ];
+  for (const { re, hint } of reflexivePatterns) {
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      if (/sí/i.test(m[0])) continue;
+      const ctx = text.substring(Math.max(0, m.index - 10), Math.min(text.length, m.index + m[0].length + 10)).replace(/[\r\n]+/g, ' ').trim();
+      findings.push({
+        originalText: ctx, siForm: m[0], correctForm: hint,
+        function: 'pronombre_reflexivo',
+        explanation: `«${m[0]}»: el pronombre reflexivo «si» debe llevar tilde diacrítica → «${hint}».`,
+        correctionId: 'si_tilde', colorId: 7, label: 'Uso de «sí» con tilde diacrítica', directFix: false,
+      });
+    }
+  }
+
+  // ── Adverbio de afirmación (patrones de alta confianza) ────────────────────
+  // 'si no', 'como si', 'si bien', 'por si' se excluyen naturalmente porque
+  // no encajan en estos patrones, o por la comprobación explícita de afterSi.
+  // Falso positivo aceptado: 'Si, por alguna razón, X' (condicional parentético).
+  const affirmativePatternsCompat = [
+    { re: /(?:^|[.?!\u2014\n]\s*)([Ss]i),/gm,   hint: 'sí,', note: 'Parece adverbio de afirmación. Revise: si es afirmación → «sí»; si es condicional con pausa → «si».' },
+    { re: /\u2014\s*([Ss]i)\s*[.!?]/g,           hint: 'sí',  note: 'Respuesta de diálogo: si es afirmación debe escribirse «sí».' },
+    { re: /\u00BF([Ss]i)\s*\?/g,                 hint: '¿sí?',note: 'Pregunta eco: debe escribirse «¿sí?».' },
+    { re: /,\s*([Ss]i)\s*,/g,                    hint: 'sí',  note: 'Si aparece aislado entre comas como afirmación, debe llevar tilde: «sí».' },
+  ];
+
+  for (const { re, hint, note } of affirmativePatternsCompat) {
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      if (/sí/i.test(m[0])) continue; // ya tiene tilde
+      // Excluir 'si no' y 'si bien' que podrían colisionar con el patrón de coma
+      const afterSi = text.substring(m.index + m[0].length, m.index + m[0].length + 10);
+      if (/^\s*(?:no|bien)\b/i.test(afterSi)) continue;
+      const ctx = text.substring(Math.max(0, m.index - 5), Math.min(text.length, m.index + m[0].length + 15)).replace(/[\r\n]+/g, ' ').trim();
+      findings.push({
+        originalText: ctx, siForm: m[0].trim(), correctForm: hint,
+        function: 'adverbio_afirmacion',
+        explanation: note,
+        correctionId: 'si_tilde', colorId: 7, label: 'Uso de «sí» con tilde diacrítica', directFix: false,
+      });
+    }
+  }
+
+  return findings;
+};
+
 // ── 3. GRUPOS DE CORRECCIONES PARA API ────────────────────────────────────────
 // IMPORTANTE para todos los prompts: el texto puede contener encabezados de sección
 // como "4. Verbos comodín" que NO son ejemplos didácticos sino simplemente títulos.
@@ -284,6 +345,12 @@ Responde ÚNICAMENTE con este JSON:
 Si no hay errores: findings:[].`,
   },
   {
+    groupKey: 'si_tilde',
+    label: 'Tilde diacrítica sí/si',
+    ids: ['si_tilde'],
+    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='si_tilde').prompt.replace('{TEXT}', text),
+  },
+  {
     groupKey: 'dialogo',
     label: 'Diálogo',
     ids: ['puntuacion_dialogo'],
@@ -298,6 +365,84 @@ Si no hay errores: findings:[].`,
 ];
 
 // IDs que se procesan localmente sin llamar a la API
-window.PLUMIA.LOCAL_IDS = ['ortotipografia_pura'];
+// ── 2c. DETECCIÓN LOCAL: números que deben escribirse con letras ──────────────
+window.PLUMIA.runLocalNumerosLetras = function(text) {
+  const NUM_TO_WORD = {
+    0:'cero',1:'uno',2:'dos',3:'tres',4:'cuatro',5:'cinco',6:'seis',
+    7:'siete',8:'ocho',9:'nueve',10:'diez',11:'once',12:'doce',
+    13:'trece',14:'catorce',15:'quince',16:'dieciséis',17:'diecisiete',
+    18:'dieciocho',19:'diecinueve',20:'veinte',21:'veintiuno',
+    22:'veintidós',23:'veintitrés',24:'veinticuatro',25:'veinticinco',
+    26:'veintiséis',27:'veintisiete',28:'veintiocho',29:'veintinueve',
+  };
+  const UNITS_RE   = /^[ \t]*(kg|km|cm|mm|m|g|l|ml|cl|dl|lb|oz|t|ha|%|°C|°F|mph|kph|rpm|h|min)\b/i;
+  const SECTION_RE = /\b(cap[íi]tulo|p[aá]gina|p[aá]g\.?|art[íi]culo|secci[oó]n|apartado|anexo|cuadro|tabla|figura|n[uú]mero|n[oº]\.?)\s*$/i;
+  const MONTHS_RE  = /^[ \t]*de[ \t]+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\b/i;
+
+  const findings = [];
+  const numRe = /\b([0-9]{1,2})\b/g;
+  let m;
+
+  while ((m = numRe.exec(text)) !== null) {
+    const numStr = m[1];
+    const num    = parseInt(numStr, 10);
+    const pos    = m.index;
+
+    if (num > 29) continue;
+
+    const cBefore = pos > 0                           ? text[pos - 1]             : '';
+    const cAfter  = pos + numStr.length < text.length ? text[pos + numStr.length] : '';
+
+    // F1: código con letra pegada (BH88, 3A)
+    if (/[A-ZÁÉÍÓÚÜÑa-záéíóúüñ]/.test(cBefore) || /[A-ZÁÉÍÓÚÜÑa-záéíóúüñ]/.test(cAfter)) continue;
+    // F2: decimal (3.5 / 2,75)
+    if (cBefore === '.' || cBefore === ',' || cAfter === '.' || cAfter === ',') continue;
+    // F3: hora (14:30)
+    if (cAfter === ':') continue;
+    if (/:\d?$/.test(text.substring(Math.max(0, pos - 3), pos))) continue;
+    // F4: fecha con / o —
+    if (cBefore === '/' || cAfter === '/' || cBefore === '-' || cAfter === '-') continue;
+
+    const afterNum  = text.substring(pos + numStr.length, pos + numStr.length + 25);
+    const beforeNum = text.substring(Math.max(0, pos - 40), pos);
+
+    // F5: fecha (12 de marzo)
+    if (MONTHS_RE.test(afterNum)) continue;
+    // F6: unidad de medida (5 kg)
+    if (UNITS_RE.test(afterNum)) continue;
+    // F7: capítulo/página/sección antes del número
+    if (SECTION_RE.test(beforeNum)) continue;
+
+    // F8: enumeración densa (≥2 números en la misma oración)
+    const sStart = Math.max(
+      text.lastIndexOf('.', pos - 1) + 1,
+      text.lastIndexOf('?', pos - 1) + 1,
+      text.lastIndexOf('!', pos - 1) + 1,
+      text.lastIndexOf('\n', pos - 1) + 1,
+      0
+    );
+    const sEndRel = text.substring(pos + numStr.length).search(/[.?!\n]/);
+    const sEnd    = sEndRel === -1 ? text.length : pos + numStr.length + sEndRel + 1;
+    if ((text.substring(sStart, sEnd).match(/\b\d+\b/g) || []).length >= 2) continue;
+
+    // Detectar inicio de frase (error directo según la norma)
+    const isStartOfSentence = text.substring(sStart, pos).trim().length === 0;
+
+    const ctx  = text.substring(Math.max(0, pos - 15), Math.min(text.length, pos + numStr.length + 15)).replace(/[\r\n]+/g, ' ').trim();
+    const word = NUM_TO_WORD[num];
+
+    findings.push({
+      originalText: ctx, numStr, correctForm: word, isStartOfSentence,
+      explanation: isStartOfSentence
+        ? `El número «${numStr}» inicia frase. La norma en textos literarios exige escribirlo con letras: «${word}».`
+        : `En textos literarios, los números del 0 al 29 se escriben con letras. «${numStr}» puede escribirse como «${word}».`,
+      correctionId: 'numeros_letras', colorId: 3,
+      label: 'Números en letra', directFix: false,
+    });
+  }
+  return findings;
+};
+
+window.PLUMIA.LOCAL_IDS = ['ortotipografia_pura', 'numeros_letras'];
 
 })();
