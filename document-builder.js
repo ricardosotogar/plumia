@@ -27,6 +27,8 @@ const SYMBOL_COLORS = {
   'tiempos_verbales':      '0055A0',
   'nombres_propios':       '0055A0',
   'gerundios':             '0055A0',
+  'interrogativas_tilde':  '0055A0',
+  'tu_tilde':              '0055A0',
   'mi_tilde':              '0055A0',
   'aun_tilde':             '0055A0',
   'si_tilde':              '0055A0',
@@ -55,6 +57,8 @@ const HIGHLIGHT = {
   'pleonasmos':            'Orange',
   'nombres_propios':       'Blue',
   'gerundios':             'Blue',
+  'interrogativas_tilde':  'Blue',
+  'tu_tilde':              'Blue',
   'mi_tilde':              'Blue',
   'aun_tilde':             'Blue',
   'si_tilde':              'Blue',
@@ -116,6 +120,18 @@ function _singleComment(f) {
       return f.isStartOfSentence
         ? `Número al inicio de frase: «${f.numStr}» debe escribirse con letras en texto literario → «${f.correctForm}».`
         : `Número en texto literario: «${f.numStr}» puede escribirse con letras → «${f.correctForm}». ${f.explanation||''}`;
+    case 'interrogativas_tilde': {
+      const errTypeInt = f.errorType === 'falta_tilde' ? 'Falta tilde' : 'Tilde sobrante';
+      const ctxInt = f.context ? ` (${f.context.replace(/_/g,' ')})` : '';
+      return `Interrogativo/exclamativo (${errTypeInt}): «${f.wordForm||f.originalText}» debe escribirse «${f.correctForm||''}»${ctxInt}. ${f.explanation||''}`;
+    }
+    case 'tu_tilde': {
+      const fnTu = f.function || '';
+      const fnTuLabel = fnTu === 'pronombre_personal' ? 'pronombre personal sujeto'
+                      : fnTu === 'posesivo'           ? 'posesivo (ante sustantivo)'
+                      : fnTu;
+      return `Tilde diacrítica: «${f.tuForm||f.originalText}» debe escribirse «${f.correctForm||''}» (${fnTuLabel}). ${f.explanation||''}`;
+    }
     case 'mi_tilde': {
       const fnMi = f.function || '';
       const fnMiLabel = fnMi === 'pronombre_personal' ? 'pronombre personal (tras preposición)'

@@ -336,6 +336,14 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
               const localF = window.PLUMIA.runLocalMiTilde(ch);
               accumulated['mi_tilde'].push(...localF);
             }
+            if (corr.id === 'interrogativas_tilde') {
+              const localF = window.PLUMIA.runLocalInterrogativasTilde(ch);
+              accumulated['interrogativas_tilde'].push(...localF);
+            }
+            if (corr.id === 'tu_tilde') {
+              const localF = window.PLUMIA.runLocalTuTilde(ch);
+              accumulated['tu_tilde'].push(...localF);
+            }
           } else {
             // Prompt agrupado
             response = await this._callAPI(group.buildPrompt(ch));

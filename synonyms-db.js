@@ -317,6 +317,91 @@ window.PLUMIA.runLocalSiTilde = function(text) {
   return findings;
 };
 
+// ── 2b3. DETECCIÓN LOCAL: tildes en interrogativos/exclamativos ───────────────
+// Solo cubre el caso inequívoco: inmediatamente tras ¿ o ¡ siempre lleva tilde.
+window.PLUMIA.runLocalInterrogativasTilde = function(text) {
+  const findings = [];
+  const WORDS = [
+    { re: /[¿¡]\s*(que)\b/gi,    correct: 'qué'    },
+    { re: /[¿¡]\s*(como)\b/gi,   correct: 'cómo'   },
+    { re: /[¿¡]\s*(cuando)\b/gi, correct: 'cuándo' },
+    { re: /[¿¡]\s*(quien)\b/gi,  correct: 'quién'  },
+    { re: /[¿¡]\s*(quienes)\b/gi,correct: 'quiénes'},
+    { re: /[¿¡]\s*(donde)\b/gi,  correct: 'dónde'  },
+    { re: /[¿¡]\s*(cuanto)\b/gi, correct: 'cuánto' },
+    { re: /[¿¡]\s*(cuanta)\b/gi, correct: 'cuánta' },
+    { re: /[¿¡]\s*(cuantos)\b/gi,correct: 'cuántos'},
+    { re: /[¿¡]\s*(cuantas)\b/gi,correct: 'cuántas'},
+    { re: /[¿¡]\s*(cual)\b/gi,   correct: 'cuál'   },
+    { re: /[¿¡]\s*(cuales)\b/gi, correct: 'cuáles' },
+  ];
+  for (const { re, correct } of WORDS) {
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const ctx = text.substring(Math.max(0, m.index - 5), Math.min(text.length, m.index + m[0].length + 20)).replace(/[\r\n]+/g, ' ').trim();
+      findings.push({
+        originalText: ctx, wordForm: m[1], correctForm: correct,
+        errorType: 'falta_tilde',
+        context: 'interrogativo_directo',
+        explanation: `«${m[1]}»: tras signo de apertura interrogativo/exclamativo siempre lleva tilde → «${correct}».`,
+        correctionId: 'interrogativas_tilde', colorId: 7, label: 'Tildes en interrogativos y exclamativos', directFix: false,
+      });
+    }
+  }
+  return findings;
+};
+
+// ── 2b4. DETECCIÓN LOCAL: tilde diacrítica tú/tu ──────────────────────────────
+// Patrones seguros donde 'tu' sin tilde es inequívocamente pronombre.
+window.PLUMIA.runLocalTuTilde = function(text) {
+  const findings = [];
+
+  // Patrón 1: inicio de párrafo/oración + tu + verbo conjugado
+  // "Tu eres", "Tu sabes", "Tu puedes" → pronombre
+  const reInicioVerbo = /(?:^|[.?!\u2026\u2014\n]\s*)(tu)\s+(?:eres|eras|fuiste|serás|has|habías|habrás|haces|hacías|harás|sabes|sabías|puedes|podías|podrás|quieres|querías|querrás|tienes|tenías|tendrás|debes|debías|deberás|vas|ibas|irás|vendrás|dices|decías|dirás)\b/gi;
+  let m;
+  while ((m = reInicioVerbo.exec(text)) !== null) {
+    const ctx = text.substring(Math.max(0, m.index - 5), Math.min(text.length, m.index + m[0].length + 10)).replace(/[\r\n]+/g, ' ').trim();
+    findings.push({
+      originalText: ctx, tuForm: m[1], correctForm: 'tú',
+      function: 'pronombre_personal',
+      explanation: `«tu» ante verbo conjugado actúa como pronombre personal sujeto → debe llevar tilde: «tú».`,
+      correctionId: 'tu_tilde', colorId: 7, label: 'Uso de «tú» con tilde diacrítica', directFix: false,
+    });
+  }
+
+  // Patrón 2: que/como + tu + puntuación o fin → comparativo pronombre
+  // "mejor que tu,", "tanto como tu." → pronombre
+  const reCmpPunct = /\b(?:que|como)\s+(tu)\s*([,;:.!?])/gi;
+  while ((m = reCmpPunct.exec(text)) !== null) {
+    if (/tú/i.test(m[1])) continue;
+    const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 10)).replace(/[\r\n]+/g, ' ').trim();
+    findings.push({
+      originalText: ctx, tuForm: m[1], correctForm: 'tú',
+      function: 'pronombre_personal',
+      explanation: `«${m[0].split(m[1])[0].trim()} tu» seguido de puntuación indica pronombre personal → «tú».`,
+      correctionId: 'tu_tilde', colorId: 7, label: 'Uso de «tú» con tilde diacrítica', directFix: false,
+    });
+  }
+
+  // Patrón 3: verbo + tú al final de oración → pronombre pospuesto
+  // "lo hiciste tu." "eres tu?" → pronombre
+  const reVerbEnd = /\b(tú?)\s*[.!?]/gi;
+  // Solo captura 'tu' (sin tilde) en esta posición
+  const reVerbEndSafe = /\b(\w+(?:ste|steis|rás|rá|ría|iste|aron|eron|ió))\s+(tu)\s*[.!?]/gi;
+  while ((m = reVerbEndSafe.exec(text)) !== null) {
+    const ctx = text.substring(Math.max(0, m.index - 10), Math.min(text.length, m.index + m[0].length + 5)).replace(/[\r\n]+/g, ' ').trim();
+    findings.push({
+      originalText: ctx, tuForm: m[2], correctForm: 'tú',
+      function: 'pronombre_personal',
+      explanation: `«tu» tras verbo conjugado al final de frase es pronombre personal → debe llevar tilde: «tú».`,
+      correctionId: 'tu_tilde', colorId: 7, label: 'Uso de «tú» con tilde diacrítica', directFix: false,
+    });
+  }
+
+  return findings;
+};
+
 // ── 2b2. DETECCIÓN LOCAL: tilde diacrítica mí/mi ─────────────────────────────
 // Detecta patrones SEGUROS donde 'mi' sin tilde tras preposición es pronombre
 // (lo que sigue es puntuación o fin de oración — imposible que sea posesivo).
@@ -529,6 +614,18 @@ ${text}
 Responde ÚNICAMENTE con este JSON:
 {"gerundios":{"findings":[{"originalText":"fragmento exacto","gerund":"gerundio","errorType":"posterioridad|especificativo|adjetivo","explanation":"por qué","correction":"corrección"}]},"tiempos":{"findings":[{"originalText":"fragmento exacto","verbsFound":["v1","v2"],"explanation":"por qué","suggestion":"cómo resolverlo"}]}}
 Si no hay errores: findings:[].`,
+  },
+  {
+    groupKey: 'interrogativas_tilde',
+    label: 'Tildes en interrogativos/exclamativos',
+    ids: ['interrogativas_tilde'],
+    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='interrogativas_tilde').prompt.replace('{TEXT}', text),
+  },
+  {
+    groupKey: 'tu_tilde',
+    label: 'Tilde diacrítica tú/tu',
+    ids: ['tu_tilde'],
+    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='tu_tilde').prompt.replace('{TEXT}', text),
   },
   {
     groupKey: 'mi_tilde',
