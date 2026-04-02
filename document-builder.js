@@ -244,12 +244,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       case 'sustantivos_genericos': return f.genericWord || f.originalText;
       case 'nombres_propios':       return f.name || f.originalText;
       case 'muletillas':            return f.expression || f.originalText;
+      case 'aun_tilde':             return (f.aunForm||'').split(/\s+/)[0] || f.originalText;
+      case 'mi_tilde':              return f.miForm  || f.originalText;
+      case 'tu_tilde':              return f.tuForm  || f.originalText;
+      case 'interrogativas_tilde':  return f.wordForm || f.originalText;
       case 'pleonasmos': {
         const orig = (f.originalText||'').split(/\s+/);
         const corr = (f.correction  ||'').split(/\s+/);
         return orig.find(w => !corr.some(c=>c.toLowerCase()===w.toLowerCase())) || f.originalText;
       }
-      case 'nombres_propios':  return f.name || f.originalText;
       case 'gerundios':        return f.gerund || f.originalText;
       case 'dequeismo':        return f.errorType==='dequeismo' ? 'de que' : (f.originalText||'').split(/\s+/).slice(0,3).join(' ');
       case 'concordancia':     return (f.originalText||'').split(/\s+/).slice(0,2).join(' ');

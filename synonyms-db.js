@@ -319,6 +319,14 @@ window.PLUMIA.runLocalSiTilde = function(text) {
 
 // ── 2b3. DETECCIÓN LOCAL: tildes en interrogativos/exclamativos ───────────────
 // Solo cubre el caso inequívoco: inmediatamente tras ¿ o ¡ siempre lleva tilde.
+// Devuelve contexto alineado a frontera de palabra (no corta en medio de una)
+function _localCtx(text, matchIndex, matchLen, before, after) {
+  let start = Math.max(0, matchIndex - before);
+  while (start > 0 && /\S/.test(text[start - 1])) start--;
+  const end = Math.min(text.length, matchIndex + matchLen + after);
+  return text.substring(start, end).replace(/[\r\n]+/g, ' ').trim();
+}
+
 window.PLUMIA.runLocalInterrogativasTilde = function(text) {
   const findings = [];
   const WORDS = [
@@ -338,7 +346,7 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
   for (const { re, correct } of WORDS) {
     let m;
     while ((m = re.exec(text)) !== null) {
-      const ctx = text.substring(Math.max(0, m.index - 5), Math.min(text.length, m.index + m[0].length + 20)).replace(/[\r\n]+/g, ' ').trim();
+      const ctx = _localCtx(text, m.index, m[0].length, 10, 20);
       findings.push({
         originalText: ctx, wordForm: m[1], correctForm: correct,
         errorType: 'falta_tilde',
@@ -361,7 +369,7 @@ window.PLUMIA.runLocalTuTilde = function(text) {
   const reInicioVerbo = /(?:^|[.?!\u2026\u2014\n]\s*)(tu)\s+(?:eres|eras|fuiste|serás|has|habías|habrás|haces|hacías|harás|sabes|sabías|puedes|podías|podrás|quieres|querías|querrás|tienes|tenías|tendrás|debes|debías|deberás|vas|ibas|irás|vendrás|dices|decías|dirás)\b/gi;
   let m;
   while ((m = reInicioVerbo.exec(text)) !== null) {
-    const ctx = text.substring(Math.max(0, m.index - 5), Math.min(text.length, m.index + m[0].length + 10)).replace(/[\r\n]+/g, ' ').trim();
+    const ctx = _localCtx(text, m.index, m[0].length, 5, 10);
     findings.push({
       originalText: ctx, tuForm: m[1], correctForm: 'tú',
       function: 'pronombre_personal',
@@ -375,7 +383,7 @@ window.PLUMIA.runLocalTuTilde = function(text) {
   const reCmpPunct = /\b(?:que|como)\s+(tu)\s*([,;:.!?])/gi;
   while ((m = reCmpPunct.exec(text)) !== null) {
     if (/tú/i.test(m[1])) continue;
-    const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 10)).replace(/[\r\n]+/g, ' ').trim();
+    const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
     findings.push({
       originalText: ctx, tuForm: m[1], correctForm: 'tú',
       function: 'pronombre_personal',
@@ -390,7 +398,7 @@ window.PLUMIA.runLocalTuTilde = function(text) {
   // Solo captura 'tu' (sin tilde) en esta posición
   const reVerbEndSafe = /\b(\w+(?:ste|steis|rás|rá|ría|iste|aron|eron|ió))\s+(tu)\s*[.!?]/gi;
   while ((m = reVerbEndSafe.exec(text)) !== null) {
-    const ctx = text.substring(Math.max(0, m.index - 10), Math.min(text.length, m.index + m[0].length + 5)).replace(/[\r\n]+/g, ' ').trim();
+    const ctx = _localCtx(text, m.index, m[0].length, 10, 5);
     findings.push({
       originalText: ctx, tuForm: m[2], correctForm: 'tú',
       function: 'pronombre_personal',
@@ -415,7 +423,7 @@ window.PLUMIA.runLocalMiTilde = function(text) {
   let m;
   while ((m = rePunct.exec(text)) !== null) {
     if (/mí/i.test(m[2])) continue; // ya tiene tilde
-    const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 10)).replace(/[\r\n]+/g, ' ').trim();
+    const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
     findings.push({
       originalText: ctx, miForm: m[2], correctForm: 'mí',
       function: 'pronombre_personal',
@@ -428,7 +436,7 @@ window.PLUMIA.runLocalMiTilde = function(text) {
   const reEnd = new RegExp(`\\b(${PREPS})\\s+(mi)\\s*$`, 'gim');
   while ((m = reEnd.exec(text)) !== null) {
     if (/mí/i.test(m[2])) continue;
-    const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 5)).replace(/[\r\n]+/g, ' ').trim();
+    const ctx = _localCtx(text, m.index, m[0].length, 15, 5);
     findings.push({
       originalText: ctx, miForm: m[2], correctForm: 'mí',
       function: 'pronombre_personal',
@@ -459,7 +467,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
     let m;
     while ((m = re.exec(text)) !== null) {
       if (/aún/i.test(m[0])) continue; // ya tiene tilde
-      const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 15)).replace(/[\r\n]+/g, ' ').trim();
+      const ctx = _localCtx(text, m.index, m[0].length, 15, 15);
       findings.push({
         originalText: ctx, aunForm: m[0], correctForm,
         errorType: 'falta_tilde',
@@ -496,7 +504,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
   for (const { re, correctForm, explanation } of extraAccentPatterns) {
     let m;
     while ((m = re.exec(text)) !== null) {
-      const ctx = text.substring(Math.max(0, m.index - 15), Math.min(text.length, m.index + m[0].length + 15)).replace(/[\r\n]+/g, ' ').trim();
+      const ctx = _localCtx(text, m.index, m[0].length, 15, 15);
       findings.push({
         originalText: ctx, aunForm: m[0], correctForm,
         errorType: 'tilde_sobrante',
