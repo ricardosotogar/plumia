@@ -94,7 +94,7 @@ function _singleComment(f) {
     case 'sustantivos_genericos':
       return `Sustantivo genérico «${f.genericWord}»: ${f.explanation||''} ${(f.alternatives||[]).length?'Alternativas: '+(f.alternatives||[]).join(', ')+'.':''}`;
     case 'muletillas':
-      return `Muletilla «${f.expression}»: puede no estar aportando nada al texto. ${(f.alternatives||[]).filter(a=>a!=='eliminar').length?'Alternativas: '+(f.alternatives||[]).filter(a=>a!=='eliminar').join(', ')+'.':'Valora eliminarla.'}`;
+      return `Muletilla «${f.expression}»: ${f.explanation||'puede no estar aportando nada al texto.'} Valora eliminarla.`;
     case 'pleonasmos':
       return `Pleonasmo: ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'adverbios_mente': {
@@ -242,6 +242,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       case 'repeticion_lexica':     return (f.occurrences?.[0]) || f.word || f.originalText;
       case 'verbos_comedin':        return f.verb || f.originalText;
       case 'sustantivos_genericos': return f.genericWord || f.originalText;
+      case 'nombres_propios':       return f.name || f.originalText;
       case 'muletillas':            return f.expression || f.originalText;
       case 'pleonasmos': {
         const orig = (f.originalText||'').split(/\s+/);
@@ -338,8 +339,29 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
   // ── Brackets ─────────────────────────────────────────────────────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    // Fase 1: insertar ◆² al final y ◆¹ al inicio — sin font ops
-    range.getRange('End').insertText('\u25C6\u00B2', 'After');
+    const origText = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
+
+    // ── ◆² al final real de la frase (no al final del rango truncado) ─────────
+    // Si el originalText era largo y se truncó a ~70 chars para la búsqueda,
+    // buscamos los últimos ~30 chars del texto original para anclar el cierre.
+    let endInserted = false;
+    if (origText.length > 70) {
+      const tail = origText.slice(-40);
+      const sp   = tail.indexOf(' ');
+      const endSearch = (sp > 0 && sp < 15) ? tail.substring(sp + 1) : tail;
+      try {
+        const para  = range.paragraphs.getFirst();
+        const endSr = para.search(endSearch, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        endSr.load('items'); await ctx.sync();
+        if (endSr.items.length) {
+          endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+          endInserted = true;
+        }
+      } catch(e) {}
+    }
+    if (!endInserted) range.getRange('End').insertText('\u25C6\u00B2', 'After');
+
+    // ── ◆¹ al inicio ─────────────────────────────────────────────────────────
     range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
     await ctx.sync();
 
