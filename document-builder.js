@@ -422,7 +422,11 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (!resolvedFindings || !resolvedFindings.length) return;
 
     const ortotypo = resolvedFindings.filter(f => f.directFix);
-    const others   = resolvedFindings.filter(f => !f.directFix && f.originalText);
+    // BRACKET_TYPES primero: así _styleAndComment('◆¹') los procesa sin ◆ extra
+    // que puedan insertar los _markWord posteriores en la misma zona
+    const others   = resolvedFindings
+      .filter(f => !f.directFix && f.originalText)
+      .sort((a, b) => (BRACKET_TYPES.has(a.correctionId) ? 0 : 1) - (BRACKET_TYPES.has(b.correctionId) ? 0 : 1));
 
     if (ortotypo.length) await this.applyOrtotypography();
     if (!others.length)  return;
