@@ -450,9 +450,11 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const paras = body.paragraphs.items;
       paras.forEach(p => p.load('text')); await ctx.sync();
 
-      let firstDashDone = false;
-      let firstExclDone = false;
+      const SYMCOL = '008B8B'; // color ◆ para correcciones automáticas
 
+      // ── 1. Guión de diálogo (párrafo que empieza con -) ──────────────────
+      let firstDashDone = false;
+      const COMMENT_DASH = 'Ortotipograf\u00EDa: gui\u00F3n corto (-) corregido a raya (\u2014) en todo el documento.';
       for (const para of paras) {
         const trimmed = (para.text||'').trimStart();
         if (/^-/.test(trimmed)) {
@@ -460,29 +462,35 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             const sr = para.search('-', {matchCase:true,matchWholeWord:false,matchWildcards:false});
             sr.load('items'); await ctx.sync();
             if (sr.items.length) {
-              sr.items[0].insertText('\u2014','Replace'); sr.items[0].font.bold=true;
               if (!firstDashDone) {
-                try { sr.items[0].insertComment('Ortotipograf\u00EDa: gui\u00F3n corto (-) corregido a raya (\u2014) en todo el documento.'); } catch(e){}
+                sr.items[0].insertText('\u25C6\u2014','Replace'); // ◆—
                 firstDashDone = true;
+              } else {
+                sr.items[0].insertText('\u2014','Replace');
               }
-              for (let i=1;i<sr.items.length;i++) { sr.items[i].insertText('\u2014','Replace'); sr.items[i].font.bold=true; }
+              for (let i=1;i<sr.items.length;i++) sr.items[i].insertText('\u2014','Replace');
+              await ctx.sync();
             }
-            await ctx.sync();
           } catch(e) {}
         }
       }
+      if (firstDashDone) await _styleAndComment(ctx, body, '\u25C6\u2014', SYMCOL, COMMENT_DASH);
 
+      // ── 2. Guión interior ( -X → —X, cubierto por el comentario anterior) ─
       try {
         const isr = body.search(' -[a-zA-Z]', {matchCase:false,matchWholeWord:false,matchWildcards:true});
         isr.load('items'); await ctx.sync();
         for (const r of isr.items) {
           r.load('text'); await ctx.sync();
           const t = r.text||'';
-          if (t.length>=3) { r.insertText(' \u2014'+t.charAt(t.length-1),'Replace'); r.font.bold=true; }
+          if (t.length>=3) r.insertText(' \u2014'+t.charAt(t.length-1),'Replace');
         }
         await ctx.sync();
       } catch(e) {}
 
+      // ── 3. Exclamación incorrecta (word¡ → word◆!) ───────────────────────
+      let firstExclDone = false;
+      const COMMENT_EXCL = 'Ortotipograf\u00EDa: signo de cierre \u00A1 corregido a !';
       paras.forEach(p=>p.load('text')); await ctx.sync();
       for (const para of paras) {
         const m = (para.text||'').match(/(\w)(\u00A1)/);
@@ -491,48 +499,71 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             const sr = para.search(m[1]+'\u00A1', {matchCase:true,matchWholeWord:false,matchWildcards:false});
             sr.load('items'); await ctx.sync();
             for (const r of sr.items) {
-              r.insertText(m[1]+'!','Replace'); r.font.bold=true;
               if (!firstExclDone) {
-                try { r.insertComment('Ortotipograf\u00EDa: signo de cierre \u00A1 corregido a !'); } catch(e){}
-                firstExclDone=true;
+                r.insertText(m[1]+'\u25C6!','Replace'); // word◆!
+                firstExclDone = true;
+              } else {
+                r.insertText(m[1]+'!','Replace');
               }
             }
             await ctx.sync();
           } catch(e) {}
         }
       }
+      if (firstExclDone) await _styleAndComment(ctx, body, '\u25C6!', SYMCOL, COMMENT_EXCL);
 
+      // ── 4. Comillas inglesas (" → ◆«») ────────────────────────────────────
+      let firstQuoteDone = false;
+      const COMMENT_QUOTES = 'Ortotipograf\u00EDa: comillas inglesas corregidas a \u00AB\u00BB';
       try {
         const qr = body.search('"', {matchCase:true,matchWholeWord:false,matchWildcards:false});
         qr.load('items'); await ctx.sync();
         for (let i=0;i<qr.items.length;i++) {
-          qr.items[i].insertText(i%2===0?'\u00AB':'\u00BB','Replace'); qr.items[i].font.bold=true;
-          if (i===0) { try { qr.items[i].insertComment('Ortotipograf\u00EDa: comillas inglesas corregidas a \u00AB\u00BB'); } catch(e){} }
+          if (i===0 && !firstQuoteDone) {
+            qr.items[i].insertText('\u25C6\u00AB','Replace'); // ◆«
+            firstQuoteDone = true;
+          } else {
+            qr.items[i].insertText(i%2===0?'\u00AB':'\u00BB','Replace');
+          }
         }
         await ctx.sync();
       } catch(e) {}
+      if (firstQuoteDone) await _styleAndComment(ctx, body, '\u25C6\u00AB', SYMCOL, COMMENT_QUOTES);
 
+      // ── 5. Comillas curvas (" " ' ' → «») ─────────────────────────────────
       for (const [s,r] of [['\u201c','\u00AB'],['\u201d','\u00BB'],['\u2018','\u00AB'],['\u2019','\u00BB']]) {
         try {
           const sr = body.search(s,{matchCase:true,matchWholeWord:false,matchWildcards:false});
           sr.load('items'); await ctx.sync();
-          for (const item of sr.items) { item.insertText(r,'Replace'); item.font.bold=true; }
+          for (const item of sr.items) item.insertText(r,'Replace');
           await ctx.sync();
         } catch(e) {}
       }
 
+      // ── 6. Puntos suspensivos (... → ◆…) ──────────────────────────────────
+      let firstDotsDone = false;
+      const COMMENT_DOTS = 'Ortotipograf\u00EDa: tres puntos seguidos (...) corregidos a puntos suspensivos (\u2026) en todo el documento.';
       try {
         const dr = body.search('...',{matchCase:true,matchWholeWord:false,matchWildcards:false});
         dr.load('items'); await ctx.sync();
-        for (const item of dr.items) { item.insertText('\u2026','Replace'); item.font.bold=true; }
+        for (const item of dr.items) {
+          if (!firstDotsDone) {
+            item.insertText('\u25C6\u2026','Replace'); // ◆…
+            firstDotsDone = true;
+          } else {
+            item.insertText('\u2026','Replace');
+          }
+        }
         await ctx.sync();
       } catch(e) {}
+      if (firstDotsDone) await _styleAndComment(ctx, body, '\u25C6\u2026', SYMCOL, COMMENT_DOTS);
 
+      // ── 7. Espacio antes de puntuación ────────────────────────────────────
       for (const sign of [' ,', ' ;', ' :', ' .']) {
         try {
           const sr = body.search(sign,{matchCase:true,matchWholeWord:false,matchWildcards:false});
           sr.load('items'); await ctx.sync();
-          for (const item of sr.items) { item.insertText(sign.trim(),'Replace'); item.font.bold=true; }
+          for (const item of sr.items) item.insertText(sign.trim(),'Replace');
           await ctx.sync();
         } catch(e) {}
       }
@@ -607,19 +638,26 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       // ── REGLAS: enseguida · prefijos sin guión · asignaturas · cargos ─────────
       try {
         // ── enseguida ──────────────────────────────────────────────────────────
-        const COMMENT_ENSEG = 'Ortotipografía: «en seguida» se escribe en una sola palabra: «enseguida». Corregido en todo el documento.';
+        const COMMENT_ENSEG = 'Ortotipograf\u00EDa: \u00ABen seguida\u00BB se escribe en una sola palabra: \u00ABenseguida\u00BB. Corregido en todo el documento.';
         let firstEnsegDone = false;
+        let firstEnsegPattern = null;
         for (const [from, to] of [['En seguida','Enseguida'],['en seguida','enseguida']]) {
           try {
             const esr = body.search(from, {matchCase:true, matchWholeWord:false, matchWildcards:false});
             esr.load('items'); await ctx.sync();
             for (const item of esr.items) {
-              item.insertText(to, 'Replace'); item.font.bold = true;
-              if (!firstEnsegDone) { try { item.insertComment(COMMENT_ENSEG); } catch(e){} firstEnsegDone = true; }
+              if (!firstEnsegDone) {
+                item.insertText('\u25C6' + to, 'Replace'); // ◆Enseguida / ◆enseguida
+                firstEnsegPattern = '\u25C6' + to;
+                firstEnsegDone = true;
+              } else {
+                item.insertText(to, 'Replace');
+              }
             }
             await ctx.sync();
           } catch(e) {}
         }
+        if (firstEnsegPattern) await _styleAndComment(ctx, body, firstEnsegPattern, SYMCOL, COMMENT_ENSEG);
 
         // ── Cargar párrafos para las reglas con detección JS ──────────────────
         body.load('paragraphs'); await ctx.sync();
@@ -632,12 +670,13 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
                           'ultra','extra','sobre','vice','contra','semi','neo','pro',
                           'trans','bi','mono','multi','pseudo','cuasi','macro','micro'];
         let firstPrefDone = false;
+        let firstPrefPattern = null;
         for (const para of rParas) {
           const pt = para.text || '';
           if (!pt.includes('-')) continue;
           const reps = new Map();
           for (const pref of PREFIJOS) {
-            const re = new RegExp(`\\b(${pref})(-[a-záéíóúüñ])`, 'gi');
+            const re = new RegExp(`\\b(${pref})(-[a-z\u00e1\u00e9\u00ed\u00f3\u00fa\u00fc\u00f1])`, 'gi');
             let m;
             while ((m = re.exec(pt)) !== null) {
               const frm = m[0], rep = m[1] + m[2].charAt(1);
@@ -649,13 +688,19 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
               const sr = para.search(frm, {matchCase:true, matchWholeWord:false, matchWildcards:false});
               sr.load('items'); await ctx.sync();
               for (const item of sr.items) {
-                item.insertText(rep, 'Replace'); item.font.bold = true;
-                if (!firstPrefDone) { try { item.insertComment(COMMENT_PREF); } catch(e){} firstPrefDone = true; }
+                if (!firstPrefDone) {
+                  item.insertText('\u25C6' + rep, 'Replace'); // ◆antidrogas
+                  firstPrefPattern = '\u25C6' + rep.substring(0, Math.min(rep.length, 6));
+                  firstPrefDone = true;
+                } else {
+                  item.insertText(rep, 'Replace');
+                }
               }
               await ctx.sync();
             } catch(e) {}
           }
         }
+        if (firstPrefPattern) await _styleAndComment(ctx, body, firstPrefPattern, SYMCOL, COMMENT_PREF);
 
         // ── Asignaturas en minúscula (fuera de inicio de oración) ─────────────
         const COMMENT_ASIG = 'Ortotipografía: los nombres de asignaturas se escriben en minúscula fuera de inicio de oración (p. ej., «matemáticas», «historia»). Corregido en todo el documento.';
@@ -666,34 +711,44 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           'Tecnología','Informática','Plástica','Ética','Psicología','Sociología',
         ];
         let firstAsigDone = false;
+        let firstAsigPattern = null;
         for (const para of rParas) {
           const pt = para.text || '';
-          const reps = new Map();
+          const reps = new Map(); // frm → {rep, asigLower}
           for (const asig of ASIG_LIST) {
             let pos = -1;
             while ((pos = pt.indexOf(asig, pos + 1)) !== -1) {
               if (pos === 0) continue;
               const before = pt.substring(0, pos);
               if (/[.?!\u2026\u2014]\s+$/.test(before)) continue;
-              if (/[A-ZÁÉÍÓÚÜÑ]\w+\s+de\s+$/.test(before)) continue; // "Ministerio de Economía" → skip
+              if (/[A-Z\u00C1\u00C9\u00CD\u00D3\u00DA\u00DC\u00D1]\w+\s+de\s+$/.test(before)) continue;
               const prevChar = pt[pos - 1];
               const frm = prevChar + asig;
-              const rep = prevChar + asig.charAt(0).toLowerCase() + asig.slice(1);
-              if (!reps.has(frm)) reps.set(frm, rep);
+              const asigLower = asig.charAt(0).toLowerCase() + asig.slice(1);
+              const rep = prevChar + asigLower;
+              if (!reps.has(frm)) reps.set(frm, {rep, asigLower});
             }
           }
-          for (const [frm, rep] of reps) {
+          for (const [frm, {rep, asigLower}] of reps) {
             try {
               const sr = para.search(frm, {matchCase:true, matchWholeWord:false, matchWildcards:false});
               sr.load('items'); await ctx.sync();
               for (const item of sr.items) {
-                item.insertText(rep, 'Replace'); item.font.bold = true;
-                if (!firstAsigDone) { try { item.insertComment(COMMENT_ASIG); } catch(e){} firstAsigDone = true; }
+                if (!firstAsigDone) {
+                  // Insertar ◆ entre prevChar y la palabra corregida
+                  const prevChar = frm.charAt(0);
+                  item.insertText(prevChar + '\u25C6' + asigLower, 'Replace');
+                  firstAsigPattern = '\u25C6' + asigLower.substring(0, Math.min(asigLower.length, 5));
+                  firstAsigDone = true;
+                } else {
+                  item.insertText(rep, 'Replace');
+                }
               }
               await ctx.sync();
             } catch(e) {}
           }
         }
+        if (firstAsigPattern) await _styleAndComment(ctx, body, firstAsigPattern, SYMCOL, COMMENT_ASIG);
 
         // ── Cargos públicos en minúscula (fuera de inicio de oración) ─────────
         // Excluye cuando al cargo le sigue nombre propio: "el Rey Felipe" → skip
@@ -711,9 +766,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           'Rector','Rectores','Rectora','Rectoras',
         ];
         let firstCargosDone = false;
+        let firstCargosPattern = null;
         for (const para of rParas) {
           const pt = para.text || '';
-          const reps = new Map();
+          const reps = new Map(); // frm → {rep, cargoLower}
           for (const cargo of CARGOS_LIST) {
             let pos = -1;
             while ((pos = pt.indexOf(cargo, pos + 1)) !== -1) {
@@ -721,25 +777,33 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
               const before = pt.substring(0, pos);
               if (/[.?!\u2026\u2014]\s+$/.test(before)) continue;
               const after = pt.substring(pos + cargo.length);
-              if (/^\s+[A-ZÁÉÍÓÚÜÑ]/.test(after)) continue; // "el Rey Felipe" → skip
+              if (/^\s+[A-Z\u00C1\u00C9\u00CD\u00D3\u00DA\u00DC\u00D1]/.test(after)) continue;
               const prevChar = pt[pos - 1];
               const frm = prevChar + cargo;
-              const rep = prevChar + cargo.charAt(0).toLowerCase() + cargo.slice(1);
-              if (!reps.has(frm)) reps.set(frm, rep);
+              const cargoLower = cargo.charAt(0).toLowerCase() + cargo.slice(1);
+              const rep = prevChar + cargoLower;
+              if (!reps.has(frm)) reps.set(frm, {rep, cargoLower});
             }
           }
-          for (const [frm, rep] of reps) {
+          for (const [frm, {rep, cargoLower}] of reps) {
             try {
               const sr = para.search(frm, {matchCase:true, matchWholeWord:false, matchWildcards:false});
               sr.load('items'); await ctx.sync();
               for (const item of sr.items) {
-                item.insertText(rep, 'Replace'); item.font.bold = true;
-                if (!firstCargosDone) { try { item.insertComment(COMMENT_CARGOS); } catch(e){} firstCargosDone = true; }
+                if (!firstCargosDone) {
+                  const prevChar = frm.charAt(0);
+                  item.insertText(prevChar + '\u25C6' + cargoLower, 'Replace');
+                  firstCargosPattern = '\u25C6' + cargoLower.substring(0, Math.min(cargoLower.length, 5));
+                  firstCargosDone = true;
+                } else {
+                  item.insertText(rep, 'Replace');
+                }
               }
               await ctx.sync();
             } catch(e) {}
           }
         }
+        if (firstCargosPattern) await _styleAndComment(ctx, body, firstCargosPattern, SYMCOL, COMMENT_CARGOS);
       } catch(e) { console.warn('[ortotypo] reglas nuevas:', e.message); }
     });
   }
