@@ -310,18 +310,29 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (!keyText || keyText.length < 2) return;
 
     const hl   = HIGHLIGHT[corrId];
-    const para = range.paragraphs.getFirst();
+    const mww  = corrId!=='muletillas' && corrId!=='dequeismo';
     let items;
+    // Buscar primero dentro del rango exacto (ya localizado por _applyFinding)
+    // para evitar coger la primera ocurrencia del párrafo cuando hay varias iguales
     try {
-      const sr = para.search(keyText, {matchCase:false, matchWholeWord: corrId!=='muletillas'&&corrId!=='dequeismo', matchWildcards:false});
+      const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
       sr.load('items'); await ctx.sync();
       items = sr.items;
     } catch(e) { items = []; }
 
     if (!items.length) {
-      const sr2 = body.search(keyText, {matchCase:false,matchWholeWord:false,matchWildcards:false});
-      sr2.load('items'); await ctx.sync();
-      items = sr2.items;
+      try {
+        const para = range.paragraphs.getFirst();
+        const sr2 = para.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
+        sr2.load('items'); await ctx.sync();
+        items = sr2.items;
+      } catch(e) { items = []; }
+    }
+
+    if (!items.length) {
+      const sr3 = body.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      sr3.load('items'); await ctx.sync();
+      items = sr3.items;
     }
     if (!items.length) return;
 
