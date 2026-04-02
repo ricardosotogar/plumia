@@ -190,9 +190,16 @@ function _insertSymbol(anchor, where, symbol) {
 async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText) {
   if (!searchPattern) return;
   try {
-    const sr = body.search(searchPattern, {matchCase:true, matchWholeWord:false, matchWildcards:false});
+    let sr = body.search(searchPattern, {matchCase:true, matchWholeWord:false, matchWildcards:false});
     sr.load('items');
     await ctx.sync();
+    if (!sr.items.length) {
+      // Fallback: matchCase:false para cubrir diferencias de capitalización
+      // (p.ej. API devuelve "aparentemente" pero el documento tiene "Aparentemente")
+      sr = body.search(searchPattern, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      sr.load('items');
+      await ctx.sync();
+    }
     console.log('[styleAndComment] search("' + searchPattern + '") → ' + sr.items.length + ' resultado(s)');
     if (!sr.items.length) {
       console.warn('[styleAndComment] ⚠ 0 resultados — símbolo no estilizado ni comentado');
@@ -360,18 +367,26 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     // buscamos los últimos ~30 chars del texto original para anclar el cierre.
     let endInserted = false;
     if (origText.length > 70) {
-      const tail = origText.slice(-40);
-      const sp   = tail.indexOf(' ');
-      const endSearch = (sp > 0 && sp < 15) ? tail.substring(sp + 1) : tail;
-      try {
-        const para  = range.paragraphs.getFirst();
-        const endSr = para.search(endSearch, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        endSr.load('items'); await ctx.sync();
-        if (endSr.items.length) {
-          endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
-          endInserted = true;
-        }
-      } catch(e) {}
+      // Buscar el final real de la frase probando tramos progresivamente más cortos
+      // (el tail puede contener caracteres especiales o estar en otro párrafo)
+      for (const sliceLen of [40, 25, 15]) {
+        if (endInserted) break;
+        const tail = origText.slice(-sliceLen).trim();
+        const words = tail.split(/\s+/);
+        // Saltar la primera palabra (posiblemente cortada) y eliminar puntuación final
+        const base = (words.length > 1 ? words.slice(1).join(' ') : tail)
+                       .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+        if (base.length < 4) continue;
+        try {
+          // body.search más robusto que para.search (cubre párrafos múltiples)
+          const endSr = body.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endSr.load('items'); await ctx.sync();
+          if (endSr.items.length) {
+            endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+            endInserted = true;
+          }
+        } catch(e) {}
+      }
     }
     if (!endInserted) range.getRange('End').insertText('\u25C6\u00B2', 'After');
 
