@@ -486,8 +486,28 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await _styleAndComment(ctx, body, '\u25C6\u00B9' + openWords, colorHex, commentText);
     }
 
-    // Fase 3: buscar ◆² → solo font (sin comentario duplicado)
-    await _styleAndComment(ctx, body, '\u25C6\u00B2', colorHex, null);
+    // Fase 3: colorear ◆² — body.search('◆²') falla (Word no busca superíndice U+00B2
+    // como literal), igual que pasaba con ◆¹ antes de v8.26. Solución: para.search
+    // dentro del párrafo; si hay varios ◆² en el mismo párrafo, el último es el más
+    // reciente (insertado en esta misma pasada, justo antes del sync).
+    try {
+      const para2 = range.paragraphs.getFirst();
+      const endSr = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      endSr.load('items'); await ctx.sync();
+      if (endSr.items.length) {
+        const sym2   = endSr.items[endSr.items.length - 1];
+        const symSr2 = sym2.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+        symSr2.load('items'); await ctx.sync();
+        if (symSr2.items.length) {
+          symSr2.items[0].font.color = colorHex;
+          symSr2.items[0].font.bold  = true;
+          await ctx.sync();
+        }
+      }
+    } catch(e) {
+      // Fallback: body.search (puede fallar con superíndice pero lo intentamos)
+      await _styleAndComment(ctx, body, '\u25C6\u00B2', colorHex, null);
+    }
   }
 
   // ── Aplicar un finding individual ─────────────────────────────────────────
