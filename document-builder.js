@@ -360,9 +360,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     _insertSymbol(target.getRange('Start'), 'Before', '\u25C6');
     await ctx.sync();
 
-    // Fase 2: buscar ◆+primera_palabra → font + comentario
-    const firstWord = keyText.split(/\s+/)[0] || keyText;
-    await _styleAndComment(ctx, body, '\u25C6' + firstWord, colorHex, commentText);
+    // Fase 2: buscar ◆+keyText completo → font + comentario
+    // (usar solo la primera palabra era ambiguo para palabras cortas como "En", "De", "A"...)
+    await _styleAndComment(ctx, body, '\u25C6' + keyText, colorHex, commentText);
   }
 
   // ── Brackets ─────────────────────────────────────────────────────────────
