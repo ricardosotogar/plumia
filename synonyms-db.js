@@ -454,10 +454,14 @@ window.PLUMIA.runLocalMiTilde = function(text) {
 window.PLUMIA.runLocalAunTilde = function(text) {
   const findings = [];
 
+  // Nota: JavaScript \b no reconoce caracteres acentuados (á, í, ú…) como \w,
+  // por lo que \b falla en palabras que empiezan o terminan con tilde.
+  // Usamos lookbehind/lookahead Unicode-aware: (?<![a-zA-ZÀ-ÿ]) y (?![a-zA-ZÀ-ÿ])
+
   // Patrones donde falta la tilde: 'aun' → debería ser 'aún' (= todavía)
   const missingAccentPatterns = [
     {
-      re: /\baun\s+no\b/gi,
+      re: /(?<![a-zA-ZÀ-ÿ])aun\s+no(?![a-zA-ZÀ-ÿ])/gi,
       correctForm: 'aún no',
       explanation: '«aun no»: cuando equivale a «todavía no», debe llevar tilde → «aún no».',
     },
@@ -480,22 +484,22 @@ window.PLUMIA.runLocalAunTilde = function(text) {
   // Patrones donde sobra la tilde: 'aún' → debería ser 'aun' (= incluso/aunque)
   const extraAccentPatterns = [
     {
-      re: /\baún\s+cuando\b/gi,
+      re: /(?<![a-zA-ZÀ-ÿ])aún\s+cuando(?![a-zA-ZÀ-ÿ])/gi,
       correctForm: 'aun cuando',
       explanation: '«aún cuando»: como conjunción concesiva (= aunque/incluso cuando), no lleva tilde → «aun cuando».',
     },
     {
-      re: /\baún\s+así\b/gi,
+      re: /(?<![a-zA-ZÀ-ÿ])aún\s+así(?![a-zA-ZÀ-ÿ])/gi,
       correctForm: 'aun así',
       explanation: '«aún así»: como locución concesiva (= incluso así/con todo), no lleva tilde → «aun así».',
     },
     {
-      re: /\bni\s+aún\b/gi,
+      re: /(?<![a-zA-ZÀ-ÿ])ni\s+aún(?![a-zA-ZÀ-ÿ])/gi,
       correctForm: 'ni aun',
       explanation: '«ni aún»: en la locución «ni aun» (= ni siquiera), no lleva tilde → «ni aun».',
     },
     {
-      re: /\baún\s+\S+(?:ando|iendo|yendo)\b/gi,
+      re: /(?<![a-zA-ZÀ-ÿ])aún\s+\S+(?:ando|iendo|yendo)(?![a-zA-ZÀ-ÿ])/gi,
       correctForm: 'aun + gerundio',
       explanation: '«aún» + gerundio: en construcción concesiva (= incluso + gerundio), no lleva tilde → «aun».',
     },
@@ -731,7 +735,8 @@ window.PLUMIA.runLocalNumerosLetras = function(text) {
     // F7: capítulo/página/sección antes del número
     if (SECTION_RE.test(beforeNum)) continue;
 
-    // F8: enumeración densa (≥2 números en la misma oración)
+    // F8: enumeración densa (≥3 números en la misma oración — umbral 3 para no
+    // suprimir dos números en cláusulas distintas separadas por "aunque", "pero", etc.)
     const sStart = Math.max(
       text.lastIndexOf('.', pos - 1) + 1,
       text.lastIndexOf('?', pos - 1) + 1,
@@ -741,7 +746,7 @@ window.PLUMIA.runLocalNumerosLetras = function(text) {
     );
     const sEndRel = text.substring(pos + numStr.length).search(/[.?!\n]/);
     const sEnd    = sEndRel === -1 ? text.length : pos + numStr.length + sEndRel + 1;
-    if ((text.substring(sStart, sEnd).match(/\b\d+\b/g) || []).length >= 2) continue;
+    if ((text.substring(sStart, sEnd).match(/\b\d+\b/g) || []).length >= 3) continue;
 
     // Detectar inicio de frase (error directo según la norma)
     const isStartOfSentence = text.substring(sStart, pos).trim().length === 0;
