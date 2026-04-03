@@ -329,6 +329,8 @@ function _localCtx(text, matchIndex, matchLen, before, after) {
 
 window.PLUMIA.runLocalInterrogativasTilde = function(text) {
   const findings = [];
+
+  // ── 1. Tras ¿ o ¡ → siempre lleva tilde ─────────────────────────────────
   const WORDS = [
     { re: /[¿¡]\s*(que)\b/gi,    correct: 'qué'    },
     { re: /[¿¡]\s*(como)\b/gi,   correct: 'cómo'   },
@@ -356,6 +358,34 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
       });
     }
   }
+
+  // ── 2. «ni + interrogativo sin tilde + infinitivo» → interrogativa indirecta paralela ──
+  // Patrón inequívoco: «ni como actuar», «ni cuando volver», «ni donde ir», «ni que hacer»
+  // El «ni» coordina con otra interrogativa previa → el interrogativo SIEMPRE lleva tilde.
+  const NI_PATTERNS = [
+    { re: /\bni\s+(como)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,   word: 'como',   correct: 'cómo'   },
+    { re: /\bni\s+(cuando)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi, word: 'cuando', correct: 'cuándo' },
+    { re: /\bni\s+(donde)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,  word: 'donde',  correct: 'dónde'  },
+    { re: /\bni\s+(quien)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,  word: 'quien',  correct: 'quién'  },
+    { re: /\bni\s+(que)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,    word: 'que',    correct: 'qué'    },
+  ];
+  for (const { re, word, correct } of NI_PATTERNS) {
+    let m;
+    re.lastIndex = 0;
+    while ((m = re.exec(text)) !== null) {
+      if (m[1].includes('\u00F3') || m[1].includes('\u00E9') || m[1].includes('\u00F3')
+          || /[áéíóú]/i.test(m[1])) continue; // ya tiene tilde
+      const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
+      findings.push({
+        originalText: ctx, wordForm: m[1], correctForm: correct,
+        errorType: 'falta_tilde',
+        context: 'interrogativo_indirecto',
+        explanation: `«ni ${word}»: interrogativa indirecta paralela (equivale a «ni ${correct}»). En coordinaciones con «ni», el interrogativo siempre lleva tilde → «${correct}».`,
+        correctionId: 'interrogativas_tilde', colorId: 7, label: 'Tildes en interrogativos y exclamativos', directFix: false,
+      });
+    }
+  }
+
   return findings;
 };
 
@@ -454,14 +484,20 @@ window.PLUMIA.runLocalMiTilde = function(text) {
 window.PLUMIA.runLocalAunTilde = function(text) {
   const findings = [];
 
-  // Nota: JavaScript \b no reconoce caracteres acentuados (á, í, ú…) como \w,
-  // por lo que \b falla en palabras que empiezan o terminan con tilde.
-  // Usamos lookbehind/lookahead Unicode-aware: (?<![a-zA-ZÀ-ÿ]) y (?![a-zA-ZÀ-ÿ])
+  // Comprobación de límite de palabra sin depender de \b ni de lookbehind/lookahead
+  // (ambos fallan con caracteres acentuados en algunos entornos JS/Office).
+  // Devuelve true si el fragmento en [start, start+len) está en límite de palabra.
+  const LETTER = /[a-zA-Z\u00C0-\u024F]/;
+  function atWordBoundary(str, start, len) {
+    const before = start > 0 ? str[start - 1] : null;
+    const after  = start + len < str.length ? str[start + len] : null;
+    return (!before || !LETTER.test(before)) && (!after || !LETTER.test(after));
+  }
 
   // Patrones donde falta la tilde: 'aun' → debería ser 'aún' (= todavía)
   const missingAccentPatterns = [
     {
-      re: /(?<![a-zA-ZÀ-ÿ])aun\s+no(?![a-zA-ZÀ-ÿ])/gi,
+      re: /aun\s+no/gi,
       correctForm: 'aún no',
       explanation: '«aun no»: cuando equivale a «todavía no», debe llevar tilde → «aún no».',
     },
@@ -469,8 +505,10 @@ window.PLUMIA.runLocalAunTilde = function(text) {
 
   for (const { re, correctForm, explanation } of missingAccentPatterns) {
     let m;
+    re.lastIndex = 0;
     while ((m = re.exec(text)) !== null) {
       if (/aún/i.test(m[0])) continue; // ya tiene tilde
+      if (!atWordBoundary(text, m.index, m[0].length)) continue;
       const ctx = _localCtx(text, m.index, m[0].length, 15, 15);
       findings.push({
         originalText: ctx, aunForm: m[0], correctForm,
@@ -484,22 +522,22 @@ window.PLUMIA.runLocalAunTilde = function(text) {
   // Patrones donde sobra la tilde: 'aún' → debería ser 'aun' (= incluso/aunque)
   const extraAccentPatterns = [
     {
-      re: /(?<![a-zA-ZÀ-ÿ])aún\s+cuando(?![a-zA-ZÀ-ÿ])/gi,
+      re: /aún\s+cuando/gi,
       correctForm: 'aun cuando',
       explanation: '«aún cuando»: como conjunción concesiva (= aunque/incluso cuando), no lleva tilde → «aun cuando».',
     },
     {
-      re: /(?<![a-zA-ZÀ-ÿ])aún\s+así(?![a-zA-ZÀ-ÿ])/gi,
+      re: /aún\s+así/gi,
       correctForm: 'aun así',
       explanation: '«aún así»: como locución concesiva (= incluso así/con todo), no lleva tilde → «aun así».',
     },
     {
-      re: /(?<![a-zA-ZÀ-ÿ])ni\s+aún(?![a-zA-ZÀ-ÿ])/gi,
+      re: /ni\s+aún/gi,
       correctForm: 'ni aun',
       explanation: '«ni aún»: en la locución «ni aun» (= ni siquiera), no lleva tilde → «ni aun».',
     },
     {
-      re: /(?<![a-zA-ZÀ-ÿ])aún\s+\S+(?:ando|iendo|yendo)(?![a-zA-ZÀ-ÿ])/gi,
+      re: /aún\s+\S+(?:ando|iendo|yendo)/gi,
       correctForm: 'aun + gerundio',
       explanation: '«aún» + gerundio: en construcción concesiva (= incluso + gerundio), no lleva tilde → «aun».',
     },
@@ -507,7 +545,9 @@ window.PLUMIA.runLocalAunTilde = function(text) {
 
   for (const { re, correctForm, explanation } of extraAccentPatterns) {
     let m;
+    re.lastIndex = 0;
     while ((m = re.exec(text)) !== null) {
+      if (!atWordBoundary(text, m.index, m[0].length)) continue;
       const ctx = _localCtx(text, m.index, m[0].length, 15, 15);
       findings.push({
         originalText: ctx, aunForm: m[0], correctForm,
@@ -734,19 +774,6 @@ window.PLUMIA.runLocalNumerosLetras = function(text) {
     if (UNITS_RE.test(afterNum)) continue;
     // F7: capítulo/página/sección antes del número
     if (SECTION_RE.test(beforeNum)) continue;
-
-    // F8: enumeración densa (≥3 números en la misma oración — umbral 3 para no
-    // suprimir dos números en cláusulas distintas separadas por "aunque", "pero", etc.)
-    const sStart = Math.max(
-      text.lastIndexOf('.', pos - 1) + 1,
-      text.lastIndexOf('?', pos - 1) + 1,
-      text.lastIndexOf('!', pos - 1) + 1,
-      text.lastIndexOf('\n', pos - 1) + 1,
-      0
-    );
-    const sEndRel = text.substring(pos + numStr.length).search(/[.?!\n]/);
-    const sEnd    = sEndRel === -1 ? text.length : pos + numStr.length + sEndRel + 1;
-    if ((text.substring(sStart, sEnd).match(/\b\d+\b/g) || []).length >= 3) continue;
 
     // Detectar inicio de frase (error directo según la norma)
     const isStartOfSentence = text.substring(sStart, pos).trim().length === 0;
