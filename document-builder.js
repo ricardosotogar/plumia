@@ -170,6 +170,10 @@ function _singleComment(f) {
       return f.isFirstOccurrence ? `Ortotipografía corregida en todo el documento: ${f.explanation}` : null;
     case 'puntuacion_dialogo':
       return `Puntuación de diálogo (${f.errorType||''}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
+    case 'ritmo_narrativo':
+      return `Ritmo narrativo (${f.sceneType||''}): ${f.issue||f.explanation||''} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`.trim();
+    case 'voz_pasiva':
+      return `Voz pasiva: ${f.explanation||''} ${f.activeVersion?'Forma activa: «'+f.activeVersion+'»':''}`.trim();
     default: {
       let c = `COHERENCIA — ${f.label||'Coherencia narrativa'}:\n`;
       if (f.occurrence1) c += `· ${f.occurrence1.location||'Primera mención'}: «${f.occurrence1.text}»\n`;
@@ -414,10 +418,31 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
     await ctx.sync();
 
-    // Fase 2: buscar ◆¹ + primeras palabras → búsqueda única por frase
-    // (solo '◆¹' es ambiguo cuando hay varias frases bracket en el mismo documento)
-    const openWords = origText.split(/\s+/).slice(0, 3).join(' ');
-    await _styleAndComment(ctx, body, '\u25C6\u00B9' + openWords, colorHex, commentText);
+    // Fase 2: buscar ◆¹ dentro del párrafo de ESTE rango, no en el body completo.
+    // Motivo: body.search('◆¹' + primeras_palabras) falla cuando la frase empieza con
+    // caracteres especiales (—, ¿, ¡…) porque Word no los busca bien como literales.
+    // La búsqueda en el párrafo es segura y única cuando cada frase es su propio párrafo.
+    try {
+      const para   = range.paragraphs.getFirst();
+      const openSr = para.search('\u25C6\u00B9', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      openSr.load('items'); await ctx.sync();
+      if (openSr.items.length) {
+        const sym = openSr.items[openSr.items.length - 1]; // último ◆¹ del párrafo
+        const symSr = sym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+        symSr.load('items'); await ctx.sync();
+        if (symSr.items.length) {
+          symSr.items[0].font.color = colorHex;
+          symSr.items[0].font.bold  = true;
+          if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+          await ctx.sync();
+        }
+      }
+    } catch(e) {
+      // Fallback: búsqueda global si el párrafo no está disponible
+      const openWords = origText.replace(/^[^a-zA-ZÀ-ÿ\u00C0-\u017E]+/, '').split(/\s+/).slice(0, 3).join(' ');
+      await _styleAndComment(ctx, body, '\u25C6\u00B9' + openWords, colorHex, commentText);
+    }
+
     // Fase 3: buscar ◆² → solo font (sin comentario duplicado)
     await _styleAndComment(ctx, body, '\u25C6\u00B2', colorHex, null);
   }
