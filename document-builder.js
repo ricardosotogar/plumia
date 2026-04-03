@@ -415,58 +415,42 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const origText = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
 
     // ── ◆² al final real de la frase ──────────────────────────────────────────
-    // NUNCA usamos range.getRange('End') directamente: en párrafos con múltiples
-    // frases del mismo tipo (p.ej. 4 voz_pasiva), Word devuelve posiciones
-    // incorrectas para End. En su lugar buscamos siempre las últimas palabras
-    // de origText en el body — igual que hacemos para textos truncados.
+    // Estrategia bifurcada según si origText termina con puntuación de cierre:
+    //
+    // A) origText termina en .!? → el modelo devolvió la frase completa.
+    //    Las últimas palabras de origText son el final real → buscarlas en body.
+    //    (Fiable para voz_pasiva, puntuacion_dialogo, etc. donde el modelo da
+    //    la frase entera aunque el párrafo contenga varias frases del mismo tipo)
+    //
+    // B) origText NO termina en .!? → fue truncado (frases_largas muy largas).
+    //    El tail de origText no es el final real → usar las últimas palabras
+    //    del párrafo real del documento.
     let endInserted = false;
+    const endsWithPunct = /[.!?\u2026]$/.test(origText);
 
-    // 1ª opción: últimas 3 palabras de origText (sin puntuación final)
-    // — cubre tanto origText cortos (voz_pasiva, puntuacion_dialogo…)
-    //   como largos donde el modelo sí reprodujo el final exacto
-    const origTail = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-    const tailWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
-    if (tailWords.length >= 4) {
-      try {
-        const endSr = body.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        endSr.load('items'); await ctx.sync();
-        if (endSr.items.length) {
-          endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
-          endInserted = true;
-        }
-      } catch(e) {}
-    }
-
-    // 2ª opción (solo origText largos): tail progresivo — por si el modelo
-    // parafraseó el final y las últimas 3 palabras no coinciden con el documento
-    if (!endInserted && origText.length > 70) {
-      for (const sliceLen of [40, 25, 15]) {
-        if (endInserted) break;
-        const tail = origText.slice(-sliceLen).trim();
-        const words = tail.split(/\s+/);
-        const base = (words.length > 1 ? words.slice(1).join(' ') : tail)
-                       .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-        if (base.length < 4 || base === tailWords) continue;
+    if (endsWithPunct) {
+      // Caso A: origText completo → tail de origText es fiable
+      const origTail  = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+      const tailWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
+      if (tailWords.length >= 4) {
         try {
-          const endSrB = body.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          endSrB.load('items'); await ctx.sync();
-          if (endSrB.items.length) {
-            endSrB.items[endSrB.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+          const endSr = body.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endSr.load('items'); await ctx.sync();
+          if (endSr.items.length) {
+            endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
             endInserted = true;
           }
         } catch(e) {}
       }
-    }
-
-    // 3ª opción (origText largos): últimas 3 palabras del párrafo real
-    if (!endInserted && origText.length > 70) {
+    } else {
+      // Caso B: origText truncado → últimas palabras del párrafo real
       try {
         const paraFb = range.paragraphs.getFirst();
         paraFb.load('text');
         await ctx.sync();
         const pt = (paraFb.text || '').trim();
-        const lastWords = pt.split(/\s+/).slice(-3).join(' ')
-                           .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+        const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
+                           .split(/\s+/).slice(-3).join(' ').trim();
         if (lastWords.length >= 4) {
           const endSr2 = body.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr2.load('items'); await ctx.sync();
@@ -476,6 +460,25 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         }
       } catch(e) {}
+      // Fallback: tail progresivo de origText
+      if (!endInserted) {
+        for (const sliceLen of [40, 25, 15]) {
+          if (endInserted) break;
+          const tail = origText.slice(-sliceLen).trim();
+          const words = tail.split(/\s+/);
+          const base = (words.length > 1 ? words.slice(1).join(' ') : tail)
+                         .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+          if (base.length < 4) continue;
+          try {
+            const endSrB = body.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            endSrB.load('items'); await ctx.sync();
+            if (endSrB.items.length) {
+              endSrB.items[endSrB.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+              endInserted = true;
+            }
+          } catch(e) {}
+        }
+      }
     }
 
     // Último recurso absoluto
