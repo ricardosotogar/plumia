@@ -93,8 +93,15 @@ function _singleComment(f) {
       return `Verbo comodín «${f.verb}»: ${f.explanation||''} ${(f.alternatives||[]).length?'Alternativas: '+(f.alternatives||[]).join(', ')+'.':''}`;
     case 'sustantivos_genericos':
       return `Sustantivo genérico «${f.genericWord}»: ${f.explanation||''} ${(f.alternatives||[]).length?'Alternativas: '+(f.alternatives||[]).join(', ')+'.':''}`;
-    case 'muletillas':
-      return `Muletilla «${f.expression}»: ${f.explanation||'puede no estar aportando nada al texto.'} Valora eliminarla.`;
+    case 'muletillas': {
+      const known = window.PLUMIA._knownMuletillas || new Set();
+      const alts = (f.alternatives || []).filter(a => {
+        const aLow = (a || '').toLowerCase().trim();
+        return aLow && aLow !== 'eliminar' && !known.has(aLow);
+      });
+      const altStr = alts.length ? ` Alternativas: ${alts.join(', ')}.` : '';
+      return `Muletilla «${f.expression}»: ${f.explanation||'puede no estar aportando nada al texto.'} Valora eliminarla.${altStr}`;
+    }
     case 'pleonasmos':
       return `Pleonasmo: ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'adverbios_mente': {
@@ -448,6 +455,17 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     if (ortotypo.length) await this.applyOrtotypography();
     if (!others.length)  return;
+
+    // Registrar todas las muletillas detectadas para filtrar alternativas en comentarios
+    const _muletillaSet = new Set();
+    for (const rf of resolvedFindings) {
+      for (const mf of (rf.mergedFindings || [rf])) {
+        if (mf.correctionId === 'muletillas' && mf.expression) {
+          _muletillaSet.add(mf.expression.toLowerCase().trim());
+        }
+      }
+    }
+    window.PLUMIA._knownMuletillas = _muletillaSet;
 
     for (let i = 0; i < others.length; i++) {
       await Word.run(async (ctx) => {
