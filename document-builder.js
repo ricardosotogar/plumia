@@ -411,16 +411,51 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const origText = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
 
     // ── ◆² al final real de la frase ──────────────────────────────────────────
-    // Solo cuando origText fue truncado (>70 chars) el rango apunta a un fragmento
-    // recortado; en ese caso hay que buscar el final real.
-    // Para origText cortos (voz_pasiva, puntuacion_dialogo…) el rango ya es exacto
-    // → usar directamente range.getRange('End') sin buscar en el párrafo completo
-    // (si se buscase en el párrafo se tomaría el final del párrafo entero).
+    // NUNCA usamos range.getRange('End') directamente: en párrafos con múltiples
+    // frases del mismo tipo (p.ej. 4 voz_pasiva), Word devuelve posiciones
+    // incorrectas para End. En su lugar buscamos siempre las últimas palabras
+    // de origText en el body — igual que hacemos para textos truncados.
     let endInserted = false;
 
-    if (origText.length > 70) {
-      // 1ª opción: últimas 3 palabras del párrafo real del documento
-      // (fiable cuando el modelo parafraseó el final de origText)
+    // 1ª opción: últimas 3 palabras de origText (sin puntuación final)
+    // — cubre tanto origText cortos (voz_pasiva, puntuacion_dialogo…)
+    //   como largos donde el modelo sí reprodujo el final exacto
+    const origTail = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+    const tailWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
+    if (tailWords.length >= 4) {
+      try {
+        const endSr = body.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        endSr.load('items'); await ctx.sync();
+        if (endSr.items.length) {
+          endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+          endInserted = true;
+        }
+      } catch(e) {}
+    }
+
+    // 2ª opción (solo origText largos): tail progresivo — por si el modelo
+    // parafraseó el final y las últimas 3 palabras no coinciden con el documento
+    if (!endInserted && origText.length > 70) {
+      for (const sliceLen of [40, 25, 15]) {
+        if (endInserted) break;
+        const tail = origText.slice(-sliceLen).trim();
+        const words = tail.split(/\s+/);
+        const base = (words.length > 1 ? words.slice(1).join(' ') : tail)
+                       .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+        if (base.length < 4 || base === tailWords) continue;
+        try {
+          const endSrB = body.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endSrB.load('items'); await ctx.sync();
+          if (endSrB.items.length) {
+            endSrB.items[endSrB.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+            endInserted = true;
+          }
+        } catch(e) {}
+      }
+    }
+
+    // 3ª opción (origText largos): últimas 3 palabras del párrafo real
+    if (!endInserted && origText.length > 70) {
       try {
         const paraFb = range.paragraphs.getFirst();
         paraFb.load('text');
@@ -437,29 +472,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         }
       } catch(e) {}
-
-      // 2ª opción: tail progresivo de origText
-      if (!endInserted) {
-        for (const sliceLen of [40, 25, 15]) {
-          if (endInserted) break;
-          const tail = origText.slice(-sliceLen).trim();
-          const words = tail.split(/\s+/);
-          const base = (words.length > 1 ? words.slice(1).join(' ') : tail)
-                         .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-          if (base.length < 4) continue;
-          try {
-            const endSr = body.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-            endSr.load('items'); await ctx.sync();
-            if (endSr.items.length) {
-              endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
-              endInserted = true;
-            }
-          } catch(e) {}
-        }
-      }
     }
 
-    // Último recurso (y caso normal para origText cortos): fin del rango encontrado
+    // Último recurso absoluto
     if (!endInserted) range.getRange('End').insertText('\u25C6\u00B2', 'After');
 
     // ── ◆¹ al inicio ─────────────────────────────────────────────────────────
