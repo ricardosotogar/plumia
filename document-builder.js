@@ -329,13 +329,26 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const hl   = HIGHLIGHT[corrId];
     const mww  = corrId!=='muletillas' && corrId!=='dequeismo';
     let items;
-    // Buscar primero dentro del rango exacto (ya localizado por _applyFinding)
-    // para evitar coger la primera ocurrencia del párrafo cuando hay varias iguales
+    let hadBracketCollision = false;
+
+    // Batch: comprobar colisión con bracket (◆¹+keyText) + buscar dentro del rango
+    // — un solo sync para ambas operaciones
     try {
+      const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      bracketSr.load('items');
       const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
-      sr.load('items'); await ctx.sync();
-      items = sr.items;
+      sr.load('items');
+      await ctx.sync();
+      if (bracketSr.items.length) { hadBracketCollision = true; }
+      else { items = sr.items; }
     } catch(e) { items = []; }
+
+    // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
+    // Solo añadimos el comentario al ◆¹, sin insertar ◆ extra (evita ◆¹◆palabra).
+    if (hadBracketCollision) {
+      await _styleAndComment(ctx, body, '\u25C6\u00B9' + keyText, colorHex, commentText);
+      return;
+    }
 
     if (!items.length) {
       try {
@@ -401,8 +414,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
     await ctx.sync();
 
-    // Fase 2: buscar ◆¹ → font + comentario
-    await _styleAndComment(ctx, body, '\u25C6\u00B9', colorHex, commentText);
+    // Fase 2: buscar ◆¹ + primeras palabras → búsqueda única por frase
+    // (solo '◆¹' es ambiguo cuando hay varias frases bracket en el mismo documento)
+    const openWords = origText.split(/\s+/).slice(0, 3).join(' ');
+    await _styleAndComment(ctx, body, '\u25C6\u00B9' + openWords, colorHex, commentText);
     // Fase 3: buscar ◆² → solo font (sin comentario duplicado)
     await _styleAndComment(ctx, body, '\u25C6\u00B2', colorHex, null);
   }

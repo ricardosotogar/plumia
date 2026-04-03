@@ -517,7 +517,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         brackets.forEach(b => resolved.push({...b, mergedFindings:[b]}));
         resolved.push({...colors[colors.length-1], mergedFindings:colors});
       } else {
-        resolved.push({...colors[colors.length-1], mergedFindings:colors});
+        // nombres_propios tiene prioridad sobre repeticion_lexica cuando coexisten
+        const primary = colors.find(f => f.correctionId === 'nombres_propios')
+                     || colors[colors.length-1];
+        resolved.push({...primary, mergedFindings:colors});
       }
     }
     return resolved;
