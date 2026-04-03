@@ -354,23 +354,27 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     } catch(e) { items = []; }
 
     // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
-    // Añadimos el comentario al ◆¹ SIN cambiar su color (commentOnly),
-    // y coloreamos la palabra directamente para que se vea en su propio color.
+    // body.search('◆¹'+keyText) falla porque Word no indexa U+00B9 como literal.
+    // Solución: para.search('◆¹') dentro del párrafo del rango (igual que _markBrackets).
     if (hadBracketCollision) {
-      await _styleAndComment(ctx, body, '\u25C6\u00B9' + keyText, colorHex, commentText, true);
-      // Colorear la palabra directamente, sin insertar un segundo símbolo
       try {
-        const bSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        bSr.load('items');
-        await ctx.sync();
-        if (bSr.items.length) {
-          const wSr = bSr.items[bSr.items.length - 1]
-                         .search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          wSr.load('items');
-          await ctx.sync();
-          if (wSr.items.length) {
-            wSr.items[0].font.color = colorHex;
-            if (hl) wSr.items[0].font.highlightColor = hl;
+        const colPara = range.paragraphs.getFirst();
+        const colOpenSr = colPara.search('\u25C6\u00B9', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        colOpenSr.load('items'); await ctx.sync();
+        if (colOpenSr.items.length) {
+          const colSym = colOpenSr.items[colOpenSr.items.length - 1];
+          // Comentario sobre el ◆ (sin cambiar color del bracket)
+          const colSymSr = colSym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+          colSymSr.load('items'); await ctx.sync();
+          if (colSymSr.items.length && commentText) {
+            colSymSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+          }
+          // Colorear keyText dentro del párrafo
+          const colWordSr = colPara.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          colWordSr.load('items'); await ctx.sync();
+          if (colWordSr.items.length) {
+            colWordSr.items[0].font.color = colorHex;
+            if (hl) colWordSr.items[0].font.highlightColor = hl;
           }
           await ctx.sync();
         }
