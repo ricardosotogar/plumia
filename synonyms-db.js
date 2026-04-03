@@ -776,6 +776,13 @@ window.PLUMIA.runLocalNumerosLetras = function(text) {
     if (SECTION_RE.test(beforeNum)) continue;
 
     // Detectar inicio de frase (error directo según la norma)
+    const sStart = Math.max(
+      text.lastIndexOf('.', pos - 1) + 1,
+      text.lastIndexOf('?', pos - 1) + 1,
+      text.lastIndexOf('!', pos - 1) + 1,
+      text.lastIndexOf('\n', pos - 1) + 1,
+      0
+    );
     const isStartOfSentence = text.substring(sStart, pos).trim().length === 0;
 
     const ctx  = text.substring(Math.max(0, pos - 15), Math.min(text.length, pos + numStr.length + 15)).replace(/[\r\n]+/g, ' ').trim();
