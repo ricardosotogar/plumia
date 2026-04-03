@@ -198,7 +198,10 @@ function _insertSymbol(anchor, where, symbol) {
 // Busca `searchPattern` en el body (toma el último resultado = el más reciente),
 // aplica estilizado de font Y añade comentario sobre ese rango de search().
 // Los rangos de search() SÍ aceptan font ops e insertComment sin InvalidArgument.
-async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText) {
+// commentOnly=true: solo inserta comentario, sin cambiar font.color ni bold
+// (usado cuando una corrección de palabra colisiona con un bracket existente:
+//  el bracket conserva su color y la corrección de palabra añade solo su comentario)
+async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText, commentOnly = false) {
   if (!searchPattern) return;
   try {
     let sr = body.search(searchPattern, {matchCase:true, matchWholeWord:false, matchWildcards:false});
@@ -222,8 +225,10 @@ async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText)
     symSr.load('items');
     await ctx.sync();
     if (symSr.items.length) {
-      symSr.items[0].font.color = colorHex;
-      symSr.items[0].font.bold  = true;
+      if (!commentOnly) {
+        symSr.items[0].font.color = colorHex;
+        symSr.items[0].font.bold  = true;
+      }
       if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
     }
     await ctx.sync();
@@ -348,9 +353,27 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     } catch(e) { items = []; }
 
     // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
-    // Solo añadimos el comentario al ◆¹, sin insertar ◆ extra (evita ◆¹◆palabra).
+    // Añadimos el comentario al ◆¹ SIN cambiar su color (commentOnly),
+    // y coloreamos la palabra directamente para que se vea en su propio color.
     if (hadBracketCollision) {
-      await _styleAndComment(ctx, body, '\u25C6\u00B9' + keyText, colorHex, commentText);
+      await _styleAndComment(ctx, body, '\u25C6\u00B9' + keyText, colorHex, commentText, true);
+      // Colorear la palabra directamente, sin insertar un segundo símbolo
+      try {
+        const bSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        bSr.load('items');
+        await ctx.sync();
+        if (bSr.items.length) {
+          const wSr = bSr.items[bSr.items.length - 1]
+                         .search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          wSr.load('items');
+          await ctx.sync();
+          if (wSr.items.length) {
+            wSr.items[0].font.color = colorHex;
+            if (hl) wSr.items[0].font.highlightColor = hl;
+          }
+          await ctx.sync();
+        }
+      } catch(e) {}
       return;
     }
 
@@ -411,6 +434,26 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         } catch(e) {}
       }
+    }
+    // Fallback: últimas palabras del párrafo real del documento.
+    // Más fiable que el tail de origText cuando el modelo parafrasea el final de la frase.
+    if (!endInserted) {
+      try {
+        const paraFb = range.paragraphs.getFirst();
+        paraFb.load('text');
+        await ctx.sync();
+        const pt = (paraFb.text || '').trim();
+        const lastWords = pt.split(/\s+/).slice(-3).join(' ')
+                           .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+        if (lastWords.length >= 4) {
+          const endSr2 = body.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endSr2.load('items'); await ctx.sync();
+          if (endSr2.items.length) {
+            endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+            endInserted = true;
+          }
+        }
+      } catch(e) {}
     }
     if (!endInserted) range.getRange('End').insertText('\u25C6\u00B2', 'After');
 
