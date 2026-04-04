@@ -429,14 +429,21 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const endsWithPunct = /[.!?\u2026]$/.test(origText);
 
     if (endsWithPunct) {
-      // Caso A: origText completo → buscar tail dentro del propio rango (no en el body entero).
-      // Usar range.search en lugar de body.search evita falsas coincidencias en otros párrafos
-      // y garantiza encontrar la posición dentro del rango correcto.
+      // Caso A: origText completo → buscar las últimas palabras para posicionar ◆².
+      //
+      // Contexto de búsqueda según longitud de origText:
+      //   - origText corto (< 70 chars): _applyFinding NO truncó el search, así que
+      //     `range` cubre el texto completo. Usar range.search es más seguro (no busca
+      //     en otras partes del documento que pudieran tener las mismas palabras).
+      //   - origText largo (≥ 70 chars): _applyFinding truncó el search a ~70 chars,
+      //     así que `range` solo cubre el principio de la frase. Las palabras del tail
+      //     NO están en ese range → hay que usar body.search para encontrar el final real.
       const origTail  = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
       const tailWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
+      const searchCtxA = origText.length < 70 ? range : body;
       if (tailWords.length >= 4) {
         try {
-          const endSr = range.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          const endSr = searchCtxA.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr.load('items'); await ctx.sync();
           if (endSr.items.length) {
             endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
@@ -444,12 +451,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         } catch(e) {}
       }
-      // Fallback A: buscar con dos palabras
+      // Fallback A: buscar con dos palabras en el mismo contexto
       if (!endInserted) {
         const tail2 = origTail.split(/\s+/).slice(-2).join(' ').trim();
         if (tail2.length >= 3) {
           try {
-            const endSrA2 = range.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            const endSrA2 = searchCtxA.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
             endSrA2.load('items'); await ctx.sync();
             if (endSrA2.items.length) {
               endSrA2.items[endSrA2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
