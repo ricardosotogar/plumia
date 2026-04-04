@@ -330,6 +330,21 @@ function _localCtx(text, matchIndex, matchLen, before, after) {
 window.PLUMIA.runLocalInterrogativasTilde = function(text) {
   const findings = [];
 
+  // NFC para garantizar que los patrones literales coincidan con el texto del documento
+  if (typeof text === 'string' && text.normalize) text = text.normalize('NFC');
+
+  // Comprobación de límite de palabra sin \b (poco fiable con g+exec en Office JS)
+  function charIsLetter(ch) {
+    if (!ch) return false;
+    const c = ch.charCodeAt(0);
+    return (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A) || (c >= 0xC0 && c <= 0x24F);
+  }
+  function wordBoundaryOK(str, start, len) {
+    const before = start > 0 ? str[start - 1] : null;
+    const after  = (start + len) < str.length ? str[start + len] : null;
+    return !charIsLetter(before) && !charIsLetter(after);
+  }
+
   // ── 1. Tras ¿ o ¡ → siempre lleva tilde ─────────────────────────────────
   const WORDS = [
     { re: /[¿¡]\s*(que)\b/gi,    correct: 'qué'    },
@@ -361,26 +376,69 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
 
   // ── 2. «ni + interrogativo sin tilde + infinitivo» → interrogativa indirecta paralela ──
   // Patrón inequívoco: «ni como actuar», «ni cuando volver», «ni donde ir», «ni que hacer»
-  // El «ni» coordina con otra interrogativa previa → el interrogativo SIEMPRE lleva tilde.
+  // Sin \b al inicio/fin — usa wordBoundaryOK() para máxima compatibilidad con Office JS.
+  // Los patrones internos de la clase [a-z...] usan escapes Unicode explícitos.
   const NI_PATTERNS = [
-    { re: /\bni\s+(como)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,   word: 'como',   correct: 'cómo'   },
-    { re: /\bni\s+(cuando)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi, word: 'cuando', correct: 'cuándo' },
-    { re: /\bni\s+(donde)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,  word: 'donde',  correct: 'dónde'  },
-    { re: /\bni\s+(quien)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,  word: 'quien',  correct: 'quién'  },
-    { re: /\bni\s+(que)\s+[a-záéíóúüñ]+(?:ar|er|ir)\b/gi,    word: 'que',    correct: 'qué'    },
+    { re: /ni\s+(como)\s+[a-z\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC\u00F1]+(?:ar|er|ir)/gi,   word: 'como',   correct: 'c\u00F3mo'   },
+    { re: /ni\s+(cuando)\s+[a-z\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC\u00F1]+(?:ar|er|ir)/gi, word: 'cuando', correct: 'cu\u00E1ndo' },
+    { re: /ni\s+(donde)\s+[a-z\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC\u00F1]+(?:ar|er|ir)/gi,  word: 'donde',  correct: 'd\u00F3nde'  },
+    { re: /ni\s+(quien)\s+[a-z\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC\u00F1]+(?:ar|er|ir)/gi,  word: 'quien',  correct: 'qui\u00E9n'  },
+    { re: /ni\s+(que)\s+[a-z\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC\u00F1]+(?:ar|er|ir)/gi,    word: 'que',    correct: 'qu\u00E9'    },
   ];
   for (const { re, word, correct } of NI_PATTERNS) {
     let m;
     re.lastIndex = 0;
     while ((m = re.exec(text)) !== null) {
-      if (m[1].includes('\u00F3') || m[1].includes('\u00E9') || m[1].includes('\u00F3')
-          || /[áéíóú]/i.test(m[1])) continue; // ya tiene tilde
+      if (!wordBoundaryOK(text, m.index, m[0].length)) continue;
+      if (m[1].indexOf('\u00F3') !== -1 || m[1].indexOf('\u00E9') !== -1 ||
+          m[1].indexOf('\u00ED') !== -1 || m[1].indexOf('\u00FA') !== -1) continue; // ya tiene tilde
       const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
       findings.push({
         originalText: ctx, wordForm: m[1], correctForm: correct,
         errorType: 'falta_tilde',
         context: 'interrogativo_indirecto',
-        explanation: `«ni ${word}»: interrogativa indirecta paralela (equivale a «ni ${correct}»). En coordinaciones con «ni», el interrogativo siempre lleva tilde → «${correct}».`,
+        explanation: `\u00ABni ${word}\u00BB: interrogativa indirecta paralela \u2014 el interrogativo siempre lleva tilde \u2192 \u00AB${correct}\u00BB.`,
+        correctionId: 'interrogativas_tilde', colorId: 7, label: 'Tildes en interrogativos y exclamativos', directFix: false,
+      });
+    }
+  }
+
+  // ── 3. Verbos de conocimiento/claridad + cuando/como → interrogativa indirecta ──
+  // Cubre casos SIN «ni»: «quedaba claro cuando», «sabía como actuar», etc.
+  const COGNITIVO_PATTERNS = [
+    // «quedar claro + cuando»: «quedaba claro cuando había ocurrido»
+    {
+      re: /claro\s+(cuando)\s/gi,
+      word: 'cuando', correct: 'cu\u00E1ndo',
+      explanation: '\u00ABcuando\u00BB en interrogativa indirecta tras \u00ABquedar claro\u00BB debe llevar tilde \u2192 \u00ABcu\u00E1ndo\u00BB.',
+    },
+    // «sabía/sabe + cuando» (sin infinitivo inmediato)
+    {
+      re: /sab[i\u00ED]a\s+(?:\w+\s+)?(cuando)\s/gi,
+      word: 'cuando', correct: 'cu\u00E1ndo',
+      explanation: '\u00ABcuando\u00BB en interrogativa indirecta tras \u00ABsab\u00EDa\u00BB debe llevar tilde \u2192 \u00ABcu\u00E1ndo\u00BB.',
+    },
+    // «saber + como + infinitivo»: «sab\u00EDa como actuar», «sin saber como resolverlo»
+    {
+      re: /sab[ei\u00ED]\w*\s+(como)\s+[a-z\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC\u00F1]+(?:ar|er|ir)/gi,
+      word: 'como', correct: 'c\u00F3mo',
+      explanation: '\u00ABcomo\u00BB en interrogativa indirecta tras verbo de conocimiento debe llevar tilde \u2192 \u00ABc\u00F3mo\u00BB.',
+    },
+  ];
+  for (const { re, word, correct, explanation } of COGNITIVO_PATTERNS) {
+    let m;
+    re.lastIndex = 0;
+    while ((m = re.exec(text)) !== null) {
+      const captured = m[1];
+      if (!captured) continue;
+      if (captured.indexOf('\u00F3') !== -1 || captured.indexOf('\u00E1') !== -1 ||
+          captured.indexOf('\u00E9') !== -1 || captured.indexOf('\u00FA') !== -1) continue; // ya tiene tilde
+      const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
+      findings.push({
+        originalText: ctx, wordForm: captured, correctForm: correct,
+        errorType: 'falta_tilde',
+        context: 'interrogativo_indirecto',
+        explanation,
         correctionId: 'interrogativas_tilde', colorId: 7, label: 'Tildes en interrogativos y exclamativos', directFix: false,
       });
     }
