@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '8.00';
-console.log('📦 document-builder.js v8.00 cargado');
+window.PLUMIA.BUILDER_VERSION = '8.71';
+console.log('📦 document-builder.js v8.71 cargado');
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',

@@ -382,8 +382,14 @@
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
 ═══════════════════════════════════════════════════════════════════════════ -->
 <script>
-// ── PLUMIA v8.00 ────────────────────────────────────────────────────────────
-console.log('Plumia taskpane v8.00 loaded');
+// ── PLUMIA v8.71 ────────────────────────────────────────────────────────────
+const PLUMIA_UI_VERSION = window.PLUMIA.CONFIG_VERSION || '8.71';
+console.log('Plumia taskpane v' + PLUMIA_UI_VERSION + ' loaded');
+// Inyectar versión en el header (funciona aunque el HTML esté cacheado)
+document.addEventListener('DOMContentLoaded', function() {
+  var el = document.querySelector('.brand-sub');
+  if (el) el.innerHTML = 'Corrector ortotipogr\u00E1fico <span style="font-size:9px;opacity:0.55">v' + PLUMIA_UI_VERSION + '</span>';
+});
 // Aliases locales — los módulos ya están cargados como window.*
 const COLOR_MAP        = window.PLUMIA.COLOR_MAP;
 const CONFIG           = window.PLUMIA.CONFIG;
