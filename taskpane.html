@@ -6,7 +6,7 @@
 <title>Plumia</title>
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="taskpane.css?v=8.60"/>
+<link rel="stylesheet" href="taskpane.css?v=8.61"/>
 </head>
 <body>
 
@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=8.60"></script>
-<script src="synonyms-db.js?v=8.60"></script>
-<script src="processor.js?v=8.60"></script>
-<script src="document-builder.js?v=8.60"></script>
+<script src="corrections-config.js?v=8.61"></script>
+<script src="synonyms-db.js?v=8.61"></script>
+<script src="processor.js?v=8.61"></script>
+<script src="document-builder.js?v=8.61"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1190,27 +1190,21 @@ async function cleanDocument() {
   const origText = btn ? btn.textContent : 'Limpiar ahora';
   if (btn) { btn.disabled = true; btn.textContent = 'Limpiando\u2026'; }
 
-  // ── Paso 1: quitar resaltado usando los ◆ como ancla (antes de borrarlos) ──
-  // Se resetea el highlight en el range del ◆ y en el siguiente tramo de texto,
-  // que es donde el add-in aplicó el color de resaltado.
+  // ── Paso 1: quitar resaltado vía OOXML ───────────────────────────────────
+  // Leemos el XML interno del documento y eliminamos todos los elementos
+  // <w:highlight .../> que Word usa para almacenar los colores de resaltado.
   try {
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
-      const sr = body.search('\u25C6', { matchCase: true, matchWholeWord: false, matchWildcards: false });
-      sr.load('items'); await ctx.sync();
-      for (const item of sr.items) {
-        try {
-          // El resaltado está en el siguiente rango de texto tras ◆;
-          // usamos expandToOrReplace buscando hasta 60 chars después del símbolo.
-          item.font.highlightColor = 0;
-          // También intentamos en la frase que contiene el ◆
-          const para = item.paragraphs.getFirst();
-          para.load('text'); await ctx.sync();
-          const paraRange = para.getRange('Whole');
-          paraRange.font.highlightColor = 0;
-          await ctx.sync();
-        } catch(e) {}
-      }
+      const ooxmlProp = body.getOoxml();
+      await ctx.sync();
+      let xml = ooxmlProp.value;
+      // Eliminar elementos <w:highlight w:val="..."/> (self-closing)
+      xml = xml.replace(/<w:highlight[^>]*\/>/g, '');
+      // Por si acaso hay forma no self-closing
+      xml = xml.replace(/<w:highlight[^>]*>[\s\S]*?<\/w:highlight>/g, '');
+      body.insertOoxml(xml, 'Replace');
+      await ctx.sync();
     });
   } catch(e) {}
 
