@@ -429,12 +429,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const endsWithPunct = /[.!?\u2026]$/.test(origText);
 
     if (endsWithPunct) {
-      // Caso A: origText completo → tail de origText es fiable
+      // Caso A: origText completo → buscar tail dentro del propio rango (no en el body entero).
+      // Usar range.search en lugar de body.search evita falsas coincidencias en otros párrafos
+      // y garantiza encontrar la posición dentro del rango correcto.
       const origTail  = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
       const tailWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
       if (tailWords.length >= 4) {
         try {
-          const endSr = body.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          const endSr = range.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr.load('items'); await ctx.sync();
           if (endSr.items.length) {
             endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
@@ -442,17 +444,32 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         } catch(e) {}
       }
+      // Fallback A: buscar con dos palabras
+      if (!endInserted) {
+        const tail2 = origTail.split(/\s+/).slice(-2).join(' ').trim();
+        if (tail2.length >= 3) {
+          try {
+            const endSrA2 = range.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            endSrA2.load('items'); await ctx.sync();
+            if (endSrA2.items.length) {
+              endSrA2.items[endSrA2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+              endInserted = true;
+            }
+          } catch(e) {}
+        }
+      }
     } else {
-      // Caso B: origText truncado → últimas palabras del párrafo real
+      // Caso B: origText truncado → últimas palabras del párrafo real, buscadas en el párrafo
+      let paraFb = null;
       try {
-        const paraFb = range.paragraphs.getFirst();
+        paraFb = range.paragraphs.getFirst();
         paraFb.load('text');
         await ctx.sync();
         const pt = (paraFb.text || '').trim();
         const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
                            .split(/\s+/).slice(-3).join(' ').trim();
         if (lastWords.length >= 4) {
-          const endSr2 = body.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          const endSr2 = paraFb.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr2.load('items'); await ctx.sync();
           if (endSr2.items.length) {
             endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
@@ -460,7 +477,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         }
       } catch(e) {}
-      // Fallback: tail progresivo de origText
+      // Fallback: tail progresivo de origText, buscado en párrafo si disponible
       if (!endInserted) {
         for (const sliceLen of [40, 25, 15]) {
           if (endInserted) break;
@@ -470,7 +487,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
                          .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
           if (base.length < 4) continue;
           try {
-            const endSrB = body.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            const searchCtx = paraFb || body;
+            const endSrB = searchCtx.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
             endSrB.load('items'); await ctx.sync();
             if (endSrB.items.length) {
               endSrB.items[endSrB.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
