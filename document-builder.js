@@ -1026,35 +1026,43 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await ctx.sync();
 
       const rp1 = body.insertParagraph('','End'); rp1.font.size=12; rp1.font.bold=false;
-      const h2b = body.insertParagraph('Detalle por categor\u00EDa','End'); h2b.font.bold=true; h2b.font.size=13; h2b.font.color='1a1a2e';
+      const h2b = body.insertParagraph('Detalle de errores por orden de aparici\u00F3n','End'); h2b.font.bold=true; h2b.font.size=13; h2b.font.color='1a1a2e';
 
+      // Flatten all findings with their category label, then sort by page
+      const allFlat = [];
       for (const result of allResults) {
-        if (!result.findings.length) continue;
-        const ct = body.insertParagraph(`${result.label}  (${result.findings.length} incidencia${result.findings.length!==1?'s':''})`, 'End'); ct.font.bold=true; ct.font.size=13; ct.font.color='0f3460';
-
-        for (let i=0; i<result.findings.length; i++) {
-          const f = result.findings[i];
-          let raw = f.originalText||'';
-          if (!raw) {
-            if (f.occurrences?.[0]) raw=f.occurrences[0];
-            else if (f.occurrence1?.text) raw=f.occurrence1.text;
-            else if (f.occurrence?.text)  raw=f.occurrence.text;
-          }
-          raw = raw.replace(/[\r\n]+/g,' ').trim();
-          const preview = raw ? `\u00AB${raw.substring(0,100)}${raw.length>100?'\u2026':''}\u00BB` : '(sin texto)';
-          const page    = pageMap[f.originalText];
-          const suffix  = page ? `  \u2014 p\u00E1g. ${page}` : '';
-
-          const np = body.insertParagraph(`${i+1}.  ${preview}${suffix}`,'End'); np.font.bold=true; np.font.size=12; np.font.italic=false; np.font.color='0f3460';
-
-          const comment = buildCommentText([f]);
-          if (comment) {
-            const cp = body.insertParagraph(comment.replace(/[\r\n]+/g,'\n').substring(0,600),'End'); cp.font.size=11; cp.font.italic=false; cp.font.bold=false; cp.font.color='333333';
-          }
-          const sep = body.insertParagraph('','End'); sep.font.size=11; sep.font.bold=false;
+        for (const f of result.findings) {
+          allFlat.push({ f, label: result.label });
         }
+      }
+      allFlat.sort((a, b) => {
+        const pa = pageMap[a.f.originalText] || 9999;
+        const pb = pageMap[b.f.originalText] || 9999;
+        return pa - pb;
+      });
 
-        const gap = body.insertParagraph('','End'); gap.font.size=12; gap.font.bold=false;
+      for (let i=0; i<allFlat.length; i++) {
+        const { f, label } = allFlat[i];
+        let raw = f.originalText||'';
+        if (!raw) {
+          if (f.occurrences?.[0]) raw=f.occurrences[0];
+          else if (f.occurrence1?.text) raw=f.occurrence1.text;
+          else if (f.occurrence?.text)  raw=f.occurrence.text;
+        }
+        raw = raw.replace(/[\r\n]+/g,' ').trim();
+        const preview = raw ? `\u00AB${raw.substring(0,100)}${raw.length>100?'\u2026':''}\u00BB` : '(sin texto)';
+        const page    = pageMap[f.originalText];
+        const suffix  = page ? `  \u2014 p\u00E1g. ${page}` : '';
+
+        const np = body.insertParagraph(`${i+1}.  ${preview}${suffix}`,'End'); np.font.bold=true; np.font.size=12; np.font.italic=false; np.font.color='0f3460';
+
+        const catP = body.insertParagraph(`[${label}]`,'End'); catP.font.size=10; catP.font.bold=false; catP.font.italic=true; catP.font.color='666666';
+
+        const comment = buildCommentText([f]);
+        if (comment) {
+          const cp = body.insertParagraph(comment.replace(/[\r\n]+/g,'\n').substring(0,600),'End'); cp.font.size=11; cp.font.italic=false; cp.font.bold=false; cp.font.color='333333';
+        }
+        const sep = body.insertParagraph('','End'); sep.font.size=11; sep.font.bold=false;
       }
 
       await ctx.sync();
