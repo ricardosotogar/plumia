@@ -484,22 +484,33 @@ window.PLUMIA.runLocalMiTilde = function(text) {
 window.PLUMIA.runLocalAunTilde = function(text) {
   const findings = [];
 
-  // Comprobación de límite de palabra sin depender de \b ni de lookbehind/lookahead
-  // (ambos fallan con caracteres acentuados en algunos entornos JS/Office).
-  // Devuelve true si el fragmento en [start, start+len) está en límite de palabra.
-  const LETTER = /[a-zA-Z\u00C0-\u024F]/;
+  // Normalizar a NFC para que los caracteres acentuados (á, é, í, ó, ú, ü, ñ…)
+  // estén en forma precompuesta — garantiza que las regex literales como /aún/ coincidan
+  // independientemente de cómo el documento Word codifique internamente el texto.
+  if (typeof text === 'string' && text.normalize) text = text.normalize('NFC');
+
+  // Comprobación de límite de palabra sin lookbehind/lookahead (fallan en Office JS).
+  // Usa charCodeAt en lugar de regex de rango Unicode para máxima compatibilidad.
+  function isLetter(ch) {
+    if (!ch) return false;
+    const c = ch.charCodeAt(0);
+    return (c >= 0x41 && c <= 0x5A)   // A-Z
+        || (c >= 0x61 && c <= 0x7A)   // a-z
+        || (c >= 0xC0 && c <= 0x24F); // Letras latinas extendidas (incluye á é í ó ú ü ñ Á…)
+  }
+  // Comprueba que el match en [start, start+len) no está precedido ni seguido de letra.
   function atWordBoundary(str, start, len) {
     const before = start > 0 ? str[start - 1] : null;
-    const after  = start + len < str.length ? str[start + len] : null;
-    return (!before || !LETTER.test(before)) && (!after || !LETTER.test(after));
+    const after  = (start + len) < str.length ? str[start + len] : null;
+    return !isLetter(before) && !isLetter(after);
   }
 
-  // Patrones donde falta la tilde: 'aun' → debería ser 'aún' (= todavía)
+  // ── Patrones donde FALTA la tilde: 'aun' → 'aún' (= todavía) ────────────────
   const missingAccentPatterns = [
     {
       re: /aun\s+no/gi,
-      correctForm: 'aún no',
-      explanation: '«aun no»: cuando equivale a «todavía no», debe llevar tilde → «aún no».',
+      correctForm: 'a\u00FAn no',
+      explanation: '\u00ABaun no\u00BB: cuando equivale a \u00ABtodav\u00EDa no\u00BB, debe llevar tilde \u2192 \u00ABa\u00FAn no\u00BB.',
     },
   ];
 
@@ -507,39 +518,40 @@ window.PLUMIA.runLocalAunTilde = function(text) {
     let m;
     re.lastIndex = 0;
     while ((m = re.exec(text)) !== null) {
-      if (/aún/i.test(m[0])) continue; // ya tiene tilde
+      // Si ya contiene 'ú' (U+00FA) es que ya tiene tilde → saltar
+      if (m[0].indexOf('\u00FA') !== -1) continue;
       if (!atWordBoundary(text, m.index, m[0].length)) continue;
       const ctx = _localCtx(text, m.index, m[0].length, 15, 15);
       findings.push({
         originalText: ctx, aunForm: m[0], correctForm,
         errorType: 'falta_tilde',
         explanation,
-        correctionId: 'aun_tilde', colorId: 7, label: 'Uso de «aún» con tilde diacrítica', directFix: false,
+        correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
       });
     }
   }
 
-  // Patrones donde sobra la tilde: 'aún' → debería ser 'aun' (= incluso/aunque)
+  // ── Patrones donde SOBRA la tilde: 'aún' → 'aun' (= incluso/aunque) ─────────
   const extraAccentPatterns = [
     {
-      re: /aún\s+cuando/gi,
+      re: /a\u00FAn\s+cuando/gi,
       correctForm: 'aun cuando',
-      explanation: '«aún cuando»: como conjunción concesiva (= aunque/incluso cuando), no lleva tilde → «aun cuando».',
+      explanation: '\u00ABa\u00FAn cuando\u00BB: como conjunci\u00F3n concesiva (= aunque/incluso cuando), no lleva tilde \u2192 \u00ABaun cuando\u00BB.',
     },
     {
-      re: /aún\s+así/gi,
-      correctForm: 'aun así',
-      explanation: '«aún así»: como locución concesiva (= incluso así/con todo), no lleva tilde → «aun así».',
+      re: /a\u00FAn\s+as\u00ED/gi,
+      correctForm: 'aun as\u00ED',
+      explanation: '\u00ABa\u00FAn as\u00ED\u00BB: como locuci\u00F3n concesiva (= incluso as\u00ED/con todo), no lleva tilde \u2192 \u00ABaun as\u00ED\u00BB.',
     },
     {
-      re: /ni\s+aún/gi,
+      re: /ni\s+a\u00FAn/gi,
       correctForm: 'ni aun',
-      explanation: '«ni aún»: en la locución «ni aun» (= ni siquiera), no lleva tilde → «ni aun».',
+      explanation: '\u00ABni a\u00FAn\u00BB: en la locuci\u00F3n \u00ABni aun\u00BB (= ni siquiera), no lleva tilde \u2192 \u00ABni aun\u00BB.',
     },
     {
-      re: /aún\s+\S+(?:ando|iendo|yendo)/gi,
+      re: /a\u00FAn\s+\S+(?:ando|iendo|yendo)/gi,
       correctForm: 'aun + gerundio',
-      explanation: '«aún» + gerundio: en construcción concesiva (= incluso + gerundio), no lleva tilde → «aun».',
+      explanation: '\u00ABa\u00FAn\u00BB + gerundio: en construcci\u00F3n concesiva (= incluso + gerundio), no lleva tilde \u2192 \u00ABaun\u00BB.',
     },
   ];
 
@@ -553,7 +565,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
         originalText: ctx, aunForm: m[0], correctForm,
         errorType: 'tilde_sobrante',
         explanation,
-        correctionId: 'aun_tilde', colorId: 7, label: 'Uso de «aún» con tilde diacrítica', directFix: false,
+        correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
       });
     }
   }
