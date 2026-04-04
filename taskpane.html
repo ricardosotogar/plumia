@@ -6,7 +6,7 @@
 <title>Plumia</title>
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="taskpane.css?v=8.65"/>
+<link rel="stylesheet" href="taskpane.css?v=8.66"/>
 </head>
 <body>
 
@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=8.65"></script>
-<script src="synonyms-db.js?v=8.65"></script>
-<script src="processor.js?v=8.65"></script>
-<script src="document-builder.js?v=8.65"></script>
+<script src="corrections-config.js?v=8.66"></script>
+<script src="synonyms-db.js?v=8.66"></script>
+<script src="processor.js?v=8.66"></script>
+<script src="document-builder.js?v=8.66"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1215,17 +1215,30 @@ async function cleanDocument() {
     });
   } catch(e) {}
 
-  // ── Paso 3: resetear color y negrita ──────────────────────────────────────
+  // ── Paso 3: resetear color, negrita y resaltado vía OOXML por párrafo ──────
+  // La API font.color sobre rangos de párrafo no sobreescribe colores aplicados
+  // a nivel de run (carácter). Manipulamos el OOXML directamente para eliminar
+  // <w:color>, <w:highlight> y <w:b/> de cada run del documento.
   try {
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
       body.load('paragraphs');
       await ctx.sync();
-      for (const p of body.paragraphs.items) {
+      const paras = body.paragraphs.items;
+      // Cargar OOXML de todos los párrafos en un solo sync
+      const ooxmlResults = paras.map(p => p.getOoxml());
+      await ctx.sync();
+      // Modificar y reemplazar cada párrafo
+      for (let i = 0; i < paras.length; i++) {
         try {
-          const r = p.getRange('Whole');
-          r.font.color = 'Auto';
-          r.font.bold  = false;
+          let xml = ooxmlResults[i].value;
+          // Eliminar color de texto explícito
+          xml = xml.replace(/<w:color\s[^>]*\/>/g, '');
+          // Eliminar resaltado
+          xml = xml.replace(/<w:highlight\s[^>]*\/>/g, '');
+          // Eliminar negrita (pero no <w:bCs/> que es para escrituras complejas)
+          xml = xml.replace(/<w:b\/>/g, '').replace(/<w:b\s[^>]*\/>/g, '');
+          paras[i].getRange('Whole').insertOoxml(xml, 'Replace');
         } catch(e) {}
       }
       await ctx.sync();
