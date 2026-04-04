@@ -6,7 +6,7 @@
 <title>Plumia</title>
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="taskpane.css?v=8.53"/>
+<link rel="stylesheet" href="taskpane.css?v=8.54"/>
 </head>
 <body>
 
@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=8.53"></script>
-<script src="synonyms-db.js?v=8.53"></script>
-<script src="processor.js?v=8.53"></script>
-<script src="document-builder.js?v=8.53"></script>
+<script src="corrections-config.js?v=8.54"></script>
+<script src="synonyms-db.js?v=8.54"></script>
+<script src="processor.js?v=8.54"></script>
+<script src="document-builder.js?v=8.54"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1193,18 +1193,11 @@ async function cleanDocument() {
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
 
-      // 1. Resetear color de texto, negrita y color de resaltado en todo el cuerpo
-      body.load('paragraphs');
-      await ctx.sync();
-      const paras = body.paragraphs.items;
-      paras.forEach(p => p.load('text'));
-      await ctx.sync();
-      paras.forEach(p => {
-        const r = p.getRange();
-        r.font.color    = 'Auto';
-        r.font.bold     = false;
-        r.font.highlightColor = 'None';
-      });
+      // 1. Resetear color de texto, negrita y resaltado en todo el cuerpo
+      const bodyRange = body.getRange();
+      bodyRange.font.color          = 'Auto';
+      bodyRange.font.bold           = false;
+      bodyRange.font.highlightColor = null;
       await ctx.sync();
 
       // 2. Eliminar símbolos ◆ (U+25C6); los ¹ y ² sueltos quedan eliminados a continuación
