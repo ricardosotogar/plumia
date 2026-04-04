@@ -6,7 +6,7 @@
 <title>Plumia</title>
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="taskpane.css?v=8.68"/>
+<link rel="stylesheet" href="taskpane.css?v=8.69"/>
 </head>
 <body>
 
@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=8.68"></script>
-<script src="synonyms-db.js?v=8.68"></script>
-<script src="processor.js?v=8.68"></script>
-<script src="document-builder.js?v=8.68"></script>
+<script src="corrections-config.js?v=8.69"></script>
+<script src="synonyms-db.js?v=8.69"></script>
+<script src="processor.js?v=8.69"></script>
+<script src="document-builder.js?v=8.69"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1215,28 +1215,35 @@ async function cleanDocument() {
     });
   } catch(e) {}
 
-  // ── Paso 3: resetear color y negrita vía getTextRanges ───────────────────────
-  // Dividimos el body en rangos de texto cortos con getTextRanges y reseteamos
-  // font.color y font.bold en cada uno — opera al nivel de run igual que cuando
-  // el add-in aplica los colores.
+  // ── Paso 3a: eliminar <w:color> y <w:highlight> del OOXML del body ──────────
+  try {
+    await Word.run(async (ctx) => {
+      const body = ctx.document.body;
+      const ooxmlProp = body.getOoxml();
+      await ctx.sync();
+      let xml = ooxmlProp.value;
+      xml = xml.replace(/<w:color\s[^>]*\/>/g, '');
+      xml = xml.replace(/<w:highlight\s[^>]*\/>/g, '');
+      xml = xml.replace(/<w:b\/>/g, '').replace(/<w:b\s[^>]*\/>/g, '');
+      body.insertOoxml(xml, 'Replace');
+      await ctx.sync();
+    });
+  } catch(e) {}
+
+  // ── Paso 3b: párrafos (base v8.65 — limpia resaltados con font API) ──────────
   try {
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
       body.load('paragraphs');
       await ctx.sync();
-      const endMarks = [' ', '\t', '\n', '.', ',', ';', ':', '!', '?', '\u2014', '\u2026'];
       for (const p of body.paragraphs.items) {
         try {
-          const trs = p.getRange('Content').getTextRanges(endMarks, true);
-          trs.load('items');
-          await ctx.sync();
-          for (const tr of trs.items) {
-            tr.font.color = 'Auto';
-            tr.font.bold  = false;
-          }
-          await ctx.sync();
+          const r = p.getRange('Whole');
+          r.font.color = 'Auto';
+          r.font.bold  = false;
         } catch(e) {}
       }
+      await ctx.sync();
     });
   } catch(e) {}
 
