@@ -6,7 +6,7 @@
 <title>Plumia</title>
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="taskpane.css?v=8.71"/>
+<link rel="stylesheet" href="taskpane.css?v=8.72"/>
 </head>
 <body>
 
@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=8.71"></script>
-<script src="synonyms-db.js?v=8.71"></script>
-<script src="processor.js?v=8.71"></script>
-<script src="document-builder.js?v=8.71"></script>
+<script src="corrections-config.js?v=8.72"></script>
+<script src="synonyms-db.js?v=8.72"></script>
+<script src="processor.js?v=8.72"></script>
+<script src="document-builder.js?v=8.72"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1221,29 +1221,7 @@ async function cleanDocument() {
     });
   } catch(e) {}
 
-  // ── Paso 3: quitar color de texto vía OOXML párrafo a párrafo ───────────────
-  // body.insertOoxml sobre el body completo cuelga. En cambio, operar párrafo
-  // a párrafo y solo en los que tienen <w:color> es seguro y rápido.
-  try {
-    await Word.run(async (ctx) => {
-      const body = ctx.document.body;
-      body.load('paragraphs');
-      await ctx.sync();
-      for (const p of body.paragraphs.items) {
-        try {
-          const ox = p.getOoxml();
-          await ctx.sync();
-          if (ox.value && ox.value.includes('<w:color')) {
-            const cleaned = ox.value.replace(/<w:color\s[^>]*\/>/g, '');
-            p.insertOoxml(cleaned, 'Replace');
-            await ctx.sync();
-          }
-        } catch(e) {}
-      }
-    });
-  } catch(e) {}
-
-  // ── Paso 4: font API por párrafo — limpia resaltados (base v8.63) ─────────
+  // ── Paso 3: font API por párrafo — limpia resaltados y negrita ───────────
   try {
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
