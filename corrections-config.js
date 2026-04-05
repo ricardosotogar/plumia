@@ -5,8 +5,8 @@
 // ============================================================================
 (function() {
 window.PLUMIA = {};
-window.PLUMIA.CONFIG_VERSION = '8.72';
-console.log('📦 corrections-config.js v8.72 cargado');
+window.PLUMIA.CONFIG_VERSION = '8.73';
+console.log('📦 corrections-config.js v8.73 cargado');
 window.PLUMIA.COLOR_MAP = {
   1:{name:"Rojo",hex:"FF0000",type:"text"},
   2:{name:"Amarillo",hex:"FFD966",type:"highlight"},
