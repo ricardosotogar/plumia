@@ -579,7 +579,9 @@ window.PLUMIA.runLocalAunTilde = function(text) {
       // Si ya contiene 'ú' (U+00FA) es que ya tiene tilde → saltar
       if (m[0].indexOf('\u00FA') !== -1) continue;
       if (!atWordBoundary(text, m.index, m[0].length)) continue;
-      const ctx = _localCtx(text, m.index, m[0].length, 15, 15);
+      // before=0: el contexto empieza EN el match para no cruzar límites de párrafo
+      // (Word no encuentra texto cross-párrafo en body.search)
+      const ctx = _localCtx(text, m.index, m[0].length, 0, 25);
       findings.push({
         originalText: ctx, aunForm: m[0], correctForm,
         errorType: 'falta_tilde',
@@ -618,7 +620,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
     re.lastIndex = 0;
     while ((m = re.exec(text)) !== null) {
       if (!atWordBoundary(text, m.index, m[0].length)) continue;
-      const ctx = _localCtx(text, m.index, m[0].length, 15, 15);
+      const ctx = _localCtx(text, m.index, m[0].length, 0, 25);
       findings.push({
         originalText: ctx, aunForm: m[0], correctForm,
         errorType: 'tilde_sobrante',

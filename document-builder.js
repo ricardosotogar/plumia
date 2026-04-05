@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '8.77';
-console.log('📦 document-builder.js v8.77 cargado');
+window.PLUMIA.BUILDER_VERSION = '8.78';
+console.log('📦 document-builder.js v8.78 cargado');
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
@@ -267,7 +267,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       case 'sustantivos_genericos': return f.genericWord || f.originalText;
       case 'nombres_propios':       return f.name || f.originalText;
       case 'muletillas':            return f.expression || f.originalText;
-      case 'aun_tilde':             return (f.aunForm||'').split(/\s+/)[0] || f.originalText;
+      case 'aun_tilde':             return f.aunForm || f.originalText;
       case 'si_tilde':              return f.siForm  || f.originalText;
       case 'mi_tilde':              return f.miForm  || f.originalText;
       case 'tu_tilde':              return f.tuForm  || f.originalText;
