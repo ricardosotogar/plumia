@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '8.76';
-console.log('📦 document-builder.js v8.76 cargado');
+window.PLUMIA.BUILDER_VERSION = '8.77';
+console.log('📦 document-builder.js v8.77 cargado');
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
@@ -426,24 +426,23 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     //    El tail de origText no es el final real → usar las últimas palabras
     //    del párrafo real del documento.
     let endInserted = false;
-    const endsWithPunct = /[.!?\u2026]$/.test(origText);
+    const origTailBase = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+    // Última palabra real de origText (sirve para estilado posterior de ◆²)
+    const lastWordOfOrig = origTailBase.split(/\s+/).pop() || '';
 
-    if (endsWithPunct) {
-      // Caso A: origText completo → buscar las últimas palabras para posicionar ◆².
-      //
-      // Contexto de búsqueda según longitud de origText:
-      //   - origText corto (< 70 chars): _applyFinding NO truncó el search, así que
-      //     `range` cubre el texto completo. Usar range.search es más seguro (no busca
-      //     en otras partes del documento que pudieran tener las mismas palabras).
-      //   - origText largo (≥ 70 chars): _applyFinding truncó el search a ~70 chars,
-      //     así que `range` solo cubre el principio de la frase. Las palabras del tail
-      //     NO están en ese range → hay que usar body.search para encontrar el final real.
-      const origTail  = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-      const tailWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
-      const searchCtxA = origText.length < 70 ? range : body;
+    if (origText.length < 70) {
+      // origText corto: el range cubre exactamente la frase → ◆² directamente al final.
+      // Esto evita range.search(tailWords) que falla cuando hay varias frases iguales en el
+      // mismo párrafo (tres tiempos_verbales consecutivos, por ejemplo).
+      range.getRange('End').insertText('\u25C6\u00B2', 'After');
+      endInserted = true;
+    } else {
+      // origText largo (≥ 70): _applyFinding truncó el search → range solo cubre el inicio.
+      // Hay que buscar el final real de la frase por sus últimas palabras.
+      const tailWords = origTailBase.split(/\s+/).slice(-3).join(' ').trim();
       if (tailWords.length >= 4) {
         try {
-          const endSr = searchCtxA.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          const endSr = body.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr.load('items'); await ctx.sync();
           if (endSr.items.length) {
             endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
@@ -451,12 +450,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         } catch(e) {}
       }
-      // Fallback A: buscar con dos palabras en el mismo contexto
+      // Fallback: dos palabras
       if (!endInserted) {
-        const tail2 = origTail.split(/\s+/).slice(-2).join(' ').trim();
+        const tail2 = origTailBase.split(/\s+/).slice(-2).join(' ').trim();
         if (tail2.length >= 3) {
           try {
-            const endSrA2 = searchCtxA.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            const endSrA2 = body.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
             endSrA2.load('items'); await ctx.sync();
             if (endSrA2.items.length) {
               endSrA2.items[endSrA2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
@@ -465,44 +464,24 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           } catch(e) {}
         }
       }
-    } else {
-      // Caso B: origText truncado → últimas palabras del párrafo real, buscadas en el párrafo
-      let paraFb = null;
-      try {
-        paraFb = range.paragraphs.getFirst();
-        paraFb.load('text');
-        await ctx.sync();
-        const pt = (paraFb.text || '').trim();
-        const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
-                           .split(/\s+/).slice(-3).join(' ').trim();
-        if (lastWords.length >= 4) {
-          const endSr2 = paraFb.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          endSr2.load('items'); await ctx.sync();
-          if (endSr2.items.length) {
-            endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
-            endInserted = true;
-          }
-        }
-      } catch(e) {}
-      // Fallback: tail progresivo de origText, buscado en párrafo si disponible
+      // Fallback: últimas palabras del párrafo real
       if (!endInserted) {
-        for (const sliceLen of [40, 25, 15]) {
-          if (endInserted) break;
-          const tail = origText.slice(-sliceLen).trim();
-          const words = tail.split(/\s+/);
-          const base = (words.length > 1 ? words.slice(1).join(' ') : tail)
-                         .replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-          if (base.length < 4) continue;
-          try {
-            const searchCtx = paraFb || body;
-            const endSrB = searchCtx.search(base, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-            endSrB.load('items'); await ctx.sync();
-            if (endSrB.items.length) {
-              endSrB.items[endSrB.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+        try {
+          const paraFb = range.paragraphs.getFirst();
+          paraFb.load('text');
+          await ctx.sync();
+          const pt = (paraFb.text || '').trim();
+          const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
+                             .split(/\s+/).slice(-3).join(' ').trim();
+          if (lastWords.length >= 4) {
+            const endSr2 = paraFb.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            endSr2.load('items'); await ctx.sync();
+            if (endSr2.items.length) {
+              endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
               endInserted = true;
             }
-          } catch(e) {}
-        }
+          }
+        } catch(e) {}
       }
     }
 
@@ -513,51 +492,85 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
     await ctx.sync();
 
-    // Fase 2: buscar ◆¹ dentro del párrafo de ESTE rango, no en el body completo.
-    // Motivo: body.search('◆¹' + primeras_palabras) falla cuando la frase empieza con
-    // caracteres especiales (—, ¿, ¡…) porque Word no los busca bien como literales.
-    // La búsqueda en el párrafo es segura y única cuando cada frase es su propio párrafo.
+    // Fase 2: estilizar ◆¹ — buscar '◆¹' + primera palabra del finding dentro del párrafo.
+    // Los findings se procesan de atrás hacia adelante (back-to-front), así que cuando
+    // llegamos aquí el ◆¹ recién insertado es el MÁS TEMPRANO en el párrafo (items[0]).
+    // Pero usamos '◆¹' + firstWord para ser exactos y no depender del orden de items[].
     try {
-      const para   = range.paragraphs.getFirst();
-      const openSr = para.search('\u25C6\u00B9', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-      openSr.load('items'); await ctx.sync();
-      if (openSr.items.length) {
-        const sym = openSr.items[openSr.items.length - 1]; // último ◆¹ del párrafo
-        const symSr = sym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-        symSr.load('items'); await ctx.sync();
-        if (symSr.items.length) {
-          symSr.items[0].font.color = colorHex;
-          symSr.items[0].font.bold  = true;
-          if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
-          await ctx.sync();
+      const para = range.paragraphs.getFirst();
+      const firstWord = origText.replace(/^[^a-zA-ZÀ-ÿ\u00C0-\u017E]+/, '').split(/\s+/)[0] || '';
+      let styled1 = false;
+      if (firstWord.length >= 2) {
+        const openSr2 = para.search('\u25C6\u00B9' + firstWord, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        openSr2.load('items'); await ctx.sync();
+        if (openSr2.items.length) {
+          const symSr2 = openSr2.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+          symSr2.load('items'); await ctx.sync();
+          if (symSr2.items.length) {
+            symSr2.items[0].font.color = colorHex;
+            symSr2.items[0].font.bold  = true;
+            if (commentText) symSr2.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+            await ctx.sync();
+            styled1 = true;
+          }
+        }
+      }
+      if (!styled1) {
+        // Fallback: items[0] = el más temprano en el párrafo (el recién insertado en back-to-front)
+        const openSr = para.search('\u25C6\u00B9', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        openSr.load('items'); await ctx.sync();
+        if (openSr.items.length) {
+          const sym = openSr.items[0];
+          const symSr = sym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+          symSr.load('items'); await ctx.sync();
+          if (symSr.items.length) {
+            symSr.items[0].font.color = colorHex;
+            symSr.items[0].font.bold  = true;
+            if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+            await ctx.sync();
+          }
         }
       }
     } catch(e) {
-      // Fallback: búsqueda global si el párrafo no está disponible
       const openWords = origText.replace(/^[^a-zA-ZÀ-ÿ\u00C0-\u017E]+/, '').split(/\s+/).slice(0, 3).join(' ');
       await _styleAndComment(ctx, body, '\u25C6\u00B9' + openWords, colorHex, commentText);
     }
 
-    // Fase 3: colorear ◆² — body.search('◆²') falla (Word no busca superíndice U+00B2
-    // como literal), igual que pasaba con ◆¹ antes de v8.26. Solución: para.search
-    // dentro del párrafo; si hay varios ◆² en el mismo párrafo, el último es el más
-    // reciente (insertado en esta misma pasada, justo antes del sync).
+    // Fase 3: estilizar ◆² — buscar 'últimaPalabra◆²' para identificar el ◆² de ESTE finding.
+    // Esto es robusto cuando hay varios ◆² en el mismo párrafo (varios bracket findings).
     try {
       const para2 = range.paragraphs.getFirst();
-      const endSr = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-      endSr.load('items'); await ctx.sync();
-      if (endSr.items.length) {
-        const sym2   = endSr.items[endSr.items.length - 1];
-        const symSr2 = sym2.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-        symSr2.load('items'); await ctx.sync();
-        if (symSr2.items.length) {
-          symSr2.items[0].font.color = colorHex;
-          symSr2.items[0].font.bold  = true;
-          await ctx.sync();
+      let styled2 = false;
+      if (lastWordOfOrig.length >= 3) {
+        const endAnchorSr = para2.search(lastWordOfOrig + '\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        endAnchorSr.load('items'); await ctx.sync();
+        if (endAnchorSr.items.length) {
+          const symSr2 = endAnchorSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+          symSr2.load('items'); await ctx.sync();
+          if (symSr2.items.length) {
+            symSr2.items[0].font.color = colorHex;
+            symSr2.items[0].font.bold  = true;
+            await ctx.sync();
+            styled2 = true;
+          }
+        }
+      }
+      if (!styled2) {
+        // Fallback: items[0] = el más temprano en el párrafo en back-to-front
+        const endSr2 = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        endSr2.load('items'); await ctx.sync();
+        if (endSr2.items.length) {
+          const sym2   = endSr2.items[0];
+          const symSr2 = sym2.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+          symSr2.load('items'); await ctx.sync();
+          if (symSr2.items.length) {
+            symSr2.items[0].font.color = colorHex;
+            symSr2.items[0].font.bold  = true;
+            await ctx.sync();
+          }
         }
       }
     } catch(e) {
-      // Fallback: body.search (puede fallar con superíndice pero lo intentamos)
       await _styleAndComment(ctx, body, '\u25C6\u00B2', colorHex, null);
     }
   }
