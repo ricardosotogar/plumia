@@ -219,7 +219,7 @@ async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText,
       console.warn('[styleAndComment] ⚠ 0 resultados — símbolo no estilizado ni comentado');
       return;
     }
-    const target = sr.items[sr.items.length - 1]; // último = más recientemente insertado
+    const target = sr.items[0]; // back-to-front: el más reciente es el primero en el doc
     // Buscar solo el ◆ DENTRO del rango → el estilado no afecta a la palabra adyacente
     const symSr = target.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
     symSr.load('items');
@@ -430,19 +430,20 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     // Última palabra real de origText (sirve para estilado posterior de ◆²)
     const lastWordOfOrig = origTailBase.split(/\s+/).pop() || '';
 
-    if (origText.length < 70) {
-      // origText corto: el range cubre exactamente la frase → ◆² directamente al final.
-      // Esto evita range.search(tailWords) que falla cuando hay varias frases iguales en el
-      // mismo párrafo (tres tiempos_verbales consecutivos, por ejemplo).
-      range.getRange('End').insertText('\u25C6\u00B2', 'After');
-      endInserted = true;
-    } else {
-      // origText largo (≥ 70): _applyFinding truncó el search → range solo cubre el inicio.
-      // Hay que buscar el final real de la frase por sus últimas palabras.
+    // Discriminador: ¿termina origText en puntuación de cierre?
+    // A) SÍ → frase completa; las últimas palabras de origText son el final real.
+    //    Para origText corto (<70): buscar dentro del range → evita confundir con otras
+    //    frases iguales del mismo párrafo (p.ej. tres tiempos_verbales consecutivos).
+    //    Para origText largo (≥70): buscar en body → el range solo cubre el inicio truncado.
+    // B) NO → origText fue truncado por normalizeFindings; el tail no es el final real.
+    //    Usar las últimas palabras del párrafo real del documento.
+    const endsWithPunct = /[.!?\u2026]$/.test(origText);
+    if (endsWithPunct) {
       const tailWords = origTailBase.split(/\s+/).slice(-3).join(' ').trim();
+      const searchCtxA = origText.length < 70 ? range : body;
       if (tailWords.length >= 4) {
         try {
-          const endSr = body.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          const endSr = searchCtxA.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr.load('items'); await ctx.sync();
           if (endSr.items.length) {
             endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
@@ -450,12 +451,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
         } catch(e) {}
       }
-      // Fallback: dos palabras
+      // Fallback: dos palabras en el mismo contexto
       if (!endInserted) {
         const tail2 = origTailBase.split(/\s+/).slice(-2).join(' ').trim();
         if (tail2.length >= 3) {
           try {
-            const endSrA2 = body.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            const endSrA2 = searchCtxA.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
             endSrA2.load('items'); await ctx.sync();
             if (endSrA2.items.length) {
               endSrA2.items[endSrA2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
@@ -464,25 +465,24 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           } catch(e) {}
         }
       }
-      // Fallback: últimas palabras del párrafo real
-      if (!endInserted) {
-        try {
-          const paraFb = range.paragraphs.getFirst();
-          paraFb.load('text');
-          await ctx.sync();
-          const pt = (paraFb.text || '').trim();
-          const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
-                             .split(/\s+/).slice(-3).join(' ').trim();
-          if (lastWords.length >= 4) {
-            const endSr2 = paraFb.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-            endSr2.load('items'); await ctx.sync();
-            if (endSr2.items.length) {
-              endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
-              endInserted = true;
-            }
+    } else {
+      // Case B: origText truncado → usar últimas palabras del párrafo real
+      try {
+        const paraFb = range.paragraphs.getFirst();
+        paraFb.load('text');
+        await ctx.sync();
+        const pt = (paraFb.text || '').trim();
+        const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
+                           .split(/\s+/).slice(-3).join(' ').trim();
+        if (lastWords.length >= 4) {
+          const endSr2 = paraFb.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endSr2.load('items'); await ctx.sync();
+          if (endSr2.items.length) {
+            endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+            endInserted = true;
           }
-        } catch(e) {}
-      }
+        }
+      } catch(e) {}
     }
 
     // Último recurso absoluto
