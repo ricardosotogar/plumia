@@ -323,10 +323,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
               // Filtrar hallucinations: el texto debe existir en el chunk analizado
               const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
               if (check.length > 5 && !chLower.includes(check)) return null;
-              // Filtrar correcciones nulas: wordForm === correctForm (alucinación donde no hay error real)
+              // Filtrar correcciones nulas: wordForm === correctForm (alucinación sin error real).
+              // IMPORTANTE: comparar SIN eliminar diacríticos — "como"→"cómo" es corrección válida;
+              // solo se filtra cuando son literalmente idénticos (ej: "Cuando"→"Cuando").
               if (f.wordForm && f.correctForm) {
-                const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-                if (norm(f.wordForm) === norm(f.correctForm)) return null;
+                if (f.wordForm.toLowerCase().trim() === f.correctForm.toLowerCase().trim()) return null;
               }
               return { ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
                 label: corr.label, directFix: corr.directFix };
