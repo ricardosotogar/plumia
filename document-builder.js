@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '8.71';
-console.log('📦 document-builder.js v8.71 cargado');
+window.PLUMIA.BUILDER_VERSION = '8.76';
+console.log('📦 document-builder.js v8.76 cargado');
 
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
@@ -602,11 +602,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (!resolvedFindings || !resolvedFindings.length) return;
 
     const ortotypo = resolvedFindings.filter(f => f.directFix);
-    // BRACKET_TYPES primero: así _styleAndComment('◆¹') los procesa sin ◆ extra
-    // que puedan insertar los _markWord posteriores en la misma zona
-    const others   = resolvedFindings
-      .filter(f => !f.directFix && f.originalText)
-      .sort((a, b) => (BRACKET_TYPES.has(a.correctionId) ? 0 : 1) - (BRACKET_TYPES.has(b.correctionId) ? 0 : 1));
+    const others   = resolvedFindings.filter(f => !f.directFix && f.originalText);
 
     if (ortotypo.length) await this.applyOrtotypography();
     if (!others.length)  return;
@@ -622,13 +618,64 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     }
     window.PLUMIA._knownMuletillas = _muletillaSet;
 
-    for (let i = 0; i < others.length; i++) {
+    // ── Paso 1: resolver posiciones (un solo Word.run de solo lectura) ────────
+    // Cada finding se sitúa en [párrafoIdx, charIdx] para ordenar de atrás a adelante.
+    const positions = await this._resolvePositions(others);
+
+    // ── Paso 2: ordenar de atrás hacia adelante ───────────────────────────────
+    // Dentro de la misma posición: word markers PRIMERO, bracket markers DESPUÉS.
+    // Así, cuando el bracket inserta ◆¹ la palabra ya tiene su propio ◆ y no hay
+    // colisión falsa que suprima el marcador de la corrección de palabra.
+    const ordered = others
+      .map((f, i) => ({ ...f, _paraIdx: positions[i][0], _charIdx: positions[i][1] }))
+      .sort((a, b) => {
+        if (b._paraIdx !== a._paraIdx) return b._paraIdx - a._paraIdx;
+        if (b._charIdx !== a._charIdx) return b._charIdx - a._charIdx;
+        // Misma posición: word markers (0) antes que bracket markers (1)
+        return (BRACKET_TYPES.has(a.correctionId) ? 1 : 0) - (BRACKET_TYPES.has(b.correctionId) ? 1 : 0);
+      });
+
+    // ── Paso 3: aplicar en el orden calculado ────────────────────────────────
+    for (let i = 0; i < ordered.length; i++) {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
-        try { await this._applyFinding(ctx, body, others[i]); }
-        catch(e) { console.warn('Plumia v8.00 mark:', (others[i].originalText||'').substring(0,30), e.message); }
+        try { await this._applyFinding(ctx, body, ordered[i]); }
+        catch(e) { console.warn('Plumia mark:', (ordered[i].originalText||'').substring(0,30), e.message); }
       });
     }
+  }
+
+  // ── Resolver posición de cada finding en el documento ────────────────────
+  async _resolvePositions(findings) {
+    const positions = findings.map(() => [0, 0]);
+    try {
+      await Word.run(async (ctx) => {
+        const body = ctx.document.body;
+        body.load('paragraphs');
+        await ctx.sync();
+        const paras = body.paragraphs.items;
+        paras.forEach(p => p.load('text'));
+        await ctx.sync();
+
+        for (let fi = 0; fi < findings.length; fi++) {
+          let search = (findings[fi].originalText || '').replace(/[\r\n]+/g, ' ').trim();
+          if (search.length >= 70) {
+            const cut = search.substring(0, 70);
+            const lastSpace = cut.lastIndexOf(' ');
+            search = lastSpace > 25 ? cut.substring(0, lastSpace).trimEnd() : cut;
+          }
+          if (!search || search.length < 3) continue;
+          const sl = search.toLowerCase();
+          for (let pi = 0; pi < paras.length; pi++) {
+            const idx = (paras[pi].text || '').toLowerCase().indexOf(sl);
+            if (idx !== -1) { positions[fi] = [pi, idx]; break; }
+          }
+        }
+      });
+    } catch(e) {
+      console.warn('Plumia _resolvePositions:', e.message);
+    }
+    return positions;
   }
 
   async highlightBrackets() { /* vacío */ }
