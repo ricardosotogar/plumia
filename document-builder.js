@@ -452,40 +452,34 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const lastWordOfOrig = origTailBase.split(/\s+/).pop() || '';
 
     // Discriminador: ¿termina origText en puntuación de cierre?
-    // A) SÍ → frase completa; las últimas palabras de origText son el final real.
-    //    Para origText corto (<70): buscar dentro del range → evita confundir con otras
-    //    frases iguales del mismo párrafo (p.ej. tres tiempos_verbales consecutivos).
-    //    Para origText largo (≥70): buscar en body → el range solo cubre el inicio truncado.
-    // B) NO → origText fue truncado por normalizeFindings; el tail no es el final real.
-    //    Usar las últimas palabras del párrafo real del documento.
+    //
+    // A) SÍ → frase completa; origTailBase (sin punto final) identifica el final real.
+    //    Se busca origTailBase en el párrafo (NO en range: range.search() puede no estar
+    //    acotado al rango en todos los runtimes de Office JS).
+    //    Para manejar varias frases IDÉNTICAS en el mismo párrafo (ej. tiempos_verbales),
+    //    se cuentan las ya procesadas (doneSr = las que ya tienen ◆² pegado).
+    //    Con back-to-front: targetIdx = allSr.length - doneSr.length - 1.
+    //
+    // B) NO → origText truncado por normalizeFindings; el tail no es el final real.
+    //    Usar las últimas palabras del párrafo real.
     const endsWithPunct = /[.!?\u2026]$/.test(origText);
     if (endsWithPunct) {
-      const tailWords = origTailBase.split(/\s+/).slice(-3).join(' ').trim();
-      const searchCtxA = origText.length < 70 ? range : body;
-      if (tailWords.length >= 4) {
-        try {
-          const endSr = searchCtxA.search(tailWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          endSr.load('items'); await ctx.sync();
-          if (endSr.items.length) {
-            endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
-            endInserted = true;
-          }
-        } catch(e) {}
-      }
-      // Fallback: dos palabras en el mismo contexto
-      if (!endInserted) {
-        const tail2 = origTailBase.split(/\s+/).slice(-2).join(' ').trim();
-        if (tail2.length >= 3) {
-          try {
-            const endSrA2 = searchCtxA.search(tail2, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-            endSrA2.load('items'); await ctx.sync();
-            if (endSrA2.items.length) {
-              endSrA2.items[endSrA2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
-              endInserted = true;
-            }
-          } catch(e) {}
+      try {
+        const para = range.paragraphs.getFirst();
+        // doneSr: ocurrencias que ya tienen ◆² justo detrás (ya procesadas en back-to-front)
+        const doneSr = para.search(origTailBase + '\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        doneSr.load('items');
+        // allSr: todas las ocurrencias de esta frase en el párrafo
+        const allSr = para.search(origTailBase, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        allSr.load('items');
+        await ctx.sync();
+        // La más reciente no procesada = allSr.length - doneSr.length - 1
+        const targetIdx = allSr.items.length - doneSr.items.length - 1;
+        if (targetIdx >= 0 && targetIdx < allSr.items.length) {
+          allSr.items[targetIdx].getRange('End').insertText('\u25C6\u00B2', 'After');
+          endInserted = true;
         }
-      }
+      } catch(e) {}
     } else {
       // Case B: origText truncado → usar últimas palabras del párrafo real
       try {
