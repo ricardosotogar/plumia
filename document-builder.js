@@ -405,9 +405,30 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     _insertSymbol(target.getRange('Start'), 'Before', '\u25C6');
     await ctx.sync();
 
-    // Fase 2: buscar ◆+keyText completo → font + comentario
-    // (usar solo la primera palabra era ambiguo para palabras cortas como "En", "De", "A"...)
-    await _styleAndComment(ctx, body, '\u25C6' + keyText, colorHex, commentText);
+    // Fase 2: buscar ◆+keyText dentro del párrafo (matchCase:false, items[0] = back-to-front).
+    // NO usar body.search con matchCase:true: si hay dos ocurrencias del mismo verbo en el
+    // mismo párrafo con distinta capitalización (ej. "Hizo" y "hizo"), f.verb siempre viene
+    // en minúscula del AI → matchCase:true no encuentra la versión en mayúscula.
+    // Usando para.search + matchCase:false + items[0] resolvemos ambos casos a la vez.
+    try {
+      const para = range.paragraphs.getFirst();
+      const openSr = para.search('\u25C6' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      openSr.load('items'); await ctx.sync();
+      if (openSr.items.length) {
+        const symSr = openSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+        symSr.load('items'); await ctx.sync();
+        if (symSr.items.length) {
+          symSr.items[0].font.color = colorHex;
+          symSr.items[0].font.bold  = true;
+          if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+          await ctx.sync();
+        }
+      } else {
+        await _styleAndComment(ctx, body, '\u25C6' + keyText, colorHex, commentText);
+      }
+    } catch(e) {
+      await _styleAndComment(ctx, body, '\u25C6' + keyText, colorHex, commentText);
+    }
   }
 
   // ── Brackets ─────────────────────────────────────────────────────────────
