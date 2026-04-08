@@ -424,6 +424,14 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
       word: 'como', correct: 'c\u00F3mo',
       explanation: '\u00ABcomo\u00BB en interrogativa indirecta tras verbo de conocimiento debe llevar tilde \u2192 \u00ABc\u00F3mo\u00BB.',
     },
+    // «saber + que + infinitivo»: «sab\u00EDa que pensar», «sin saber que hacer»
+    // En este contexto «que» es interrogativo indirecto (= qué), no conjunción.
+    // La conjunción «que» va seguida de verbo conjugado, no de infinitivo.
+    {
+      re: /sab[ei\u00ED]\w*\s+(que)\s+[a-z\u00E1\u00E9\u00ED\u00F3\u00FA\u00FC\u00F1]+(?:ar|er|ir)/gi,
+      word: 'que', correct: 'qu\u00E9',
+      explanation: '\u00ABque\u00BB en interrogativa indirecta tras verbo de conocimiento debe llevar tilde \u2192 \u00ABqu\u00E9\u00BB.',
+    },
   ];
   for (const { re, word, correct, explanation } of COGNITIVO_PATTERNS) {
     let m;
@@ -608,11 +616,6 @@ window.PLUMIA.runLocalAunTilde = function(text) {
       correctForm: 'ni aun',
       explanation: '\u00ABni a\u00FAn\u00BB: en la locuci\u00F3n \u00ABni aun\u00BB (= ni siquiera), no lleva tilde \u2192 \u00ABni aun\u00BB.',
     },
-    {
-      re: /a\u00FAn\s+\S+(?:ando|iendo|yendo)/gi,
-      correctForm: 'aun + gerundio',
-      explanation: '\u00ABa\u00FAn\u00BB + gerundio: en construcci\u00F3n concesiva (= incluso + gerundio), no lleva tilde \u2192 \u00ABaun\u00BB.',
-    },
   ];
 
   for (const { re, correctForm, explanation } of extraAccentPatterns) {
@@ -628,6 +631,28 @@ window.PLUMIA.runLocalAunTilde = function(text) {
         correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
       });
     }
+  }
+
+  // ── «aún» + gerundio: detección separada para evitar backtracking frágil ────
+  // Capturamos la siguiente palabra con un regex simple y verificamos el sufijo
+  // con .test() anclado en $, que es mucho más fiable en todos los runtimes.
+  const reGerundio = /a\u00FAn\s+(\S+)/gi;
+  reGerundio.lastIndex = 0;
+  let mG;
+  while ((mG = reGerundio.exec(text)) !== null) {
+    const nextWord = mG[1] || '';
+    if (!/(?:ando|iendo|yendo)$/i.test(nextWord)) continue;
+    if (!atWordBoundary(text, mG.index, mG[0].length)) continue;
+    const correctedWord = 'aun ' + nextWord.toLowerCase().replace(/\u00FA/g, 'u'); // quitar tilde si la lleva
+    const ctx = _localCtx(text, mG.index, mG[0].length, 0, 25);
+    findings.push({
+      originalText: ctx,
+      aunForm: mG[0],
+      correctForm: correctedWord,
+      errorType: 'tilde_sobrante',
+      explanation: '\u00ABa\u00FAn ' + nextWord + '\u00BB: construcci\u00F3n concesiva (= incluso + gerundio) no lleva tilde \u2192 \u00ABaun ' + nextWord + '\u00BB.',
+      correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
+    });
   }
 
   return findings;
