@@ -77,7 +77,19 @@ const BRACKET_TYPES = new Set([
 window.PLUMIA.buildCommentText = function buildCommentText(mergedFindings) {
   if (!mergedFindings || !mergedFindings.length) return '';
   if (mergedFindings.length === 1) return _singleComment(mergedFindings[0]);
-  return mergedFindings.map((f,i) => `${i+1}) ${_singleComment(f)}`).join('\n');
+  // Deduplicar: si varios findings tienen la misma wordForm→correctForm
+  // (p.ej. detección local + API de «mi»→«mí»), eliminar duplicados.
+  const seenKey = new Set();
+  const unique = mergedFindings.filter(f => {
+    const w = (f.miForm || f.siForm || f.tuForm || f.aunForm || f.wordForm || f.verb || '').toLowerCase().trim();
+    const c = (f.correctForm || '').toLowerCase().trim();
+    const k = `${f.correctionId}|${w}|${c}`;
+    if (seenKey.has(k)) return false;
+    seenKey.add(k);
+    return true;
+  });
+  if (unique.length === 1) return _singleComment(unique[0]);
+  return unique.map((f,i) => `${i+1}) ${_singleComment(f)}`).join('\n');
 };
 const buildCommentText = window.PLUMIA.buildCommentText;
 

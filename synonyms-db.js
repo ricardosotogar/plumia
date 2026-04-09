@@ -392,7 +392,14 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
       if (!wordBoundaryOK(text, m.index, m[0].length)) continue;
       if (m[1].indexOf('\u00F3') !== -1 || m[1].indexOf('\u00E9') !== -1 ||
           m[1].indexOf('\u00ED') !== -1 || m[1].indexOf('\u00FA') !== -1) continue; // ya tiene tilde
-      const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
+      // originalText sin prefijo: empezar en el propio «ni» (no 15 chars antes).
+      // El prefijo de 15 chars causaba que el charIdx de resolución coincidiera con
+      // el de COGNITIVO_PATTERNS (ambos apuntaban a «sabía» en charIdx 6) →
+      // orden de aplicación indeterminado → a veces COGNITIVO iba primero e insertaba
+      // ◆ dentro del rango que NI_PATTERNS necesitaba para body.search → FAIL.
+      // Sin prefijo el charIdx de NI_PATTERNS queda en la posición real de «ni»
+      // (siempre > charIdx de COGNITIVO) → NI_PATTERNS se aplica primero → correcto.
+      const ctx = _localCtx(text, m.index, m[0].length, 0, 5);
       findings.push({
         originalText: ctx, wordForm: m[1], correctForm: correct,
         errorType: 'falta_tilde',
@@ -590,13 +597,14 @@ window.PLUMIA.runLocalAunTilde = function(text) {
       // Si ya contiene 'ú' (U+00FA) es que ya tiene tilde → saltar
       if (m[0].indexOf('\u00FA') !== -1) continue;
       if (!atWordBoundary(text, m.index, m[0].length)) continue;
-      // originalText = solo la primera palabra («aun»), sin sufijo.
-      // Razón: el sufijo de 25 chars puede solaparse con otro ◆ ya insertado
-      // (p.ej. «aun no» → RS1.1 inserta ◆ antes de «no» → body.search falla).
-      // keyText = primera palabra para que _markWord pueda encontrar solo «aun».
+      // originalText = forma completa («aun no») para que _resolvePositions encuentre
+      // la posición correcta en el párrafo. aunForm = solo la primera palabra («aun»):
+      // cuando otro ◆ queda insertado entre «aun» y «no», body.search(«aun no») falla,
+      // pero el fallback de primera-palabra en _applyFinding busca «aun» (whole-word)
+      // y lo encuentra, y luego _markWord con keyText=«aun» lo marca correctamente.
       const firstWord = m[0].split(' ')[0];
       findings.push({
-        originalText: firstWord, aunForm: firstWord, correctForm,
+        originalText: m[0], aunForm: firstWord, correctForm,
         errorType: 'falta_tilde',
         explanation,
         correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
