@@ -442,6 +442,7 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
       if (captured.indexOf('\u00F3') !== -1 || captured.indexOf('\u00E1') !== -1 ||
           captured.indexOf('\u00E9') !== -1 || captured.indexOf('\u00FA') !== -1) continue; // ya tiene tilde
       const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
+      console.log('[PLUMIA-DBG] interrogativas COGNITIVO DETECTADO: wordForm="' + captured + '" m[0]="' + m[0] + '" originalText="' + ctx + '"');
       findings.push({
         originalText: ctx, wordForm: captured, correctForm: correct,
         errorType: 'falta_tilde',
@@ -645,6 +646,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
     if (!atWordBoundary(text, mG.index, mG[0].length)) continue;
     const correctedWord = 'aun ' + nextWord.toLowerCase().replace(/\u00FA/g, 'u'); // quitar tilde si la lleva
     const ctx = _localCtx(text, mG.index, mG[0].length, 0, 25);
+    console.log('[PLUMIA-DBG] aun_tilde gerundio DETECTADO: aunForm="' + mG[0] + '" originalText="' + ctx + '"');
     findings.push({
       originalText: ctx,
       aunForm: mG[0],
