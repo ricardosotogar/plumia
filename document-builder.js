@@ -336,9 +336,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const keyText = this._getKeyText(finding);
     if (!keyText || keyText.length < 2) return;
 
-    const _dbgW = corrId === 'aun_tilde' || corrId === 'interrogativas_tilde';
-    if (_dbgW) console.log('[PLUMIA-DBG] _markWord corrId=' + corrId + ' keyText="' + keyText + '"');
-
     const hl   = HIGHLIGHT[corrId];
     const mww  = corrId!=='muletillas' && corrId!=='dequeismo';
     let items;
@@ -352,10 +349,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
       sr.load('items');
       await ctx.sync();
-      if (_dbgW) console.log('[PLUMIA-DBG] bracketCollision=' + bracketSr.items.length + ' range.search items=' + sr.items.length);
       if (bracketSr.items.length) { hadBracketCollision = true; }
       else { items = sr.items; }
-    } catch(e) { if (_dbgW) console.log('[PLUMIA-DBG] range.search EXCEPTION: ' + e.message); items = []; }
+    } catch(e) { items = []; }
 
     // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
     // body.search('◆¹'+keyText) falla porque Word no indexa U+00B9 como literal.
@@ -391,18 +387,16 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const para = range.paragraphs.getFirst();
         const sr2 = para.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr2.load('items'); await ctx.sync();
-        if (_dbgW) console.log('[PLUMIA-DBG] para.search items=' + sr2.items.length);
         items = sr2.items;
-      } catch(e) { if (_dbgW) console.log('[PLUMIA-DBG] para.search EXCEPTION: ' + e.message); items = []; }
+      } catch(e) { items = []; }
     }
 
     if (!items.length) {
       const sr3 = body.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
       sr3.load('items'); await ctx.sync();
-      if (_dbgW) console.log('[PLUMIA-DBG] body.search(keyText) items=' + sr3.items.length);
       items = sr3.items;
     }
-    if (!items.length) { if (_dbgW) console.log('[PLUMIA-DBG] NO TARGET FOUND → return'); return; }
+    if (!items.length) return;
 
     const target = items[0];
 
@@ -610,25 +604,33 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       search = lastSpace > 25 ? cut.substring(0, lastSpace).trimEnd() : cut;
     }
 
-    const _dbg = corrId === 'aun_tilde' || corrId === 'interrogativas_tilde';
-    if (_dbg) console.log('[PLUMIA-DBG] _applyFinding corrId=' + corrId + ' search="' + search + '"');
     const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
     sr.load('items'); await ctx.sync();
     let range;
     if (sr.items.length) {
-      if (_dbg) console.log('[PLUMIA-DBG] body.search OK items=' + sr.items.length);
       range = sr.items[0];
     } else {
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
       const lastSp = shorter.lastIndexOf(' ');
       if (lastSp > 15) shorter = shorter.substring(0, lastSp).trimEnd();
-      if (_dbg) console.log('[PLUMIA-DBG] body.search FAIL → shorter="' + shorter + '"');
       const sr2 = body.search(shorter, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
-      if (_dbg) console.log('[PLUMIA-DBG] shorter search items=' + sr2.items.length);
-      if (!sr2.items.length) { if (_dbg) console.log('[PLUMIA-DBG] SKIPPED'); return; }
-      range = sr2.items[0];
+      if (sr2.items.length) {
+        range = sr2.items[0];
+      } else {
+        // Último recurso: buscar solo la primera palabra del término.
+        // Útil cuando otro ◆ ya insertado queda entre dos palabras del originalText
+        // (ej. «aun no» → RS insertó ◆ antes de «no» → buscar «aun» suelto).
+        const spIdx = search.indexOf(' ');
+        if (spIdx > 2) {
+          const firstWord = search.substring(0, spIdx);
+          const sr3 = body.search(firstWord, {matchCase:false,matchWholeWord:true,matchWildcards:false});
+          sr3.load('items'); await ctx.sync();
+          if (sr3.items.length) range = sr3.items[0];
+        }
+        if (!range) return;
+      }
     }
 
     if (corrId === 'leismo')            await this._markPronoun (ctx, body, range, finding, colorHex, comment);

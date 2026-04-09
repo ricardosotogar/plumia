@@ -441,8 +441,10 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
       if (!captured) continue;
       if (captured.indexOf('\u00F3') !== -1 || captured.indexOf('\u00E1') !== -1 ||
           captured.indexOf('\u00E9') !== -1 || captured.indexOf('\u00FA') !== -1) continue; // ya tiene tilde
-      const ctx = _localCtx(text, m.index, m[0].length, 15, 10);
-      console.log('[PLUMIA-DBG] interrogativas COGNITIVO DETECTADO: wordForm="' + captured + '" m[0]="' + m[0] + '" originalText="' + ctx + '"');
+      // originalText = solo la forma coincidente (sin prefijo de 15 chars).
+      // El prefijo cruzaba límites de párrafo (chunks unen párrafos con espacio)
+      // → body.search no encuentra texto cross-párrafo → finding saltado.
+      const ctx = m[0].trim();
       findings.push({
         originalText: ctx, wordForm: captured, correctForm: correct,
         errorType: 'falta_tilde',
@@ -588,11 +590,13 @@ window.PLUMIA.runLocalAunTilde = function(text) {
       // Si ya contiene 'ú' (U+00FA) es que ya tiene tilde → saltar
       if (m[0].indexOf('\u00FA') !== -1) continue;
       if (!atWordBoundary(text, m.index, m[0].length)) continue;
-      // before=0: el contexto empieza EN el match para no cruzar límites de párrafo
-      // (Word no encuentra texto cross-párrafo en body.search)
-      const ctx = _localCtx(text, m.index, m[0].length, 0, 25);
+      // originalText = solo la primera palabra («aun»), sin sufijo.
+      // Razón: el sufijo de 25 chars puede solaparse con otro ◆ ya insertado
+      // (p.ej. «aun no» → RS1.1 inserta ◆ antes de «no» → body.search falla).
+      // keyText = primera palabra para que _markWord pueda encontrar solo «aun».
+      const firstWord = m[0].split(' ')[0];
       findings.push({
-        originalText: ctx, aunForm: m[0], correctForm,
+        originalText: firstWord, aunForm: firstWord, correctForm,
         errorType: 'falta_tilde',
         explanation,
         correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
@@ -624,9 +628,10 @@ window.PLUMIA.runLocalAunTilde = function(text) {
     re.lastIndex = 0;
     while ((m = re.exec(text)) !== null) {
       if (!atWordBoundary(text, m.index, m[0].length)) continue;
-      const ctx = _localCtx(text, m.index, m[0].length, 0, 25);
+      // originalText = solo la forma coincidente, sin sufijo (el sufijo puede solaparse
+      // con otro ◆ ya insertado → body.search fallaría).
       findings.push({
-        originalText: ctx, aunForm: m[0], correctForm,
+        originalText: m[0], aunForm: m[0], correctForm,
         errorType: 'tilde_sobrante',
         explanation,
         correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
@@ -643,12 +648,14 @@ window.PLUMIA.runLocalAunTilde = function(text) {
   while ((mG = reGerundio.exec(text)) !== null) {
     const nextWord = mG[1] || '';
     if (!/(?:ando|iendo|yendo)$/i.test(nextWord)) continue;
+    // «cuando» acaba en «ando» pero NO es gerundio (ya cubierto por extraAccentPatterns)
+    if (nextWord.toLowerCase() === 'cuando') continue;
     if (!atWordBoundary(text, mG.index, mG[0].length)) continue;
     const correctedWord = 'aun ' + nextWord.toLowerCase().replace(/\u00FA/g, 'u'); // quitar tilde si la lleva
-    const ctx = _localCtx(text, mG.index, mG[0].length, 0, 25);
-    console.log('[PLUMIA-DBG] aun_tilde gerundio DETECTADO: aunForm="' + mG[0] + '" originalText="' + ctx + '"');
+    // originalText = solo la forma coincidente, sin sufijo (el sufijo puede cruzar párrafos
+    // o solaparse con otro ◆ ya insertado → body.search fallaría).
     findings.push({
-      originalText: ctx,
+      originalText: mG[0],
       aunForm: mG[0],
       correctForm: correctedWord,
       errorType: 'tilde_sobrante',
