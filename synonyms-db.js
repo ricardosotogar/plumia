@@ -602,7 +602,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
       // cuando otro ◆ queda insertado entre «aun» y «no», body.search(«aun no») falla,
       // pero el fallback de primera-palabra en _applyFinding busca «aun» (whole-word)
       // y lo encuentra, y luego _markWord con keyText=«aun» lo marca correctamente.
-      const firstWord = m[0].split(' ')[0];
+      const firstWord = m[0].split(/\s+/)[0]; // split en cualquier espacio (incl. nbsp)
       findings.push({
         originalText: m[0], aunForm: firstWord, correctForm,
         errorType: 'falta_tilde',
