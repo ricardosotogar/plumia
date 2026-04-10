@@ -638,8 +638,10 @@ window.PLUMIA.runLocalAunTilde = function(text) {
       if (!atWordBoundary(text, m.index, m[0].length)) continue;
       // originalText = solo la forma coincidente, sin sufijo (el sufijo puede solaparse
       // con otro ◆ ya insertado → body.search fallaría).
+      // aunForm = solo la palabra «aún»/«aun» del match (no el match completo).
+      const aunF = (m[0].match(/\ba[u\u00FA]n\b/i) || [m[0]])[0];
       findings.push({
-        originalText: m[0], aunForm: m[0], correctForm,
+        originalText: m[0], aunForm: aunF, correctForm,
         errorType: 'tilde_sobrante',
         explanation,
         correctionId: 'aun_tilde', colorId: 7, label: 'Uso de \u00ABa\u00FAn\u00BB con tilde diacr\u00EDtica', directFix: false,
@@ -664,7 +666,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
     // o solaparse con otro ◆ ya insertado → body.search fallaría).
     findings.push({
       originalText: mG[0],
-      aunForm: mG[0],
+      aunForm: 'a\u00FAn', // siempre «aún» — esa es la palabra a marcar
       correctForm: correctedWord,
       errorType: 'tilde_sobrante',
       explanation: '\u00ABa\u00FAn ' + nextWord + '\u00BB: construcci\u00F3n concesiva (= incluso + gerundio) no lleva tilde \u2192 \u00ABaun ' + nextWord + '\u00BB.',

@@ -420,26 +420,29 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const target = items[0];
 
-    // Anti-duplicado: si ◆+keyText ya existe en el párrafo, otra detección ya
-    // marcó esta misma palabra (p.ej. detección local + API ambas marcando «mi»).
-    // En ese caso solo añadimos el comentario al ◆ existente y salimos.
-    try {
-      const dupPara = range.paragraphs.getFirst();
-      const dupSr = dupPara.search('\u25C6' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-      dupSr.load('items'); await ctx.sync();
-      if (dupSr.items.length) {
-        // Ya marcado — solo agregar comentario si aún no tiene uno
-        if (commentText) {
-          const symSr = dupSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-          symSr.load('items'); await ctx.sync();
-          if (symSr.items.length) {
-            symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
-            await ctx.sync();
+    // Anti-duplicado: SOLO para pronombres (mi/si/tu) donde local + API pueden generar
+    // dos findings para el mismo pronombre en el mismo contexto. Si ◆+keyText ya existe
+    // en el párrafo → otro finding ya lo marcó → añadir comentario y salir.
+    // NO aplicar a aun_tilde ni interrogativas_tilde: en esos casos el mismo keyText
+    // puede aparecer varias veces en el párrafo y todas deben marcarse.
+    if (corrId === 'mi_tilde' || corrId === 'si_tilde' || corrId === 'tu_tilde') {
+      try {
+        const dupPara = range.paragraphs.getFirst();
+        const dupSr = dupPara.search('\u25C6' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        dupSr.load('items'); await ctx.sync();
+        if (dupSr.items.length > 0) {
+          if (commentText) {
+            const symSr = dupSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+            symSr.load('items'); await ctx.sync();
+            if (symSr.items.length) {
+              symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+              await ctx.sync();
+            }
           }
+          return;
         }
-        return;
-      }
-    } catch(e) {}
+      } catch(e) {}
+    }
 
     // Fase 1: highlight sobre rango existente (OK) + solo insertar ◆
     if (hl) target.font.highlightColor = hl;
@@ -645,12 +648,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       .trim();
     if (!search || search.length < 3) return;
 
-    // ── LOG diagnóstico: solo para aun_tilde (borrar tras confirmar) ──────────
-    if (corrId === 'aun_tilde') {
-      const kTxt = this._getKeyText(finding);
-      console.log(`[PLUMIA aun_tilde] originalText="${finding.originalText}" aunForm="${finding.aunForm}" search="${search}" keyText="${kTxt}" mergedLen=${(finding.mergedFindings||[finding]).length}`);
-    }
-
     if (search.length >= 70) {
       const cut = search.substring(0, 70);
       const lastSpace = cut.lastIndexOf(' ');
@@ -660,9 +657,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
     sr.load('items'); await ctx.sync();
     let range;
-    let _dbgPath = '?'; // solo para logs diagnóstico
     if (sr.items.length) {
-      range = sr.items[0]; _dbgPath = 'directo';
+      range = sr.items[0];
     } else {
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
@@ -671,22 +667,40 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const sr2 = body.search(shorter, {matchCase:false,matchWholeWord:false,matchWildcards:false});
       sr2.load('items'); await ctx.sync();
       if (sr2.items.length) {
-        range = sr2.items[0]; _dbgPath = 'shorter';
+        range = sr2.items[0];
       } else {
-        // Último recurso: buscar solo la primera palabra del término.
+        // Último recurso: buscar solo la primera palabra del término en el párrafo correcto.
         // Útil cuando otro ◆ ya insertado queda entre dos palabras del originalText
         // (ej. «aun no» → RS insertó ◆ antes de «no» → buscar «aun» suelto).
+        // IMPORTANTE: usar el párrafo específico (_paraIdx) en vez de body.search para
+        // evitar marcar una instancia fuera del rango seleccionado (items[0] del body
+        // sería el primer «aun» del documento, no necesariamente el del párrafo correcto).
         const spIdx = search.indexOf(' ');
         if (spIdx > 2) {
           const firstWord = search.substring(0, spIdx);
-          const sr3 = body.search(firstWord, {matchCase:false,matchWholeWord:true,matchWildcards:false});
-          sr3.load('items'); await ctx.sync();
-          if (sr3.items.length) { range = sr3.items[0]; _dbgPath = 'firstWord:'+firstWord; }
+          const pi = finding._paraIdx;
+          if (pi !== undefined) {
+            try {
+              body.load('paragraphs');
+              await ctx.sync();
+              const targetPara = body.paragraphs.items[pi];
+              if (targetPara) {
+                const sr3 = targetPara.search(firstWord, {matchCase:false,matchWholeWord:true,matchWildcards:false});
+                sr3.load('items'); await ctx.sync();
+                if (sr3.items.length) range = sr3.items[0];
+              }
+            } catch(e) {}
+          }
+          if (!range) {
+            // Fallback final si _paraIdx no disponible
+            const sr3 = body.search(firstWord, {matchCase:false,matchWholeWord:true,matchWildcards:false});
+            sr3.load('items'); await ctx.sync();
+            if (sr3.items.length) range = sr3.items[0];
+          }
         }
-        if (!range) { if (corrId==='aun_tilde') console.log(`[PLUMIA aun_tilde] FAIL: no range. search="${search}"`); return; }
+        if (!range) return;
       }
     }
-    if (corrId === 'aun_tilde') console.log(`[PLUMIA aun_tilde] path=${_dbgPath} range found`);
 
     if (corrId === 'leismo')            await this._markPronoun (ctx, body, range, finding, colorHex, comment);
     else if (BRACKET_TYPES.has(corrId)) await this._markBrackets(ctx, body, range, finding, colorHex, comment);
