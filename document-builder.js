@@ -710,6 +710,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         if (spIdx > 2) {
           const firstWord = search.substring(0, spIdx);
           const pi = finding._paraIdx;
+          // Buscar SOLO en el párrafo correcto (_paraIdx). Nunca usar body.search
+          // para el firstWord: matchCase:false en Word ignora tildes → «Aun» encontraría
+          // «aún» en cualquier parte del documento (incluso fuera de la selección).
           if (pi !== undefined) {
             try {
               body.load('paragraphs');
@@ -721,12 +724,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
                 if (sr3.items.length) range = sr3.items[0];
               }
             } catch(e) {}
-          }
-          if (!range) {
-            // Fallback final si _paraIdx no disponible
-            const sr3 = body.search(firstWord, {matchCase:false,matchWholeWord:true,matchWildcards:false});
-            sr3.load('items'); await ctx.sync();
-            if (sr3.items.length) range = sr3.items[0];
           }
         }
         if (!range) return;
