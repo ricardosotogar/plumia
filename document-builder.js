@@ -491,6 +491,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     //    El tail de origText no es el final real → usar las últimas palabras
     //    del párrafo real del documento.
     let endInserted = false;
+    let endInsertedIdx = -1; // índice (posición izq-der) del ◆² que insertamos en el párrafo
     const origTailBase = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
     // Última palabra real de origText (sirve para estilado posterior de ◆²)
     const lastWordOfOrig = origTailBase.split(/\s+/).pop() || '';
@@ -510,6 +511,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (endsWithPunct) {
       try {
         const para = range.paragraphs.getFirst();
+        // Contar ◆² ya existentes ANTES de insertar → índice para Fase 3
+        const preCloseSrA = para.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        preCloseSrA.load('items');
         // doneSr: ocurrencias que ya tienen ◆² justo detrás (ya procesadas en back-to-front)
         const doneSr = para.search(origTailBase + '\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
         doneSr.load('items');
@@ -517,11 +521,13 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const allSr = para.search(origTailBase, {matchCase:false, matchWholeWord:false, matchWildcards:false});
         allSr.load('items');
         await ctx.sync();
+        const existingCloseA = preCloseSrA.items.length;
         // La más reciente no procesada = allSr.length - doneSr.length - 1
         const targetIdx = allSr.items.length - doneSr.items.length - 1;
         if (targetIdx >= 0 && targetIdx < allSr.items.length) {
           allSr.items[targetIdx].getRange('End').insertText('\u25C6\u00B2', 'After');
           endInserted = true;
+          endInsertedIdx = existingCloseA;
         }
       } catch(e) {}
     } else {
@@ -529,7 +535,11 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       try {
         const paraFb = range.paragraphs.getFirst();
         paraFb.load('text');
+        // Contar ◆² ya existentes ANTES de insertar → índice para Fase 3
+        const preCloseSrB = paraFb.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        preCloseSrB.load('items');
         await ctx.sync();
+        const existingCloseB = preCloseSrB.items.length;
         const pt = (paraFb.text || '').trim();
         const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
                            .split(/\s+/).slice(-3).join(' ').trim();
@@ -539,6 +549,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           if (endSr2.items.length) {
             endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
             endInserted = true;
+            endInsertedIdx = existingCloseB;
           }
         }
       } catch(e) {}
@@ -595,16 +606,20 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await _styleAndComment(ctx, body, '\u25C6\u00B9' + openWords, colorHex, commentText);
     }
 
-    // Fase 3: estilizar ◆² — buscar 'últimaPalabra◆²' para identificar el ◆² de ESTE finding.
-    // Esto es robusto cuando hay varios ◆² en el mismo párrafo (varios bracket findings).
+    // Fase 3: estilizar ◆² usando el índice pre-inserción (endInsertedIdx).
+    // Contar cuántos ◆² hay en el párrafo ANTES de insertar el nuestro es la única
+    // forma fiable cuando varios bracket-findings del mismo párrafo insertan su ◆²
+    // en la misma posición (p.ej. todos al final del párrafo en Case B).
+    // El ◆² que insertamos queda en items[endInsertedIdx] (orden izq→der).
     try {
       const para2 = range.paragraphs.getFirst();
       let styled2 = false;
-      if (lastWordOfOrig.length >= 3) {
-        const endAnchorSr = para2.search(lastWordOfOrig + '\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        endAnchorSr.load('items'); await ctx.sync();
-        if (endAnchorSr.items.length) {
-          const symSr2 = endAnchorSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+      if (endInsertedIdx >= 0) {
+        const allCloseSr = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        allCloseSr.load('items'); await ctx.sync();
+        if (allCloseSr.items.length > endInsertedIdx) {
+          const closeSym = allCloseSr.items[endInsertedIdx];
+          const symSr2 = closeSym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
           symSr2.load('items'); await ctx.sync();
           if (symSr2.items.length) {
             symSr2.items[0].font.color = colorHex;
@@ -615,17 +630,33 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         }
       }
       if (!styled2) {
-        // Fallback: items[0] = el más temprano en el párrafo en back-to-front
-        const endSr2 = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        endSr2.load('items'); await ctx.sync();
-        if (endSr2.items.length) {
-          const sym2   = endSr2.items[0];
-          const symSr2 = sym2.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-          symSr2.load('items'); await ctx.sync();
-          if (symSr2.items.length) {
-            symSr2.items[0].font.color = colorHex;
-            symSr2.items[0].font.bold  = true;
-            await ctx.sync();
+        // Fallback (endInsertedIdx no disponible por excepción en inserción):
+        // anchor lastWordOfOrig◆² → si falla, items[0]
+        if (lastWordOfOrig.length >= 3) {
+          const endAnchorSr = para2.search(lastWordOfOrig + '\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endAnchorSr.load('items'); await ctx.sync();
+          if (endAnchorSr.items.length) {
+            const symSr2 = endAnchorSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+            symSr2.load('items'); await ctx.sync();
+            if (symSr2.items.length) {
+              symSr2.items[0].font.color = colorHex;
+              symSr2.items[0].font.bold  = true;
+              await ctx.sync();
+              styled2 = true;
+            }
+          }
+        }
+        if (!styled2) {
+          const endSr2 = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endSr2.load('items'); await ctx.sync();
+          if (endSr2.items.length) {
+            const symSr2 = endSr2.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
+            symSr2.load('items'); await ctx.sync();
+            if (symSr2.items.length) {
+              symSr2.items[0].font.color = colorHex;
+              symSr2.items[0].font.bold  = true;
+              await ctx.sync();
+            }
           }
         }
       }
