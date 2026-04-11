@@ -736,18 +736,45 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             await ctx.sync();
             const targetPara = body.paragraphs.items[pi];
             if (targetPara) {
-              // Construir frase contextual: palabra previa + keyText para evitar falsos positivos.
-              // Ej: originalText="Lo hice para mi, no" keyText="mi" → buscar "para mi" (único)
-              // en vez de "mi" solo (que puede aparecer en "mismo", "familia", etc.).
-              let searchPhrase = keyTextFallback;
-              const origNorm = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
-              const ktPos = origNorm.toLowerCase().indexOf(keyTextFallback.toLowerCase());
-              if (ktPos > 0) {
-                const before = origNorm.substring(Math.max(0, ktPos - 15), ktPos);
-                const lastSpBefore = before.lastIndexOf(' ');
-                const prefixWord = (lastSpBefore >= 0 ? before.substring(lastSpBefore + 1) : before).trim();
-                if (prefixWord.length >= 2) searchPhrase = prefixWord + ' ' + keyTextFallback;
+              // Leer el texto REAL del párrafo (ya incluye los ◆ insertados por findings anteriores).
+              // Construir frase de búsqueda mapeando keyText sobre el texto con símbolos:
+              // 1) stripear ◆ del texto real → paraClean
+              // 2) localizar keyText en paraClean → ktPosClean
+              // 3) mapear ktPosClean al texto real contando los ◆ insertados antes → ktPosReal
+              // 4) tomar ventana de ~15 chars antes + keyText del texto real (con ◆ si los hay)
+              // Así, si verbos_comedin ya insertó ◆ antes de "hice" → texto real = "para ◆mi" →
+              // body.search("para ◆mi") encuentra exactamente ese rango.
+              targetPara.load('text');
+              await ctx.sync();
+              const paraReal  = targetPara.text || '';
+              const DIAMOND   = '\u25C6';
+              const paraClean = paraReal.replace(/\u25C6[\u00B9\u00B2]?/g, ''); // strip ◆ ◆¹ ◆²
+              const ktLower   = keyTextFallback.toLowerCase();
+              const ktPosClean = paraClean.toLowerCase().indexOf(ktLower);
+
+              let searchPhrase = keyTextFallback; // fallback si no encontramos posición
+              if (ktPosClean >= 0) {
+                // Mapear posición clean → posición real (cada ◆ insertado antes suma 1-2 chars)
+                let cleanIdx = 0, realIdx = 0;
+                while (cleanIdx < ktPosClean && realIdx < paraReal.length) {
+                  const ch = paraReal[realIdx];
+                  if (ch === DIAMOND) {
+                    // ◆ o ◆¹/◆²: avanzar en real sin avanzar en clean
+                    realIdx++;
+                    if (realIdx < paraReal.length && (paraReal[realIdx] === '\u00B9' || paraReal[realIdx] === '\u00B2')) realIdx++;
+                  } else {
+                    cleanIdx++; realIdx++;
+                  }
+                }
+                const ktPosReal = realIdx;
+                // Extraer ventana contextual: hasta 15 chars antes (en texto real) + keyText
+                const windowStart = Math.max(0, ktPosReal - 15);
+                const windowRaw   = paraReal.substring(windowStart, ktPosReal + keyTextFallback.length);
+                // Quitar puntuación/espacios al inicio de la ventana hasta primera letra o ◆
+                const trimmedWindow = windowRaw.replace(/^[^a-zA-Z\u00C0-\u024F\u25C6]+/, '');
+                if (trimmedWindow.length >= keyTextFallback.length) searchPhrase = trimmedWindow;
               }
+
               dbg(`_applyFinding keyText fallback phrase="${searchPhrase}" pi=${pi}`);
               const sr3 = targetPara.search(searchPhrase, {matchCase:false,matchWholeWord:false,matchWildcards:false});
               sr3.load('items'); await ctx.sync();
@@ -755,8 +782,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
               if (sr3.items.length) {
                 range = sr3.items[0];
               } else if (searchPhrase !== keyTextFallback) {
-                // La frase contextual no encontró nada (p.ej. hay un ◆ entre el prefijo y keyText).
-                // Reintentar con solo keyText.
+                // La ventana contextual no encontró nada → reintentar con solo keyText.
                 const sr4 = targetPara.search(keyTextFallback, {matchCase:false,matchWholeWord:false,matchWildcards:false});
                 sr4.load('items'); await ctx.sync();
                 dbg(`_applyFinding keyText bare fallback found=${sr4.items.length}`);
