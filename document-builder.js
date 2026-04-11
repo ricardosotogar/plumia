@@ -14,6 +14,12 @@
 window.PLUMIA.BUILDER_VERSION = '8.78';
 console.log('📦 document-builder.js v8.78 cargado');
 
+// ── Flag global de debug ──────────────────────────────────────────────────────
+// Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
+// Para desactivar:  window.PLUMIA_DEBUG = false
+if (typeof window.PLUMIA_DEBUG === 'undefined') window.PLUMIA_DEBUG = false;
+const dbg = (...args) => { if (window.PLUMIA_DEBUG) console.log('[PLUMIA]', ...args); };
+
 const SYMBOL_COLORS = {
   'leismo':                'FF0000',
   'adverbios_mente':       '2E7D00',
@@ -408,6 +414,16 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const sr2 = para.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr2.load('items'); await ctx.sync();
         items = sr2.items;
+        // Bug de Office JS: matchWholeWord:true lanza ItemNotFound cuando la palabra está
+        // al inicio del párrafo (no hay carácter previo que actúe de límite de palabra).
+        // Solución: reintentar con matchWholeWord:false — items[0] sigue siendo la primera
+        // ocurrencia del keyText en el párrafo, que es la correcta.
+        if (!items.length && mww) {
+          const sr2b = para.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          sr2b.load('items'); await ctx.sync();
+          items = sr2b.items;
+          dbg(`_markWord L2b (mww=false) keyText="${keyText}" found=${items.length}`);
+        }
       } catch(e) { items = []; }
     }
 
@@ -668,6 +684,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── Aplicar un finding individual ─────────────────────────────────────────
   async _applyFinding(ctx, body, finding) {
     const corrId   = finding.correctionId;
+    dbg(`_applyFinding corrId=${corrId} orig="${(finding.originalText||'').substring(0,40)}" paraIdx=${finding._paraIdx}`);
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
     // Normalizar espacios: reemplazar saltos de línea y espacios Unicode especiales
@@ -721,11 +738,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             if (targetPara) {
               const sr3 = targetPara.search(keyTextFallback, {matchCase:false,matchWholeWord:false,matchWildcards:false});
               sr3.load('items'); await ctx.sync();
+              dbg(`_applyFinding keyText fallback="${keyTextFallback}" pi=${pi} found=${sr3.items.length}`);
               if (sr3.items.length) range = sr3.items[0];
             }
-          } catch(e) {}
+          } catch(e) { dbg(`_applyFinding keyText fallback catch: ${e.message}`); }
         }
-        if (!range) return;
+        if (!range) { dbg(`_applyFinding FAIL: no range`); return; }
       }
     }
 
