@@ -430,6 +430,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const dupPara = range.paragraphs.getFirst();
         const dupSr = dupPara.search('\u25C6' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
         dupSr.load('items'); await ctx.sync();
+        if (corrId === 'mi_tilde') console.log(`[mi_tilde] anti-dup search="◆${keyText}" found=${dupSr.items.length}`);
         if (dupSr.items.length > 0) {
           if (commentText) {
             const symSr = dupSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
@@ -670,6 +671,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const corrId   = finding.correctionId;
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
+    if (corrId === 'mi_tilde') {
+      console.log(`[mi_tilde] originalText="${finding.originalText}" miForm="${finding.miForm}" mergedLen=${(finding.mergedFindings||[finding]).length}`);
+    }
     // Normalizar espacios: reemplazar saltos de línea y espacios Unicode especiales
     // (nbsp U+00A0, thin-space U+2009, etc.) por espacio normal, para que body.search()
     // y los indexOf(' ') de los fallbacks funcionen correctamente.
