@@ -354,8 +354,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   async _markWord(ctx, body, range, finding, colorHex, commentText) {
     const corrId  = finding.correctionId;
     const keyText = this._getKeyText(finding);
-    const _dbg = corrId==='aun_tilde'||corrId==='mi_tilde';
-    if (_dbg) console.log(`[DBG _markWord] corrId=${corrId} keyText="${keyText}"`);
     if (!keyText || keyText.length < 2) return;
 
     const hl   = HIGHLIGHT[corrId];
@@ -373,8 +371,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await ctx.sync();
       if (bracketSr.items.length) { hadBracketCollision = true; }
       else { items = sr.items; }
-      if (_dbg) console.log(`[DBG _markWord] bracketCollision=${hadBracketCollision} L1items=${items?items.length:'n/a'}`);
-    } catch(e) { items = []; if (_dbg) console.log(`[DBG _markWord] L1 catch: ${e.message}`); }
+    } catch(e) { items = []; }
 
     // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
     // body.search('◆¹'+keyText) falla porque Word no indexa U+00B9 como literal.
@@ -411,17 +408,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const sr2 = para.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr2.load('items'); await ctx.sync();
         items = sr2.items;
-        if (_dbg) console.log(`[DBG _markWord] L2items=${items.length}`);
-      } catch(e) { items = []; if (_dbg) console.log(`[DBG _markWord] L2 catch: ${e.message}`); }
+      } catch(e) { items = []; }
     }
 
     if (!items.length) {
       const sr3 = body.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
       sr3.load('items'); await ctx.sync();
       items = sr3.items;
-      if (_dbg) console.log(`[DBG _markWord] L3items=${items.length}`);
     }
-    if (!items.length) { if (_dbg) console.log(`[DBG _markWord] FAIL: no items`); return; }
+    if (!items.length) return;
 
     const target = items[0];
 
@@ -673,8 +668,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── Aplicar un finding individual ─────────────────────────────────────────
   async _applyFinding(ctx, body, finding) {
     const corrId   = finding.correctionId;
-    const _dbgF = corrId==='aun_tilde'||corrId==='mi_tilde';
-    if (_dbgF) console.log(`[DBG _apply] corrId=${corrId} orig="${(finding.originalText||'').substring(0,40)}" paraIdx=${finding._paraIdx}`);
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
     // Normalizar espacios: reemplazar saltos de línea y espacios Unicode especiales
@@ -697,7 +690,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     let range;
     if (sr.items.length) {
       range = sr.items[0];
-      if (_dbgF) console.log(`[DBG _apply] path=directo`);
     } else {
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
@@ -707,7 +699,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       sr2.load('items'); await ctx.sync();
       if (sr2.items.length) {
         range = sr2.items[0];
-        if (_dbgF) console.log(`[DBG _apply] path=shorter`);
       } else {
         // Último recurso: buscar solo la primera palabra del término en el párrafo correcto.
         // Útil cuando otro ◆ ya insertado queda entre dos palabras del originalText
@@ -716,38 +707,23 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         // evitar marcar una instancia fuera del rango seleccionado (items[0] del body
         // sería el primer «aun» del documento, no necesariamente el del párrafo correcto).
         const spIdx = search.indexOf(' ');
-        // Quitar puntuación final para que matchWholeWord:true funcione.
-        // Probar con varias "anclas": primero la primera palabra, luego la última
-        // (útil cuando el originalText cruza párrafos y la primera palabra está en el
-        // párrafo anterior — la última palabra sí está en el párrafo correcto).
+        // Buscar el keyText del finding directamente en el párrafo correcto (_paraIdx).
+        // Usar matchWholeWord:false para evitar el bug de Office JS donde matchWholeWord:true
+        // falla cuando la palabra está al inicio del párrafo (no hay límite de palabra previo).
+        // El keyText es lo que _markWord va a buscar de todos modos, así que es el ancla ideal.
         const pi = finding._paraIdx;
-        if (pi !== undefined) {
-          const anchors = [];
-          if (spIdx > 2) {
-            const fw = search.substring(0, spIdx).replace(/[.,;:!?\u2014\u2026]+$/, '');
-            if (fw.length >= 3) anchors.push(fw);
-          }
-          // Última palabra significativa (≥4 chars, sin puntuación)
-          const lastSpIdx = search.lastIndexOf(' ');
-          if (lastSpIdx > 0) {
-            const lw = search.substring(lastSpIdx + 1).replace(/[.,;:!?\u2014\u2026]+$/, '');
-            if (lw.length >= 4 && !anchors.includes(lw)) anchors.push(lw);
-          }
-          for (const anchor of anchors) {
-            if (range) break;
-            try {
-              body.load('paragraphs');
-              await ctx.sync();
-              const targetPara = body.paragraphs.items[pi];
-              if (targetPara) {
-                const sr3 = targetPara.search(anchor, {matchCase:false,matchWholeWord:true,matchWildcards:false});
-                sr3.load('items'); await ctx.sync();
-                if (_dbgF) console.log(`[DBG _apply] anchor="${anchor}" pi=${pi} found=${sr3.items.length}`);
-                if (sr3.items.length) range = sr3.items[0];
-              }
-            } catch(e) { if (_dbgF) console.log(`[DBG _apply] anchor catch: ${e.message}`); }
-          }
-          if (_dbgF) console.log(`[DBG _apply] after anchors: range=${!!range} anchors=${JSON.stringify(anchors)} pi=${pi}`);
+        const keyTextFallback = this._getKeyText(finding) || '';
+        if (pi !== undefined && keyTextFallback.length >= 2) {
+          try {
+            body.load('paragraphs');
+            await ctx.sync();
+            const targetPara = body.paragraphs.items[pi];
+            if (targetPara) {
+              const sr3 = targetPara.search(keyTextFallback, {matchCase:false,matchWholeWord:false,matchWildcards:false});
+              sr3.load('items'); await ctx.sync();
+              if (sr3.items.length) range = sr3.items[0];
+            }
+          } catch(e) {}
         }
         if (!range) return;
       }
