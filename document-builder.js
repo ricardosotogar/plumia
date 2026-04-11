@@ -363,7 +363,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (!keyText || keyText.length < 2) return;
 
     const hl   = HIGHLIGHT[corrId];
-    const mww  = corrId!=='muletillas' && corrId!=='dequeismo';
+    // aun_tilde usa mww:false porque mww:true lanza ItemNotFound en Office JS
+    // cuando la palabra está al inicio del párrafo (sin carácter previo para el límite).
+    const mww  = corrId!=='muletillas' && corrId!=='dequeismo' && corrId!=='aun_tilde';
     let items;
     let hadBracketCollision = false;
 
@@ -734,10 +736,32 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             await ctx.sync();
             const targetPara = body.paragraphs.items[pi];
             if (targetPara) {
-              const sr3 = targetPara.search(keyTextFallback, {matchCase:false,matchWholeWord:false,matchWildcards:false});
+              // Construir frase contextual: palabra previa + keyText para evitar falsos positivos.
+              // Ej: originalText="Lo hice para mi, no" keyText="mi" → buscar "para mi" (único)
+              // en vez de "mi" solo (que puede aparecer en "mismo", "familia", etc.).
+              let searchPhrase = keyTextFallback;
+              const origNorm = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
+              const ktPos = origNorm.toLowerCase().indexOf(keyTextFallback.toLowerCase());
+              if (ktPos > 0) {
+                const before = origNorm.substring(Math.max(0, ktPos - 15), ktPos);
+                const lastSpBefore = before.lastIndexOf(' ');
+                const prefixWord = (lastSpBefore >= 0 ? before.substring(lastSpBefore + 1) : before).trim();
+                if (prefixWord.length >= 2) searchPhrase = prefixWord + ' ' + keyTextFallback;
+              }
+              dbg(`_applyFinding keyText fallback phrase="${searchPhrase}" pi=${pi}`);
+              const sr3 = targetPara.search(searchPhrase, {matchCase:false,matchWholeWord:false,matchWildcards:false});
               sr3.load('items'); await ctx.sync();
-              dbg(`_applyFinding keyText fallback="${keyTextFallback}" pi=${pi} found=${sr3.items.length}`);
-              if (sr3.items.length) range = sr3.items[0];
+              dbg(`_applyFinding keyText fallback found=${sr3.items.length}`);
+              if (sr3.items.length) {
+                range = sr3.items[0];
+              } else if (searchPhrase !== keyTextFallback) {
+                // La frase contextual no encontró nada (p.ej. hay un ◆ entre el prefijo y keyText).
+                // Reintentar con solo keyText.
+                const sr4 = targetPara.search(keyTextFallback, {matchCase:false,matchWholeWord:false,matchWildcards:false});
+                sr4.load('items'); await ctx.sync();
+                dbg(`_applyFinding keyText bare fallback found=${sr4.items.length}`);
+                if (sr4.items.length) range = sr4.items[0];
+              }
             }
           } catch(e) { dbg(`_applyFinding keyText fallback catch: ${e.message}`); }
         }
