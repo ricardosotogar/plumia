@@ -371,17 +371,20 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     // Batch: comprobar colisión con bracket (◆¹+keyText) + buscar dentro del rango
     // — un solo sync para ambas operaciones.
-    // aun_tilde se excluye del check de bracket: body.search('◆¹Aun', matchCase:false)
-    // produce falso positivo cuando existe '◆¹Aún cuando' en el mismo párrafo porque
-    // Word trata matchCase:false como insensible a tildes (Aun ≡ Aún). matchCase:true
-    // evitaría el falso positivo, pero lanza error en ctx.sync() con U+00B9 en algunos
-    // runtimes de Office JS, cancelando también el sr del mismo batch → items=[].
-    // Solución: saltarse bracketSr para aun_tilde; los brackets de frases_largas nunca
-    // abren exactamente en "Aun" (sin tilde), así que no hay riesgo real de colisión.
+    //
+    // Falsos positivos conocidos del bracketSr:
+    // A) aun_tilde: body.search('◆¹Aun', matchCase:false) encuentra '◆¹Aún cuando' porque
+    //    Word es insensible a tildes con matchCase:false (Aun ≡ Aún). matchCase:true
+    //    evitaría el FP pero lanza error en ctx.sync() con U+00B9 → cancela también sr.
+    //    Solución: saltarse bracketSr para aun_tilde (frases_largas nunca abre en 'Aun').
+    // B) mi/si/tu_tilde: body.search('◆¹mi', matchWholeWord:false) encuentra '◆¹misma'
+    //    porque 'misma' empieza por 'mi' y matchWholeWord:false permite coincidencia parcial.
+    //    Solución: usar matchWholeWord:true → '◆¹mi' solo coincide si 'mi' es palabra entera
+    //    (seguida de espacio/coma, no de otra letra). Si lanza (raro), catch → items=[] → L2.
     const skipBracketSr = corrId === 'aun_tilde';
     try {
       if (!skipBracketSr) {
-        const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:true, matchWildcards:false});
         bracketSr.load('items');
         const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr.load('items');
