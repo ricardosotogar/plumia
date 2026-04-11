@@ -370,15 +370,30 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     let hadBracketCollision = false;
 
     // Batch: comprobar colisión con bracket (◆¹+keyText) + buscar dentro del rango
-    // — un solo sync para ambas operaciones
+    // — un solo sync para ambas operaciones.
+    // aun_tilde se excluye del check de bracket: body.search('◆¹Aun', matchCase:false)
+    // produce falso positivo cuando existe '◆¹Aún cuando' en el mismo párrafo porque
+    // Word trata matchCase:false como insensible a tildes (Aun ≡ Aún). matchCase:true
+    // evitaría el falso positivo, pero lanza error en ctx.sync() con U+00B9 en algunos
+    // runtimes de Office JS, cancelando también el sr del mismo batch → items=[].
+    // Solución: saltarse bracketSr para aun_tilde; los brackets de frases_largas nunca
+    // abren exactamente en "Aun" (sin tilde), así que no hay riesgo real de colisión.
+    const skipBracketSr = corrId === 'aun_tilde';
     try {
-      const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:true, matchWholeWord:false, matchWildcards:false});
-      bracketSr.load('items');
-      const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
-      sr.load('items');
-      await ctx.sync();
-      if (bracketSr.items.length) { hadBracketCollision = true; }
-      else { items = sr.items; }
+      if (!skipBracketSr) {
+        const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        bracketSr.load('items');
+        const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
+        sr.load('items');
+        await ctx.sync();
+        if (bracketSr.items.length) { hadBracketCollision = true; }
+        else { items = sr.items; }
+      } else {
+        const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
+        sr.load('items');
+        await ctx.sync();
+        items = sr.items;
+      }
     } catch(e) { items = []; }
 
     // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
