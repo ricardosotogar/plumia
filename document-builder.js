@@ -382,6 +382,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     //   visual sería ◆◆¹palabra (dos símbolos), aceptable y sin pérdida de información.
     const skipBracketSr = corrId === 'aun_tilde' || corrId === 'mi_tilde'
                        || corrId === 'si_tilde'  || corrId === 'tu_tilde';
+    dbg(`_markWord ENTER corrId="${corrId}" keyText="${keyText}" mww=${mww} skip=${skipBracketSr}`);
     try {
       if (!skipBracketSr) {
         const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:true, matchWildcards:false});
@@ -389,15 +390,17 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr.load('items');
         await ctx.sync();
+        dbg(`_markWord L1 bracketSr=${bracketSr.items.length} sr=${sr.items.length}`);
         if (bracketSr.items.length) { hadBracketCollision = true; }
         else { items = sr.items; }
       } else {
         const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr.load('items');
         await ctx.sync();
+        dbg(`_markWord L1-skip sr=${sr.items.length}`);
         items = sr.items;
       }
-    } catch(e) { items = []; }
+    } catch(e) { dbg(`_markWord L1 CATCH: ${e.message}`); items = []; }
 
     // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
     // body.search('◆¹'+keyText) falla porque Word no indexa U+00B9 como literal.
@@ -434,22 +437,20 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const sr2 = para.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr2.load('items'); await ctx.sync();
         items = sr2.items;
-      } catch(e) { items = []; }
+        dbg(`_markWord L2 para mww=${mww} found=${items.length}`);
+      } catch(e) { dbg(`_markWord L2 CATCH: ${e.message}`); items = []; }
     }
 
     if (!items.length) {
-      // Bug de Office JS: matchWholeWord:true devuelve 0 cuando la palabra está al inicio
-      // del párrafo (no hay carácter previo que actúe de límite de palabra).
-      // Solución: reintentar con matchWholeWord:false en el mismo párrafo.
-      // Usar para.search (no body.search) para no salir del párrafo correcto.
       try {
         const para3 = range.paragraphs.getFirst();
         const sr3 = para3.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
         sr3.load('items'); await ctx.sync();
         items = sr3.items;
-        dbg(`_markWord L3 para mww=false keyText="${keyText}" found=${items.length}`);
-      } catch(e) {}
+        dbg(`_markWord L3 para mww=false found=${items.length}`);
+      } catch(e) { dbg(`_markWord L3 CATCH: ${e.message}`); }
     }
+    dbg(`_markWord items final=${items.length} hadCollision=${hadBracketCollision}`);
     if (!items.length) return;
 
     const target = items[0];
@@ -464,7 +465,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const dupPara = range.paragraphs.getFirst();
         const dupSr = dupPara.search('\u25C6' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
         dupSr.load('items'); await ctx.sync();
+        dbg(`_markWord anti-dup ◆${keyText} found=${dupSr.items.length}`);
         if (dupSr.items.length > 0) {
+          dbg(`_markWord anti-dup HIT → skip insert`);
           if (commentText) {
             const symSr = dupSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
             symSr.load('items'); await ctx.sync();
@@ -479,9 +482,11 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     }
 
     // Fase 1: highlight sobre rango existente (OK) + solo insertar ◆
+    dbg(`_markWord INSERTING ◆ before "${keyText}"`);
     if (hl) target.font.highlightColor = hl;
     _insertSymbol(target.getRange('Start'), 'Before', '\u25C6');
     await ctx.sync();
+    dbg(`_markWord ◆ inserted OK`);
 
     // Fase 2: buscar ◆+keyText dentro del párrafo (matchCase:false, items[0] = back-to-front).
     // NO usar body.search con matchCase:true: si hay dos ocurrencias del mismo verbo en el
