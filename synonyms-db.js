@@ -711,7 +711,12 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores: findings:[].`,
     ids: ['concordancia', 'dequeismo'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector gramatical experto en español. Analiza el texto y devuelve DOS análisis:
 1. "concordancia": errores de concordancia sujeto-verbo o sustantivo-adjetivo. Ej: "Los alumnos llegó" es error (debe ser "llegaron"). NO señales leísmos.
-2. "dequeismo": dequeísmo ("pienso de que" → "pienso que") o queísmo ("seguro que" → "seguro de que")
+2. "dequeismo": dequeísmo o queísmo.
+- DEQUEÍSMO: uso de "de que" donde solo corresponde "que". Ej: "pienso de que" → "pienso que", "creo de que" → "creo que", "dice de que" → "dice que".
+- QUEÍSMO: omisión de preposición obligatoria antes de "que". Dos tipos:
+  a) Verbos/adjetivos que exigen preposición: "seguro que" → "seguro de que", "enterarse que" → "enterarse de que", "acordarse que" → "acordarse de que", "olvidarse que" → "olvidarse de que", "alegrarse que" → "alegrarse de que", "arrepentirse que" → "arrepentirse de que", "darse cuenta que" → "darse cuenta de que", "estar seguro que" → "estar seguro de que".
+  b) Verbos pronominales que rigen preposición: "fijarse que" → "fijarse en que", "confiar que" → "confiar en que", "insistir que" → "insistir en que", "empeñarse que" → "empeñarse en que", "pensar que" cuando significa reflexionar → "pensar en que".
+  NO señales como error: "decir que", "pensar que" (opinión), "creer que", "saber que" — estas construcciones son correctas sin preposición.
 
 Texto:
 ${text}
