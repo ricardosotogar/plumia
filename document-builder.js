@@ -745,8 +745,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
                 if (_dbgF) console.log(`[DBG _apply] anchor="${anchor}" pi=${pi} found=${sr3.items.length}`);
                 if (sr3.items.length) range = sr3.items[0];
               }
-            } catch(e) {}
+            } catch(e) { if (_dbgF) console.log(`[DBG _apply] anchor catch: ${e.message}`); }
           }
+          if (_dbgF) console.log(`[DBG _apply] after anchors: range=${!!range} anchors=${JSON.stringify(anchors)} pi=${pi}`);
         }
         if (!range) return;
       }
