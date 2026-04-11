@@ -372,7 +372,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     // Batch: comprobar colisión con bracket (◆¹+keyText) + buscar dentro del rango
     // — un solo sync para ambas operaciones
     try {
-      const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+      const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:true, matchWholeWord:false, matchWildcards:false});
       bracketSr.load('items');
       const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
       sr.load('items');
@@ -765,6 +765,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
                   } else {
                     cleanIdx++; realIdx++;
                   }
+                }
+                // Avanzar realIdx más allá de cualquier ◆ que preceda al carácter limpio en
+                // esta posición (caso frecuente: ktPosClean=0 y el párrafo empieza con ◆¹Aun).
+                while (realIdx < paraReal.length && paraReal[realIdx] === DIAMOND) {
+                  realIdx++;
+                  if (realIdx < paraReal.length && (paraReal[realIdx] === '\u00B9' || paraReal[realIdx] === '\u00B2')) realIdx++;
                 }
                 const ktPosReal = realIdx;
                 // Extraer ventana contextual: hasta 15 chars antes (en texto real) + keyText
