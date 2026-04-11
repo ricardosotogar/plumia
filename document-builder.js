@@ -369,19 +369,19 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     let items;
     let hadBracketCollision = false;
 
-    // Batch: comprobar colisión con bracket (◆¹+keyText) + buscar dentro del rango
-    // — un solo sync para ambas operaciones.
+    // Batch: buscar keyText dentro del rango + (para corrId no-tilde) comprobar colisión bracket.
     //
-    // Falsos positivos conocidos del bracketSr:
-    // A) aun_tilde: body.search('◆¹Aun', matchCase:false) encuentra '◆¹Aún cuando' porque
-    //    Word es insensible a tildes con matchCase:false (Aun ≡ Aún). matchCase:true
-    //    evitaría el FP pero lanza error en ctx.sync() con U+00B9 → cancela también sr.
-    //    Solución: saltarse bracketSr para aun_tilde (frases_largas nunca abre en 'Aun').
-    // B) mi/si/tu_tilde: body.search('◆¹mi', matchWholeWord:false) encuentra '◆¹misma'
-    //    porque 'misma' empieza por 'mi' y matchWholeWord:false permite coincidencia parcial.
-    //    Solución: usar matchWholeWord:true → '◆¹mi' solo coincide si 'mi' es palabra entera
-    //    (seguida de espacio/coma, no de otra letra). Si lanza (raro), catch → items=[] → L2.
-    const skipBracketSr = corrId === 'aun_tilde';
+    // Los pronombres/adverbios de tilde (mi/si/tu/aun) se excluyen del bracketSr:
+    // — Son palabras de 2-3 letras que nunca son la primera palabra de un bracket de
+    //   frases_largas/voz_pasiva, así que una colisión real ◆¹+keyText es prácticamente
+    //   imposible en la práctica.
+    // — El bracketSr con ◆¹ (U+25C6 + U+00B9) produce falsos positivos sistemáticos
+    //   con matchCase:false (aun≡Aún, mi en misma) y lanza error en ctx.sync() con
+    //   matchCase:true o matchWholeWord:true, cancelando también el sr del mismo batch.
+    // — Si en algún caso extremo un bracket coincide con la misma posición, el resultado
+    //   visual sería ◆◆¹palabra (dos símbolos), aceptable y sin pérdida de información.
+    const skipBracketSr = corrId === 'aun_tilde' || corrId === 'mi_tilde'
+                       || corrId === 'si_tilde'  || corrId === 'tu_tilde';
     try {
       if (!skipBracketSr) {
         const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:true, matchWildcards:false});
