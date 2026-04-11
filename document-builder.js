@@ -354,6 +354,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   async _markWord(ctx, body, range, finding, colorHex, commentText) {
     const corrId  = finding.correctionId;
     const keyText = this._getKeyText(finding);
+    const _dbg = corrId==='aun_tilde'||corrId==='mi_tilde';
+    if (_dbg) console.log(`[DBG _markWord] corrId=${corrId} keyText="${keyText}"`);
     if (!keyText || keyText.length < 2) return;
 
     const hl   = HIGHLIGHT[corrId];
@@ -371,7 +373,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       await ctx.sync();
       if (bracketSr.items.length) { hadBracketCollision = true; }
       else { items = sr.items; }
-    } catch(e) { items = []; }
+      if (_dbg) console.log(`[DBG _markWord] bracketCollision=${hadBracketCollision} L1items=${items?items.length:'n/a'}`);
+    } catch(e) { items = []; if (_dbg) console.log(`[DBG _markWord] L1 catch: ${e.message}`); }
 
     // Si ya existe ◆¹+keyText: la corrección bracket ya marcó esta posición.
     // body.search('◆¹'+keyText) falla porque Word no indexa U+00B9 como literal.
@@ -408,15 +411,17 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const sr2 = para.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr2.load('items'); await ctx.sync();
         items = sr2.items;
-      } catch(e) { items = []; }
+        if (_dbg) console.log(`[DBG _markWord] L2items=${items.length}`);
+      } catch(e) { items = []; if (_dbg) console.log(`[DBG _markWord] L2 catch: ${e.message}`); }
     }
 
     if (!items.length) {
       const sr3 = body.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
       sr3.load('items'); await ctx.sync();
       items = sr3.items;
+      if (_dbg) console.log(`[DBG _markWord] L3items=${items.length}`);
     }
-    if (!items.length) return;
+    if (!items.length) { if (_dbg) console.log(`[DBG _markWord] FAIL: no items`); return; }
 
     const target = items[0];
 
@@ -668,6 +673,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── Aplicar un finding individual ─────────────────────────────────────────
   async _applyFinding(ctx, body, finding) {
     const corrId   = finding.correctionId;
+    const _dbgF = corrId==='aun_tilde'||corrId==='mi_tilde';
+    if (_dbgF) console.log(`[DBG _apply] corrId=${corrId} orig="${(finding.originalText||'').substring(0,40)}" paraIdx=${finding._paraIdx}`);
     const colorHex = SYMBOL_COLORS[corrId] || '555555';
     const comment  = buildCommentText(finding.mergedFindings || [finding]);
     // Normalizar espacios: reemplazar saltos de línea y espacios Unicode especiales
@@ -690,6 +697,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     let range;
     if (sr.items.length) {
       range = sr.items[0];
+      if (_dbgF) console.log(`[DBG _apply] path=directo`);
     } else {
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
@@ -699,6 +707,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       sr2.load('items'); await ctx.sync();
       if (sr2.items.length) {
         range = sr2.items[0];
+        if (_dbgF) console.log(`[DBG _apply] path=shorter`);
       } else {
         // Último recurso: buscar solo la primera palabra del término en el párrafo correcto.
         // Útil cuando otro ◆ ya insertado queda entre dos palabras del originalText
@@ -733,6 +742,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
               if (targetPara) {
                 const sr3 = targetPara.search(anchor, {matchCase:false,matchWholeWord:true,matchWildcards:false});
                 sr3.load('items'); await ctx.sync();
+                if (_dbgF) console.log(`[DBG _apply] anchor="${anchor}" pi=${pi} found=${sr3.items.length}`);
                 if (sr3.items.length) range = sr3.items[0];
               }
             } catch(e) {}
