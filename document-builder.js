@@ -414,23 +414,21 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const sr2 = para.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr2.load('items'); await ctx.sync();
         items = sr2.items;
-        // Bug de Office JS: matchWholeWord:true lanza ItemNotFound cuando la palabra está
-        // al inicio del párrafo (no hay carácter previo que actúe de límite de palabra).
-        // Solución: reintentar con matchWholeWord:false — items[0] sigue siendo la primera
-        // ocurrencia del keyText en el párrafo, que es la correcta.
-        if (!items.length && mww) {
-          const sr2b = para.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          sr2b.load('items'); await ctx.sync();
-          items = sr2b.items;
-          dbg(`_markWord L2b (mww=false) keyText="${keyText}" found=${items.length}`);
-        }
       } catch(e) { items = []; }
     }
 
     if (!items.length) {
-      const sr3 = body.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-      sr3.load('items'); await ctx.sync();
-      items = sr3.items;
+      // Bug de Office JS: matchWholeWord:true devuelve 0 cuando la palabra está al inicio
+      // del párrafo (no hay carácter previo que actúe de límite de palabra).
+      // Solución: reintentar con matchWholeWord:false en el mismo párrafo.
+      // Usar para.search (no body.search) para no salir del párrafo correcto.
+      try {
+        const para3 = range.paragraphs.getFirst();
+        const sr3 = para3.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        sr3.load('items'); await ctx.sync();
+        items = sr3.items;
+        dbg(`_markWord L3 para mww=false keyText="${keyText}" found=${items.length}`);
+      } catch(e) {}
     }
     if (!items.length) return;
 
