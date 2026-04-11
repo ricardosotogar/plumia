@@ -707,21 +707,31 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         // evitar marcar una instancia fuera del rango seleccionado (items[0] del body
         // sería el primer «aun» del documento, no necesariamente el del párrafo correcto).
         const spIdx = search.indexOf(' ');
-        if (spIdx > 2) {
-          // Quitar puntuación final (ej. "tengo." → "tengo") para que
-          // matchWholeWord:true funcione — Word no trata "." como límite de palabra.
-          const firstWord = search.substring(0, spIdx).replace(/[.,;:!?\u2014\u2026]+$/, '');
-          const pi = finding._paraIdx;
-          // Buscar SOLO en el párrafo correcto (_paraIdx). Nunca usar body.search
-          // para el firstWord: matchCase:false en Word ignora tildes → «Aun» encontraría
-          // «aún» en cualquier parte del documento (incluso fuera de la selección).
-          if (pi !== undefined) {
+        // Quitar puntuación final para que matchWholeWord:true funcione.
+        // Probar con varias "anclas": primero la primera palabra, luego la última
+        // (útil cuando el originalText cruza párrafos y la primera palabra está en el
+        // párrafo anterior — la última palabra sí está en el párrafo correcto).
+        const pi = finding._paraIdx;
+        if (pi !== undefined) {
+          const anchors = [];
+          if (spIdx > 2) {
+            const fw = search.substring(0, spIdx).replace(/[.,;:!?\u2014\u2026]+$/, '');
+            if (fw.length >= 3) anchors.push(fw);
+          }
+          // Última palabra significativa (≥4 chars, sin puntuación)
+          const lastSpIdx = search.lastIndexOf(' ');
+          if (lastSpIdx > 0) {
+            const lw = search.substring(lastSpIdx + 1).replace(/[.,;:!?\u2014\u2026]+$/, '');
+            if (lw.length >= 4 && !anchors.includes(lw)) anchors.push(lw);
+          }
+          for (const anchor of anchors) {
+            if (range) break;
             try {
               body.load('paragraphs');
               await ctx.sync();
               const targetPara = body.paragraphs.items[pi];
               if (targetPara) {
-                const sr3 = targetPara.search(firstWord, {matchCase:false,matchWholeWord:true,matchWildcards:false});
+                const sr3 = targetPara.search(anchor, {matchCase:false,matchWholeWord:true,matchWildcards:false});
                 sr3.load('items'); await ctx.sync();
                 if (sr3.items.length) range = sr3.items[0];
               }
@@ -806,9 +816,23 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           }
           if (!search || search.length < 3) continue;
           const sl = search.toLowerCase();
+          let found = false;
           for (let pi = 0; pi < paras.length; pi++) {
             const idx = (paras[pi].text || '').toLowerCase().indexOf(sl);
-            if (idx !== -1) { positions[fi] = [pi, idx]; break; }
+            if (idx !== -1) { positions[fi] = [pi, idx]; found = true; break; }
+          }
+          // Fallback: el originalText puede cruzar párrafos (chunks unen párrafos con espacio).
+          // Intentar con el tramo final del texto (últimas ~25 chars sin palabra parcial),
+          // que con más probabilidad cabe dentro de un único párrafo.
+          if (!found && sl.length > 15) {
+            const tail = sl.substring(sl.length - 25);
+            const tailClean = tail.indexOf(' ') > 0 ? tail.substring(tail.indexOf(' ')).trim() : tail;
+            if (tailClean.length >= 5) {
+              for (let pi = 0; pi < paras.length; pi++) {
+                const idx = (paras[pi].text || '').toLowerCase().indexOf(tailClean);
+                if (idx !== -1) { positions[fi] = [pi, idx]; break; }
+              }
+            }
           }
         }
       });
