@@ -813,6 +813,12 @@ Si no hay errores: findings:[].`,
     buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='si_tilde').prompt.replace('{TEXT}', text),
   },
   {
+    groupKey: 'puntuacion_prosa',
+    label: 'Puntuación en prosa',
+    ids: ['puntuacion_prosa'],
+    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='puntuacion_prosa').prompt.replace('{TEXT}', text),
+  },
+  {
     groupKey: 'dialogo',
     label: 'Diálogo',
     ids: ['puntuacion_dialogo'],
