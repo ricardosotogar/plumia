@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '9.16';
-console.log('📦 document-builder.js v9.16 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.17';
+console.log('📦 document-builder.js v9.17 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -516,35 +516,42 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
   // ── Brackets ─────────────────────────────────────────────────────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    // `range` viene de _applyFinding (body.search), pero puede estar TRUNCADO:
-    // _applyFinding recorta originalText a ~60-70 chars si supera 70 chars.
+    // Dos razones por las que range.getRange('End') puede NO ser el final real de la frase:
     //
-    // Dos estrategias para colocar ◆²:
+    // 1) origText largo (>= 70 chars): _applyFinding truncó el search a ~60 chars,
+    //    por lo que range sólo cubre el inicio de la frase.
     //
-    // A) originalText corto (< 70 chars): range cubre la frase completa.
-    //    → range.getRange('End') es exacto y correcto para múltiples findings
-    //      del mismo tipo en el mismo párrafo (cada range está acotado a su frase).
+    // 2) origText sin puntuación de cierre (.!?…): el API devolvió el texto truncado
+    //    a mitad de frase (p. ej. "Cuando por fin llegaron...dos horas de"),
+    //    aunque la frase en el documento sea más larga. Aunque origText.length < 70
+    //    y el range lo encuentre entero, el End del range NO es el final real.
     //
-    // B) originalText largo (>= 70 chars, típico de frases_largas): range sólo
-    //    cubre los primeros ~60 chars de la frase. Usar range.getRange('End')
-    //    colocaría ◆² en medio de la frase, no al final.
-    //    → Buscar las últimas palabras de originalText en el párrafo para localizar
-    //      el final real. Como frases_largas son únicas en el párrafo, esta búsqueda
-    //      no produce falsos positivos entre findings distintos.
+    // Condición para Case A (range.getRange('End') es correcto):
+    //   origText termina en puntuación de cierre Y origText.length < 70
+    //
+    // En cualquier otro caso (Case B): hay que localizar el final real en el documento:
+    //   - Si origText no termina en punct (truncado por el API): leer el texto del párrafo,
+    //     encontrar origText en él, luego buscar el siguiente punto de cierre. Extraer
+    //     las últimas palabras antes de ese punto como ancla de búsqueda.
+    //   - Si origText termina en punct pero es largo (>= 70 chars): las últimas palabras
+    //     de origText (sin punct) son el ancla directa.
     //
     // Word Win32 lanza ItemNotFound para búsquedas que contengan U+25C6 (◆),
     // así que ninguna cadena de búsqueda contiene ◆.
-    // insertText() devuelve el Range del texto insertado → estilizamos directamente.
     // Orden: primero ◆² (al End) y luego ◆¹ (al Start), para que la inserción de
     // ◆¹ no desplace el End del range antes de insertar ◆².
 
-    const origText  = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
-    const truncated = origText.length >= 70;
+    const origText      = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
+    const endsWithPunct = /[.!?\u2026]$/.test(origText);
+    // Case A solo si la frase es completa (termina en punct) Y corta (el range la cubre entera)
+    const isCaseA = endsWithPunct && origText.length < 70;
 
     let endInserted = false;
 
-    if (!truncated) {
-      // ── Case A: range cubre la frase completa ────────────────────────────────
+    if (isCaseA) {
+      // ── Case A: range cubre la frase completa → End es exacto ────────────────
+      // Correcto para múltiples findings del mismo tipo en el mismo párrafo,
+      // porque cada range está acotado a su propia frase.
       try {
         const ins2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
         ins2.font.color = colorHex;
@@ -553,16 +560,49 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         endInserted = true;
       } catch(e) { dbg(`_markBrackets CaseA ◆²: ${e.message}`); }
     } else {
-      // ── Case B: range truncado → buscar últimas palabras de origText ─────────
-      // body.search() es más fiable que body.paragraphs.items[pi].search() porque
-      // no requiere cargar la colección de párrafos (que puede fallar si el proxy
-      // body ya fue usado para otra búsqueda en el mismo Word.run).
+      // ── Case B: buscar el final real de la frase en el documento ─────────────
       try {
-        const origTail  = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-        const lastWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
-        dbg(`_markBrackets CaseB lastWords="${lastWords}"`);
-        if (lastWords.length >= 4) {
-          const endSr = body.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+        let searchAnchor = '';
+
+        if (!endsWithPunct) {
+          // origText truncado por el API (no tiene punto de cierre):
+          // leer el texto del párrafo, localizar origText en él, buscar
+          // el siguiente punto de cierre y extraer ancla de las palabras anteriores.
+          body.load('paragraphs');
+          await ctx.sync();
+          const pi         = finding._paraIdx;
+          const targetPara = (pi !== undefined && body.paragraphs.items[pi])
+                             ? body.paragraphs.items[pi] : null;
+          if (targetPara) {
+            targetPara.load('text');
+            await ctx.sync();
+            // Limpiar ◆ que pudieran haberse insertado por findings anteriores
+            const paraClean = (targetPara.text || '')
+                              .replace(/[\r\n]+/g, ' ')
+                              .replace(/\u25C6[\u00B9\u00B2]?/g, '');
+            const origStart = paraClean.toLowerCase().indexOf(origText.toLowerCase());
+            if (origStart >= 0) {
+              const origEnd  = origStart + origText.length;
+              const rest     = paraClean.substring(origEnd);
+              const punctIdx = rest.search(/[.!?\u2026]/);
+              if (punctIdx >= 0) {
+                // Palabras antes del punto de cierre como ancla
+                const zone  = paraClean.substring(Math.max(0, origEnd + punctIdx - 30), origEnd + punctIdx);
+                const words = zone.trim().split(/\s+/).filter(w => w.length > 0);
+                searchAnchor = words.slice(-3).join(' ').trim();
+              }
+            }
+          }
+        } else {
+          // origText completo pero largo (>= 70 chars, search truncado por _applyFinding):
+          // las últimas palabras de origText están en el documento, usarlas como ancla.
+          const origTail = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+          searchAnchor   = origTail.split(/\s+/).slice(-3).join(' ').trim();
+        }
+
+        dbg(`_markBrackets CaseB anchor="${searchAnchor}"`);
+        if (searchAnchor.length >= 4) {
+          const endSr = body.search(searchAnchor, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr.load('items');
           await ctx.sync();
           dbg(`_markBrackets CaseB items=${endSr.items.length}`);
@@ -579,7 +619,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     // ── Último recurso ────────────────────────────────────────────────────────
     if (!endInserted) {
-      console.warn(`_markBrackets lastResort ◆²: "${origText.substring(0,50)}..."`);
+      console.warn(`_markBrackets lastResort ◆²: "${origText.substring(0,60)}"`);
       try {
         const ins2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
         ins2.font.color = colorHex;
