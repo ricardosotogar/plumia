@@ -51,8 +51,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     return new Promise((resolve, reject) => {
       Word.run(async (ctx) => {
         try {
-          // Comprobar selección solo si no se fuerza doc completo
+          // Comprobar selección solo si no se fuerza doc completo.
+          // Prioridad: texto capturado en requestCostEstimate() (antes de que el foco
+          // vuelva al panel y Word pierda la selección del documento).
           if (!forceFullDoc && !state.forceFullDoc) {
+            const captured = state.capturedSelectionText;
+            if (captured && captured.length > 10) {
+              resolve({ text: captured, isSelection: true, wordCount: this._countWords(captured) });
+              return;
+            }
+            // Fallback: intentar leer la selección activa (puede haberse perdido)
             const sel = ctx.document.getSelection();
             sel.load('text'); await ctx.sync();
             const selectedText = sel.text.trim();
@@ -61,24 +69,38 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
               return;
             }
           }
-          const body = ctx.document.body;
-          body.load('paragraphs'); await ctx.sync();
-          const items = body.paragraphs.items;
-          items.forEach(p => p.load('text, style'));
-          await ctx.sync();
-          const extracted = []; let insideTOC = false;
-          for (const para of items) {
-            const style = (para.style || '').toLowerCase();
-            const text  = (para.text  || '').trim();
-            if (!text) continue;
-            if (style.includes('toc') || style.includes('tabla de contenido') || style.includes('índice')) insideTOC = true;
-            if (insideTOC && (style.includes('heading') || style.includes('normal') || style.includes('cuerpo'))) insideTOC = false;
-            const excluded = insideTOC || style.includes('toc') || style.includes('header') ||
-              style.includes('footer') || style.includes('encabezado') || style.includes('pie de p') ||
-              style.includes('footnote') || style.includes('endnote') || style.includes('comment');
-            if (!excluded) extracted.push(text);
+          // ── Método A: párrafo a párrafo con filtrado de TOC/encabezados ──────
+          // Más preciso pero puede hacer timeout en documentos muy grandes.
+          let fullText = null;
+          try {
+            const body = ctx.document.body;
+            body.load('paragraphs'); await ctx.sync();
+            const items = body.paragraphs.items;
+            items.forEach(p => p.load('text, style'));
+            await ctx.sync();
+            const extracted = []; let insideTOC = false;
+            for (const para of items) {
+              const style = (para.style || '').toLowerCase();
+              const text  = (para.text  || '').trim();
+              if (!text) continue;
+              if (style.includes('toc') || style.includes('tabla de contenido') || style.includes('índice')) insideTOC = true;
+              if (insideTOC && (style.includes('heading') || style.includes('normal') || style.includes('cuerpo'))) insideTOC = false;
+              const excluded = insideTOC || style.includes('toc') || style.includes('header') ||
+                style.includes('footer') || style.includes('encabezado') || style.includes('pie de p') ||
+                style.includes('footnote') || style.includes('endnote') || style.includes('comment');
+              if (!excluded) extracted.push(text);
+            }
+            fullText = extracted.join('\n\n');
+            console.log('[PLUMIA] extractText: método A (párrafos filtrados)');
+          } catch(eA) {
+            // ── Método B: body.text directo ───────────────────────────────────
+            // Fallback para documentos muy grandes donde el método A hace timeout.
+            // Incluye TOC/encabezados pero es robusto y rápido.
+            console.warn(`[PLUMIA] extractText: método A falló (${eA.message}), usando método B (body.text)`);
+            const body2 = ctx.document.body;
+            body2.load('text'); await ctx.sync();
+            fullText = (body2.text || '').trim();
           }
-          const fullText = extracted.join('\n\n');
           resolve({ text: fullText, isSelection: false, wordCount: this._countWords(fullText) });
         } catch(e) { reject(new Error('Error al leer el documento: ' + e.message)); }
       });

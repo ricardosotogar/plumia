@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.21"></script>
-<script src="synonyms-db.js?v=9.21"></script>
-<script src="processor.js?v=9.21"></script>
-<script src="document-builder.js?v=9.21"></script>
+<script src="corrections-config.js?v=9.23"></script>
+<script src="synonyms-db.js?v=9.23"></script>
+<script src="processor.js?v=9.23"></script>
+<script src="document-builder.js?v=9.23"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -409,6 +409,7 @@ const state = {
   wordCount:        0,
   isResuming:       false,
   hasSelection:     false,
+  capturedSelectionText: null,  // texto seleccionado capturado en requestCostEstimate()
   forceFullDoc:     false,
   coherenceAnswered: false,  // true cuando el usuario ha respondido al aviso de coherencia
   coherenceAccepted: false,  // true si respondió Sí
@@ -1300,14 +1301,29 @@ async function cleanDocument() {
 
 // ── CÁLCULO DE COSTE ──────────────────────────────────────────────────────────
 async function requestCostEstimate() {
-  // Obtener número de palabras según si hay selección o no
+  // Obtener número de palabras según si hay selección o no.
+  // IMPORTANTE: capturar el texto seleccionado aquí, mientras la selección
+  // aún está activa. Al pulsar "Confirmar" en el popup, el foco vuelve al
+  // panel y Word puede perder la selección del documento.
+  state.capturedSelectionText = null;
   try {
     await Word.run(async ctx => {
       if (state.hasSelection && !state.forceFullDoc) {
-        // Contar solo las palabras seleccionadas
+        // Leer y guardar el texto seleccionado
         const sel = ctx.document.getSelection();
         sel.load('text'); await ctx.sync();
-        state.wordCount = (sel.text || '').trim().split(/\s+/).filter(Boolean).length;
+        const txt = (sel.text || '').trim();
+        if (txt.length > 10) {
+          state.capturedSelectionText = txt;
+          state.wordCount = txt.split(/\s+/).filter(Boolean).length;
+        } else {
+          // La selección se perdió antes de llegar aquí
+          state.hasSelection = false;
+          state.capturedSelectionText = null;
+          const body = ctx.document.body;
+          body.load('text'); await ctx.sync();
+          state.wordCount = (body.text || '').trim().split(/\s+/).filter(Boolean).length;
+        }
       } else {
         // Contar todo el documento
         const body = ctx.document.body;
