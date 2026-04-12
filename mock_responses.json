@@ -1,0 +1,185 @@
+[
+  {
+    "leismo": {
+      "findings": [
+        {
+          "type": "laismo",
+          "originalText": "Su madre la había llamado dos veces",
+          "correction": "Su madre le había llamado dos veces",
+          "explanation": "En 'llamar a alguien', el complemento es indirecto, por lo que debe usarse 'le' independientemente del género del referente"
+        },
+        {
+          "type": "laismo",
+          "originalText": "Después la dijo que viniera",
+          "correction": "Después le dijo que viniera",
+          "explanation": "En 'decir a alguien', el complemento es indirecto, debe ser 'le'"
+        },
+        {
+          "type": "loismo",
+          "originalText": "alguien lo había avisado de que habría problemas",
+          "correction": "alguien le había avisado de que habría problemas",
+          "explanation": "En 'avisar a alguien', el complemento es indirecto, debe ser 'le'"
+        },
+        {
+          "type": "loismo",
+          "originalText": "pero nadie lo dijo nada concreto",
+          "correction": "pero nadie le dijo nada concreto",
+          "explanation": "En 'decir a alguien', el complemento es indirecto, debe ser 'le'"
+        }
+      ]
+    },
+    "ambiguedad": {
+      "findings": [
+        {
+          "originalText": "Cuando entró, miró a Lucía y luego a Marcos. Él no dijo nada. Tampoco él.",
+          "pronoun": "Él",
+          "possibleReferents": [
+            "Carlos",
+            "Marcos"
+          ],
+          "explanation": "Hay dos referentes masculinos posibles (Carlos y Marcos) y no queda claro cuál de los dos no dijo nada",
+          "suggestion": "Cuando Carlos entró, miró a Lucía y luego a Marcos. Carlos no dijo nada. Tampoco Marcos."
+        }
+      ]
+    }
+  },
+  {
+    "concordancia": {
+      "findings": [
+        {
+          "originalText": "Los vecinos llegó tarde",
+          "errorType": "sujeto-verbo",
+          "explanation": "El sujeto plural 'Los vecinos' no concuerda con el verbo singular 'llegó'",
+          "correction": "Los vecinos llegaron tarde"
+        },
+        {
+          "originalText": "Hubieron problemas con la cerradura",
+          "errorType": "sujeto-verbo",
+          "explanation": "El verbo haber como impersonal debe ir en singular 'hubo', no en plural 'hubieron'",
+          "correction": "Hubo problemas con la cerradura"
+        },
+        {
+          "originalText": "Una serie de malentendidos han complicado",
+          "errorType": "sujeto-verbo",
+          "explanation": "El sujeto 'Una serie' es singular, por lo que el verbo debe concordar en singular 'ha'",
+          "correction": "Una serie de malentendidos ha complicado"
+        },
+        {
+          "originalText": "Solo 33 personas conocían la verdad completa, aunque 68 de ellas habían estado presentes",
+          "errorType": "sustantivo-adjetivo",
+          "explanation": "Incongruencia numérica",
+          "correction": "Solo 33 personas conocían la verdad completa, aunque 68 personas habían estado presentes"
+        }
+      ]
+    },
+    "dequeismo": {
+      "findings": [
+        {
+          "originalText": "no le dije de que viniera sola",
+          "errorType": "dequeismo",
+          "correction": "no le dije que viniera sola"
+        },
+        {
+          "originalText": "Marcos pensó de que todavía había tiempo",
+          "errorType": "dequeismo",
+          "correction": "Marcos pensó que todavía había tiempo"
+        },
+        {
+          "originalText": "Estaba seguro que todo se resolvería",
+          "errorType": "queismo",
+          "correction": "Estaba seguro de que todo se resolvería"
+        },
+        {
+          "originalText": "Me di cuenta que era demasiado tarde",
+          "errorType": "queismo",
+          "correction": "Me di cuenta de que era demasiado tarde"
+        },
+        {
+          "originalText": "El problema era de que nadie se atrevía",
+          "errorType": "dequeismo",
+          "correction": "El problema era que nadie se atrevía"
+        }
+      ]
+    }
+  },
+  {
+    "repeticion": {
+      "findings": [
+        {
+          "word": "puerta",
+          "explanation": "Se repite 4 veces en el mismo párrafo"
+        },
+        {
+          "word": "silencio",
+          "explanation": "Se repite 3 veces en el mismo párrafo"
+        },
+        {
+          "word": "Carlos",
+          "explanation": "Se repite 5 veces en el mismo párrafo"
+        }
+      ]
+    },
+    "verbos": {
+      "findings": [
+        {
+          "originalText": "Hizo un gesto con la mano hacia el sofá",
+          "suggestion": "gesticuló / señaló"
+        },
+        {
+          "originalText": "Puso el vaso sobre la mesa",
+          "suggestion": "dejó / depositó"
+        },
+        {
+          "originalText": "hizo una pausa antes de hablar",
+          "suggestion": "guardó una pausa"
+        },
+        {
+          "originalText": "ponía en evidencia una cosa",
+          "suggestion": "evidenciaba / revelaba"
+        }
+      ]
+    }
+  },
+  {
+    "pleonasmos": {
+      "findings": [
+        {
+          "originalText": "Subió arriba a buscar la llave",
+          "correction": "Subió a buscar la llave"
+        },
+        {
+          "originalText": "Luego bajó abajo para esperar",
+          "correction": "Luego bajó para esperar"
+        },
+        {
+          "originalText": "Entró dentro sin decir nada",
+          "correction": "Entró sin decir nada"
+        },
+        {
+          "originalText": "Salió fuera cuando ya era tarde",
+          "correction": "Salió cuando ya era tarde"
+        },
+        {
+          "originalText": "Carlos volvió a reincidir",
+          "correction": "Carlos reincidió"
+        },
+        {
+          "originalText": "Todos lo vieron con sus propios ojos",
+          "correction": "Todos lo vieron"
+        }
+      ]
+    },
+    "voz_pasiva": {
+      "findings": [
+        {
+          "originalText": "La carta había sido escrita por Lucía",
+          "activeVersion": "Lucía había escrito la carta"
+        },
+        {
+          "originalText": "El mensaje fue entregado por Carlos",
+          "activeVersion": "Carlos entregó el mensaje"
+        }
+      ]
+    }
+  }
+]
