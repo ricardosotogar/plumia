@@ -639,4 +639,37 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   discardSavedProgress() { this._clearProgress(); }
 }
 
+// ── Utilidad de exportación de mock (llamar desde consola) ──────────────────
+// Uso: PLUMIA.exportMock()              → descarga mock_responses.json completo
+//      PLUMIA.exportMock('test1')       → descarga solo el test indicado
+//      PLUMIA.exportMock('test1','mi fichero.json') → nombre de fichero personalizado
+window.PLUMIA.exportMock = function(testKey, filename) {
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || 'null'); } catch(e) {}
+  if (!raw) { console.warn('[PLUMIA] No hay datos en PLUMIA_MOCK_RESPONSES'); return; }
+
+  let dataToExport = raw;
+  if (testKey) {
+    if (!raw[testKey]) { console.warn(`[PLUMIA] No existe el test "${testKey}"`); return; }
+    dataToExport = { [testKey]: raw[testKey] };
+  }
+
+  const json     = JSON.stringify(dataToExport, null, 2);
+  const blob     = new Blob([json], { type: 'application/json' });
+  const url      = URL.createObjectURL(blob);
+  const a        = document.createElement('a');
+  a.href         = url;
+  a.download     = filename || 'mock_responses.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  const tests   = Array.isArray(dataToExport) ? ['(legacy)'] : Object.keys(dataToExport);
+  const total   = Array.isArray(dataToExport)
+    ? dataToExport.length
+    : tests.reduce((s, k) => s + (dataToExport[k]?.responses?.length || 0), 0);
+  console.log(`[PLUMIA] Descargando "${a.download}" — tests: [${tests.join(', ')}], ${total} respuestas, ${(json.length/1024).toFixed(1)} KB`);
+};
+
 })();

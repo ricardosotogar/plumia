@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '8.78';
-console.log('📦 document-builder.js v8.78 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.14';
+console.log('📦 document-builder.js v9.14 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -516,192 +516,81 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
   // ── Brackets ─────────────────────────────────────────────────────────────
   async _markBrackets(ctx, body, range, finding, colorHex, commentText) {
-    const origText = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
+    // `range` viene de _applyFinding (body.search), pero puede estar TRUNCADO:
+    // _applyFinding recorta originalText a ~60-70 chars si supera 70 chars.
+    //
+    // Dos estrategias para colocar ◆²:
+    //
+    // A) originalText corto (< 70 chars): range cubre la frase completa.
+    //    → range.getRange('End') es exacto y correcto para múltiples findings
+    //      del mismo tipo en el mismo párrafo (cada range está acotado a su frase).
+    //
+    // B) originalText largo (>= 70 chars, típico de frases_largas): range sólo
+    //    cubre los primeros ~60 chars de la frase. Usar range.getRange('End')
+    //    colocaría ◆² en medio de la frase, no al final.
+    //    → Buscar las últimas palabras de originalText en el párrafo para localizar
+    //      el final real. Como frases_largas son únicas en el párrafo, esta búsqueda
+    //      no produce falsos positivos entre findings distintos.
+    //
+    // Word Win32 lanza ItemNotFound para búsquedas que contengan U+25C6 (◆),
+    // así que ninguna cadena de búsqueda contiene ◆.
+    // insertText() devuelve el Range del texto insertado → estilizamos directamente.
+    // Orden: primero ◆² (al End) y luego ◆¹ (al Start), para que la inserción de
+    // ◆¹ no desplace el End del range antes de insertar ◆².
 
-    // ── ◆² al final real de la frase ──────────────────────────────────────────
-    // Estrategia bifurcada según si origText termina con puntuación de cierre:
-    //
-    // A) origText termina en .!? → el modelo devolvió la frase completa.
-    //    Las últimas palabras de origText son el final real → buscarlas en body.
-    //    (Fiable para voz_pasiva, puntuacion_dialogo, etc. donde el modelo da
-    //    la frase entera aunque el párrafo contenga varias frases del mismo tipo)
-    //
-    // B) origText NO termina en .!? → fue truncado (frases_largas muy largas).
-    //    El tail de origText no es el final real → usar las últimas palabras
-    //    del párrafo real del documento.
+    const origText  = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
+    const truncated = origText.length >= 70;
+
     let endInserted = false;
-    let endInsertedIdx = -1; // índice (posición izq-der) del ◆² que insertamos en el párrafo
-    const origTailBase = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-    // Última palabra real de origText (sirve para estilado posterior de ◆²)
-    const lastWordOfOrig = origTailBase.split(/\s+/).pop() || '';
 
-    // Discriminador: ¿termina origText en puntuación de cierre?
-    //
-    // A) SÍ → frase completa; origTailBase (sin punto final) identifica el final real.
-    //    Se busca origTailBase en el párrafo (NO en range: range.search() puede no estar
-    //    acotado al rango en todos los runtimes de Office JS).
-    //    Para manejar varias frases IDÉNTICAS en el mismo párrafo (ej. tiempos_verbales),
-    //    se cuentan las ya procesadas (doneSr = las que ya tienen ◆² pegado).
-    //    Con back-to-front: targetIdx = allSr.length - doneSr.length - 1.
-    //
-    // B) NO → origText truncado por normalizeFindings; el tail no es el final real.
-    //    Usar las últimas palabras del párrafo real.
-    const endsWithPunct = /[.!?\u2026]$/.test(origText);
-    if (endsWithPunct) {
+    if (!truncated) {
+      // ── Case A: range cubre la frase completa ────────────────────────────────
       try {
-        const para = range.paragraphs.getFirst();
-        // Contar ◆² ya existentes ANTES de insertar → índice para Fase 3
-        const preCloseSrA = para.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        preCloseSrA.load('items');
-        // doneSr: ocurrencias que ya tienen ◆² justo detrás (ya procesadas en back-to-front)
-        const doneSr = para.search(origTailBase + '\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        doneSr.load('items');
-        // allSr: todas las ocurrencias de esta frase en el párrafo
-        const allSr = para.search(origTailBase, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        allSr.load('items');
+        const ins2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
+        ins2.font.color = colorHex;
+        ins2.font.bold  = true;
         await ctx.sync();
-        const existingCloseA = preCloseSrA.items.length;
-        // La más reciente no procesada = allSr.length - doneSr.length - 1
-        const targetIdx = allSr.items.length - doneSr.items.length - 1;
-        if (targetIdx >= 0 && targetIdx < allSr.items.length) {
-          allSr.items[targetIdx].getRange('End').insertText('\u25C6\u00B2', 'After');
-          endInserted = true;
-          endInsertedIdx = existingCloseA;
-        }
-      } catch(e) {}
+        endInserted = true;
+      } catch(e) { dbg(`_markBrackets CaseA ◆²: ${e.message}`); }
     } else {
-      // Case B: origText truncado → usar últimas palabras del párrafo real
+      // ── Case B: range truncado → buscar últimas palabras de origText ─────────
       try {
-        const paraFb = range.paragraphs.getFirst();
-        paraFb.load('text');
-        // Contar ◆² ya existentes ANTES de insertar → índice para Fase 3
-        const preCloseSrB = paraFb.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        preCloseSrB.load('items');
-        await ctx.sync();
-        const existingCloseB = preCloseSrB.items.length;
-        const pt = (paraFb.text || '').trim();
-        const lastWords = pt.replace(/[.!?;,\u2026\u2014]+$/, '').trim()
-                           .split(/\s+/).slice(-3).join(' ').trim();
+        const origTail = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+        const lastWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
         if (lastWords.length >= 4) {
-          const endSr2 = paraFb.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          endSr2.load('items'); await ctx.sync();
-          if (endSr2.items.length) {
-            endSr2.items[endSr2.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
+          const para  = range.paragraphs.getFirst();
+          const endSr = para.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          endSr.load('items');
+          await ctx.sync();
+          if (endSr.items.length) {
+            const ins2 = endSr.items[0].getRange('End').insertText('\u25C6\u00B2', 'After');
+            ins2.font.color = colorHex;
+            ins2.font.bold  = true;
+            await ctx.sync();
             endInserted = true;
-            endInsertedIdx = existingCloseB;
           }
         }
-      } catch(e) {}
+      } catch(e) { dbg(`_markBrackets CaseB ◆²: ${e.message}`); }
     }
 
-    // Último recurso absoluto
-    if (!endInserted) range.getRange('End').insertText('\u25C6\u00B2', 'After');
+    // ── Último recurso ────────────────────────────────────────────────────────
+    if (!endInserted) {
+      try {
+        const ins2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
+        ins2.font.color = colorHex;
+        ins2.font.bold  = true;
+        await ctx.sync();
+      } catch(e) { dbg(`_markBrackets lastResort ◆²: ${e.message}`); }
+    }
 
-    // ── ◆¹ al inicio ─────────────────────────────────────────────────────────
-    range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
-    await ctx.sync();
-
-    // Fase 2: estilizar ◆¹ — buscar '◆¹' + primera palabra del finding dentro del párrafo.
-    // Los findings se procesan de atrás hacia adelante (back-to-front), así que cuando
-    // llegamos aquí el ◆¹ recién insertado es el MÁS TEMPRANO en el párrafo (items[0]).
-    // Pero usamos '◆¹' + firstWord para ser exactos y no depender del orden de items[].
+    // ── ◆¹ al inicio + estilizado + comentario ────────────────────────────────
     try {
-      const para = range.paragraphs.getFirst();
-      const firstWord = origText.replace(/^[^a-zA-ZÀ-ÿ\u00C0-\u017E]+/, '').split(/\s+/)[0] || '';
-      let styled1 = false;
-      if (firstWord.length >= 2) {
-        const openSr2 = para.search('\u25C6\u00B9' + firstWord, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        openSr2.load('items'); await ctx.sync();
-        if (openSr2.items.length) {
-          const symSr2 = openSr2.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-          symSr2.load('items'); await ctx.sync();
-          if (symSr2.items.length) {
-            symSr2.items[0].font.color = colorHex;
-            symSr2.items[0].font.bold  = true;
-            if (commentText) symSr2.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
-            await ctx.sync();
-            styled1 = true;
-          }
-        }
-      }
-      if (!styled1) {
-        // Fallback: items[0] = el más temprano en el párrafo (el recién insertado en back-to-front)
-        const openSr = para.search('\u25C6\u00B9', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        openSr.load('items'); await ctx.sync();
-        if (openSr.items.length) {
-          const sym = openSr.items[0];
-          const symSr = sym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-          symSr.load('items'); await ctx.sync();
-          if (symSr.items.length) {
-            symSr.items[0].font.color = colorHex;
-            symSr.items[0].font.bold  = true;
-            if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
-            await ctx.sync();
-          }
-        }
-      }
-    } catch(e) {
-      const openWords = origText.replace(/^[^a-zA-ZÀ-ÿ\u00C0-\u017E]+/, '').split(/\s+/).slice(0, 3).join(' ');
-      await _styleAndComment(ctx, body, '\u25C6\u00B9' + openWords, colorHex, commentText);
-    }
-
-    // Fase 3: estilizar ◆² usando el índice pre-inserción (endInsertedIdx).
-    // Contar cuántos ◆² hay en el párrafo ANTES de insertar el nuestro es la única
-    // forma fiable cuando varios bracket-findings del mismo párrafo insertan su ◆²
-    // en la misma posición (p.ej. todos al final del párrafo en Case B).
-    // El ◆² que insertamos queda en items[endInsertedIdx] (orden izq→der).
-    try {
-      const para2 = range.paragraphs.getFirst();
-      let styled2 = false;
-      if (endInsertedIdx >= 0) {
-        const allCloseSr = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-        allCloseSr.load('items'); await ctx.sync();
-        if (allCloseSr.items.length > endInsertedIdx) {
-          const closeSym = allCloseSr.items[endInsertedIdx];
-          const symSr2 = closeSym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-          symSr2.load('items'); await ctx.sync();
-          if (symSr2.items.length) {
-            symSr2.items[0].font.color = colorHex;
-            symSr2.items[0].font.bold  = true;
-            await ctx.sync();
-            styled2 = true;
-          }
-        }
-      }
-      if (!styled2) {
-        // Fallback (endInsertedIdx no disponible por excepción en inserción):
-        // anchor lastWordOfOrig◆² → si falla, items[0]
-        if (lastWordOfOrig.length >= 3) {
-          const endAnchorSr = para2.search(lastWordOfOrig + '\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          endAnchorSr.load('items'); await ctx.sync();
-          if (endAnchorSr.items.length) {
-            const symSr2 = endAnchorSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-            symSr2.load('items'); await ctx.sync();
-            if (symSr2.items.length) {
-              symSr2.items[0].font.color = colorHex;
-              symSr2.items[0].font.bold  = true;
-              await ctx.sync();
-              styled2 = true;
-            }
-          }
-        }
-        if (!styled2) {
-          const endSr2 = para2.search('\u25C6\u00B2', {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          endSr2.load('items'); await ctx.sync();
-          if (endSr2.items.length) {
-            const symSr2 = endSr2.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
-            symSr2.load('items'); await ctx.sync();
-            if (symSr2.items.length) {
-              symSr2.items[0].font.color = colorHex;
-              symSr2.items[0].font.bold  = true;
-              await ctx.sync();
-            }
-          }
-        }
-      }
-    } catch(e) {
-      await _styleAndComment(ctx, body, '\u25C6\u00B2', colorHex, null);
-    }
+      const ins1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
+      ins1.font.color = colorHex;
+      ins1.font.bold  = true;
+      if (commentText) ins1.insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+      await ctx.sync();
+    } catch(e) { dbg(`_markBrackets ◆¹: ${e.message}`); }
   }
 
   // ── Aplicar un finding individual ─────────────────────────────────────────
