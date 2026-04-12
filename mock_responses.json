@@ -1,4 +1,7 @@
-[
+{
+  "test1": {
+    "desc": "Primer test capturado",
+    "responses": [
   {
     "leismo": {
       "findings": [
@@ -183,3 +186,5 @@
     }
   }
 ]
+  }
+}

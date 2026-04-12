@@ -88,33 +88,59 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   // Realiza una llamada a la API de Anthropic y devuelve el JSON parseado.
   // Trunca el prompt si es demasiado largo para evitar errores de contexto.
   //
-  // ── MODO MOCK ────────────────────────────────────────────────────────────────
-  // window.PLUMIA_CAPTURE = true  → hace la llamada real Y guarda cada respuesta
-  //   en localStorage['PLUMIA_MOCK_RESPONSES'] (array JSON ordenado).
-  //   Uso: activar antes de correr el análisis; cuando termine, las respuestas
-  //   estarán guardadas. Para exportarlas a un fichero:
-  //     copy(localStorage.getItem('PLUMIA_MOCK_RESPONSES'))
-  //   (copia al portapapeles; pegar en un .json y guardar).
+  // ── MODO MOCK / CAPTURE ───────────────────────────────────────────────────────
   //
-  // window.PLUMIA_MOCK = true  → NO llama a la API; devuelve las respuestas
-  //   guardadas en localStorage['PLUMIA_MOCK_RESPONSES'] en el mismo orden.
-  //   Para cargar un fichero .json previamente exportado:
-  //     localStorage.setItem('PLUMIA_MOCK_RESPONSES', '<contenido del json>')
+  // mock_responses.json admite dos formatos:
+  //
+  //   Formato MULTI-TEST (recomendado):
+  //     {
+  //       "test1": { "desc": "descripción opcional", "responses": [...] },
+  //       "test2": { "desc": "...", "responses": [...] }
+  //     }
+  //
+  //   Formato SIMPLE / legacy (array plano, retrocompatible):
+  //     [ {findings:[...]}, {findings:[...]}, ... ]
+  //
+  // window.PLUMIA_MOCK = 'test1'  → usa el test llamado "test1"
+  // window.PLUMIA_MOCK = true     → usa el primer test disponible (o el array si es legacy)
+  //
+  // window.PLUMIA_CAPTURE = 'test1'  → graba las respuestas bajo la clave "test1"
+  // window.PLUMIA_CAPTURE = true     → graba bajo la clave "capture" (nombre por defecto)
+  //
+  // Para exportar todo el fichero tras capturar:
+  //   copy(localStorage.getItem('PLUMIA_MOCK_RESPONSES'))
   // ─────────────────────────────────────────────────────────────────────────────
+
+  // Devuelve el array de respuestas del test seleccionado desde el almacén raw.
+  _resolveTestResponses(raw) {
+    if (!raw) return [];
+    // Formato legacy: array plano
+    if (Array.isArray(raw)) return raw;
+    // Formato multi-test: objeto con claves
+    const key = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK : null;
+    if (key && raw[key]) return raw[key].responses || [];
+    // PLUMIA_MOCK = true → primer test disponible
+    const firstKey = Object.keys(raw)[0];
+    if (firstKey) return raw[firstKey].responses || [];
+    return [];
+  }
+
   async _callAPI(prompt) {
 
     // ── MODO MOCK: devolver respuesta guardada sin llamar a la API ────────────
     if (window.PLUMIA_MOCK) {
-      let stored = [];
-      try { stored = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || '[]'); } catch(e) {}
+      let raw = null;
+      try { raw = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || 'null'); } catch(e) {}
+      const stored = this._resolveTestResponses(raw);
       const idx = this._mockCallIndex || 0;
       this._mockCallIndex = idx + 1;
       const saved = stored[idx];
+      const testName = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK : Object.keys(raw || {})[0] || 'legacy';
       if (saved !== undefined) {
-        console.log(`[PLUMIA MOCK] llamada ${idx + 1}/${stored.length} → respuesta guardada`);
+        console.log(`[PLUMIA MOCK "${testName}"] llamada ${idx + 1}/${stored.length} → respuesta guardada`);
         return saved;
       }
-      console.warn(`[PLUMIA MOCK] llamada ${idx + 1}: no hay respuesta guardada (solo hay ${stored.length})`);
+      console.warn(`[PLUMIA MOCK "${testName}"] llamada ${idx + 1}: no hay respuesta guardada (solo hay ${stored.length})`);
       return { findings: [] };
     }
 
@@ -185,11 +211,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
     // ── MODO CAPTURE: guardar respuesta en localStorage ───────────────────────
     if (window.PLUMIA_CAPTURE) {
-      let stored = [];
-      try { stored = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || '[]'); } catch(e) {}
-      stored.push(parsed);
-      localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(stored));
-      console.log(`[PLUMIA CAPTURE] respuesta ${stored.length} guardada (findings: ${(parsed.findings||[]).length})`);
+      const captureKey = typeof window.PLUMIA_CAPTURE === 'string' ? window.PLUMIA_CAPTURE : 'capture';
+      let raw = null;
+      try { raw = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || 'null'); } catch(e) {}
+      // Normalizar a formato multi-test si era legacy o vacío
+      if (!raw || Array.isArray(raw)) raw = {};
+      if (!raw[captureKey]) raw[captureKey] = { desc: '', responses: [] };
+      raw[captureKey].responses.push(parsed);
+      localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(raw));
+      const n = raw[captureKey].responses.length;
+      console.log(`[PLUMIA CAPTURE "${captureKey}"] respuesta ${n} guardada (findings: ${(parsed.findings||[]).length})`);
     }
 
     return parsed;
@@ -234,7 +265,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         if (r.ok) {
           const data = await r.json();
           localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(data));
-          console.log(`[PLUMIA MOCK] mock_responses.json cargado (${data.length} respuestas)`);
+          // Mostrar tests disponibles y cuál se usará
+          if (Array.isArray(data)) {
+            console.log(`[PLUMIA MOCK] mock_responses.json cargado — formato legacy (${data.length} respuestas)`);
+          } else {
+            const tests = Object.keys(data);
+            const active = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK : tests[0];
+            const n = data[active]?.responses?.length ?? 0;
+            console.log(`[PLUMIA MOCK] mock_responses.json cargado — tests disponibles: [${tests.join(', ')}]`);
+            console.log(`[PLUMIA MOCK] usando test "${active}" (${n} respuestas)`);
+          }
         }
       } catch(e) {
         console.log('[PLUMIA MOCK] mock_responses.json no disponible, usando localStorage');
