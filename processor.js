@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v8.00
+// PLUMIA — processor.js  v9.24
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -48,63 +48,69 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   }
 
   async extractTextFromDocument(forceFullDoc = false) {
-    return new Promise((resolve, reject) => {
-      Word.run(async (ctx) => {
-        try {
-          // Comprobar selección solo si no se fuerza doc completo.
-          // Prioridad: texto capturado en requestCostEstimate() (antes de que el foco
-          // vuelva al panel y Word pierda la selección del documento).
-          if (!forceFullDoc && !state.forceFullDoc) {
-            const captured = state.capturedSelectionText;
-            if (captured && captured.length > 10) {
-              resolve({ text: captured, isSelection: true, wordCount: this._countWords(captured) });
-              return;
-            }
-            // Fallback: intentar leer la selección activa (puede haberse perdido)
-            const sel = ctx.document.getSelection();
-            sel.load('text'); await ctx.sync();
-            const selectedText = sel.text.trim();
-            if (selectedText && selectedText.length > 10) {
-              resolve({ text: selectedText, isSelection: true, wordCount: this._countWords(selectedText) });
-              return;
-            }
-          }
-          // ── Método A: párrafo a párrafo con filtrado de TOC/encabezados ──────
-          // Más preciso pero puede hacer timeout en documentos muy grandes.
-          let fullText = null;
-          try {
-            const body = ctx.document.body;
-            body.load('paragraphs'); await ctx.sync();
-            const items = body.paragraphs.items;
-            items.forEach(p => p.load('text, style'));
-            await ctx.sync();
-            const extracted = []; let insideTOC = false;
-            for (const para of items) {
-              const style = (para.style || '').toLowerCase();
-              const text  = (para.text  || '').trim();
-              if (!text) continue;
-              if (style.includes('toc') || style.includes('tabla de contenido') || style.includes('índice')) insideTOC = true;
-              if (insideTOC && (style.includes('heading') || style.includes('normal') || style.includes('cuerpo'))) insideTOC = false;
-              const excluded = insideTOC || style.includes('toc') || style.includes('header') ||
-                style.includes('footer') || style.includes('encabezado') || style.includes('pie de p') ||
-                style.includes('footnote') || style.includes('endnote') || style.includes('comment');
-              if (!excluded) extracted.push(text);
-            }
-            fullText = extracted.join('\n\n');
-            console.log('[PLUMIA] extractText: método A (párrafos filtrados)');
-          } catch(eA) {
-            // ── Método B: body.text directo ───────────────────────────────────
-            // Fallback para documentos muy grandes donde el método A hace timeout.
-            // Incluye TOC/encabezados pero es robusto y rápido.
-            console.warn(`[PLUMIA] extractText: método A falló (${eA.message}), usando método B (body.text)`);
-            const body2 = ctx.document.body;
-            body2.load('text'); await ctx.sync();
-            fullText = (body2.text || '').trim();
-          }
-          resolve({ text: fullText, isSelection: false, wordCount: this._countWords(fullText) });
-        } catch(e) { reject(new Error('Error al leer el documento: ' + e.message)); }
+    // Prioridad 1: texto capturado antes de que el panel robe el foco (sin Word.run)
+    if (!forceFullDoc && !state.forceFullDoc) {
+      const captured = state.capturedSelectionText;
+      if (captured && captured.length > 10) {
+        return { text: captured, isSelection: true, wordCount: this._countWords(captured) };
+      }
+      // Fallback: intentar leer la selección activa en su propio Word.run
+      try {
+        const selectedText = await Word.run(async ctx => {
+          const sel = ctx.document.getSelection();
+          sel.load('text'); await ctx.sync();
+          return (sel.text || '').trim();
+        });
+        if (selectedText && selectedText.length > 10) {
+          return { text: selectedText, isSelection: true, wordCount: this._countWords(selectedText) };
+        }
+      } catch(eS) { console.warn('[PLUMIA] extractText: selección no disponible'); }
+    }
+
+    // ── Método A: párrafo a párrafo con filtrado de TOC/encabezados ──────────
+    // Más preciso pero puede hacer timeout en documentos muy grandes.
+    // Usa su propio Word.run para que un crash no mate el fallback.
+    try {
+      const fullText = await Word.run(async ctx => {
+        const body = ctx.document.body;
+        body.load('paragraphs'); await ctx.sync();
+        const items = body.paragraphs.items;
+        items.forEach(p => p.load('text, style'));
+        await ctx.sync();
+        const extracted = []; let insideTOC = false;
+        for (const para of items) {
+          const style = (para.style || '').toLowerCase();
+          const text  = (para.text  || '').trim();
+          if (!text) continue;
+          if (style.includes('toc') || style.includes('tabla de contenido') || style.includes('índice')) insideTOC = true;
+          if (insideTOC && (style.includes('heading') || style.includes('normal') || style.includes('cuerpo'))) insideTOC = false;
+          const excluded = insideTOC || style.includes('toc') || style.includes('header') ||
+            style.includes('footer') || style.includes('encabezado') || style.includes('pie de p') ||
+            style.includes('footnote') || style.includes('endnote') || style.includes('comment');
+          if (!excluded) extracted.push(text);
+        }
+        return extracted.join('\n\n');
       });
-    });
+      console.log('[PLUMIA] extractText: método A (párrafos filtrados)');
+      return { text: fullText, isSelection: false, wordCount: this._countWords(fullText) };
+    } catch(eA) {
+      console.warn(`[PLUMIA] extractText: método A falló (${eA.message}), usando método B (body.text)`);
+    }
+
+    // ── Método B: body.text directo (Word.run independiente) ─────────────────
+    // El ctx del método A puede estar muerto; este Word.run abre un contexto nuevo.
+    // Incluye TOC/encabezados pero es robusto y rápido para documentos de 200+ hojas.
+    try {
+      const fullText = await Word.run(async ctx => {
+        const body = ctx.document.body;
+        body.load('text'); await ctx.sync();
+        return (body.text || '').trim();
+      });
+      console.log('[PLUMIA] extractText: método B (body.text directo)');
+      return { text: fullText, isSelection: false, wordCount: this._countWords(fullText) };
+    } catch(eB) {
+      throw new Error('Error al leer el documento: ' + eB.message);
+    }
   }
 
   // Realiza una llamada a la API de Anthropic y devuelve el JSON parseado.

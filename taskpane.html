@@ -1317,12 +1317,11 @@ async function requestCostEstimate() {
           state.capturedSelectionText = txt;
           state.wordCount = txt.split(/\s+/).filter(Boolean).length;
         } else {
-          // La selección se perdió antes de llegar aquí
+          // La selección se perdió antes de llegar aquí; no cargar el doc completo
+          // (puede ser de 200 hojas). Mantener wordCount anterior o usar estimación.
           state.hasSelection = false;
           state.capturedSelectionText = null;
-          const body = ctx.document.body;
-          body.load('text'); await ctx.sync();
-          state.wordCount = (body.text || '').trim().split(/\s+/).filter(Boolean).length;
+          if (!state.wordCount) state.wordCount = 500;
         }
       } else {
         // Contar todo el documento
