@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '9.18';
-console.log('📦 document-builder.js v9.18 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.19';
+console.log('📦 document-builder.js v9.19 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -42,7 +42,7 @@ const SYMBOL_COLORS = {
   'frases_largas':         'C0006A',
   'puntuacion_dialogo':    'C0006A',
   'ritmo_narrativo':       'C0006A',
-  'concordancia':          'C0006A',
+  'concordancia':          'FF69B4',
   'ambiguedad_pronominal': '5020A0',
   'coherencia_personajes': '6B2197',
   'coherencia_temporal':   '6B2197',
