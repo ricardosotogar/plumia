@@ -338,7 +338,7 @@
 	  es de ±30%, aunque en casos extremos puede ser mayor.
 	</div>
 
-    <button class="btn-primary" onclick="confirmAndAnalyze()">
+    <button class="btn-primary" id="btnConfirmAnalyze" onclick="confirmAndAnalyze()">
       ✦ Confirmar y analizar
     </button>
     <button class="btn-secondary" onclick="closeCostPopup()">
@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.14"></script>
-<script src="synonyms-db.js?v=9.14"></script>
-<script src="processor.js?v=9.14"></script>
-<script src="document-builder.js?v=9.14"></script>
+<script src="corrections-config.js?v=9.15"></script>
+<script src="synonyms-db.js?v=9.15"></script>
+<script src="processor.js?v=9.15"></script>
+<script src="document-builder.js?v=9.15"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1387,6 +1387,17 @@ async function requestCostEstimate() {
   document.getElementById('costEUR').textContent     = totalEUR.toFixed(4) + ' €';
   document.getElementById('costTokens').textContent  = totalTokens.toLocaleString('es-ES') + ' tokens';
   document.getElementById('coherenceCostNote').classList.add('visible');
+  // Indicador visual de mock mode en el botón de confirmar
+  const btnConfirm = document.getElementById('btnConfirmAnalyze');
+  if (btnConfirm) {
+    const mockKey = window.PLUMIA_MOCK;
+    if (mockKey) {
+      const label = typeof mockKey === 'string' ? mockKey : 'mock';
+      btnConfirm.textContent = `✦ Confirmar  [MOCK: ${label} ✓]`;
+    } else {
+      btnConfirm.textContent = '✦ Confirmar y analizar';
+    }
+  }
   document.getElementById('costOverlay').classList.add('visible');
 }
 

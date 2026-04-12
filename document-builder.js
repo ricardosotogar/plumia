@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '9.14';
-console.log('📦 document-builder.js v9.14 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.15';
+console.log('📦 document-builder.js v9.15 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -554,20 +554,29 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       } catch(e) { dbg(`_markBrackets CaseA ◆²: ${e.message}`); }
     } else {
       // ── Case B: range truncado → buscar últimas palabras de origText ─────────
+      // Usamos body + finding._paraIdx (igual que _applyFinding en su fallback)
+      // en lugar de range.paragraphs.getFirst(), que falla cuando range.paragraphs
+      // no ha sido cargado explícitamente en este contexto.
       try {
-        const origTail = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
+        const origTail  = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
         const lastWords = origTail.split(/\s+/).slice(-3).join(' ').trim();
         if (lastWords.length >= 4) {
-          const para  = range.paragraphs.getFirst();
-          const endSr = para.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
-          endSr.load('items');
+          body.load('paragraphs');
           await ctx.sync();
-          if (endSr.items.length) {
-            const ins2 = endSr.items[0].getRange('End').insertText('\u25C6\u00B2', 'After');
-            ins2.font.color = colorHex;
-            ins2.font.bold  = true;
+          const pi         = finding._paraIdx;
+          const targetPara = (pi !== undefined && body.paragraphs.items[pi])
+                             ? body.paragraphs.items[pi] : null;
+          if (targetPara) {
+            const endSr = targetPara.search(lastWords, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+            endSr.load('items');
             await ctx.sync();
-            endInserted = true;
+            if (endSr.items.length) {
+              const ins2 = endSr.items[0].getRange('End').insertText('\u25C6\u00B2', 'After');
+              ins2.font.color = colorHex;
+              ins2.font.bold  = true;
+              await ctx.sync();
+              endInserted = true;
+            }
           }
         }
       } catch(e) { dbg(`_markBrackets CaseB ◆²: ${e.message}`); }
