@@ -373,10 +373,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.19"></script>
-<script src="synonyms-db.js?v=9.19"></script>
-<script src="processor.js?v=9.19"></script>
-<script src="document-builder.js?v=9.19"></script>
+<script src="corrections-config.js?v=9.21"></script>
+<script src="synonyms-db.js?v=9.21"></script>
+<script src="processor.js?v=9.21"></script>
+<script src="document-builder.js?v=9.21"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -427,6 +427,35 @@ Office.onReady(() => {
   setTimeout(() => updateAllGroupCheckboxes(), 0);
   checkSavedApiKey();
   checkSavedProgress();
+
+  // Detectar cambios de selección en tiempo real usando getSelectedDataAsync,
+  // que es ligero (no requiere Word.run). Solo actualiza state.hasSelection y la UI.
+  // El Word.run pesado (contar palabras, leer texto real) se hace en requestCostEstimate()
+  // cuando el usuario pulsa "Calcular", no antes.
+  Office.context.document.addHandlerAsync(
+    Office.EventType.DocumentSelectionChanged,
+    () => {
+      if (state.currentScreen !== 'options') return;
+      Office.context.document.getSelectedDataAsync(
+        Office.CoercionType.Text,
+        { valueFormat: 'unformatted' },
+        result => {
+          if (result.status !== Office.AsyncResultStatus.Succeeded) return;
+          const newHasSelection = ((result.value || '').trim().length > 10);
+          if (newHasSelection === state.hasSelection) return; // sin cambio real
+          if (newHasSelection !== state.hasSelection) {
+            state.coherenceAnswered = false;
+            state.coherenceAccepted = false;
+            state.forceFullDoc      = false;
+          }
+          state.hasSelection = newHasSelection;
+          updateSelectionContext();
+          updateCoherenceState();
+          updateAnalyzeButton();
+        }
+      );
+    }
+  );
 });
 
 // ── CONSTRUCCIÓN DEL MANUAL ───────────────────────────────────────────────────
