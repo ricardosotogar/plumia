@@ -805,17 +805,27 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
               }
 
               dbg(`_applyFinding keyText fallback phrase="${searchPhrase}" pi=${pi}`);
-              const sr3 = targetPara.search(searchPhrase, {matchCase:false,matchWholeWord:false,matchWildcards:false});
-              sr3.load('items'); await ctx.sync();
-              dbg(`_applyFinding keyText fallback found=${sr3.items.length}`);
-              if (sr3.items.length) {
-                range = sr3.items[0];
-              } else if (searchPhrase !== keyTextFallback) {
-                // La ventana contextual no encontró nada → reintentar con solo keyText.
-                const sr4 = targetPara.search(keyTextFallback, {matchCase:false,matchWholeWord:false,matchWildcards:false});
-                sr4.load('items'); await ctx.sync();
-                dbg(`_applyFinding keyText bare fallback found=${sr4.items.length}`);
-                if (sr4.items.length) range = sr4.items[0];
+
+              // sr3: búsqueda con frase contextual. Si searchPhrase contiene ◆ (U+25C6),
+              // Word Win32 lanza ItemNotFound → try-catch propio para no bloquear sr4.
+              if (!range) {
+                try {
+                  const sr3 = targetPara.search(searchPhrase, {matchCase:false,matchWholeWord:false,matchWildcards:false});
+                  sr3.load('items'); await ctx.sync();
+                  dbg(`_applyFinding keyText sr3 found=${sr3.items.length}`);
+                  if (sr3.items.length) range = sr3.items[0];
+                } catch(e) { dbg(`_applyFinding keyText sr3 catch: ${e.message}`); }
+              }
+
+              // sr4: búsqueda solo con keyText (sin contexto). Se ejecuta siempre que range
+              // sea null — ya sea porque sr3 lanzó, devolvió 0, o searchPhrase === keyText.
+              if (!range) {
+                try {
+                  const sr4 = targetPara.search(keyTextFallback, {matchCase:false,matchWholeWord:false,matchWildcards:false});
+                  sr4.load('items'); await ctx.sync();
+                  dbg(`_applyFinding keyText sr4 found=${sr4.items.length}`);
+                  if (sr4.items.length) range = sr4.items[0];
+                } catch(e) { dbg(`_applyFinding keyText sr4 catch: ${e.message}`); }
               }
             }
           } catch(e) { dbg(`_applyFinding keyText fallback catch: ${e.message}`); }

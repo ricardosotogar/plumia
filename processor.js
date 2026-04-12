@@ -87,7 +87,37 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
   // Realiza una llamada a la API de Anthropic y devuelve el JSON parseado.
   // Trunca el prompt si es demasiado largo para evitar errores de contexto.
+  //
+  // ── MODO MOCK ────────────────────────────────────────────────────────────────
+  // window.PLUMIA_CAPTURE = true  → hace la llamada real Y guarda cada respuesta
+  //   en localStorage['PLUMIA_MOCK_RESPONSES'] (array JSON ordenado).
+  //   Uso: activar antes de correr el análisis; cuando termine, las respuestas
+  //   estarán guardadas. Para exportarlas a un fichero:
+  //     copy(localStorage.getItem('PLUMIA_MOCK_RESPONSES'))
+  //   (copia al portapapeles; pegar en un .json y guardar).
+  //
+  // window.PLUMIA_MOCK = true  → NO llama a la API; devuelve las respuestas
+  //   guardadas en localStorage['PLUMIA_MOCK_RESPONSES'] en el mismo orden.
+  //   Para cargar un fichero .json previamente exportado:
+  //     localStorage.setItem('PLUMIA_MOCK_RESPONSES', '<contenido del json>')
+  // ─────────────────────────────────────────────────────────────────────────────
   async _callAPI(prompt) {
+
+    // ── MODO MOCK: devolver respuesta guardada sin llamar a la API ────────────
+    if (window.PLUMIA_MOCK) {
+      let stored = [];
+      try { stored = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || '[]'); } catch(e) {}
+      const idx = this._mockCallIndex || 0;
+      this._mockCallIndex = idx + 1;
+      const saved = stored[idx];
+      if (saved !== undefined) {
+        console.log(`[PLUMIA MOCK] llamada ${idx + 1}/${stored.length} → respuesta guardada`);
+        return saved;
+      }
+      console.warn(`[PLUMIA MOCK] llamada ${idx + 1}: no hay respuesta guardada (solo hay ${stored.length})`);
+      return { findings: [] };
+    }
+
     const MAX_CHARS = 480000;
     const safePrompt = prompt.length > MAX_CHARS
       ? prompt.substring(0, MAX_CHARS) + '\n\n[TEXTO TRUNCADO]\n\nResponde con el JSON solicitado basándote en lo analizado hasta aquí.'
@@ -138,19 +168,31 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     const jsonMatch = stripped.match(/\{[\s\S]*\}/);
     const clean = jsonMatch ? jsonMatch[0] : '{}';
 
+    let parsed;
     try {
-      return JSON.parse(clean);
+      parsed = JSON.parse(clean);
     } catch {
       try {
         const repaired = clean
           .replace(/,\s*([}\]])/g, '$1')
           .replace(/([{,]\s*)(\w+):/g, '$1"$2":');
-        return JSON.parse(repaired);
+        parsed = JSON.parse(repaired);
       } catch {
         console.warn('Plumia: JSON inválido de la API:', raw.substring(0, 200));
-        return { findings: [] };
+        parsed = { findings: [] };
       }
     }
+
+    // ── MODO CAPTURE: guardar respuesta en localStorage ───────────────────────
+    if (window.PLUMIA_CAPTURE) {
+      let stored = [];
+      try { stored = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || '[]'); } catch(e) {}
+      stored.push(parsed);
+      localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(stored));
+      console.log(`[PLUMIA CAPTURE] respuesta ${stored.length} guardada (findings: ${(parsed.findings||[]).length})`);
+    }
+
+    return parsed;
   }
 
   _splitIntoChunks(text, size, overlap) {
@@ -181,6 +223,23 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   }
 
   async analyze(text, isSelection) {
+    this._mockCallIndex = 0; // reset contador de mock al inicio de cada análisis
+
+    // ── Pre-carga de respuestas mock ─────────────────────────────────────────
+    // Si PLUMIA_MOCK está activo, intentar cargar mock_responses.json del servidor.
+    // Si el fichero no existe, usar lo que haya en localStorage como fallback.
+    if (window.PLUMIA_MOCK) {
+      try {
+        const r = await fetch('./mock_responses.json?_=' + Date.now());
+        if (r.ok) {
+          const data = await r.json();
+          localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(data));
+          console.log(`[PLUMIA MOCK] mock_responses.json cargado (${data.length} respuestas)`);
+        }
+      } catch(e) {
+        console.log('[PLUMIA MOCK] mock_responses.json no disponible, usando localStorage');
+      }
+    }
     const selectedIds = this.selectedIds;
     const allResults  = [];
 
