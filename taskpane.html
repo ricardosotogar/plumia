@@ -1306,33 +1306,38 @@ async function requestCostEstimate() {
   // aún está activa. Al pulsar "Confirmar" en el popup, el foco vuelve al
   // panel y Word puede perder la selección del documento.
   state.capturedSelectionText = null;
+  console.log('[DBG1] requestCostEstimate: hasSelection=', state.hasSelection, 'forceFullDoc=', state.forceFullDoc);
   try {
     await Word.run(async ctx => {
       if (state.hasSelection && !state.forceFullDoc) {
-        // Leer y guardar el texto seleccionado
+        console.log('[DBG2] leyendo selección activa…');
         const sel = ctx.document.getSelection();
         sel.load('text'); await ctx.sync();
         const txt = (sel.text || '').trim();
+        console.log('[DBG3] selección leída, longitud=', txt.length);
         if (txt.length > 10) {
           state.capturedSelectionText = txt;
           state.wordCount = txt.split(/\s+/).filter(Boolean).length;
+          console.log('[DBG4] capturedSelectionText SET, wordCount=', state.wordCount);
         } else {
-          // La selección se perdió antes de llegar aquí; no cargar el doc completo
-          // (puede ser de 200 hojas). Mantener wordCount anterior o usar estimación.
           state.hasSelection = false;
           state.capturedSelectionText = null;
           if (!state.wordCount) state.wordCount = 500;
+          console.log('[DBG4b] selección perdida, wordCount=', state.wordCount);
         }
       } else {
-        // Contar todo el documento
+        console.log('[DBG2b] sin selección, cargando body.text…');
         const body = ctx.document.body;
         body.load('text'); await ctx.sync();
         state.wordCount = (body.text || '').trim().split(/\s+/).filter(Boolean).length;
+        console.log('[DBG3b] body.text cargado, wordCount=', state.wordCount);
       }
     });
-  } catch {
+  } catch(eRCE) {
+    console.warn('[DBG-ERR] requestCostEstimate catch:', eRCE.message);
     state.wordCount = 500;
   }
+  console.log('[DBG5] requestCostEstimate OK, capturedSelectionText=', state.capturedSelectionText ? 'SET('+state.capturedSelectionText.length+' chars)' : 'null');
 
   const hasCoherence = [...state.selectedIds].some(id => {
     const c = CORRECTIONS.find(x => x.id === id);
@@ -1503,8 +1508,11 @@ async function runAnalysis() {
   state.processor = proc;
 
   // Extraer texto
+  console.log('[DBG6] runAnalysis: capturedSelectionText=', state.capturedSelectionText ? 'SET('+state.capturedSelectionText.length+')' : 'null', 'hasSelection=', state.hasSelection);
   updateProgress(2, 'Leyendo el documento…');
+  console.log('[DBG7] llamando extractTextFromDocument…');
   const { text, isSelection, wordCount } = await proc.extractTextFromDocument();
+  console.log('[DBG8] extractTextFromDocument OK: isSelection=', isSelection, 'wordCount=', wordCount);
 
   // Guardar total de palabras para el contador en tiempo real
   state.totalWords = wordCount;

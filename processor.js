@@ -48,39 +48,45 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   }
 
   async extractTextFromDocument(forceFullDoc = false) {
+    console.log('[DBG-EXT1] extractTextFromDocument: forceFullDoc=', forceFullDoc, 'state.forceFullDoc=', state.forceFullDoc);
     // Prioridad 1: texto capturado antes de que el panel robe el foco (sin Word.run)
     if (!forceFullDoc && !state.forceFullDoc) {
       const captured = state.capturedSelectionText;
+      console.log('[DBG-EXT2] capturedSelectionText=', captured ? 'SET('+captured.length+')' : 'null');
       if (captured && captured.length > 10) {
-        console.log('[PLUMIA] extractText: usando capturedSelectionText');
+        console.log('[DBG-EXT3] retornando capturedSelectionText');
         return { text: captured, isSelection: true, wordCount: this._countWords(captured) };
       }
       // Fallback: intentar leer la selección activa en su propio Word.run
+      console.log('[DBG-EXT4] intentando selección activa…');
       try {
         const selectedText = await Word.run(async ctx => {
           const sel = ctx.document.getSelection();
           sel.load('text'); await ctx.sync();
           return (sel.text || '').trim();
         });
+        console.log('[DBG-EXT5] selección activa longitud=', selectedText.length);
         if (selectedText && selectedText.length > 10) {
-          console.log('[PLUMIA] extractText: usando selección activa');
           return { text: selectedText, isSelection: true, wordCount: this._countWords(selectedText) };
         }
-      } catch(eS) { console.warn('[PLUMIA] extractText: selección no disponible'); }
+      } catch(eS) { console.warn('[DBG-EXT5b] selección no disponible:', eS.message); }
     }
 
     // Documento completo: body.text directo (seguro para cualquier tamaño de documento).
     // NOTA: body.load('paragraphs') se eliminó porque en documentos de 150+ hojas
     // genera miles de proxies Office JS y revienta el WebView sin lanzar excepción JS.
+    console.log('[DBG-EXT6] iniciando body.load(text)…');
     try {
       const fullText = await Word.run(async ctx => {
         const body = ctx.document.body;
         body.load('text'); await ctx.sync();
+        console.log('[DBG-EXT7] body.text cargado, longitud=', (body.text||'').length);
         return (body.text || '').trim();
       });
-      console.log('[PLUMIA] extractText: body.text directo (documento completo)');
+      console.log('[DBG-EXT8] body.text OK, wordCount=', this._countWords(fullText));
       return { text: fullText, isSelection: false, wordCount: this._countWords(fullText) };
     } catch(eB) {
+      console.warn('[DBG-EXT9] body.text falló:', eB.message);
       throw new Error('Error al leer el documento: ' + eB.message);
     }
   }
