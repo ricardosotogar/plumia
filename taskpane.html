@@ -373,15 +373,61 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.23"></script>
-<script src="synonyms-db.js?v=9.23"></script>
-<script src="processor.js?v=9.23"></script>
-<script src="document-builder.js?v=9.23"></script>
+<script src="corrections-config.js?v=9.24"></script>
+<script src="synonyms-db.js?v=9.24"></script>
+<script src="processor.js?v=9.24"></script>
+<script src="document-builder.js?v=9.24"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
 ═══════════════════════════════════════════════════════════════════════════ -->
 <script>
+// ── LOG PERSISTENTE — survives webview crashes ────────────────────────────────
+// Los logs se guardan en localStorage y sobreviven a un crash del webview.
+// Tras el crash, en la consola: copy(localStorage.getItem('plumia_log'))
+// Para limpiar: localStorage.removeItem('plumia_log')
+(function() {
+  const KEY = 'plumia_log';
+  const MAX = 300; // líneas máximas
+  const _log  = console.log.bind(console);
+  const _warn = console.warn.bind(console);
+  const _err  = console.error.bind(console);
+  function _save(tag, args) {
+    try {
+      const ts  = new Date().toISOString().slice(11,23);
+      const msg = args.map(a => {
+        if (a === null) return 'null';
+        if (a === undefined) return 'undefined';
+        if (typeof a === 'object') { try { return JSON.stringify(a); } catch { return String(a); } }
+        return String(a);
+      }).join(' ');
+      const entry = `${ts} [${tag}] ${msg}`;
+      let lines = [];
+      try { lines = (localStorage.getItem(KEY) || '').split('\n').filter(Boolean); } catch {}
+      lines.push(entry);
+      if (lines.length > MAX) lines = lines.slice(-MAX);
+      localStorage.setItem(KEY, lines.join('\n'));
+    } catch {}
+  }
+  console.log   = function(...a) { _log(...a);  _save('LOG',  a); };
+  console.warn  = function(...a) { _warn(...a); _save('WARN', a); };
+  console.error = function(...a) { _err(...a);  _save('ERR',  a); };
+  // Capturar errores no controlados
+  window.addEventListener('error', e => _save('UNCAUGHT', [e.message, e.filename+':'+e.lineno]));
+  window.addEventListener('unhandledrejection', e => _save('UNHANDLED_REJECTION', [String(e.reason)]));
+  // Limpiar log al iniciar (nueva sesión limpia)
+  try { localStorage.removeItem(KEY); } catch {}
+  _save('LOG', ['=== PLUMIA log session start ===']);
+})();
+// Helpers de consola: tras crash, escribe en consola →
+//   plumiaLog()          → muestra el log completo
+//   copy(plumiaLog())    → lo copia al portapapeles
+window.plumiaLog = function() {
+  const t = localStorage.getItem('plumia_log') || '(vacío)';
+  console.log(t);
+  return t;
+};
+
 // ── PLUMIA v8.71 ────────────────────────────────────────────────────────────
 const PLUMIA_UI_VERSION = window.PLUMIA.CONFIG_VERSION || '8.71';
 console.log('Plumia taskpane v' + PLUMIA_UI_VERSION + ' loaded');
