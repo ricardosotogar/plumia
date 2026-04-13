@@ -376,10 +376,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.26"></script>
-<script src="synonyms-db.js?v=9.26"></script>
-<script src="processor.js?v=9.26"></script>
-<script src="document-builder.js?v=9.26"></script>
+<script src="corrections-config.js?v=9.27"></script>
+<script src="synonyms-db.js?v=9.27"></script>
+<script src="processor.js?v=9.27"></script>
+<script src="document-builder.js?v=9.27"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1544,11 +1544,12 @@ async function runAnalysis() {
     [...state.selectedIds],
     state.outputFormat,
     (pct, msg) => {
+      console.log('[PROG] pct=', pct, 'msg=', msg);
       updateProgress(pct, msg);
       state.totalChecks = state.selectedIds.size;
       state.completedChecks = Math.round((pct / 100) * state.totalChecks);
-      // Actualizar métricas en tiempo real tras cada llamada a la API
-      updateLiveMetrics(proc, pct);
+      try { updateLiveMetrics(proc, pct); } catch(eLM) { console.warn('[PROG-ERR] updateLiveMetrics:', eLM.message); }
+      console.log('[PROG-OK]');
     },
     (partialResults) => {},
     (err, canResume, corrLabel) => handleAnalysisError(err, canResume, corrLabel)
@@ -1625,10 +1626,12 @@ function updateLiveMetrics(proc, pct) {
 
   // Mostrar panel cuando empieza el análisis real
   const panel = document.getElementById('liveMetrics');
-  if (pct > 5) panel.style.display = 'block';
+  console.log('[LM1] panel=', panel ? 'ok' : 'NULL', 'pct=', pct);
+  if (pct > 5) { if (panel) panel.style.display = 'block'; }
 
   // Coste acumulado real
   const realUSD = proc.getRealCostUSD();
+  console.log('[LM2] realUSD=', realUSD);
   const eurRate = state.estimatedCostUSD > 0
     ? state.estimatedCostEUR / state.estimatedCostUSD
     : 1 / 1.08;
