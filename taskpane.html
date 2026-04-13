@@ -376,10 +376,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.24"></script>
-<script src="synonyms-db.js?v=9.24"></script>
-<script src="processor.js?v=9.24"></script>
-<script src="document-builder.js?v=9.24"></script>
+<script src="corrections-config.js?v=9.25"></script>
+<script src="synonyms-db.js?v=9.25"></script>
+<script src="processor.js?v=9.25"></script>
+<script src="document-builder.js?v=9.25"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -1583,19 +1583,24 @@ async function runAnalysis() {
   state.totalWords = wordCount;
 
   // Análisis
+  console.log('[DBG9] iniciando proc.analyze…');
   const allResults = await proc.analyze(text, isSelection);
+  console.log('[DBG10] analyze completado, errored=', proc.errored, 'results=', allResults.length);
 
   // Si el análisis se interrumpió por error, no generar output parcial
   if (proc.errored) return;
 
   // Construir output
   updateProgress(98, 'Generando documento de revisión…');
+  console.log('[DBG11] iniciando buildOutput…');
   const { DocumentBuilder } = await getDocumentBuilder();
   const builder = new DocumentBuilder(state.outputFormat);
 
   const resolved = proc.resolveOverlaps(allResults);
   const originalName = await getDocumentName();
+  console.log('[DBG12] llamando builder.buildOutput, findings=', resolved.length);
   const output = await builder.buildOutput(allResults, resolved, originalName, [...state.selectedIds]);
+  console.log('[DBG13] buildOutput completado');
 
   // Obtener coste real de la API (tokens acumulados durante el análisis)
   const realCostUSD = proc.getRealCostUSD();
