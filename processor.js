@@ -260,6 +260,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   }
 
   async analyze(text, isSelection) {
+    console.log('[A1] analyze: start, textLen=', text.length, 'isSelection=', isSelection);
     this._mockCallIndex = 0; // reset contador de mock al inicio de cada análisis
 
     // ── Pre-carga de respuestas mock ─────────────────────────────────────────
@@ -286,6 +287,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         console.log('[PLUMIA MOCK] mock_responses.json no disponible, usando localStorage');
       }
     }
+    console.log('[A2] selectedIds=', [...this.selectedIds].join(','));
     const selectedIds = this.selectedIds;
     const allResults  = [];
 
@@ -302,6 +304,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const c = CORRECTIONS.find(x => x.id === id);
       return c && c.requiresFullDoc;
     });
+    console.log('[A3] hasFullDocRequired=', hasFullDocRequired);
 
     if (hasFullDocRequired && isSelection) {
       // No intentamos cargar el documento completo: body.load('text') sobre documentos
@@ -396,6 +399,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     const apiGroups = API_CORRECTION_GROUPS.filter(g =>
       g.ids.some(id => nonCoherenceIds.includes(id))
     );
+    console.log('[A4] grupos API=', apiGroups.length, 'nonCoherenceIds=', nonCoherenceIds.join(','));
 
     const groupTotal = apiGroups.length;
     for (let gi = 0; gi < apiGroups.length; gi++) {
@@ -415,10 +419,12 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         for (const ch of chunks) {
           if (this.aborted) break;
           let response;
+          console.log('[A5] llamando API, grupo=', group.label, 'chunkLen=', ch.length);
 
           if (group.ids.length === 1) {
             const corr = CORRECTIONS.find(c => c.id === group.ids[0]);
             response = await this._callAPI(corr.prompt.replace('{TEXT}', ch));
+            console.log('[A6] API respondió, grupo=', group.label);
             const chLower = ch.toLowerCase();
             const findings = (response.findings || []).map(f => {
               const originalText = this._extractOriginalText(f);
