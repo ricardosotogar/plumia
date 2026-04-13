@@ -239,8 +239,8 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     while (start < words.length) {
       const end = Math.min(start + size, words.length);
       chunks.push(words.slice(start, end).join(' '));
+      if (end >= words.length) break; // fin del texto, no hay más chunks
       start = end - overlap;
-      if (start >= words.length) break;
     }
     return chunks;
   }
