@@ -304,13 +304,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     });
 
     if (hasFullDocRequired && isSelection) {
-      this.onProgress(1, 'Coherencia narrativa requiere el documento completo. Extrayendo…');
-      try {
-        const fullDoc = await this.extractTextFromDocument(true);
-        coherenceText = fullDoc.text; // solo para coherencia
-      } catch(e) {
-        throw new Error('No se pudo extraer el documento completo para el análisis de coherencia: ' + e.message);
-      }
+      // No intentamos cargar el documento completo: body.load('text') sobre documentos
+      // de 150+ hojas mata el WebView sin lanzar excepción JS capturable.
+      // La coherencia se analiza sobre el fragmento seleccionado.
+      coherenceText = text;
+      console.log('[PLUMIA] coherencia: usando fragmento seleccionado (doc grande, no se carga doc completo)');
     }
 
     // ── PASO 1: Ortotipografía local (sin API, coste cero) ──────────────────
