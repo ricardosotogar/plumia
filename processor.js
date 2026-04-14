@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.25
+// PLUMIA — processor.js  v9.29
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -226,7 +226,12 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       raw[captureKey].responses.push(parsed);
       localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(raw));
       const n = raw[captureKey].responses.length;
-      console.log(`[PLUMIA CAPTURE "${captureKey}"] respuesta ${n} guardada (findings: ${(parsed.findings||[]).length})`);
+      // Contar findings: puede estar en parsed.findings (simple) o en parsed.X.findings (agrupado)
+      const totalFindings = (parsed.findings || []).length ||
+        Object.values(parsed)
+          .filter(v => v && typeof v === 'object' && Array.isArray(v.findings))
+          .reduce((sum, v) => sum + v.findings.length, 0);
+      console.log(`[PLUMIA CAPTURE "${captureKey}"] respuesta ${n} guardada (findings: ${totalFindings})`);
     }
 
     return parsed;
@@ -409,12 +414,13 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const pct = Math.round(35 + (gi / Math.max(groupTotal, 1)) * 60);
       this.onProgress(pct, `Analizando: ${group.label}…`);
 
+      // accumulated se declara FUERA del try para que el catch pueda salvar
+      // los resultados parciales si un chunk posterior falla (ej: HTTP 529)
+      const accumulated = {};
+      activeIds.forEach(id => { accumulated[id] = []; });
+
       try {
         const chunks = this._splitIntoChunks(selectionText, CONFIG.chunkSizeWords, CONFIG.chunkOverlapWords);
-
-        // Acumular resultados por correctionId
-        const accumulated = {};
-        activeIds.forEach(id => { accumulated[id] = []; });
 
         for (const ch of chunks) {
           if (this.aborted) break;
@@ -487,6 +493,23 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         this.onChunkComplete(allResults);
 
       } catch(err) {
+        // Guardar resultados parciales del/los chunks que ya completaron antes del fallo
+        for (const id of activeIds) {
+          const corr = CORRECTIONS.find(c => c.id === id);
+          if (!corr) continue;
+          let partialFindings = this._dedupe(accumulated[id] || []);
+          if (partialFindings.length > 0 && !allResults.find(r => r.correctionId === id)) {
+            if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
+              partialFindings = enrichWithLocalSynonyms(partialFindings, id);
+            }
+            allResults.push({
+              correctionId: id, label: corr.label,
+              groupId: corr.groupId, colorId: corr.colorId,
+              findings: partialFindings,
+            });
+            console.warn('[PLUMIA] grupo parcial salvado:', id, '→', partialFindings.length, 'findings');
+          }
+        }
         this._saveProgress({ text: selectionText.substring(0, 100), completedIndex: gi - 1 + coherenceIds.length, results: allResults });
         // Errores fatales (autenticación, rate limit) → parar todo
         if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('RATE_LIMIT') || err.message?.includes('INSUFFICIENT_CREDITS')) {

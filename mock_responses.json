@@ -558,5 +558,1105 @@
 		]
 	}
 ]
-  }
+  },
+  "PT cap1": {
+		"desc": "",
+		"responses": [
+			{
+				"repeticion": {
+					"findings": [
+						{
+							"word": "hermanos",
+							"occurrences": [
+								"érase una vez dos hermanos. —¿Dos hermanos? —Sí, dos hermanos.",
+								"El otro hermano se llamaba Quark",
+								"ambos hermanos llevaban mucho tiempo buscando",
+								"ambos hermanos estaban muy tristes"
+							],
+							"explanation": "La palabra 'hermanos' aparece repetidamente en párrafos consecutivos sin variación estilística"
+						},
+						{
+							"word": "agujero",
+							"occurrences": [
+								"agujeros negros cuánticos",
+								"el mismo agujero negro",
+								"nuestro agujero negro ha abierto un agujero blanco",
+								"agujero negro accederían a otro",
+								"creado un agujero negro"
+							],
+							"explanation": "La palabra 'agujero' se repite excesivamente en la explicación científica"
+						},
+						{
+							"word": "infinito",
+							"occurrences": [
+								"el infinito interior",
+								"viajar al infinito interior",
+								"capas de infinitos subuniversos",
+								"cada átomo tiene un infinito",
+								"distintos infinitos"
+							],
+							"explanation": "La palabra 'infinito' aparece repetida múltiples veces en la conversación sobre el universo"
+						}
+					]
+				},
+				"verbos": {
+					"findings": [
+						{
+							"originalText": "había puesto las estrellas de material luminiscente",
+							"verb": "poner",
+							"explanation": "Podría ser más específico: 'había pegado las estrellas'"
+						},
+						{
+							"originalText": "hizo una sonrisa",
+							"verb": "hacer",
+							"explanation": "Debería ser 'sonrió' en lugar de 'hizo una sonrisa'"
+						},
+						{
+							"originalText": "dándose un abrazo",
+							"verb": "dar",
+							"explanation": "Podría ser más específico: 'abrazándose'"
+						},
+						{
+							"originalText": "dar con seres de otro universo",
+							"verb": "dar",
+							"explanation": "Podría ser más específico: 'encontrar seres de otro universo'"
+						}
+					]
+				},
+				"sustantivos": {
+					"findings": [
+						{
+							"originalText": "estos temas siempre te han aburrido",
+							"genericWord": "temas",
+							"explanation": "Podría especificar 'conceptos científicos' o 'teorías físicas'"
+						},
+						{
+							"originalText": "eso no es todo",
+							"genericWord": "eso",
+							"explanation": "Referencia vaga que podría ser más específica"
+						},
+						{
+							"originalText": "algún tipo de mensaje",
+							"genericWord": "tipo",
+							"explanation": "Podría especificar 'clase' o 'forma' de mensaje"
+						},
+						{
+							"originalText": "estas cosas",
+							"genericWord": "cosas",
+							"explanation": "Referencia muy vaga que podría concretarse según el contexto"
+						}
+					]
+				}
+			},
+			{
+				"muletillas": {
+					"findings": [
+						{
+							"expression": "de manera",
+							"occurrences": [
+								"trabajar de manera absorbente",
+								"de manera retórica"
+							],
+							"explanation": "Se puede eliminar sin perder significado: 'trabajar absorbentemente', 'retóricamente'"
+						},
+						{
+							"expression": "de algún modo/de cualquier modo",
+							"occurrences": [
+								"de cualquier modo, espero que muy pronto lo hagamos público"
+							],
+							"explanation": "Muletilla que no aporta información sustancial al mensaje"
+						},
+						{
+							"expression": "como si",
+							"occurrences": [
+								"como si fueran fichas de dominó",
+								"como si fuesen vagones de un tren"
+							],
+							"explanation": "Construcción repetitiva que podría variarse"
+						},
+						{
+							"expression": "por suerte",
+							"occurrences": [
+								"Por suerte, uno de nuestros mecenas"
+							],
+							"explanation": "Expresión que puede eliminarse sin afectar el significado"
+						},
+						{
+							"expression": "verás",
+							"occurrences": [
+								"Verás, el LHC se construyó",
+								"Verás, hay teorías que tratan"
+							],
+							"explanation": "Muletilla conversacional repetida que puede eliminarse"
+						}
+					]
+				},
+				"pleonasmos": {
+					"findings": [
+						{
+							"originalText": "volvió muy tarde a casa cada día",
+							"explanation": "Si dice 'cada día' ya se entiende la repetición, 'volvía' es más natural",
+							"correction": "volvía muy tarde a casa"
+						},
+						{
+							"originalText": "ojos abiertos como un búho",
+							"explanation": "Los búhos tienen los ojos naturalmente abiertos cuando están despiertos",
+							"correction": "ojos muy abiertos"
+						},
+						{
+							"originalText": "abrirse y cerrarse",
+							"explanation": "Para entrar solo necesita abrirse, el cerrarse es redundante en este contexto",
+							"correction": "abrirse"
+						},
+						{
+							"originalText": "un pequeñajo chico rubio",
+							"explanation": "'Pequeñajo' ya indica que es un chico pequeño",
+							"correction": "un pequeñajo rubio"
+						},
+						{
+							"originalText": "búsqueda infructuosa... una búsqueda sin resultado",
+							"explanation": "'Infructuosa' ya significa 'sin resultado'",
+							"correction": "búsqueda infructuosa... una búsqueda que no da frutos"
+						},
+						{
+							"originalText": "tres de segundos",
+							"explanation": "Error tipográfico, debería ser solo 'tres segundos'",
+							"correction": "tres segundos"
+						},
+						{
+							"originalText": "capas de infinitos subuniversos",
+							"explanation": "Si son infinitos, no pueden estar organizados en capas limitadas",
+							"correction": "niveles de subuniversos infinitos"
+						}
+					]
+				}
+			},
+			{
+				"adverbios": {
+					"findings": [
+						{
+							"originalText": "Después de trabajar de manera absorbente y casi obsesiva, volvía muy tarde a casa cada día",
+							"adverb": "absorbente",
+							"evaluation": "Mejorable",
+							"explanation": "Es un adjetivo usado adverbialmente, pero resulta débil y genérico",
+							"alternatives": [
+								"Se sumergía en el trabajo hasta perder la noción del tiempo",
+								"El trabajo la consumía por completo"
+							]
+						},
+						{
+							"originalText": "se dirigió a la habitación de matrimonio",
+							"adverb": "matrimonio",
+							"evaluation": "Mejorable",
+							"explanation": "No es un adverbio en -mente, pero 'habitación de matrimonio' es una expresión débil",
+							"alternatives": [
+								"se dirigió al dormitorio",
+								"fue a su habitación"
+							]
+						},
+						{
+							"originalText": "de cualquier modo, espero que muy pronto lo hagamos público",
+							"adverb": "pronto",
+							"evaluation": "Adecuado",
+							"explanation": "Funciona bien en el contexto conversacional",
+							"alternatives": []
+						},
+						{
+							"originalText": "era difícil predecir el lugar exacto de una colisión, pero más difícil era conseguir repetirla",
+							"adverb": "exacto",
+							"evaluation": "Adecuado",
+							"explanation": "Preciso y necesario en el contexto científico",
+							"alternatives": []
+						}
+					]
+				},
+				"voz_pasiva": {
+					"findings": [
+						{
+							"originalText": "los experimentos llevados a cabo en él",
+							"explanation": "Construcción pasiva con participio que puede activarse",
+							"activeVersion": "los experimentos que realizaron en él"
+						},
+						{
+							"originalText": "el proyecto lanzado por la Organización Deloniana",
+							"explanation": "Voz pasiva con agente explícito",
+							"activeVersion": "el proyecto que lanzó la Organización Deloniana"
+						},
+						{
+							"originalText": "un meteorito de una tonelada había sido adquirido",
+							"explanation": "Voz pasiva perifrástica clara",
+							"activeVersion": "había adquirido un meteorito de una tonelada"
+						},
+						{
+							"originalText": "que le habían sido regalado",
+							"explanation": "Voz pasiva con agente implícito",
+							"activeVersion": "que le habían regalado"
+						}
+					]
+				},
+				"frases_largas": {
+					"findings": [
+						{
+							"originalText": "El inicio de los experimentos llevados a cabo en él desencadenó una serie de eventos en cadena, como si fueran fichas de dominó que se empujan una a otra para caer en secuencia.",
+							"wordCount": 42,
+							"explanation": "Frase compleja con múltiples elementos que dificulta la lectura",
+							"suggestion": "Dividir en dos: 'El inicio de los experimentos desencadenó una serie de eventos en cadena. Como fichas de dominó, se empujaban una a otra para caer en secuencia.'"
+						},
+						{
+							"originalText": "Pero no solo tenía ese poder cautivador por su personalidad efusiva y embriagadora, sino también por su llamativa belleza, que trataba de ocultar sin éxito.",
+							"wordCount": 41,
+							"explanation": "Construcción con múltiples subordinadas que complica la lectura",
+							"suggestion": "Dividir: 'Tenía un poder cautivador por su personalidad efusiva y embriagadora. También poseía una llamativa belleza que trataba de ocultar sin éxito.'"
+						},
+						{
+							"originalText": "Como puedes entender, era difícil predecir el lugar exacto de una colisión, pero más difícil era conseguir repetirla, aunque hemos podido afinar la precisión y generar el agujero negro cuántico en el punto exacto donde nosotros queremos.",
+							"wordCount": 48,
+							"explanation": "Frase excesivamente larga con múltiples ideas concatenadas",
+							"suggestion": "Dividir en tres frases más cortas separando las ideas principales"
+						}
+					]
+				},
+				"nombres": {
+					"findings": [
+						{
+							"name": "Albert",
+							"occurrences": [
+								"Albert esperaba en la cama",
+								"Albert se reincorporó de un brinco",
+								"Albert asintió con la cabeza",
+								"dijo Albert desconcertado"
+							],
+							"explanation": "El nombre aparece 4 veces en el mismo párrafo narrativo",
+							"suggestion": "Sustituir algunas menciones por 'el niño', 'su hijo' o reestructurar para usar pronombres"
+						},
+						{
+							"name": "Edmund",
+							"occurrences": [
+								"Edmund quedó en silencio",
+								"dijo Edmund tras valorar",
+								"Edmund resopló desconcertado"
+							],
+							"explanation": "Repetición notable del nombre en diálogos cercanos",
+							"suggestion": "Alternar con 'su marido' o usar solo diálogos sin etiqueta cuando el hablante esté claro"
+						}
+					]
+				}
+			},
+			{
+				"leismo": {
+					"findings": [
+						{
+							"type": "laismo",
+							"originalText": "Quería que se la reconociera por su capacidad",
+							"correction": "Quería que se le reconociera por su capacidad",
+							"explanation": "El pronombre 'la' está funcionando como complemento indirecto (a ella se le reconocía), por lo que debe usarse 'le'"
+						},
+						{
+							"type": "leismo",
+							"originalText": "Ella tenía la capacidad de emocionarle de mil maneras diferentes",
+							"correction": "Ella tenía la capacidad de emocionarlo de mil maneras diferentes",
+							"explanation": "El pronombre 'le' está funcionando como complemento directo (emocionaba a él), por lo que debe usarse 'lo'"
+						},
+						{
+							"type": "laismo",
+							"originalText": "esperando a que la cogiese",
+							"correction": "esperando a que le cogiese",
+							"explanation": "En este contexto, 'coger' funciona con complemento indirecto, por lo que debe usarse 'le'"
+						},
+						{
+							"type": "laismo",
+							"originalText": "lo echaba de menos",
+							"correction": "le echaba de menos",
+							"explanation": "La expresión 'echar de menos' rige complemento indirecto, por lo que debe usarse 'le'"
+						},
+						{
+							"type": "laismo",
+							"originalText": "lo abrazó con tanta fuerza",
+							"correction": "le abrazó con tanta fuerza",
+							"explanation": "El verbo 'abrazar' en este contexto funciona con complemento indirecto, por lo que debe usarse 'le'"
+						},
+						{
+							"type": "laismo",
+							"originalText": "o le has dejado con los ojos como platos",
+							"correction": "o lo has dejado con los ojos como platos",
+							"explanation": "El verbo 'dejar' con el sentido de 'poner en cierto estado' rige complemento directo, por lo que debe usarse 'lo'"
+						},
+						{
+							"type": "laismo",
+							"originalText": "Lo he notado cansado",
+							"correction": "Le he notado cansado",
+							"explanation": "El verbo 'notar' en el sentido de 'percibir' funciona con complemento indirecto, por lo que debe usarse 'le'"
+						},
+						{
+							"type": "laismo",
+							"originalText": "para que tú lo entiendas",
+							"correction": "para que tú le entiendas",
+							"explanation": "El verbo 'entender' en este contexto funciona con complemento indirecto, por lo que debe usarse 'le'"
+						}
+					]
+				},
+				"ambiguedad": {
+					"findings": [
+						{
+							"originalText": "Al ver cómo su hijo la recibía con vehemencia, se desbordó de felicidad",
+							"pronoun": "se",
+							"possibleReferents": [
+								"su hijo",
+								"ella (la madre)"
+							],
+							"explanation": "No queda claro si quien se desbordó de felicidad fue el hijo o la madre",
+							"suggestion": "Al ver cómo su hijo la recibía con vehemencia, ella se desbordó de felicidad"
+						},
+						{
+							"originalText": "Cuando su madre entornó la puerta de su habitación, la luz recorrió la cama",
+							"pronoun": "su habitación",
+							"possibleReferents": [
+								"habitación de Albert",
+								"habitación de la madre"
+							],
+							"explanation": "Puede referirse tanto a la habitación del niño como a la de la madre",
+							"suggestion": "Cuando su madre entornó la puerta de la habitación de Albert, la luz recorrió la cama"
+						},
+						{
+							"originalText": "Sus lágrimas iban cayendo a sus pies",
+							"pronoun": "sus pies",
+							"possibleReferents": [
+								"pies de Andrómeda",
+								"pies del hermano"
+							],
+							"explanation": "Aunque contextualmente se entiende que son los pies de Andrómeda, la estructura permite ambigüedad",
+							"suggestion": "Sus lágrimas iban cayendo a los pies de ella"
+						}
+					]
+				}
+			},
+			{
+				"leismo": {
+					"findings": []
+				},
+				"ambiguedad": {
+					"findings": [
+						{
+							"originalText": "Creemos que los nuestros se desintegran en cadenas inconexas de información",
+							"pronoun": "los nuestros",
+							"possibleReferents": [
+								"los mensajes",
+								"los seres/ellos"
+							],
+							"explanation": "Aunque contextualmente se refiere a 'los mensajes', la expresión 'los nuestros' podría crear confusión sobre si se refiere a los mensajes o a las personas/seres del lado del hablante",
+							"suggestion": "Creemos que nuestros mensajes se desintegran en cadenas inconexas de información"
+						},
+						{
+							"originalText": "nosotros hemos tardado en hacerlo con ellos",
+							"pronoun": "hacerlo",
+							"possibleReferents": [
+								"contactar",
+								"comunicarse"
+							],
+							"explanation": "El pronombre 'hacerlo' podría referirse tanto a 'contactar' como a 'comunicarse', ambos conceptos mencionados en el contexto cercano",
+							"suggestion": "nosotros hemos tardado en contactar con ellos"
+						},
+						{
+							"originalText": "Después se abrazó a él y apagaron las luces",
+							"pronoun": "apagaron",
+							"possibleReferents": [
+								"Mary Jane y Edmund",
+								"ellos (ambos personajes)"
+							],
+							"explanation": "Aunque el contexto indica que son Mary Jane y Edmund, el sujeto plural no está explícitamente definido en la oración",
+							"suggestion": "Después se abrazó a él y ambos apagaron las luces"
+						}
+					]
+				}
+			},
+			{
+				"concordancia": {
+					"findings": [
+						{
+							"originalText": "dos hermanos. La hermana mayor",
+							"errorType": "sustantivo-adjetivo",
+							"explanation": "Si hay dos hermanos, uno debe ser hermana y otro hermano, pero se dice 'La hermana mayor' cuando debería concordar el género",
+							"correction": "dos hermanos. El hermano mayor"
+						},
+						{
+							"originalText": "un pequeñajo chico rubio",
+							"errorType": "sustantivo-adjetivo",
+							"explanation": "'Pequeñajo' ya indica que es un chico pequeño, la redundancia crea discordancia",
+							"correction": "un pequeñajo rubio"
+						},
+						{
+							"originalText": "unos tres de segundos",
+							"errorType": "sustantivo-adjetivo",
+							"explanation": "Error en la construcción, sobra 'de'",
+							"correction": "unos tres segundos"
+						}
+					]
+				},
+				"dequeismo": {
+					"findings": [
+						{
+							"originalText": "Se dieron cuenta de que necesitábamos",
+							"errorType": "queismo",
+							"explanation": "El verbo 'darse cuenta' requiere la preposición 'de' antes de 'que'",
+							"correction": "Se dieron cuenta de que necesitábamos"
+						},
+						{
+							"originalText": "estoy muy de acuerdo",
+							"errorType": "queismo",
+							"explanation": "Aunque no hay 'que' explícito, la construcción correcta sería con preposición si hubiera complemento con 'que'",
+							"correction": "No aplica - no hay error de dequeísmo/queísmo aquí"
+						}
+					]
+				}
+			},
+			{
+				"concordancia": {
+					"findings": []
+				},
+				"dequeismo": {
+					"findings": [
+						{
+							"originalText": "¿Estás segura de eso?",
+							"errorType": "queismo",
+							"explanation": "El adjetivo 'seguro/segura' rige la preposición 'de' antes de 'que'",
+							"correction": "¿Estás segura de que eso es así?"
+						},
+						{
+							"originalText": "seguro que tienen la misma hambre de conocimiento",
+							"errorType": "queismo",
+							"explanation": "El adjetivo 'seguro' requiere la preposición 'de' antes de 'que'",
+							"correction": "seguro de que tienen la misma hambre de conocimiento"
+						},
+						{
+							"originalText": "No lo veo;",
+							"errorType": "queismo",
+							"explanation": "El verbo 'ver' en el sentido de 'entender/comprender' puede requerir 'que', la oración parece incompleta",
+							"correction": "No lo veo claro"
+						}
+					]
+				}
+			},
+			{
+				"repeticion": {
+					"findings": [
+						{
+							"word": "hermanos",
+							"occurrences": [
+								"érase una vez dos hermanos",
+								"¿Dos hermanos?",
+								"Sí, dos hermanos",
+								"ambos hermanos llevaban mucho tiempo buscando",
+								"ambos hermanos estaban muy tristes"
+							],
+							"explanation": "La palabra 'hermanos' se repite 5 veces en párrafos consecutivos del cuento, creando una repetición innecesaria"
+						},
+						{
+							"word": "agujero",
+							"occurrences": [
+								"agujeros negros cuánticos",
+								"el mismo agujero negro",
+								"nuestro agujero negro",
+								"agujero negro ha abierto un agujero blanco",
+								"agujero blanco en el nuestro"
+							],
+							"explanation": "La palabra 'agujero' aparece repetidamente en la explicación científica, aunque en este contexto técnico puede ser justificable"
+						},
+						{
+							"word": "universo",
+							"occurrences": [
+								"seres de otro universo",
+								"el universo exterior",
+								"el universo interior",
+								"nuestro universo es infinito",
+								"el universo es una cebolla"
+							],
+							"explanation": "La palabra 'universo' se repite múltiples veces en la conversación sobre teorías científicas"
+						}
+					]
+				},
+				"verbos": {
+					"findings": [
+						{
+							"originalText": "Hizo una sonrisa",
+							"verb": "hizo",
+							"explanation": "Se puede sustituir por el verbo más específico 'sonrió'"
+						},
+						{
+							"originalText": "puso los ojos en blanco",
+							"verb": "puso",
+							"explanation": "Se puede sustituir por 'alzó los ojos' o 'rodó los ojos'"
+						},
+						{
+							"originalText": "había aparecido la misma varita mágica con la que había estado fantaseando",
+							"verb": "había aparecido",
+							"explanation": "Se podría usar un verbo más específico como 'se materializó' o 'surgió'"
+						}
+					]
+				},
+				"sustantivos": {
+					"findings": [
+						{
+							"originalText": "esa cosa",
+							"verb": "cosa",
+							"explanation": "Sustantivo genérico que podría sustituirse por un término más específico según el contexto"
+						},
+						{
+							"originalText": "este tema",
+							"verb": "tema",
+							"explanation": "Cuando se usa de manera vaga podría especificarse más el asunto del que se habla"
+						}
+					]
+				}
+			},
+			{
+				"repeticion": {
+					"findings": [
+						{
+							"word": "comunicar",
+							"occurrences": [
+								"están intentando comunicarse con nosotros",
+								"para comunicarnos con ellos",
+								"tratan de comunicarse de algún modo",
+								"no tratarían de comunicarse"
+							],
+							"explanation": "La palabra 'comunicar' y sus variantes aparecen 4 veces en párrafos consecutivos de manera repetitiva"
+						},
+						{
+							"word": "intenciones",
+							"occurrences": [
+								"cuáles son sus intenciones",
+								"No sabemos sus intenciones",
+								"Si tuvieran malas intenciones",
+								"Si tuviesen malas intenciones"
+							],
+							"explanation": "La palabra 'intenciones' se repite 4 veces en párrafos consecutivos"
+						},
+						{
+							"word": "agujeros negros",
+							"occurrences": [
+								"esos seres han creado un agujero negro",
+								"Si ellos hubieran creado un agujero negro",
+								"abrir agujeros negros podría ser peligroso",
+								"Son agujeros negros cuánticos"
+							],
+							"explanation": "La expresión 'agujero(s) negro(s)' aparece múltiples veces en párrafos consecutivos"
+						}
+					]
+				},
+				"verbos": {
+					"findings": [
+						{
+							"originalText": "dijo guiñándole un ojo",
+							"verb": "dijo",
+							"explanation": "Podría ser más específico: 'respondió', 'añadió' o 'concluyó' según el contexto"
+						}
+					]
+				},
+				"sustantivos": {
+					"findings": []
+				}
+			},
+			{
+				"muletillas": {
+					"findings": [
+						{
+							"expression": "de manera",
+							"occurrences": [
+								"Después de trabajar de manera absorbente y casi obsesiva",
+								"¿Te acuerdas de los ángeles que te enseñé cuando estuvimos en aquella tan bonita? —le preguntó de manera retórica—"
+							],
+							"explanation": "Expresión que se puede eliminar sin perder el significado"
+						},
+						{
+							"expression": "de cualquier modo",
+							"occurrences": [
+								"pero, de cualquier modo, espero que muy pronto lo hagamos público"
+							],
+							"explanation": "Muletilla que no aporta valor específico al mensaje"
+						},
+						{
+							"expression": "como puedes entender",
+							"occurrences": [
+								"Como puedes entender, era difícil predecir el lugar exacto de una colisión"
+							],
+							"explanation": "Expresión redundante que busca la complicidad del lector sin aportar contenido"
+						},
+						{
+							"expression": "para que tú lo entiendas",
+							"occurrences": [
+								"como una gran trenza circular, para que tú lo entiendas"
+							],
+							"explanation": "Muletilla explicativa innecesaria"
+						},
+						{
+							"expression": "cómo explicarlo",
+							"occurrences": [
+								"Cómo explicarlo: como la reverberación de una carretera cuando se calienta al sol"
+							],
+							"explanation": "Expresión de relleno que se puede eliminar"
+						},
+						{
+							"expression": "como te lo cuento",
+							"occurrences": [
+								"Sí, como te lo cuento"
+							],
+							"explanation": "Muletilla conversacional sin valor añadido"
+						},
+						{
+							"expression": "a ver cómo te lo explico",
+							"occurrences": [
+								"A ver cómo te lo explico: lo que teorizo es que nuestro universo está compuesto por capas"
+							],
+							"explanation": "Expresión de transición innecesaria"
+						}
+					]
+				},
+				"pleonasmos": {
+					"findings": [
+						{
+							"originalText": "volvía muy tarde a casa cada día para abrazar a su hijo Albert antes de que se durmiese",
+							"explanation": "Si vuelve a casa, ya implica que estaba fuera antes",
+							"correction": "llegaba muy tarde a casa cada día para abrazar a su hijo Albert antes de que se durmiese"
+						},
+						{
+							"originalText": "Al ver cómo su hijo la recibía con vehemencia, se desbordó de felicidad",
+							"explanation": "'Desbordarse' ya implica un exceso, por lo que 'de felicidad' especifica pero podría considerarse redundante en el contexto emocional",
+							"correction": "Al ver cómo su hijo la recibía con vehemencia, se desbordó"
+						},
+						{
+							"originalText": "viajar avanzando por el espacio infinito",
+							"explanation": "'Viajar' ya implica avanzar o moverse",
+							"correction": "viajar por el espacio infinito"
+						},
+						{
+							"originalText": "un pequeñajo chico rubio",
+							"explanation": "'Pequeñajo' ya indica que es un chico pequeño",
+							"correction": "un pequeñajo rubio"
+						},
+						{
+							"originalText": "al abrir los ojos después de estar soñando",
+							"explanation": "Abrir los ojos después de soñar es redundante, ya que soñar implica tener los ojos cerrados",
+							"correction": "al despertar"
+						},
+						{
+							"originalText": "empezó un viaje en solitario",
+							"explanation": "En el contexto, cada uno va por separado, por lo que 'en solitario' es redundante",
+							"correction": "empezó un viaje"
+						},
+						{
+							"originalText": "muy por encima de su cabeza",
+							"explanation": "'Por encima' ya indica la posición superior, 'muy' intensifica pero 'de su cabeza' puede ser redundante",
+							"correction": "muy por encima de él"
+						},
+						{
+							"originalText": "tres de segundos",
+							"explanation": "Error de concordancia - debería ser 'tres segundos'",
+							"correction": "tres segundos"
+						},
+						{
+							"originalText": "tubos circulares adyacentes paralelos",
+							"explanation": "Si son adyacentes (contiguos) y paralelos, hay cierta redundancia conceptual",
+							"correction": "tubos circulares paralelos"
+						},
+						{
+							"originalText": "colisionan uno detrás de otro como si fuesen vagones de un tren que son engullidos",
+							"explanation": "'Uno detrás de otro' y 'como vagones de un tren' expresan la misma idea de secuencia",
+							"correction": "colisionan como vagones de un tren que son engullidos"
+						}
+					]
+				}
+			},
+			{
+				"muletillas": {
+					"findings": [
+						{
+							"expression": "de algún modo",
+							"occurrences": [
+								"Lo que no cabe duda es que tratan de comunicarse de algún modo"
+							],
+							"explanation": "Expresión que no aporta información específica y podría eliminarse"
+						},
+						{
+							"expression": "De cualquier modo",
+							"occurrences": [
+								"De cualquier modo, el primer paso a seguir es descifrar lo que nos quieren decir"
+							],
+							"explanation": "Muletilla de transición que podría sustituirse por un conector más preciso"
+						},
+						{
+							"expression": "A ver",
+							"occurrences": [
+								"A ver. Son agujeros negros cuánticos, duran apenas unos segundos"
+							],
+							"explanation": "Expresión de relleno que no aporta contenido al mensaje"
+						}
+					]
+				},
+				"pleonasmos": {
+					"findings": [
+						{
+							"originalText": "para dormir sin conseguirlo",
+							"explanation": "Si no lo consiguieron, entonces no durmieron, por lo que decir 'para dormir' es redundante",
+							"correction": "se acostaron sin conseguir dormir"
+						}
+					]
+				}
+			},
+			{
+				"adverbios": {
+					"findings": [
+						{
+							"originalText": "trabajar de manera absorbente y casi obsesiva",
+							"adverb": "absorbente",
+							"evaluation": "Mejorable",
+							"explanation": "Aunque técnicamente es un adjetivo usado adverbialmente, puede ser más específico",
+							"alternatives": [
+								"se sumergía por completo en el trabajo",
+								"trabajaba con obsesión total"
+							]
+						},
+						{
+							"originalText": "De improviso, del ciclón salió un haz de luz",
+							"adverb": "improviso",
+							"evaluation": "Mejorable",
+							"explanation": "Expresión adverbial que puede sustituirse por algo más dinámico",
+							"alternatives": [
+								"Sin previo aviso, del ciclón brotó un haz de luz",
+								"El ciclón se abrió y liberó un haz de luz"
+							]
+						}
+					]
+				},
+				"voz_pasiva": {
+					"findings": [
+						{
+							"originalText": "El inicio de los experimentos llevados a cabo en él desencadenó una serie de eventos",
+							"explanation": "Construcción pasiva con participio que puede activarse",
+							"activeVersion": "El inicio de los experimentos que realizaron en él desencadenó una serie de eventos"
+						},
+						{
+							"originalText": "el proyecto lanzado por la Organización Deloniana",
+							"explanation": "Participio pasivo que puede convertirse en construcción activa",
+							"activeVersion": "el proyecto que lanzó la Organización Deloniana"
+						},
+						{
+							"originalText": "las estrellas de material luminiscente que había pegadas en el techo",
+							"explanation": "Construcción pasiva con participio",
+							"activeVersion": "las estrellas de material luminiscente que había pegado en el techo"
+						},
+						{
+							"originalText": "un telescopio que le habían regalado",
+							"explanation": "Construcción pasiva perifrástica implícita",
+							"activeVersion": "un telescopio que sus padres le habían regalado"
+						},
+						{
+							"originalText": "como los de un ángel sacado de una iglesia",
+							"explanation": "Participio pasivo que puede activarse",
+							"activeVersion": "como los de un ángel que había visto en una iglesia"
+						}
+					]
+				},
+				"frases_largas": {
+					"findings": [
+						{
+							"originalText": "El inicio de los experimentos llevados a cabo en él desencadenó una serie de eventos en cadena, como si fueran fichas de dominó que se empujan una a otra para caer en secuencia.",
+							"wordCount": 42,
+							"explanation": "Frase extensa con múltiples elementos descriptivos que dificulta la lectura",
+							"suggestion": "Dividir en dos: 'El inicio de los experimentos desencadenó una serie de eventos en cadena. Como fichas de dominó, se empujaban una a otra para caer en secuencia.'"
+						},
+						{
+							"originalText": "Era una mujer de personalidad arrolladora que envolvía a cualquiera con su alacridad y su carácter chispeante; el tipo de persona capaz de convencerte para saltar a un oscuro precipicio diciéndote que abajo te espera un enorme colchón de plumas.",
+							"wordCount": 44,
+							"explanation": "Frase muy larga con múltiples descripciones y comparaciones",
+							"suggestion": "Separar la comparación: 'Era una mujer de personalidad arrolladora que envolvía a cualquiera con su alacridad y su carácter chispeante. Era el tipo de persona capaz de convencerte para saltar a un precipicio diciéndote que abajo te espera un colchón de plumas.'"
+						},
+						{
+							"originalText": "En cada uno se introduce un haz de protones; en uno, el haz viaja en un sentido y, en el otro, el haz va en el sentido opuesto.",
+							"wordCount": 41,
+							"explanation": "Frase técnica larga que puede simplificarse",
+							"suggestion": "Dividir para mayor claridad: 'En cada tubo se introduce un haz de protones. En uno viaja en un sentido, en el otro va en sentido opuesto.'"
+						}
+					]
+				},
+				"nombres": {
+					"findings": [
+						{
+							"name": "Albert",
+							"occurrences": [
+								"Albert esperaba en la cama",
+								"Albert se reincorporó de un brinco",
+								"Albert asintió con la cabeza",
+								"preguntó Albert",
+								"dijo Albert desconcertado"
+							],
+							"explanation": "El nombre Albert aparece 5 veces en el mismo párrafo de diálogo",
+							"suggestion": "Usar pronombres o referencias como 'el niño', 'su hijo' para algunas menciones"
+						},
+						{
+							"name": "Edmund",
+							"occurrences": [
+								"Edmund quedó en silencio",
+								"dijo Edmund tras valorar",
+								"Edmund resopló desconcertado",
+								"preguntó Edmund"
+							],
+							"explanation": "El nombre Edmund aparece 4 veces en el mismo párrafo de conversación",
+							"suggestion": "Alternar con pronombres o 'su marido' para reducir repetición"
+						}
+					]
+				}
+			},
+			{
+				"adverbios": {
+					"findings": [
+						{
+							"originalText": "No, exactamente.",
+							"adverb": "exactamente",
+							"evaluation": "Mejorable",
+							"explanation": "Es un adverbio débil que no aporta precisión narrativa",
+							"alternatives": [
+								"No, no es así.",
+								"No del todo."
+							]
+						},
+						{
+							"originalText": "Indiscutiblemente, son más avanzados que nosotros",
+							"adverb": "Indiscutiblemente",
+							"evaluation": "Mejorable",
+							"explanation": "Adverbio enfático innecesario que debilita la afirmación",
+							"alternatives": [
+								"Son más avanzados que nosotros",
+								"Es evidente que son más avanzados"
+							]
+						}
+					]
+				},
+				"voz_pasiva": {
+					"findings": []
+				},
+				"frases_largas": {
+					"findings": [
+						{
+							"originalText": "Y cuanto más avanza una sociedad, más pacífica se vuelve porque tienden hacia un sistema más eficiente de los recursos donde no es necesario pelear por ellos.",
+							"wordCount": 28,
+							"explanation": "Aunque no supera las 40 palabras, es una construcción compleja que podría beneficiarse de división",
+							"suggestion": "Dividir en: 'Cuanto más avanza una sociedad, más pacífica se vuelve. Tienden hacia un sistema más eficiente de recursos donde no es necesario pelear por ellos.'"
+						},
+						{
+							"originalText": "En sociedades más avanzadas, los conflictos pueden persistir, pero también se posee una mayor capacidad para resolverlos, incluso mediante medidas violentas aplicadas de manera quirúrgica.",
+							"wordCount": 25,
+							"explanation": "Construcción compleja con múltiples ideas que dificulta la lectura",
+							"suggestion": "Dividir en: 'En sociedades más avanzadas, los conflictos pueden persistir. Pero también se posee mayor capacidad para resolverlos, incluso mediante medidas violentas precisas.'"
+						}
+					]
+				},
+				"nombres": {
+					"findings": []
+				}
+			},
+			{
+				"findings": []
+			},
+			{
+				"gerundios": {
+					"findings": [
+						{
+							"originalText": "Edmund quedó en silencio tratando de sopesar lo que acababa de escuchar",
+							"gerund": "tratando",
+							"errorType": "posterioridad",
+							"explanation": "El gerundio expresa una acción posterior o consecuencia del verbo principal, no simultaneidad",
+							"correction": "Edmund quedó en silencio para sopesar lo que acababa de escuchar"
+						},
+						{
+							"originalText": "dijo Edmund tras valorar durante unos segundos la información",
+							"gerund": "ninguno",
+							"errorType": "ninguno",
+							"explanation": "No hay gerundio en este fragmento",
+							"correction": "No aplica"
+						}
+					]
+				},
+				"tiempos": {
+					"findings": [
+						{
+							"originalText": "Después se abrazó a él y apagaron las luces de la habitación para dormir sin conseguirlo",
+							"verbsFound": [
+								"se abrazó",
+								"apagaron"
+							],
+							"explanation": "Mezcla inconsistente de singular (se abrazó) y plural (apagaron) que sugiere descuido en la concordancia narrativa",
+							"suggestion": "Mantener coherencia: 'se abrazaron y apagaron' o 'se abrazó a él y apagó las luces'"
+						}
+					]
+				}
+			},
+			{
+				"findings": []
+			},
+			{
+				"findings": [
+					{
+						"originalText": "no sabemos si los mensajes que estamos mandando para comunicarnos con ellos les llegan",
+						"wordForm": "como",
+						"correctForm": "cómo",
+						"errorType": "falta_tilde",
+						"context": "interrogativo_indirecto",
+						"explanation": "'cómo comunicaros' es una interrogativa indirecta que expresa modo/manera en contexto de desconocimiento, por lo que debe llevar tilde"
+					}
+				]
+			},
+			{
+				"findings": []
+			},
+			{
+				"findings": []
+			},
+			{
+				"findings": []
+			},
+			{
+				"findings": [
+					{
+						"originalText": "A mi me dan miedo las consecuencias",
+						"miForm": "mi",
+						"correctForm": "mí",
+						"function": "pronombre_personal",
+						"explanation": "Después de la preposición 'a' debe ir 'mí' con tilde diacrítica porque funciona como pronombre personal"
+					}
+				]
+			},
+			{
+				"findings": []
+			},
+			{
+				"findings": []
+			},
+			{
+				"findings": [
+					{
+						"originalText": "hacía poco un meteorito de una tonelada, compuesto de un material desconocido",
+						"errorType": "ausencia_coma_inciso",
+						"correction": "hacía poco un meteorito de una tonelada compuesto de un material desconocido",
+						"explanation": "La subordinada adjetiva 'compuesto de un material desconocido' es especificativa, no explicativa, por lo que no debe ir entre comas"
+					},
+					{
+						"originalText": "después de aquel primer fogonazo, continuó apareciendo la misma distorsión, cada vez que se cerraba el BH88, permaneciendo abierta",
+						"errorType": "coma_especificativa",
+						"correction": "después de aquel primer fogonazo, continuó apareciendo la misma distorsión cada vez que se cerraba el BH88, permaneciendo abierta",
+						"explanation": "La subordinada adverbial temporal 'cada vez que se cerraba el BH88' es especificativa y no debe ir entre comas"
+					},
+					{
+						"originalText": "Lo que teorizo es que nuestro agujero negro ha abierto un agujero blanco en un planeta del universo interior, donde hay seres que están intentando comunicarse",
+						"errorType": "coma_especificativa",
+						"correction": "Lo que teorizo es que nuestro agujero negro ha abierto un agujero blanco en un planeta del universo interior donde hay seres que están intentando comunicarse",
+						"explanation": "La subordinada adjetiva 'donde hay seres que están intentando comunicarse' es especificativa, no explicativa"
+					},
+					{
+						"originalText": "Pienso que nuestro universo es infinito, lo que significa que lo abarca todo.",
+						"errorType": "coma_especificativa",
+						"correction": "Pienso que nuestro universo es infinito lo que significa que lo abarca todo.",
+						"explanation": "La construcción 'lo que significa' introduce una especificación, no una explicación, por lo que no debe ir precedida de coma"
+					}
+				]
+			},
+			{
+				"findings": [
+					{
+						"originalText": "Y pensamos que lo han hecho para poder enviarnos un mensaje ¿Comprendes?",
+						"errorType": "ausencia_coma_inciso",
+						"correction": "Y pensamos que lo han hecho para poder enviarnos un mensaje. ¿Comprendes?",
+						"explanation": "Debe ir punto antes de la pregunta independiente, no continuar la oración anterior"
+					},
+					{
+						"originalText": "Lo que no cabe duda es que tratan de comunicarse de algún modo ¿Qué razón habría de hacerlo",
+						"errorType": "ausencia_coma_inciso",
+						"correction": "Lo que no cabe duda es que tratan de comunicarse de algún modo. ¿Qué razón habría de hacerlo",
+						"explanation": "Debe ir punto antes de la pregunta independiente, no continuar la oración anterior"
+					},
+					{
+						"originalText": "No digas tonterías. Indiscutiblemente, son más avanzados",
+						"errorType": "ausencia_coma_conector",
+						"correction": "No digas tonterías. Indiscutiblemente, son más avanzados",
+						"explanation": "El adverbio 'indiscutiblemente' al inicio de frase actúa como conector y debe ir seguido de coma"
+					},
+					{
+						"originalText": "No lo veo; Además, abrir agujeros negros podría ser peligroso.",
+						"errorType": "punto_coma",
+						"correction": "No lo veo. Además, abrir agujeros negros podría ser peligroso.",
+						"explanation": "Debe ir punto en lugar de punto y coma antes del conector 'Además' que inicia oración independiente"
+					}
+				]
+			},
+			{
+				"findings": [
+					{
+						"originalText": "—Por faaaaa.",
+						"errorType": "Punto tras exclamación implícita",
+						"correction": "—Por faaaaa",
+						"explanation": "No debe ponerse punto tras una exclamación, aunque no lleve signos explícitos de exclamación"
+					},
+					{
+						"originalText": "—¿Te parece?",
+						"errorType": "Punto tras interrogación",
+						"correction": "—¿Te parece?",
+						"explanation": "El texto está correcto, no hay error de puntuación"
+					}
+				]
+			},
+			{
+				"findings": [
+					{
+						"originalText": "—Qué ingenua eres amor mío.",
+						"errorType": "Falta de coma vocativa",
+						"correction": "—Qué ingenua eres, amor mío.",
+						"explanation": "Debe llevar coma antes del vocativo 'amor mío'"
+					},
+					{
+						"originalText": "—No lo veo; Además, abrir agujeros negros podría ser peligroso.",
+						"errorType": "Punto y coma incorrecto en diálogo",
+						"correction": "—No lo veo. Además, abrir agujeros negros podría ser peligroso.",
+						"explanation": "En diálogos se prefiere punto en lugar de punto y coma para separar ideas"
+					},
+					{
+						"originalText": "—No sé cariño.",
+						"errorType": "Falta de coma vocativa",
+						"correction": "—No sé, cariño.",
+						"explanation": "Debe llevar coma antes del vocativo 'cariño'"
+					},
+					{
+						"originalText": "—Tranquilo amor, está bajo control— dijo guiñándole un ojo.",
+						"errorType": "Falta de coma vocativa",
+						"correction": "—Tranquilo, amor, está bajo control —dijo guiñándole un ojo.",
+						"explanation": "Debe llevar coma antes del vocativo 'amor'"
+					}
+				]
+			},
+			{
+				"findings": [
+					{
+						"originalText": "Año 2061. Ciudad de Fratenburgo. Confederación de Delonia.",
+						"sceneType": "atmósfera",
+						"issue": "Inicio telegráfico que rompe el tono contemplativo de establecimiento de escenario en una novela de ciencia ficción",
+						"suggestion": "Integrar estos datos en una frase más fluida que establezca mejor la atmósfera, como 'En el año 2061, en la ciudad de Fratenburgo, perteneciente a la Confederación de Delonia, la mayor catástrofe...'"
+					},
+					{
+						"originalText": "—¿Dos hermanos? —Sí, dos hermanos.",
+						"sceneType": "atmósfera",
+						"issue": "Intercambio telegráfico que interrumpe el flujo narrativo del cuento dentro del cuento, rompiendo el tono contemplativo del relato maternal",
+						"suggestion": "Eliminar la confirmación repetitiva o integrarla de forma más natural en la narración del cuento"
+					}
+				]
+			},
+			{
+				"findings": [
+					{
+						"originalText": "Después se abrazó a él y apagaron las luces de la habitación para dormir sin conseguirlo. Mary Jane estaba demasiado agitada y Edmund no paraba de darle vueltas a lo que acababa de escuchar.",
+						"sceneType": "atmósfera",
+						"issue": "Final abrupto tras un diálogo extenso: la transición de páginas de diálogo intenso a una conclusión contemplativa de apenas dos frases crea un desequilibrio estructural que corta bruscamente el ritmo establecido",
+						"suggestion": "Expandir la secuencia final con más detalle sobre la transición hacia el descanso, los pensamientos de ambos personajes, o la atmósfera de la habitación para equilibrar el ritmo con el resto del pasaje"
+					}
+				]
+			}
+		]
+	}
 }
