@@ -578,6 +578,13 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
           if (check.length > 5 && !chunkLower.includes(check)) return;
         }
+        // adverbios_mente: descartar si ni el campo adverb ni originalText contienen
+        // una palabra real terminada en -mente (evita que la raíz "absorbente" se marque).
+        if (corrId === 'adverbios_mente') {
+          const candidates = (f.adverbs||[]).concat([f.adverb, originalText]).filter(Boolean);
+          const hasMente = candidates.some(a => /mente\b/i.test(a));
+          if (!hasMente) return;
+        }
         accumulated[corrId].push({
           ...f,
           originalText,

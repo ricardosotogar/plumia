@@ -182,6 +182,8 @@ function _singleComment(f) {
       return `${f.errorType==='dequeismo'?'Dequeísmo':'Queísmo'}: ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'concordancia':
       return `Concordancia (${f.errorType||''}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
+    case 'palabras_sobrantes':
+      return `Palabra sobrante: ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'tiempos_verbales':
       return `Tiempo verbal: ${f.explanation||''} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
     case 'ortotipografia_pura':
@@ -279,7 +281,17 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   _getKeyText(f) {
     switch(f.correctionId) {
       case 'numeros_letras':        return f.numStr || f.originalText;
-      case 'adverbios_mente':       return ((f.adverbs||[]).concat([f.adverb]).filter(Boolean))[0] || f.originalText;
+      case 'adverbios_mente': {
+        // Validar que el adverbio devuelto por la API realmente termina en -mente.
+        // Si el modelo devuelve la raíz ("absorbente") o una palabra relacionada
+        // ("improviso"), se ignora y se busca el -mente en originalText directamente.
+        const candidates = (f.adverbs||[]).concat([f.adverb]).filter(Boolean);
+        const validAdv = candidates.find(a => /mente$/i.test(a));
+        if (validAdv) return validAdv;
+        // Fallback: extraer la primera palabra terminada en -mente del originalText
+        const m = (f.originalText||'').match(/\b\w+mente\b/i);
+        return m ? m[0] : f.originalText;
+      }
       case 'repeticion_lexica':     return (f.occurrences?.[0]) || f.word || f.originalText;
       case 'verbos_comedin':        return f.verb || f.originalText;
       case 'sustantivos_genericos': return f.genericWord || f.originalText;
@@ -304,6 +316,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         return orig.find(w => !corr.some(c=>c.toLowerCase()===w.toLowerCase())) || f.originalText;
       }
       case 'gerundios':        return f.gerund || f.originalText;
+      case 'palabras_sobrantes': return f.originalText;
       case 'dequeismo':        return f.errorType==='dequeismo' ? 'de que' : (f.originalText||'').split(/\s+/).slice(0,3).join(' ');
       case 'concordancia':     return (f.originalText||'').split(/\s+/).slice(0,2).join(' ');
       default:                 return f.originalText;

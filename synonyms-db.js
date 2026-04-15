@@ -4,8 +4,8 @@
 // Depende de: corrections-config.js (window.PLUMIA.CORRECTIONS)
 // ============================================================================
 (function() {
-window.PLUMIA.SYNONYMS_VERSION = '8.71';
-console.log('📦 synonyms-db.js v8.71 cargado');
+window.PLUMIA.SYNONYMS_VERSION = '9.30';
+console.log('📦 synonyms-db.js v9.30 cargado');
 var CORRECTIONS = window.PLUMIA.CORRECTIONS; // alias para buildPrompt lambdas
 
 // ── 1. DICCIONARIO LOCAL DE SINÓNIMOS ────────────────────────────────────────
@@ -694,6 +694,7 @@ window.PLUMIA.API_GROUPS = [
 Regla: le = complemento indirecto (CI). la/lo = complemento directo (CD).
 Ejemplos de LAÍSMO (la/las como CI — incorrecto): "La dije que viniera" → "Le dije". "Su madre la llamó" → "Su madre le llamó". "La contó la historia" → "Le contó".
 Ejemplos de LOÍSMO (lo/los como CI — incorrecto): "Lo avisé del problema" → "Le avisé". "Lo dijeron la verdad" → "Les dijeron".
+CRÍTICO — NO es loísmo cuando "lo" funciona como CD masculino o neutro: "para que tú lo entiendas" (lo = eso/el concepto, CD neutro → correcto). "lo veo" (CD masculino → correcto). Solo es loísmo si "lo" sustituye a un CI (sustituyendo a "le").
 Ejemplos de LEÍSMO (le/les como CD masculino — incorrecto): "Le vi ayer" → "Lo vi ayer".
 ATENCIÓN: "llamar a alguien" toma CI en España → "le llamé" (correcto), "la llamé" (laísmo si el referente es femenino el sujeto es ella). Analiza cada caso con cuidado.
 2. "ambiguedad": pronombres ambiguos donde el referente no queda claro. REQUISITO: debe haber 2 o más referentes posibles del MISMO GÉNERO GRAMATICAL en la misma frase o frase anterior. Si el pronombre es masculino (él, lo, le) solo puede ser ambiguo si hay 2+ referentes masculinos. Si el pronombre es femenino (ella, la, le) solo si hay 2+ referentes femeninos. EXCLUYE frases donde hay un único referente del género correcto aunque haya otros del género opuesto. EXCLUYE frases donde el error sea de leísmo/laísmo/loísmo — no confundas errores de pronombre con ambigüedad.
@@ -730,7 +731,7 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores: findings:[].`,
     label: 'Léxico — repeticiones y verbos',
     ids: ['repeticion_lexica', 'verbos_comedin', 'sustantivos_genericos'],
     buildPrompt: (text) => SISTEMA + `Eres un corrector de estilo experto en español. Analiza el texto y devuelve TRES análisis:
-1. "repeticion": misma palabra de contenido repetida 3 o más veces DENTRO DEL MISMO PÁRRAFO o en párrafos inmediatamente consecutivos sin intención estilística. EXCLUYE: pronombres, artículos, preposiciones, conjunciones, adverbios. EXCLUYE nombres propios (palabras capitalizadas que no inician oración) — esos los analiza la categoría «nombres». EXCLUYE palabras que aparecen solo 1-2 veces aunque estén cerca. Solo señala repeticiones realmente llamativas que empeoren el estilo.
+1. "repeticion": misma palabra de contenido repetida MÍNIMO 3 VECES, con TODAS las ocurrencias en el MISMO PÁRRAFO o en párrafos inmediatamente adyacentes (máximo 2 párrafos consecutivos), sin intención estilística. REGLA DURA: si la palabra aparece solo 2 veces en total en el fragmento, NO la señales aunque estén en párrafos consecutivos. EXCLUYE: pronombres, artículos, preposiciones, conjunciones, adverbios, términos técnicos o científicos que deben repetirse por precisión. EXCLUYE nombres propios (palabras capitalizadas que no inician oración) — esos los analiza la categoría «nombres». Solo señala repeticiones realmente llamativas que claramente empeoren el estilo.
 2. "verbos": verbos comodín donde el verbo es claramente vago y existe uno más específico y expresivo. Ej: "Hizo una sonrisa" → "Sonrió". "Puso los ojos en blanco" → "Alzó los ojos". "Hizo un gesto" → "Gesticuló". CRITERIO: señala solo verbos genéricos como hacer, poner, tener, dar, coger usados donde podría ir un verbo más preciso. NO señales verbos que ya son específicos para la acción descrita. Devuelve el fragmento EXACTO.
 3. "sustantivos": sustantivos claramente vagos y sustituibles por términos concretos. Ej: "esa cosa" → "ese objeto". SOLO señala: cosa, tema, asunto, aspecto, elemento, situación cuando sean claramente intercambiables y empobrezcan el texto. EXCLUYE: palabras usadas en su sentido preciso, expresiones idiomáticas, frases hechas. Devuelve el fragmento EXACTO.
 
@@ -764,7 +765,7 @@ Devuelve MÁXIMO 10 hallazgos por categoría. Si no hay errores en una categorí
 1. "adverbios": adverbios terminados en "-mente". Evalúa cada uno: "Adecuado" si aporta valor literario, "Mejorable" si es débil o sustituible. Para los mejorables propone 2 alternativas sin adverbios (verbos precisos, acciones, recursos narrativos). No elimines los que funcionen bien.
 2. "voz_pasiva": voz pasiva perifrástica real (con ser/estar + participio + agente explícito o implícito). Ej: "La carta fue escrita por Elena" → "Elena escribió la carta". EXCLUYE construcciones activas aunque tengan pronombres indirectos (como "alguien lo había avisado" — esto es activa). EXCLUYE frases que contienen leísmos/laísmos/loísmos — evalúa la estructura sintáctica ignorando el error de pronombre. Devuelve el fragmento EXACTO.
 3. "frases_largas": frases de más de 40 palabras que dificulten la lectura.
-4. "nombres": nombre propio que aparece 4 o más veces DENTRO DEL MISMO PÁRRAFO. Ej: "Carlos" aparece 5 veces en el mismo párrafo. EXCLUYE nombres que aparecen en párrafos distintos aunque sean cercanos — la repetición en distintos párrafos es menos llamativa.
+4. "nombres": nombre propio que aparece 4 o más veces DENTRO DEL MISMO PÁRRAFO (no en el texto global, sino en un único párrafo). REGLA DURA: si el nombre no aparece 4 o más veces en el mismo párrafo, NO lo señales bajo ninguna circunstancia. Si el nombre aparece 2 o 3 veces repartidas en distintos párrafos (aunque sean consecutivos), NO lo señales. Ej válido: "Carlos" aparece 5 veces en el mismo párrafo. Ej inválido: "Albert" aparece 2 veces en un párrafo y 1 vez en el siguiente — NO señalar.
 
 Texto:
 ${text}
@@ -829,6 +830,12 @@ Si no hay errores: findings:[].`,
     label: 'Ritmo narrativo',
     ids: ['ritmo_narrativo'],
     buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='ritmo_narrativo').prompt.replace('{TEXT}', text),
+  },
+  {
+    groupKey: 'palabras_sobrantes',
+    label: 'Palabras sobrantes',
+    ids: ['palabras_sobrantes'],
+    buildPrompt: (text) => CORRECTIONS.find(c=>c.id==='palabras_sobrantes').prompt.replace('{TEXT}', text),
   },
 ];
 
