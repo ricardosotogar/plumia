@@ -1455,7 +1455,20 @@
 				}
 			},
 			{
-				"findings": []
+				"gerundios": {
+					"findings": [
+						{
+							"originalText": "viajar avanzando por el espacio infinito",
+							"gerund": "avanzando",
+							"errorType": "especificativo",
+							"explanation": "El gerundio 'avanzando' actúa como especificativo de 'viajar'; ambos verbos expresan el mismo movimiento, resultando redundante",
+							"correction": "viajar por el espacio infinito"
+						}
+					]
+				},
+				"tiempos": {
+					"findings": []
+				}
 			},
 			{
 				"gerundios": {
