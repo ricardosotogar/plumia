@@ -20,7 +20,7 @@ window.PLUMIA.COLOR_MAP = {
 };
 
 window.PLUMIA.CONFIG = {
-  model:"claude-sonnet-4-20250514",
+  model:"claude-sonnet-4-6",
   maxTokens:8192,
   wordsPerToken:0.75,
   inputPricePerToken:0.000003,
