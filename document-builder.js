@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '9.19';
-console.log('📦 document-builder.js v9.19 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.29';
+console.log('📦 document-builder.js v9.29 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -763,13 +763,24 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ── APPLY MARKINGS ────────────────────────────────────────────────────────
-  async applyMarkings(resolvedFindings) {
+  async applyMarkings(resolvedFindings, selectionText = '') {
     if (!resolvedFindings || !resolvedFindings.length) return;
 
     const ortotypo = resolvedFindings.filter(f => f.directFix);
     const others   = resolvedFindings.filter(f => !f.directFix && f.originalText);
 
-    if (ortotypo.length) await this.applyOrtotypography();
+    // Ortotipografía: en modo selección se omite para evitar dos problemas:
+    // 1) body.load('paragraphs') sobre documentos de 150+ hojas mata el WebView.
+    // 2) Las correcciones automáticas (guiones, comillas, etc.) se aplicarían
+    //    a TODO el documento, no solo al fragmento seleccionado.
+    // Los hallazgos de ortotipografía siguen apareciendo en el informe de estadísticas.
+    if (ortotypo.length) {
+      if (selectionText) {
+        console.log('[PLUMIA] applyMarkings: ortotipografía omitida en modo selección (evita crash en doc grande)');
+      } else {
+        await this.applyOrtotypography();
+      }
+    }
     if (!others.length)  return;
 
     // Registrar todas las muletillas detectadas para filtrar alternativas en comentarios
@@ -783,9 +794,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     }
     window.PLUMIA._knownMuletillas = _muletillaSet;
 
-    // ── Paso 1: resolver posiciones (un solo Word.run de solo lectura) ────────
-    // Cada finding se sitúa en [párrafoIdx, charIdx] para ordenar de atrás a adelante.
-    const positions = await this._resolvePositions(others);
+    // ── Paso 1: resolver posiciones ───────────────────────────────────────────
+    // Si hay selectionText: cálculo en JS puro (sin Word.run, sin cargar párrafos).
+    // Si no: Word.run con body.load('paragraphs') sobre el documento completo.
+    const positions = await this._resolvePositions(others, selectionText);
 
     // ── Paso 2: ordenar de atrás hacia adelante ───────────────────────────────
     // Dentro de la misma posición: word markers PRIMERO, bracket markers DESPUÉS.
@@ -811,7 +823,36 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ── Resolver posición de cada finding en el documento ────────────────────
-  async _resolvePositions(findings) {
+  // selectionText: si se pasa, calcula posiciones desde el string JS (sin Word.run).
+  // Esto evita body.load('paragraphs') que mata el WebView en documentos de 150+ hojas.
+  async _resolvePositions(findings, selectionText = '') {
+    // ── FAST PATH: selección activa → cálculo en JS puro ─────────────────────
+    if (selectionText) {
+      const sl = selectionText.toLowerCase();
+      return findings.map(f => {
+        let search = (f.originalText || '').replace(/[\r\n]+/g, ' ').trim().toLowerCase();
+        if (search.length >= 70) {
+          const cut = search.substring(0, 70);
+          const lastSpace = cut.lastIndexOf(' ');
+          search = lastSpace > 25 ? cut.substring(0, lastSpace).trimEnd() : cut;
+        }
+        if (!search || search.length < 3) return [0, 0];
+        const idx = sl.indexOf(search);
+        if (idx !== -1) return [0, idx];
+        // Fallback: tramo final del texto (puede cruzar párrafos)
+        if (search.length > 15) {
+          const tail = search.substring(search.length - 25);
+          const tailClean = tail.indexOf(' ') > 0 ? tail.substring(tail.indexOf(' ')).trim() : tail;
+          if (tailClean.length >= 5) {
+            const tidx = sl.indexOf(tailClean);
+            if (tidx !== -1) return [0, tidx];
+          }
+        }
+        return [0, 0];
+      });
+    }
+
+    // ── SLOW PATH: documento completo → Word.run con body.load('paragraphs') ──
     const positions = findings.map(() => [0, 0]);
     try {
       await Word.run(async (ctx) => {
@@ -1321,14 +1362,14 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ── BUILD OUTPUT ──────────────────────────────────────────────────────────
-  async buildOutput(allResults, resolvedFindings, originalName, selectedIds) {
+  async buildOutput(allResults, resolvedFindings, originalName, selectedIds, selectionText = '') {
     const revisionName = await this.getRevisionName(originalName);
     const statsName    = this.getStatsName(revisionName);
     const allFindings  = allResults.flatMap(r=>r.findings);
     const pageMap      = await this.buildPageMap(allFindings);
 
     if (this.outputMode === 'marked') {
-      await this.applyMarkings(resolvedFindings);
+      await this.applyMarkings(resolvedFindings, selectionText);
       await this.highlightBrackets();
       await this.appendStatsReport(allResults, pageMap);
       return {mode:'marked', revisionName, statsName, totalFindings:resolvedFindings.length};

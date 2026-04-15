@@ -1600,7 +1600,10 @@ async function runAnalysis() {
   const resolved = proc.resolveOverlaps(allResults);
   const originalName = await getDocumentName();
   console.log('[DBG12] llamando builder.buildOutput, findings=', resolved.length);
-  const output = await builder.buildOutput(allResults, resolved, originalName, [...state.selectedIds]);
+  // Pasar selectionText para que buildOutput/applyMarkings evite body.load('paragraphs')
+  // en documentos grandes y restrinja ortotipografía al fragmento analizado.
+  const selectionTextForBuilder = state.capturedSelectionText || '';
+  const output = await builder.buildOutput(allResults, resolved, originalName, [...state.selectedIds], selectionTextForBuilder);
   console.log('[DBG13] buildOutput completado');
 
   // Obtener coste real de la API (tokens acumulados durante el análisis)
