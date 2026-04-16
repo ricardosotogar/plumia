@@ -3108,6 +3108,488 @@
                                                                "suggestion":  "Equilibrar el ritmo con frases de extensión media que mantengan el tono pausado y atmosférico del amanecer, evitando tanto el telegrafismo como la extensión excesiva"
                                                            }
                                                        ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "repeticion":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "word":  "supercomputadora",
+                                                                                  "occurrences":  [
+                                                                                                      "la supercomputadora Flash desarrollada por Liberty Universe",
+                                                                                                      "Lo importante no es la gran capacidad de procesamiento de información que tiene esta supercomputadora cuántica",
+                                                                                                      "Aún no sé cómo has conseguido que te den acceso a la supercomputadora más potente del mundo",
+                                                                                                      "dale acceso a nuestro proyecto",
+                                                                                                      "La inteligencia artificial que gobernaba la supercomputadora más potente del mundo estaba a punto de sumergirse en la base de datos de la supercomputadora del ODIN"
+                                                                                                  ],
+                                                                                  "explanation":  "La palabra \u0027supercomputadora\u0027 aparece repetida en exceso en párrafos consecutivos sin intención estilística clara, saturando el texto."
+                                                                              },
+                                                                              {
+                                                                                  "word":  "tecla intro",
+                                                                                  "occurrences":  [
+                                                                                                      "atizó la tecla intro con gran violencia",
+                                                                                                      "disfrutaba golpeando la tecla intro con nervio",
+                                                                                                      "Mary Jane siempre le decía que no lo aporreara así"
+                                                                                                  ],
+                                                                                  "explanation":  "\u0027Tecla intro\u0027 aparece dos veces en el mismo párrafo junto a \u0027aporreara\u0027, reforzando la repetición del mismo concepto ya descrito."
+                                                                              },
+                                                                              {
+                                                                                  "word":  "lengua/lenguas",
+                                                                                  "occurrences":  [
+                                                                                                      "Es un mensaje en una lengua desconocida",
+                                                                                                      "Descifrar una lengua perdida no debería ser un problema",
+                                                                                                      "Las lenguas son entes vivos que evolucionan",
+                                                                                                      "puedo ser capaz de traducir textos de lenguas perdidas"
+                                                                                                  ],
+                                                                                  "explanation":  "\u0027Lengua/lenguas\u0027 se repite cuatro veces en párrafos consecutivos sin variación léxica que aligere la densidad."
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "verbos":  {
+                                                         "findings":  [
+                                                                          {
+                                                                              "originalText":  "Mary Jane trazó una sonrisa en su cara",
+                                                                              "verb":  "trazó",
+                                                                              "explanation":  "Perífrasis vaga con verbo comodín. Podría sustituirse por \u0027sonrió\u0027 o \u0027esbozó una sonrisa\u0027."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "agitó las manos con avidez para que una de las cuatro hormiguillas se lo trajese corriendo",
+                                                                              "verb":  "agitó",
+                                                                              "explanation":  "El gesto descrito es uno de llamada o señal urgente; un verbo más preciso sería \u0027hizo señas\u0027 o \u0027gestuló\u0027 para indicar que se lo trajeran."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "tenían en sus manos los científicos",
+                                                                              "verb":  "tenían",
+                                                                              "explanation":  "Verbo comodín \u0027tener\u0027. Podría sustituirse por \u0027sostenían\u0027 o \u0027manejaban\u0027, más precisos para la acción de operar mandos táctiles."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "moviendo la cabeza hacia adelante de manera inquisitiva",
+                                                                              "verb":  "moviendo",
+                                                                              "explanation":  "Verbo comodín \u0027mover\u0027. Podría sustituirse por \u0027inclinando\u0027 o \u0027ladeando\u0027, más expresivos para el gesto descrito."
+                                                                          }
+                                                                      ]
+                                                     },
+                                          "sustantivos":  {
+                                                              "findings":  [
+                                                                               {
+                                                                                   "originalText":  "trabajando en algo muy importante",
+                                                                                   "genericWord":  "algo",
+                                                                                   "explanation":  "\u0027Algo\u0027 es un comodín vago en este contexto; podría sustituirse por \u0027un proyecto\u0027 o \u0027una investigación\u0027 para dar más concreción."
+                                                                               },
+                                                                               {
+                                                                                   "originalText":  "Oye, una cosa: respecto al fin de semana",
+                                                                                   "genericWord":  "cosa",
+                                                                                   "explanation":  "\u0027Una cosa\u0027 es un comodín empobrecedor; podría sustituirse por \u0027un aviso\u0027 o \u0027una novedad\u0027 para mayor precisión."
+                                                                               }
+                                                                           ]
+                                                          }
+                                      },
+                                      {
+                                          "muletillas":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "expression":  "De algún modo",
+                                                                                  "occurrences":  [
+                                                                                                      "De algún modo, buscaba equilibrar la escasez de cabello en la cabeza."
+                                                                                                  ],
+                                                                                  "explanation":  "Expresión vaga que no aporta información real; se puede eliminar sin perder significado."
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "Básicamente",
+                                                                                  "occurrences":  [
+                                                                                                      "Básicamente, porque me han dotado de ética."
+                                                                                                  ],
+                                                                                  "explanation":  "Muletilla que no añade valor semántico; puede suprimirse directamente."
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "de verdad",
+                                                                                  "occurrences":  [
+                                                                                                      "Me refiero a poder del de verdad"
+                                                                                                  ],
+                                                                                  "explanation":  "Refuerzo redundante e informal que no añade precisión; puede eliminarse."
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "Sí, claro, por supuesto",
+                                                                                  "occurrences":  [
+                                                                                                      "—Sí, claro, por supuesto."
+                                                                                                  ],
+                                                                                  "explanation":  "Acumulación de tres afirmaciones equivalentes; cualquiera de ellas sola expresaría lo mismo."
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "a día de hoy",
+                                                                                  "occurrences":  [
+                                                                                                      "e incluso hayan obtenido otro modo, aún más eficiente. Pero también es probable que quieran simplificar la forma de transmitir el lenguaje a la manera más simple posible, porque decodificar un mensaje enviado usando los estados cuánticos supone una complejidad muy grande.",
+                                                                                                      "que utilizamos nosotros a día de hoy"
+                                                                                                  ],
+                                                                                  "explanation":  "Muletilla temporal que no aporta información nueva en contexto; «hoy» o «actualmente» sería suficiente."
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "pleonasmos":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "originalText":  "por nuestros propios medios",
+                                                                                  "explanation":  "\u0027Propios\u0027 es redundante: los medios de uno ya son suyos por definición.",
+                                                                                  "correction":  "por nuestros medios"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "Detecto que hay otras cinco personas más, además de ti.",
+                                                                                  "explanation":  "\u0027otras\u0027 y \u0027más\u0027 y \u0027además\u0027 expresan lo mismo: que son adicionales a ti. Triple redundancia.",
+                                                                                  "correction":  "Detecto que hay cinco personas más además de ti."
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "interfaz interactiva",
+                                                                                  "explanation":  "Una interfaz es por definición interactiva; el adjetivo es redundante.",
+                                                                                  "correction":  "interfaz"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "el más absoluto silencio",
+                                                                                  "explanation":  "\u0027Absoluto\u0027 ya indica el grado máximo, por lo que \u0027el más\u0027 es redundante.",
+                                                                                  "correction":  "el absoluto silencio / un silencio absoluto"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "trazó una sonrisa en su cara",
+                                                                                  "explanation":  "Una sonrisa se traza necesariamente en la cara; \u0027en su cara\u0027 es redundante.",
+                                                                                  "correction":  "trazó una sonrisa"
+                                                                              }
+                                                                          ]
+                                                         }
+                                      },
+                                      {
+                                          "adverbios":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "Marcus aporreó el teclado con fuerza, sonando con más profundidad que nunca, con cierto eco, como si estuviesen en lo más recóndito de una cueva.",
+                                                                                 "adverb":  "nunca",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "Forma parte de una comparación expresiva que refuerza el ambiente tenso.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Mary Jane miró a Marcus abriendo las manos y moviendo la cabeza hacia adelante de manera inquisitiva.",
+                                                                                 "adverb":  "de manera inquisitiva",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "Locución adverbial débil que describe un gesto ya narrado; el recurso narrativo puede integrarse en la acción.",
+                                                                                 "alternatives":  [
+                                                                                                      "Mary Jane miró a Marcus abriendo las manos, la cabeza inclinada hacia él en una pregunta silenciosa.",
+                                                                                                      "Mary Jane clavó los ojos en Marcus y abrió las manos, exigiéndole una explicación sin palabras."
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Él, al darse cuenta de que se había olvidado de enchufarlo, miró hacia atrás y agitó las manos con avidez para que una de las cuatro hormiguillas se lo trajese corriendo.",
+                                                                                 "adverb":  "corriendo",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "Adverbio de modo integrado como gerundio que resulta genérico; puede sustituirse por una acción más visual.",
+                                                                                 "alternatives":  [
+                                                                                                      "Él agitó las manos con avidez hacia una de las cuatro hormiguillas, que cruzó la sala de un sprint.",
+                                                                                                      "Él giró y chasqueó los dedos con urgencia; una de las hormiguillas salió disparada a buscarlo."
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "sin mirar atrás, para quedarse con él para siempre.",
+                                                                                 "adverb":  "para siempre",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "Remate emocional de una frase de alto voltaje sentimental; su eliminación restaría peso al momento.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Básicamente, porque me han dotado de ética.",
+                                                                                 "adverb":  "Básicamente",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "Muletilla coloquial que debilita el tono de una inteligencia artificial que debería sonar precisa.",
+                                                                                 "alternatives":  [
+                                                                                                      "La razón es sencilla: me han dotado de ética.",
+                                                                                                      "La respuesta es directa: me han programado con ética."
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Será más ágil si accedo directamente a toda la información de la que disponéis.",
+                                                                                 "adverb":  "directamente",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "No añade matiz relevante; la idea de acceso ya implica inmediatez.",
+                                                                                 "alternatives":  [
+                                                                                                      "Será más ágil si accedo a toda la información de la que disponéis.",
+                                                                                                      "El proceso ganará velocidad si me concedéis acceso a vuestra base de datos completa."
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Aquel día, Mary Jane volvió a casa más entusiasmada que nunca.",
+                                                                                 "adverb":  "nunca",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "Superlativo comparativo que marca un punto de inflexión emocional en la trama; cumple función narrativa clara.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             }
+                                                                         ]
+                                                        },
+                                          "voz_pasiva":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "originalText":  "será cuestión de tiempo que descubramos algo",
+                                                                                  "explanation":  "No es voz pasiva; revisión descartada.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "la inteligencia artificial de la que está dotada: la AiFlash",
+                                                                                  "explanation":  "Construcción pasiva con participio «dotada» y agente implícito (sus creadores).",
+                                                                                  "activeVersion":  "la inteligencia artificial que Liberty Universe le ha incorporado: la AiFlash"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "me han dotado de ética",
+                                                                                  "explanation":  "Pasiva refleja con agente implícito (los creadores de AiFlash).",
+                                                                                  "activeVersion":  "Liberty Universe me programó con ética"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "Es un dispositivo redondo del tamaño de una pelota de tenis. Con él, aunque mi centro de procesamiento de datos, mi cerebro, está en las instalaciones de Liberty Universe, será como si estuviera allí con ustedes siendo uno más.",
+                                                                                  "explanation":  "No es voz pasiva real; revisión descartada.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "les han debido hacer llegar",
+                                                                                  "explanation":  "Pasiva perifrástica con participio «hacer llegar» y agente implícito.",
+                                                                                  "activeVersion":  "alguien debió hacérselo llegar / Liberty Universe debió hacérselo llegar"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "el mensaje está siendo enviado a través de ondas electromagnéticas",
+                                                                                  "explanation":  "Voz pasiva perifrástica progresiva con agente implícito (la especie extraterrestre).",
+                                                                                  "activeVersion":  "alguien —o algo— está enviando el mensaje a través de ondas electromagnéticas"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "codificaba la información usando ceros y unos que eran transmitidos usando la modulación de la señal",
+                                                                                  "explanation":  "Voz pasiva perifrástica («eran transmitidos») con agente implícito.",
+                                                                                  "activeVersion":  "codificaba la información usando ceros y unos que la modulación de la señal transmitía"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "un mensaje enviado usando los estados cuánticos",
+                                                                                  "explanation":  "Participio pasivo con agente implícito en función adjetiva; puede activarse.",
+                                                                                  "activeVersion":  "un mensaje que la emisora transmite mediante estados cuánticos"
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "frases_largas":  {
+                                                                "findings":  [
+                                                                                 {
+                                                                                     "originalText":  "Con los grandes paneles de luz blanca repartidos por todas las paredes, los mandos táctiles que tenían en sus manos los científicos, las innumerables pantallas planas y los característicos monos de trabajo de color gris que todos llevaban, cualquiera podría pensar que estuviesen en la sala de control de una nave espacial.",
+                                                                                     "wordCount":  52,
+                                                                                     "explanation":  "Enumeración acumulativa de cuatro elementos que sobrecarga la frase y retrasa el verbo principal hasta el final.",
+                                                                                     "suggestion":  "Dividir la enumeración en dos frases: describir primero el entorno visual (paneles, pantallas) y después los detalles del personal (mandos, monos grises), cerrando con la comparación de la nave espacial."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "De algo debe haber servido estar obligada a asistir a las aburridas fiestas de la aristocracia a las que mi familia siempre es invitada. En ellas se conoce a mucha gente con poder. Me refiero a poder del de verdad, de aquel en el que alguien quiere que el presidente de nuestro país venga a cantarle el «cumpleaños feliz» a tu hijo y su mano invisible es capaz de conseguirlo.",
+                                                                                     "wordCount":  67,
+                                                                                     "explanation":  "Período explicativo que encadena varias subordinadas y una aclaración parentética, haciendo perder el hilo al lector.",
+                                                                                     "suggestion":  "Separar la anécdota del «cumpleaños feliz» en una frase independiente y condensar la definición de poder en una sola oración breve."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Si conseguimos descifrar el mensaje y, en última instancia, acabamos comunicándonos con quienes quiera que sean los que lo están enviando, habremos podido crear un canal de comunicación que podría ser la primera ruta comercial de intercambio de información con otro mundo.",
+                                                                                     "wordCount":  45,
+                                                                                     "explanation":  "Periodo condicional con doble subordinada de relativo que dilata en exceso la consecuencia principal.",
+                                                                                     "suggestion":  "Cortar tras «…comunicándonos con ellos» y arrancar una nueva frase: «Eso equivaldría a abrir la primera ruta comercial de intercambio de información con otro mundo»."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Un lenguaje que proviene de una raza que, podría ser no humanoide, supone que no podemos acotar la cantidad de sonidos que pueden emitir para comunicarse, como sí es posible con los humanos.",
+                                                                                     "wordCount":  34,
+                                                                                     "explanation":  "Por debajo del umbral de 40 palabras pero la frase incrustada «podría ser no humanoide» interrumpe torpemente la sintaxis principal; se señala por dificultar la lectura.",
+                                                                                     "suggestion":  "Reformular: «Si la raza emisora es no humanoide —algo muy probable—, no podremos acotar su repertorio de sonidos como sí hacemos con los humanos»."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Pero, hoy en día, usamos los estados cuánticos para trasmitir los cúbits a través de los fotones cuando se comportan como partícula. Es más que probable que una especie evolucionada haya llegado también a la misma forma de almacenar información que utilizamos nosotros a día de hoy, e incluso hayan obtenido otro modo, aún más eficiente.",
+                                                                                     "wordCount":  55,
+                                                                                     "explanation":  "Dos oraciones encadenadas donde la segunda repite el referente temporal («a día de hoy») y acumula dos conjeturas que podrían separarse.",
+                                                                                     "suggestion":  "Dividir: primera frase hasta «…como partícula». Segunda frase: «Una especie avanzada probablemente usa el mismo método —o uno aún más eficiente»."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Partiendo de que, quienes están enviando el mensaje, deben ser una especie muy avanzada, es más que probable que sepan que no serviría de nada enviar un mensaje en su propio idioma, sin un manual de traducción.",
+                                                                                     "wordCount":  38,
+                                                                                     "explanation":  "La doble coma que encierra «quienes están enviando el mensaje» crea un inciso que entorpece la lectura del período condicional.",
+                                                                                     "suggestion":  "Reescribir: «Los emisores deben de ser una especie muy avanzada; por eso es probable que supieran que enviar el mensaje solo en su idioma, sin manual de traducción, no serviría de nada»."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Aunque es probable que hayan ideado algún idioma conceptual basado en imágenes, que cualquier especie pueda interpretar como un conjunto de diapositivas encadenadas.",
+                                                                                     "wordCount":  27,
+                                                                                     "explanation":  "Por debajo del umbral estricto, pero la coma antes de «que» crea una fractura sintáctica que convierte la oración en un fragmento sin verbo principal claro.",
+                                                                                     "suggestion":  "Suprimir la coma o reformular: «…o quizás idearon un idioma conceptual basado en imágenes que cualquier especie pueda interpretar como diapositivas encadenadas»."
+                                                                                 }
+                                                                             ]
+                                                            },
+                                          "nombres":  {
+                                                          "findings":  [
+                                                                           {
+                                                                               "name":  "Marcus",
+                                                                               "occurrences":  [
+                                                                                                   "Mary Jane siempre le decía que no lo aporreara así",
+                                                                                                   "Siempre lo hacía de esa manera; disfrutaba golpeando la tecla intro con nervio.",
+                                                                                                   "Quizás, desde su fuero interno, trascendía la idea de que haciéndolo de ese modo confería más significado",
+                                                                                                   "Mary Jane siempre le decía que no lo aporreara así, que algún día lo rompería.",
+                                                                                                   "En aquella ocasión abrió la boca para reprochárselo"
+                                                                                               ],
+                                                                               "explanation":  "En el párrafo que narra la escena del teclado, «Marcus» aparece mencionado explícitamente cuatro veces dentro del mismo bloque narrativo, saturando la referencia al personaje.",
+                                                                               "suggestion":  "Sustituir algunas apariciones por pronombres («él», «su dedo») o por una aposición descriptiva («el corpulento segundo al mando») para aligerar la repetición."
+                                                                           }
+                                                                       ]
+                                                      }
+                                      },
+                                      {
+                                          "tiempos":  {
+                                                          "findings":  [
+                                                                           {
+                                                                               "originalText":  "las cuatro hormiguillas dejaron de moverse, quedando inmóviles mirando la pantalla de Marcus. Se hizo el más absoluto silencio. Todos sabían que Mary Jane odiaba que se hiciera el más mínimo ruido, pero, a pesar de eso, Marcus aporreó el teclado con fuerza, sonando con más profundidad que nunca",
+                                                                               "verbsFound":  [
+                                                                                                  "dejaron",
+                                                                                                  "sabían",
+                                                                                                  "odiaba",
+                                                                                                  "aporreó"
+                                                                                              ],
+                                                                               "explanation":  "La mezcla de indefinidos (dejaron, aporreó) con imperfectos (sabían, odiaba) en la misma escena narrativa continua genera una alternancia que podría ser descuido, aunque los imperfectos podrían justificarse como estados habituales. El caso más llamativo es \u0027aporreó\u0027 insertado entre imperfectos de caracterización sin transición clara.",
+                                                                               "suggestion":  "Mantener coherencia: usar imperfecto para estados/hábitos y reservar el indefinido solo para acciones puntuales claramente delimitadas, revisando que la alternancia sea intencional."
+                                                                           }
+                                                                       ]
+                                                      },
+                                          "gerundios":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "El nerviosismo trascendía contaminando el aire, haciéndolo más espeso, menos respirable.",
+                                                                                 "gerund":  "contaminando",
+                                                                                 "errorType":  "especificativo",
+                                                                                 "explanation":  "El gerundio \u0027contaminando\u0027 funciona aquí como complemento especificativo del verbo \u0027trascendía\u0027, indicando el modo o resultado de trascender. El problema es que introduce una acción que es consecuencia o efecto de la acción principal (trascendía → contaminaba), lo que lo convierte en un gerundio de posterioridad encubierto bajo apariencia modal.",
+                                                                                 "correction":  "El nerviosismo trascendía y contaminaba el aire, haciéndolo más espeso, menos respirable."
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "las cuatro hormiguillas dejaron de moverse, quedando inmóviles mirando la pantalla de Marcus.",
+                                                                                 "gerund":  "quedando",
+                                                                                 "errorType":  "posterioridad",
+                                                                                 "explanation":  "El gerundio \u0027quedando\u0027 expresa una acción posterior a \u0027dejaron de moverse\u0027: primero dejaron de moverse y luego quedaron inmóviles. El gerundio no debe usarse para expresar posterioridad.",
+                                                                                 "correction":  "las cuatro hormiguillas dejaron de moverse y quedaron inmóviles mirando la pantalla de Marcus."
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Marcus aporreó el teclado con fuerza, sonando con más profundidad que nunca",
+                                                                                 "gerund":  "sonando",
+                                                                                 "errorType":  "posterioridad",
+                                                                                 "explanation":  "El gerundio \u0027sonando\u0027 expresa el resultado o efecto posterior al acto de aporrear: primero aporreó y luego sonó. Es un gerundio de posterioridad, incorrecto en este uso.",
+                                                                                 "correction":  "Marcus aporreó el teclado con fuerza, que sonó con más profundidad que nunca"
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Por último, atizó la tecla intro con gran violencia con su dedo índice, para terminar de introducir los datos de acceso.",
+                                                                                 "gerund":  "introducir",
+                                                                                 "errorType":  "posterioridad",
+                                                                                 "explanation":  "Aunque \u0027introducir\u0027 aparece en infinitivo dentro de \u0027para terminar de introducir\u0027, la construcción indica que introducir los datos es la finalidad que se completa con el gesto, lo cual es lógicamente posterior al atizar la tecla. No es un error de gerundio propiamente, se descarta.",
+                                                                                 "correction":  ""
+                                                                             }
+                                                                         ]
+                                                        }
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+                                                           {
+                                                               "originalText":  "En la sala principal el ambiente estaba enrarecido.",
+                                                               "errorType":  "ausencia_coma_inciso",
+                                                               "correction":  "En la sala principal, el ambiente estaba enrarecido.",
+                                                               "explanation":  "El complemento circunstancial antepuesto \u0027En la sala principal\u0027 debe ir seguido de coma cuando precede al sujeto y verbo."
+                                                           },
+                                                           {
+                                                               "originalText":  "Sin embargo… sí que es un problema.",
+                                                               "errorType":  "ausencia_coma_conector",
+                                                               "correction":  "Sin embargo,… sí que es un problema.",
+                                                               "explanation":  "El conector \u0027Sin embargo\u0027 al inicio de frase requiere coma después."
+                                                           },
+                                                           {
+                                                               "originalText":  "En efecto… sí que es un problema.",
+                                                               "errorType":  "ausencia_coma_conector",
+                                                               "correction":  "En efecto,… sí que es un problema.",
+                                                               "explanation":  "El conector discursivo \u0027En efecto\u0027 al inicio de frase requiere coma después."
+                                                           },
+                                                           {
+                                                               "originalText":  "En cuanto Marcus conecto el dispositivo",
+                                                               "errorType":  "coma_sujeto_verbo",
+                                                               "correction":  "En cuanto Marcus conectó el dispositivo",
+                                                               "explanation":  "Errata tipográfica: \u0027conecto\u0027 debe ser \u0027conectó\u0027 (pretérito indefinido con tilde)."
+                                                           },
+                                                           {
+                                                               "originalText":  "No te preocupes Mary Jane.",
+                                                               "errorType":  "ausencia_coma_inciso",
+                                                               "correction":  "No te preocupes, Mary Jane.",
+                                                               "explanation":  "El vocativo \u0027Mary Jane\u0027 debe ir separado por coma del resto de la oración."
+                                                           }
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+                                                           {
+                                                               "originalText":  "—No te preocupes Mary Jane.",
+                                                               "errorType":  "Falta de coma vocativo",
+                                                               "correction":  "—No te preocupes, Mary Jane.",
+                                                               "explanation":  "El vocativo debe ir separado por coma del resto de la oración."
+                                                           },
+                                                           {
+                                                               "originalText":  "A no ser que me digas que no comparta la información para salvar tu vida, es lo que haría ¿Deseas que, en caso de que tu vida corra peligro, no lo haga?",
+                                                               "errorType":  "Falta de raya antes de acotación / punto incorrecto antes de interrogación que continúa el mismo parlamento",
+                                                               "correction":  "es lo que haría. ¿Deseas que, en caso de que tu vida corra peligro, no lo haga?",
+                                                               "explanation":  "Cuando dentro de un mismo parlamento se pasa de una afirmación a una pregunta, la afirmación debe cerrarse con punto, no quedar sin signo de cierre."
+                                                           },
+                                                           {
+                                                               "originalText":  "—Jo, ¡qué corto! ¿Me cuentas otro?",
+                                                               "errorType":  "Mayúscula incorrecta en continuación de parlamento tras exclamación",
+                                                               "correction":  "—Jo, ¡qué corto! ¿me cuentas otro?",
+                                                               "explanation":  "Cuando tras una exclamación sigue una interrogación dentro del mismo parlamento y ambas forman una unidad enunciativa continuada, la interrogación puede ir con minúscula; sin embargo, al ser frases independientes dentro del diálogo, este caso es aceptable. Se deja como hallazgo de revisión."
+                                                           }
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+                                                           {
+                                                               "originalText":  "poder del de verdad",
+                                                               "surplus":  "de",
+                                                               "errorType":  "de_intrusivo",
+                                                               "explanation":  "\u0027del de verdad\u0027 contiene un \u0027de\u0027 intrusivo; la construcción correcta es \u0027poder de verdad\u0027",
+                                                               "correction":  "poder de verdad"
+                                                           },
+                                                           {
+                                                               "originalText":  "hay otras cinco personas más, además de ti",
+                                                               "surplus":  "más",
+                                                               "errorType":  "movimiento_redundante",
+                                                               "explanation":  "\u0027otras cinco personas más\u0027 es redundante: \u0027otras\u0027 ya implica adicionalidad, igual que \u0027más\u0027; sobra \u0027más\u0027",
+                                                               "correction":  "hay otras cinco personas, además de ti"
+                                                           }
+                                                       ]
                                       }
                                   ]
                 }
