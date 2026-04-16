@@ -98,6 +98,7 @@ SOLO señala construcciones que cumplan UNA de estas dos formas:
 
 NO señales (son falsos positivos habituales):
 - Participios adjetivales que modifican un sustantivo dentro de una frase nominal, aunque vayan seguidos de "por": "proyecto lanzado por X", "experimentos llevados a cabo", "ángel sacado de una iglesia", "telescopio regalado". Prueba: si puedes sustituir el participio por un adjetivo cualquiera sin cambiar la estructura, NO es pasiva.
+- Participios descriptivos en aposición (tras coma, modificando el sustantivo anterior): "un meteorito, compuesto de material X", "una mujer, conocida en el sector", "el edificio, construido en 1920". La frase principal puede estar perfectamente en voz activa ("había adquirido un meteorito, compuesto de…") y el participio es solo un adjetivo descriptivo del nombre, NO una pasiva.
 - Construcciones activas con sujeto implícito o indeterminado: "le habían regalado", "le dijeron que", "le avisaron de".
 - Oraciones de relativo con participio: "los que fueron enviados" solo si el contexto hace natural la forma pasiva.
 - Construcciones con "se" que son pronominales o medias, no pasivas: "se llamaba", "se fue", "se levantó".
