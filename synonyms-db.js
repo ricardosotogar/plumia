@@ -4,8 +4,8 @@
 // Depende de: corrections-config.js (window.PLUMIA.CORRECTIONS)
 // ============================================================================
 (function() {
-window.PLUMIA.SYNONYMS_VERSION = '9.30';
-console.log('📦 synonyms-db.js v9.30 cargado');
+window.PLUMIA.SYNONYMS_VERSION = '9.31';
+console.log('📦 synonyms-db.js v9.31 cargado');
 var CORRECTIONS = window.PLUMIA.CORRECTIONS; // alias para buildPrompt lambdas
 
 // ── 1. DICCIONARIO LOCAL DE SINÓNIMOS ────────────────────────────────────────
@@ -682,7 +682,7 @@ window.PLUMIA.runLocalAunTilde = function(text) {
 // como "4. Verbos comodín" que NO son ejemplos didácticos sino simplemente títulos.
 // El contenido narrativo a analizar es el texto que sigue a cada título.
 
-const SISTEMA = `INSTRUCCIÓN CRÍTICA: Debes analizar el texto que te paso buscando errores reales de escritura. El texto contiene párrafos narrativos que TIENEN errores intencionados que debes detectar. Los títulos numerados como "1. Leísmos" o "4. Verbos comodín" son solo encabezados de sección — el texto que les sigue CONTIENE los errores que debes encontrar. Analiza TODO el texto y reporta TODOS los errores que encuentres.\n\n`;
+const SISTEMA = `INSTRUCCIÓN CRÍTICA: Debes analizar el texto que te paso buscando errores reales de escritura. El texto contiene párrafos narrativos que TIENEN errores intencionados que debes detectar. Los títulos numerados como "1. Leísmos" o "4. Verbos comodín" son solo encabezados de sección — el texto que les sigue CONTIENE los errores que debes encontrar. Analiza TODO el texto y reporta TODOS los errores que encuentres.\nREGLA ABSOLUTA SOBRE findings: Si al analizar un fragmento concluyes que NO es un error, NO lo incluyas en el array findings bajo ningún concepto — ni con explicación, ni como descarte, ni como aviso. El array findings solo debe contener errores reales confirmados. Un finding con explicación "correcto", "se descarta", "no aplica" o similar es un error de tu parte.\n\n`;
 
 window.PLUMIA.API_GROUPS = [
   {

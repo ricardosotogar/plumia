@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '9.30';
-console.log('📦 document-builder.js v9.30 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.31';
+console.log('📦 document-builder.js v9.31 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -570,20 +570,21 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       } catch(e) { dbg(`_markBrackets CaseA ◆²: ${e.message}`); }
     } else {
       // ── Case B: buscar el final real del bloque/frase en el párrafo ──────────
-      // Usamos range.paragraphs.getFirst() en lugar de body.paragraphs.items[pi]
-      // porque no requiere cargar la colección de párrafos del body.
+      // Siempre cargamos el párrafo que contiene el range — evita buscar en el
+      // body completo (lo que causaría coger la primera ocurrencia del ancla en
+      // todo el documento en vez de la del párrafo correcto).
       try {
         let searchAnchor = '';
+        const para = range.paragraphs.getFirst();
+        para.load('text');
+        await ctx.sync();
+        const paraClean = (para.text || '')
+                          .replace(/[\r\n]+/g, ' ')
+                          .replace(/\u25C6[\u00B9\u00B2]?/g, '');
 
         if (!endsWithPunct) {
-          // origText truncado: leer texto del párrafo, localizar origText,
-          // buscar la siguiente puntuación de cierre y extraer ancla.
-          const para = range.paragraphs.getFirst();
-          para.load('text');
-          await ctx.sync();
-          const paraClean = (para.text || '')
-                            .replace(/[\r\n]+/g, ' ')
-                            .replace(/\u25C6[\u00B9\u00B2]?/g, '');
+          // origText truncado: localizar origText en el párrafo, buscar la
+          // siguiente puntuación de cierre y extraer ancla con las últimas palabras.
           const origStart = paraClean.toLowerCase().indexOf(origText.toLowerCase());
           if (origStart >= 0) {
             const origEnd  = origStart + origText.length;
@@ -596,15 +597,17 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             }
           }
         } else {
-          // origText completo pero largo (>= 70 chars, search truncado por _applyFinding).
-          // Las últimas palabras de origText están en el documento → ancla directa.
+          // origText completo con puntuación final, solo truncado para la búsqueda inicial.
+          // Ancla = últimas 3 palabras de origText (sin el signo de puntuación final).
           const origTail = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
           searchAnchor   = origTail.split(/\s+/).slice(-3).join(' ').trim();
         }
 
         dbg(`_markBrackets CaseB anchor="${searchAnchor}"`);
         if (searchAnchor.length >= 4) {
-          const endSr = body.search(searchAnchor, {matchCase:false, matchWholeWord:false, matchWildcards:false});
+          // Buscar en el párrafo específico, no en body, para evitar colisiones
+          // con otras ocurrencias del ancla en el resto del documento.
+          const endSr = para.search(searchAnchor, {matchCase:false, matchWholeWord:false, matchWildcards:false});
           endSr.load('items');
           await ctx.sync();
           dbg(`_markBrackets CaseB items=${endSr.items.length}`);
