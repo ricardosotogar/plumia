@@ -125,9 +125,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     // Formato multi-test: objeto con claves
     const key = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK : null;
     if (key && raw[key]) return raw[key].responses || [];
-    // PLUMIA_MOCK = true → primer test disponible
-    const firstKey = Object.keys(raw)[0];
-    if (firstKey) return raw[firstKey].responses || [];
+    // PLUMIA_MOCK = true → último test capturado (más reciente, ignorando "test1" de dev)
+    const keys = Object.keys(raw).filter(k => k !== 'test1');
+    const fallbackKey = keys.length ? keys[keys.length - 1] : Object.keys(raw).slice(-1)[0];
+    if (fallbackKey) return raw[fallbackKey].responses || [];
     return [];
   }
 
@@ -141,7 +142,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const idx = this._mockCallIndex || 0;
       this._mockCallIndex = idx + 1;
       const saved = stored[idx];
-      const testName = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK : Object.keys(raw || {})[0] || 'legacy';
+      const testName = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK : (() => { const ks = Object.keys(raw||{}).filter(k=>k!=='test1'); return ks.length ? ks[ks.length-1] : Object.keys(raw||{}).slice(-1)[0] || 'legacy'; })();
       if (saved !== undefined) {
         console.log(`[PLUMIA MOCK "${testName}"] llamada ${idx + 1}/${stored.length} → respuesta guardada`);
         return saved;
@@ -282,7 +283,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             console.log(`[PLUMIA MOCK] mock_responses.json cargado — formato legacy (${data.length} respuestas)`);
           } else {
             const tests = Object.keys(data);
-            const active = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK : tests[0];
+            const nonDevKeys = tests.filter(k => k !== 'test1');
+            const active = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK
+              : (nonDevKeys.length ? nonDevKeys[nonDevKeys.length - 1] : tests[tests.length - 1]);
             const n = data[active]?.responses?.length ?? 0;
             console.log(`[PLUMIA MOCK] mock_responses.json cargado — tests disponibles: [${tests.join(', ')}]`);
             console.log(`[PLUMIA MOCK] usando test "${active}" (${n} respuestas)`);
