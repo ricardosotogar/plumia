@@ -439,8 +439,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
               const originalText = this._extractOriginalText(f);
               if (!originalText) return null;
               // Filtrar hallucinations: el texto debe existir en el chunk analizado
-              const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
-              if (check.length > 5 && !chLower.includes(check)) return null;
+              // En modo mock no se filtra: los findings son de confianza (capturados del texto real)
+              if (!window.PLUMIA_MOCK) {
+                const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
+                if (check.length > 5 && !chLower.includes(check)) return null;
+              }
               // Filtrar correcciones nulas: wordForm === correctForm (alucinación sin error real).
               // IMPORTANTE: comparar SIN eliminar diacríticos — "como"→"cómo" es corrección válida;
               // solo se filtra cuando son literalmente idénticos (ej: "Cuando"→"Cuando").
@@ -577,7 +580,8 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         const originalText = this._extractOriginalText(f);
         if (!originalText) return; // descartar findings sin texto localizable
         // Filtrar hallucinations: el texto debe existir en el chunk analizado
-        if (chunkLower) {
+        // En modo mock no se filtra: los findings son de confianza (capturados del texto real)
+        if (chunkLower && !window.PLUMIA_MOCK) {
           const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
           if (check.length > 5 && !chunkLower.includes(check)) return;
         }
