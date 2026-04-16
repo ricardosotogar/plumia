@@ -4,8 +4,8 @@
 // Depende de: corrections-config.js (window.PLUMIA.CORRECTIONS)
 // ============================================================================
 (function() {
-window.PLUMIA.SYNONYMS_VERSION = '9.32';
-console.log('📦 synonyms-db.js v9.32 cargado');
+window.PLUMIA.SYNONYMS_VERSION = '9.33';
+console.log('📦 synonyms-db.js v9.33 cargado');
 var CORRECTIONS = window.PLUMIA.CORRECTIONS; // alias para buildPrompt lambdas
 
 // ── 1. DICCIONARIO LOCAL DE SINÓNIMOS ────────────────────────────────────────

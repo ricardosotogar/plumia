@@ -1120,38 +1120,7 @@
                                       },
                                       {
                                           "repeticion":  {
-                                                             "findings":  [
-                                                                              {
-                                                                                  "word":  "comunicar",
-                                                                                  "occurrences":  [
-                                                                                                      "están intentando comunicarse con nosotros",
-                                                                                                      "para comunicarnos con ellos",
-                                                                                                      "tratan de comunicarse de algún modo",
-                                                                                                      "no tratarían de comunicarse"
-                                                                                                  ],
-                                                                                  "explanation":  "La palabra \u0027comunicar\u0027 y sus variantes aparecen 4 veces en párrafos consecutivos de manera repetitiva"
-                                                                              },
-                                                                              {
-                                                                                  "word":  "intenciones",
-                                                                                  "occurrences":  [
-                                                                                                      "cuáles son sus intenciones",
-                                                                                                      "No sabemos sus intenciones",
-                                                                                                      "Si tuvieran malas intenciones",
-                                                                                                      "Si tuviesen malas intenciones"
-                                                                                                  ],
-                                                                                  "explanation":  "La palabra \u0027intenciones\u0027 se repite 4 veces en párrafos consecutivos"
-                                                                              },
-                                                                              {
-                                                                                  "word":  "agujeros negros",
-                                                                                  "occurrences":  [
-                                                                                                      "esos seres han creado un agujero negro",
-                                                                                                      "Si ellos hubieran creado un agujero negro",
-                                                                                                      "abrir agujeros negros podría ser peligroso",
-                                                                                                      "Son agujeros negros cuánticos"
-                                                                                                  ],
-                                                                                  "explanation":  "La expresión \u0027agujero(s) negro(s)\u0027 aparece múltiples veces en párrafos consecutivos"
-                                                                              }
-                                                                          ]
+                                                             "findings":  []
                                                          },
                                           "verbos":  {
                                                          "findings":  [
@@ -1605,12 +1574,6 @@
                                       {
                                           "findings":  [
                                                            {
-                                                               "originalText":  "Y pensamos que lo han hecho para poder enviarnos un mensaje ¿Comprendes?",
-                                                               "errorType":  "ausencia_coma_inciso",
-                                                               "correction":  "Y pensamos que lo han hecho para poder enviarnos un mensaje. ¿Comprendes?",
-                                                               "explanation":  "Debe ir punto antes de la pregunta independiente, no continuar la oración anterior"
-                                                           },
-                                                           {
                                                                "originalText":  "Lo que no cabe duda es que tratan de comunicarse de algún modo ¿Qué razón habría de hacerlo",
                                                                "errorType":  "ausencia_coma_inciso",
                                                                "correction":  "Lo que no cabe duda es que tratan de comunicarse de algún modo. ¿Qué razón habría de hacerlo",
@@ -1756,44 +1719,10 @@
                                         },
                                         {
                                             "leismo":  {
-                                                           "findings":  [
-                                                                            {
-                                                                                "type":  "laismo",
-                                                                                "originalText":  "A mí me dan miedo las consecuencias de lo que estáis haciendo, espero que lo tengáis todo controlado y salga bien.",
-                                                                                "correction":  "espero que lo tengáis todo controlado",
-                                                                                "explanation":  "No hay error aquí, este \u0027lo\u0027 es CD neutro correcto. Descartado."
-                                                                            },
-                                                                            {
-                                                                                "type":  "loismo",
-                                                                                "originalText":  "Lo que no cabe duda es que tratan de comunicarse de algún modo",
-                                                                                "correction":  "Lo que no cabe duda",
-                                                                                "explanation":  "No es loísmo, es uso pronominal neutro. Descartado."
-                                                                            }
-                                                                        ]
+                                                           "findings":  []
                                                        },
                                             "ambiguedad":  {
-                                                               "findings":  [
-                                                                                {
-                                                                                    "originalText":  "Después se abrazó a él y apagaron las luces de la habitación para dormir sin conseguirlo",
-                                                                                    "pronoun":  "lo",
-                                                                                    "possibleReferents":  [
-                                                                                                              "dormir",
-                                                                                                              "conseguir el descubrimiento"
-                                                                                                          ],
-                                                                                    "explanation":  "El pronombre \u0027lo\u0027 en \u0027sin conseguirlo\u0027 puede referirse a \u0027dormir\u0027 (el antecedente más inmediato) o a \u0027apagar las luces\u0027 o incluso a una idea previa del contexto. Aunque \u0027dormir\u0027 es el referente más lógico, la construcción resulta ligeramente ambigua.",
-                                                                                    "suggestion":  "Después se abrazó a él y apagaron las luces de la habitación, pero no lograron dormir."
-                                                                                },
-                                                                                {
-                                                                                    "originalText":  "guiñándole un ojo",
-                                                                                    "pronoun":  "le",
-                                                                                    "possibleReferents":  [
-                                                                                                              "Edmund",
-                                                                                                              "amor (vocativo)"
-                                                                                                          ],
-                                                                                    "explanation":  "En el contexto inmediato hay un único referente claro (Edmund), por lo que la ambigüedad es mínima. Sin embargo, el antecedente podría confundirse dado que el diálogo alterna entre los dos personajes sin una atribución explícita justo antes.",
-                                                                                    "suggestion":  "dijo guiñándole un ojo a Edmund"
-                                                                                }
-                                                                            ]
+                                                               "findings":  []
                                                            }
                                         },
                                         {
@@ -1825,12 +1754,6 @@
                                                                                       "errorType":  "sujeto-verbo",
                                                                                       "explanation":  "El sujeto es \u0027una sociedad\u0027 (singular), pero el verbo \u0027tienden\u0027 está en plural. Debe concordar en singular: \u0027tiende\u0027.",
                                                                                       "correction":  "cuanto más avanza una sociedad, más pacífica se vuelve porque tiende hacia un sistema más eficiente de los recursos"
-                                                                                  },
-                                                                                  {
-                                                                                      "originalText":  "Lo que no cabe duda es que tratan de comunicarse de algún modo",
-                                                                                      "errorType":  "sujeto-verbo",
-                                                                                      "explanation":  "La construcción correcta es \u0027Lo que no cabe duda\u0027 debería ser \u0027Lo que no cabe duda\u0027 → la expresión fija es \u0027no cabe duda de que\u0027. La concordancia interna también falla: \u0027lo que no cabe duda\u0027 mezcla incorrectamente el relativo con la locución. Además falta la preposición \u0027de\u0027 (queísmo), pero en términos de concordancia la frase resulta agramatical tal como está.",
-                                                                                      "correction":  "No cabe duda de que tratan de comunicarse de algún modo"
                                                                                   }
                                                                               ]
                                                              },
@@ -1839,14 +1762,8 @@
                                                                                {
                                                                                    "originalText":  "Lo que no cabe duda es que tratan de comunicarse",
                                                                                    "errorType":  "queismo",
-                                                                                   "explanation":  "La locución verbal \u0027no caber duda\u0027 exige la preposición \u0027de\u0027 antes de \u0027que\u0027: \u0027no cabe duda de que\u0027.",
-                                                                                   "correction":  "No cabe duda de que tratan de comunicarse"
-                                                                               },
-                                                                               {
-                                                                                   "originalText":  "seguro que tienen la misma hambre de conocimiento que nosotros",
-                                                                                   "errorType":  "queismo",
-                                                                                   "explanation":  "El adjetivo \u0027seguro\u0027 en función predicativa exige la preposición \u0027de\u0027 antes de \u0027que\u0027: \u0027seguro de que\u0027.",
-                                                                                   "correction":  "seguro de que tienen la misma hambre de conocimiento que nosotros"
+                                                                                   "explanation":  "La locución verbal \u0027no caber duda\u0027 exige la preposición \u0027de\u0027 antes de \u0027que\u0027: \u0027no cabe duda de que\u0027. Además la estructura correcta con relativo es \u0027De lo que no cabe duda es de que\u0027.",
+                                                                                   "correction":  "De lo que no cabe duda es de que tratan de comunicarse"
                                                                                }
                                                                            ]
                                                           }
@@ -1974,39 +1891,7 @@
                                         },
                                         {
                                             "repeticion":  {
-                                                               "findings":  [
-                                                                                {
-                                                                                    "word":  "comunicar(se)",
-                                                                                    "occurrences":  [
-                                                                                                        "están intentando comunicarse con nosotros",
-                                                                                                        "descubráis cómo comunicaros con ellos",
-                                                                                                        "no tratarían de comunicarse",
-                                                                                                        "tratan de comunicarse de algún modo"
-                                                                                                    ],
-                                                                                    "explanation":  "El verbo \u0027comunicarse\u0027 aparece cuatro veces en un bloque de párrafos muy próximos, lo que resulta repetitivo y empobrece el estilo."
-                                                                                },
-                                                                                {
-                                                                                    "word":  "intenciones",
-                                                                                    "occurrences":  [
-                                                                                                        "No sabemos sus intenciones",
-                                                                                                        "Si tuvieran malas intenciones",
-                                                                                                        "Si tuviesen malas intenciones",
-                                                                                                        "nosotros sí las tenemos"
-                                                                                                    ],
-                                                                                    "explanation":  "\u0027Intenciones\u0027 aparece tres veces en párrafos consecutivos muy cercanos, generando una repetición llamativa."
-                                                                                },
-                                                                                {
-                                                                                    "word":  "agujero(s) negro(s)",
-                                                                                    "occurrences":  [
-                                                                                                        "han creado un agujero negro en su mundo",
-                                                                                                        "hubieran creado un agujero negro accederían",
-                                                                                                        "abrir agujeros negros podría ser peligroso",
-                                                                                                        "Son agujeros negros cuánticos",
-                                                                                                        "un enorme agujero negro como los que hay"
-                                                                                                    ],
-                                                                                    "explanation":  "\u0027Agujero negro\u0027 se repite cinco veces en un fragmento relativamente corto, aunque es un término técnico; su densidad en pocos párrafos resulta llamativa y algunos usos podrían sustituirse por una referencia anafórica."
-                                                                                }
-                                                                            ]
+                                                               "findings":  []
                                                            },
                                             "verbos":  {
                                                            "findings":  [
@@ -2159,11 +2044,6 @@
                                             "pleonasmos":  {
                                                                "findings":  [
                                                                                 {
-                                                                                    "originalText":  "Lo que no cabe duda es que tratan de comunicarse",
-                                                                                    "explanation":  "\u0027Lo que no cabe duda\u0027 es una construcción incorrecta y redundante; debería ser \u0027Lo que no cabe duda\u0027 omite el artículo necesario (\u0027Lo que no cabe duda\u0027 vs \u0027Lo que no cabe duda alguna\u0027), pero además mezcla dos estructuras: \u0027lo que es evidente\u0027 y \u0027no cabe duda de que\u0027, repitiendo la idea de certeza.",
-                                                                                    "correction":  "No cabe duda de que tratan de comunicarse"
-                                                                                },
-                                                                                {
                                                                                     "originalText":  "pacífica y amistosa",
                                                                                     "explanation":  "\u0027Pacífica\u0027 y \u0027amistosa\u0027 son sinónimos en este contexto; se repite la misma idea con dos adjetivos que expresan lo mismo.",
                                                                                     "correction":  "de forma pacífica"
@@ -2288,12 +2168,6 @@
                                                                                        "suggestion":  "Dividir en al menos tres frases: una para la cesión del material, otra para el aumento de precisión con el símil, y una tercera para los resultados cuantitativos."
                                                                                    },
                                                                                    {
-                                                                                       "originalText":  "Lo que teorizo es que nuestro universo está compuesto por capas de infinitos subuniversos.",
-                                                                                       "wordCount":  17,
-                                                                                       "explanation":  "No supera el umbral de 40 palabras; no procede señalarlo.",
-                                                                                       "suggestion":  ""
-                                                                                   },
-                                                                                   {
                                                                                        "originalText":  "Bien, pues hace pocos días, después de que el BH88 se cerrase a la hora programada, un pequeño fogonazo de luz blanca que parecía distorsionar el espacio, dilatándolo a su alrededor, apareció en el mismo sitio donde había estado el microagujero negro.",
                                                                                        "wordCount":  46,
                                                                                        "explanation":  "La descripción del fogonazo se demora en tres incisos antes de llegar al verbo principal \u0027apareció\u0027, dificultando la comprensión inmediata.",
@@ -2358,11 +2232,6 @@
                                                           },
                                             "voz_pasiva":  {
                                                                "findings":  [
-                                                                                {
-                                                                                    "originalText":  "será el mayor descubrimiento de la humanidad",
-                                                                                    "explanation":  "Construcción nominal pasiva encubierta; aunque no usa \u0027ser + participio + agente\u0027, la nominalización oculta una acción y puede activarse para ganar dinamismo.",
-                                                                                    "activeVersion":  "habremos logrado el mayor descubrimiento de la humanidad"
-                                                                                },
                                                                                 {
                                                                                     "originalText":  "los mensajes que estamos mandando para comunicarnos con ellos les llegan",
                                                                                     "explanation":  "No es voz pasiva estricta, pero la construcción es torpe: se dice \u0027les llegan\u0027 cuando el objeto son los mensajes (masculino plural), lo que sugiere un leísmo encubierto; la estructura se beneficia de revisión.",
@@ -2481,15 +2350,7 @@
                                                          ]
                                         },
                                         {
-                                            "findings":  [
-                                                             {
-                                                                 "originalText":  "Demasiados para mi limitada inteligencia",
-                                                                 "miForm":  "mi",
-                                                                 "correctForm":  "mí",
-                                                                 "function":  "pronombre_personal",
-                                                                 "explanation":  "Tras la preposición «para», «mi» actúa como pronombre personal (equivale a «para mí»), no como posesivo ante un sustantivo, por lo que debe llevar tilde diacrítica: «para mí»."
-                                                             }
-                                                         ]
+                                            "findings":  []
                                         },
                                         {
                                             "findings":  [
@@ -2617,12 +2478,6 @@
                                         {
                                             "findings":  [
                                                              {
-                                                                 "originalText":  "Y pensamos que lo han hecho para poder enviarnos un mensaje ¿Comprendes?",
-                                                                 "errorType":  "Falta de punto antes de nueva pregunta",
-                                                                 "correction":  "Y pensamos que lo han hecho para poder enviarnos un mensaje. ¿Comprendes?",
-                                                                 "explanation":  "Cuando una oración declarativa termina y va seguida de una pregunta independiente, la declarativa debe cerrarse con punto antes del signo de apertura de interrogación."
-                                                             },
-                                                             {
                                                                  "originalText":  "Lo que no cabe duda es que tratan de comunicarse de algún modo ¿Qué razón habría de hacerlo si no fuese para conocernos de forma pacífica y amistosa?",
                                                                  "errorType":  "Falta de punto antes de nueva pregunta",
                                                                  "correction":  "Lo que no cabe duda es que tratan de comunicarse de algún modo. ¿Qué razón habría de hacerlo si no fuese para conocernos de forma pacífica y amistosa?",
@@ -2654,12 +2509,6 @@
                                         },
                                         {
                                             "findings":  [
-                                                             {
-                                                                 "originalText":  "—Sí. No se nos ocurre otra explicación.",
-                                                                 "sceneType":  "reflexión",
-                                                                 "issue":  "Acumulación de frases muy cortas en un intercambio de diálogo reflexivo y expositivo sobre física teórica y comunicación interestelar. \u0027Sí.\u0027 y \u0027No se nos ocurre otra explicación.\u0027 forman dos oraciones telegráficas consecutivas que cortan bruscamente el tono contemplativo y científico que el pasaje venía construyendo con párrafos mucho más desarrollados.",
-                                                                 "suggestion":  "Fusionar ambas frases o ampliar la respuesta para que mantenga la densidad reflexiva del resto del intercambio: por ejemplo, \u0027—Sí, estoy segura. No se nos ocurre otra explicación que encaje con todos los datos que tenemos.\u0027"
-                                                             },
                                                              {
                                                                  "originalText":  "—No lo veo; Además, abrir agujeros negros podría ser peligroso. Creo que estáis jugando con fuego.",
                                                                  "sceneType":  "reflexión",

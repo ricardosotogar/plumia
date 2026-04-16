@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '9.32';
-console.log('📦 document-builder.js v9.32 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.33';
+console.log('📦 document-builder.js v9.33 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -85,13 +85,22 @@ window.PLUMIA.buildCommentText = function buildCommentText(mergedFindings) {
   if (mergedFindings.length === 1) return _singleComment(mergedFindings[0]);
   // Deduplicar: si varios findings tienen la misma wordForm→correctForm
   // (p.ej. detección local + API de «mi»→«mí»), eliminar duplicados.
+  // También deduplicar por correction/explanation para hallazgos de puntuación
+  // que no usan wordForm pero pueden ser detectados por dos reglas distintas.
   const seenKey = new Set();
+  const seenCorrection = new Set();
   const unique = mergedFindings.filter(f => {
     const w = (f.miForm || f.siForm || f.tuForm || f.aunForm || f.wordForm || f.verb || '').toLowerCase().trim();
     const c = (f.correctForm || '').toLowerCase().trim();
     const k = `${f.correctionId}|${w}|${c}`;
     if (seenKey.has(k)) return false;
     seenKey.add(k);
+    // Para findings sin wordForm (puntuación, etc.), deduplicar por correction
+    if (!w && !c) {
+      const corrText = (f.correction || '').toLowerCase().trim().substring(0, 60);
+      if (corrText && seenCorrection.has(corrText)) return false;
+      if (corrText) seenCorrection.add(corrText);
+    }
     return true;
   });
   if (unique.length === 1) return _singleComment(unique[0]);
