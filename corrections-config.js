@@ -55,7 +55,7 @@ CLAVE PARA NO EQUIVOCARTE — test CD vs CI:
 - Si el verbo responde a "¿a quién le?" o "¿para quién?" (indirecto) → el pronombre correcto es le/les (CI). Usar "la" o "lo" aquí SÍ sería laísmo o loísmo.
 
 VERBOS QUE RIGEN CD (usar "lo/la" es CORRECTO, nunca marcar como error):
-reconocer, ver, oír, conocer, querer, amar, abrazar, besar, coger, tomar, llevar, notar, encontrar, buscar, llamar (convocar), echar de menos, ayudar, escuchar, mirar, observar, sentir, imaginar, recordar, olvidar.
+reconocer, ver, oír, conocer, querer, amar, abrazar, besar, coger, tomar, llevar, notar, encontrar, buscar, llamar (convocar), echar de menos, ayudar, escuchar, mirar, observar, sentir, imaginar, recordar, olvidar, esperar (aguardar a alguien), recibir (acoger a alguien).
 
 NO marques como error:
 - "la reconociera" (reconocer = CD ✓)
@@ -64,6 +64,7 @@ NO marques como error:
 - "lo echaba de menos" (echar de menos = CD ✓)
 - "lo notó cansado" (notar = CD ✓)
 - "lo llamó" cuando significa convocar/llamar a alguien (CD ✓)
+- "la esperaba" / "lo esperaba" (esperar a alguien = CD ✓, nunca laísmo)
 
 Texto a analizar:\n{TEXT}\n\nREGLA ABSOLUTA: Si un fragmento no contiene error real, NO lo incluyas en findings. Nunca añadas un finding con explanation "correcto", "descartado" o "no aplica".\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"type":"leismo|laismo|loismo","originalText":"fragmento exacto del texto","correction":"forma correcta","explanation":"explicación breve indicando qué función tiene el pronombre"}]}\nDevuelve MÁXIMO 15 hallazgos. Si no encuentras ningún error real: {"findings":[]}`},
 

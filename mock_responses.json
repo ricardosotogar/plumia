@@ -1707,32 +1707,7 @@
                       "responses":  [
                                         {
                                             "leismo":  {
-                                                           "findings":  [
-                                                                            {
-                                                                                "type":  "laismo",
-                                                                                "originalText":  "Al ver cómo su hijo la recibía con vehemencia, se desbordó de felicidad.",
-                                                                                "correction":  "le recibía",
-                                                                                "explanation":  "\u0027la recibía\u0027 usa \u0027la\u0027 como CI femenino (referente: Mary Jane). \u0027Recibir a alguien\u0027 puede construirse con CI en este contexto de acogida afectiva; el sujeto es el hijo y el CI es la madre. Lo correcto es \u0027le recibía\u0027."
-                                                                            },
-                                                                            {
-                                                                                "type":  "laismo",
-                                                                                "originalText":  "Su marido la esperaba en la esponjosa cama caliente mientras leía un libro.",
-                                                                                "correction":  "le esperaba",
-                                                                                "explanation":  "\u0027Esperar a alguien\u0027 lleva complemento indirecto en español estándar. El referente es Mary Jane (femenino), por lo que usar \u0027la\u0027 como CI es laísmo. Lo correcto es \u0027le esperaba\u0027."
-                                                                            },
-                                                                            {
-                                                                                "type":  "loismo",
-                                                                                "originalText":  "Lo he notado cansado.",
-                                                                                "correction":  "Le he notado cansado",
-                                                                                "explanation":  "\u0027Notar a alguien\u0027 en el sentido de percibir su estado lleva CI en español estándar peninsular. El referente es Albert (masculino), por lo que \u0027lo\u0027 como CI es loísmo. Lo correcto es \u0027le he notado cansado\u0027."
-                                                                            },
-                                                                            {
-                                                                                "type":  "leismo",
-                                                                                "originalText":  "¿Ya se ha dormido, o le has dejado con los ojos como platos, soñando despierto?",
-                                                                                "correction":  "lo has dejado",
-                                                                                "explanation":  "\u0027Dejar a alguien\u0027 lleva CD. El referente es Albert (masculino), por lo que \u0027le\u0027 como CD masculino es leísmo. Lo correcto es \u0027lo has dejado\u0027."
-                                                                            }
-                                                                        ]
+                                                           "findings":  []
                                                        },
                                             "ambiguedad":  {
                                                                "findings":  [
