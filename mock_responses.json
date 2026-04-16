@@ -1825,12 +1825,6 @@
                                             "concordancia":  {
                                                                  "findings":  [
                                                                                   {
-                                                                                      "originalText":  "El otro hermano se llamaba Quark y era un pequeñajo chico rubio con muchos rizos",
-                                                                                      "errorType":  "sustantivo-adjetivo",
-                                                                                      "explanation":  "\u0027pequeñajo\u0027 y \u0027chico\u0027 son redundantes y generan una construcción incorrecta; \u0027pequeñajo\u0027 ya significa \u0027chico pequeño\u0027, por lo que la concordancia resulta en una acumulación de adjetivos que se contradicen en registro",
-                                                                                      "correction":  "era un pequeñajo rubio con muchos rizos"
-                                                                                  },
-                                                                                  {
                                                                                       "originalText":  "aumentado la masa relativista aportada al agujero negro cuántico",
                                                                                       "errorType":  "sujeto-verbo",
                                                                                       "explanation":  "El participio \u0027aumentado\u0027 debe ser gerundio \u0027aumentando\u0027 para concordar en forma con los otros gerundios de la serie (\u0027haciendo chocar\u0027, coordinación verbal). El participio no concuerda estructuralmente con la construcción.",

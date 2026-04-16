@@ -11,8 +11,8 @@
 // ============================================================================
 (function() {
 
-window.PLUMIA.BUILDER_VERSION = '9.31';
-console.log('📦 document-builder.js v9.31 cargado');
+window.PLUMIA.BUILDER_VERSION = '9.32';
+console.log('📦 document-builder.js v9.32 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
