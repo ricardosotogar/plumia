@@ -277,21 +277,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         const r = await fetch('./mock_responses.json?_=' + Date.now());
         if (r.ok) {
           const data = await r.json();
-          // Merge con datos capturados localmente: los tests locales tienen prioridad
-          // sobre GitHub Pages para no destruir capturas que aún no se han publicado.
-          let existingRaw = null;
-          try { existingRaw = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || 'null'); } catch(e) {}
-          const merged = Array.isArray(data) ? data : { ...(data || {}), ...(existingRaw && !Array.isArray(existingRaw) ? existingRaw : {}) };
-          localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(merged));
-          // Mostrar tests disponibles y cuál se usará (usando merged para reflejar tests locales)
-          if (Array.isArray(merged)) {
-            console.log(`[PLUMIA MOCK] mock_responses.json cargado — formato legacy (${merged.length} respuestas)`);
+          localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(data));
+          // Mostrar tests disponibles y cuál se usará
+          if (Array.isArray(data)) {
+            console.log(`[PLUMIA MOCK] mock_responses.json cargado — formato legacy (${data.length} respuestas)`);
           } else {
-            const tests = Object.keys(merged);
+            const tests = Object.keys(data);
             const nonDevKeys = tests.filter(k => k !== 'test1');
             const active = typeof window.PLUMIA_MOCK === 'string' ? window.PLUMIA_MOCK
               : (nonDevKeys.length ? nonDevKeys[nonDevKeys.length - 1] : tests[tests.length - 1]);
-            const n = merged[active]?.responses?.length ?? 0;
+            const n = data[active]?.responses?.length ?? 0;
             console.log(`[PLUMIA MOCK] mock_responses.json cargado — tests disponibles: [${tests.join(', ')}]`);
             console.log(`[PLUMIA MOCK] usando test "${active}" (${n} respuestas)`);
           }
