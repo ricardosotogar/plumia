@@ -1839,38 +1839,7 @@
                                                                               ]
                                                              },
                                             "dequeismo":  {
-                                                              "findings":  [
-                                                                               {
-                                                                                   "originalText":  "se había olvidado de cómo era el rostro del otro",
-                                                                                   "errorType":  "queismo",
-                                                                                   "explanation":  "No es error en este caso; \u0027olvidarse de\u0027 seguido de interrogativa indirecta es correcto.",
-                                                                                   "correction":  "correcto tal como está"
-                                                                               },
-                                                                               {
-                                                                                   "originalText":  "darse cuenta de que no éramos nosotros quienes provocábamos",
-                                                                                   "errorType":  "queismo",
-                                                                                   "explanation":  "La construcción \u0027Todo apuntaba a que no éramos nosotros quienes provocábamos la distorsión; algo que confirmamos más tarde\u0027 oculta un posible queísmo: el verbo \u0027confirmar\u0027 en su uso pronominal \u0027confirmarse\u0027 rige \u0027de que\u0027, pero aquí se usa transitivo, por lo que es correcto.",
-                                                                                   "correction":  "correcto tal como está"
-                                                                               },
-                                                                               {
-                                                                                   "originalText":  "¿Estás segura de eso?",
-                                                                                   "errorType":  "queismo",
-                                                                                   "explanation":  "Más adelante en el diálogo se sobreentiende la respuesta afirmativa, pero la construcción anterior \u0027¿no creéis que es peligroso\u0027 es correcta. Sin embargo, \u0027espero que muy pronto lo hagamos público\u0027 debería ser revisado: \u0027esperar que\u0027 es correcto sin preposición.",
-                                                                                   "correction":  "correcto tal como está"
-                                                                               },
-                                                                               {
-                                                                                   "originalText":  "sin percatarse de que se iban acumulando",
-                                                                                   "errorType":  "queismo",
-                                                                                   "explanation":  "Correcto. \u0027Percatarse de que\u0027 es la forma adecuada.",
-                                                                                   "correction":  "correcto tal como está"
-                                                                               },
-                                                                               {
-                                                                                   "originalText":  "Nos dimos cuenta de que necesitábamos crearlos",
-                                                                                   "errorType":  "queismo",
-                                                                                   "explanation":  "Correcto. \u0027Darse cuenta de que\u0027 es la forma adecuada.",
-                                                                                   "correction":  "correcto tal como está"
-                                                                               }
-                                                                           ]
+                                                              "findings":  []
                                                           }
                                         },
                                         {
