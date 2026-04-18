@@ -448,9 +448,9 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
       if (!captured) continue;
       if (captured.indexOf('\u00F3') !== -1 || captured.indexOf('\u00E1') !== -1 ||
           captured.indexOf('\u00E9') !== -1 || captured.indexOf('\u00FA') !== -1) continue; // ya tiene tilde
-      // originalText = solo la forma coincidente (sin prefijo de 15 chars).
-      // El prefijo cruzaba límites de párrafo (chunks unen párrafos con espacio)
-      // → body.search no encuentra texto cross-párrafo → finding saltado.
+      // Verificar límite de palabra al final del match para evitar backtracking falso:
+      // sin este check el regex puede partir "Mary" en "M"+"ar" y dar falso positivo.
+      if (!wordBoundaryOK(text, m.index, m[0].length)) continue;
       const ctx = m[0].trim();
       findings.push({
         originalText: ctx, wordForm: captured, correctForm: correct,
