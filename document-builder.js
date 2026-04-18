@@ -258,7 +258,7 @@ async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText,
         symSr.items[0].font.color = colorHex;
         symSr.items[0].font.bold  = true;
       }
-      if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+      if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 1500));
     }
     await ctx.sync();
     console.log('[styleAndComment] ✅ font + comentario OK sobre "' + searchPattern + '"');
@@ -438,7 +438,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           const colSymSr = colSym.search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
           colSymSr.load('items'); await ctx.sync();
           if (colSymSr.items.length && commentText) {
-            colSymSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+            colSymSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 1500));
           }
           // Colorear keyText dentro del párrafo
           const colWordSr = colPara.search(keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
@@ -494,7 +494,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             const symSr = dupSr.items[0].search('\u25C6', {matchCase:true, matchWholeWord:false, matchWildcards:false});
             symSr.load('items'); await ctx.sync();
             if (symSr.items.length) {
-              symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+              symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 1500));
               await ctx.sync();
             }
           }
@@ -525,7 +525,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         if (symSr.items.length) {
           symSr.items[0].font.color = colorHex;
           symSr.items[0].font.bold  = true;
-          if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+          if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 1500));
           await ctx.sync();
         }
       } else {
@@ -647,7 +647,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const ins1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
       ins1.font.color = colorHex;
       ins1.font.bold  = true;
-      if (commentText) ins1.insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 400));
+      if (commentText) ins1.insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 1500));
       await ctx.sync();
     } catch(e) { dbg(`_markBrackets ◆¹: ${e.message}`); }
   }

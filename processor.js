@@ -364,40 +364,46 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       this.onChunkComplete(allResults);
     }
 
-    // ── PASO 2: Coherencia narrativa (siempre individual, doc completo) ─────
+    // ── PASO 2: Coherencia narrativa (llamada única agrupada, doc completo) ──
     const coherenceIds = selectedIds.filter(id => {
       const c = CORRECTIONS.find(x => x.id === id);
       return c && c.requiresFullDoc;
     });
 
-    const coherenceTotal = coherenceIds.length;
-    for (let ci = 0; ci < coherenceIds.length; ci++) {
-      if (this.aborted) break;
-      const corr = CORRECTIONS.find(c => c.id === coherenceIds[ci]);
-      const pct = Math.round(5 + (ci / Math.max(coherenceTotal, 1)) * 30);
-      this.onProgress(pct, `Coherencia narrativa: ${corr.label}…`);
+    if (coherenceIds.length > 0 && !this.aborted) {
+      const activeCoherenceCorrs = coherenceIds.map(id => CORRECTIONS.find(c => c.id === id)).filter(Boolean);
+      this.onProgress(5, 'Analizando coherencia narrativa…');
+      const accumulated = {};
+      activeCoherenceCorrs.forEach(c => { accumulated[c.id] = []; });
       try {
         const chunks = this._countWords(coherenceText) > CONFIG.coherenceChunkSizeWords
           ? this._splitByChapters(coherenceText)
           : [{ title: 'Documento', text: coherenceText }];
-        let findings = [];
         for (const ch of chunks) {
           if (this.aborted) break;
-          const r = await this._callAPI(corr.prompt.replace('{TEXT}', ch.text));
-          (r.findings || []).forEach(f => {
-            const originalText = this._extractOriginalText(f);
-            if (!originalText) return;
-            findings.push({ ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
-              label: corr.label, directFix: corr.directFix });
-          });
+          const prompt = this._buildCoherenceGroupedPrompt(activeCoherenceCorrs, ch.text);
+          const response = await this._callAPI(prompt);
+          for (const corr of activeCoherenceCorrs) {
+            const section = response[corr.id];
+            if (!section || !Array.isArray(section.findings)) continue;
+            section.findings.forEach(f => {
+              const originalText = this._extractOriginalText(f);
+              if (!originalText) return;
+              accumulated[corr.id].push({ ...f, originalText, correctionId: corr.id,
+                colorId: corr.colorId, label: corr.label, directFix: corr.directFix });
+            });
+          }
         }
-        allResults.push({ correctionId: corr.id, label: corr.label, groupId: corr.groupId, colorId: corr.colorId, findings });
-        this._saveProgress({ text: coherenceText.substring(0, 100), completedIndex: ci, results: allResults });
+        for (const corr of activeCoherenceCorrs) {
+          allResults.push({ correctionId: corr.id, label: corr.label, groupId: corr.groupId,
+            colorId: corr.colorId, findings: accumulated[corr.id] });
+        }
+        this._saveProgress({ text: coherenceText.substring(0, 100), completedIndex: coherenceIds.length - 1, results: allResults });
         this.onChunkComplete(allResults);
       } catch(err) {
-        this._saveProgress({ text: coherenceText.substring(0, 100), completedIndex: ci - 1, results: allResults });
+        this._saveProgress({ text: coherenceText.substring(0, 100), completedIndex: -1, results: allResults });
         this.errored = true;
-        this.onError(err, ci > 0, corr.label);
+        this.onError(err, false, 'Coherencia narrativa');
         return allResults;
       }
     }
@@ -555,6 +561,23 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       text = lastSpace > 30 ? cut.substring(0, lastSpace).trimEnd() : cut;
     }
     return text;
+  }
+
+  _buildCoherenceGroupedPrompt(activeCorrs, text) {
+    const sections = activeCorrs.map((corr, i) => {
+      // Extrae solo las instrucciones, descarta la parte del JSON de respuesta
+      const core = corr.prompt
+        .replace(/\n\nTexto a analizar:\\n\{TEXT\}[\s\S]*$/, '')
+        .replace(/\n\nTexto a analizar:\n\{TEXT\}[\s\S]*$/, '')
+        .trim();
+      return `=== ${i + 1}. CLAVE "${corr.id}" — ${corr.label} ===\n${core}`;
+    }).join('\n\n');
+
+    const jsonTemplate = '{' + activeCorrs.map(c =>
+      `"${c.id}":{"findings":[]}`
+    ).join(',') + '}';
+
+    return `Eres un editor literario experto en español. Analiza el texto para los siguientes ${activeCorrs.length} aspectos narrativos y devuelve UN ÚNICO JSON con una clave por aspecto.\n\nREGLA ABSOLUTA: Si no encuentras ningún problema en una categoría, devuelve findings:[] para esa clave. Nunca omitas una clave del JSON.\n\n${sections}\n\nTexto a analizar:\n${text}\n\nResponde ÚNICAMENTE con este JSON (exactamente estas claves, sin texto adicional):\n${jsonTemplate}`;
   }
 
   _parseGroupedResponse(response, group, activeIds, accumulated, chunkText) {

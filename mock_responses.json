@@ -2566,17 +2566,6 @@
                                           "repeticion":  {
                                                              "findings":  [
                                                                               {
-                                                                                  "word":  "supercomputadora",
-                                                                                  "occurrences":  [
-                                                                                                      "la supercomputadora Flash desarrollada por Liberty Universe",
-                                                                                                      "Lo importante no es la gran capacidad de procesamiento de información que tiene esta supercomputadora cuántica",
-                                                                                                      "Aún no sé cómo has conseguido que te den acceso a la supercomputadora más potente del mundo",
-                                                                                                      "dale acceso a nuestro proyecto",
-                                                                                                      "La inteligencia artificial que gobernaba la supercomputadora más potente del mundo estaba a punto de sumergirse en la base de datos de la supercomputadora del ODIN"
-                                                                                                  ],
-                                                                                  "explanation":  "La palabra \u0027supercomputadora\u0027 aparece repetida en exceso en párrafos consecutivos sin intención estilística clara, saturando el texto."
-                                                                              },
-                                                                              {
                                                                                   "word":  "tecla intro",
                                                                                   "occurrences":  [
                                                                                                       "atizó la tecla intro con gran violencia",
@@ -2695,11 +2684,6 @@
                                                                                   "correction":  "interfaz"
                                                                               },
                                                                               {
-                                                                                  "originalText":  "el más absoluto silencio",
-                                                                                  "explanation":  "\u0027Absoluto\u0027 ya indica el grado máximo, por lo que \u0027el más\u0027 es redundante.",
-                                                                                  "correction":  "el absoluto silencio / un silencio absoluto"
-                                                                              },
-                                                                              {
                                                                                   "originalText":  "trazó una sonrisa en su cara",
                                                                                   "explanation":  "Una sonrisa se traza necesariamente en la cara; \u0027en su cara\u0027 es redundante.",
                                                                                   "correction":  "trazó una sonrisa"
@@ -2782,11 +2766,6 @@
                                           "voz_pasiva":  {
                                                              "findings":  [
                                                                               {
-                                                                                  "originalText":  "será cuestión de tiempo que descubramos algo",
-                                                                                  "explanation":  "No es voz pasiva; revisión descartada.",
-                                                                                  "activeVersion":  ""
-                                                                              },
-                                                                              {
                                                                                   "originalText":  "la inteligencia artificial de la que está dotada: la AiFlash",
                                                                                   "explanation":  "Construcción pasiva con participio «dotada» y agente implícito (sus creadores).",
                                                                                   "activeVersion":  "la inteligencia artificial que Liberty Universe le ha incorporado: la AiFlash"
@@ -2795,16 +2774,6 @@
                                                                                   "originalText":  "me han dotado de ética",
                                                                                   "explanation":  "Pasiva refleja con agente implícito (los creadores de AiFlash).",
                                                                                   "activeVersion":  "Liberty Universe me programó con ética"
-                                                                              },
-                                                                              {
-                                                                                  "originalText":  "Es un dispositivo redondo del tamaño de una pelota de tenis. Con él, aunque mi centro de procesamiento de datos, mi cerebro, está en las instalaciones de Liberty Universe, será como si estuviera allí con ustedes siendo uno más.",
-                                                                                  "explanation":  "No es voz pasiva real; revisión descartada.",
-                                                                                  "activeVersion":  ""
-                                                                              },
-                                                                              {
-                                                                                  "originalText":  "les han debido hacer llegar",
-                                                                                  "explanation":  "Pasiva perifrástica con participio «hacer llegar» y agente implícito.",
-                                                                                  "activeVersion":  "alguien debió hacérselo llegar / Liberty Universe debió hacérselo llegar"
                                                                               },
                                                                               {
                                                                                   "originalText":  "el mensaje está siendo enviado a través de ondas electromagnéticas",
@@ -2832,40 +2801,10 @@
                                                                                      "suggestion":  "Dividir la enumeración en dos frases: describir primero el entorno visual (paneles, pantallas) y después los detalles del personal (mandos, monos grises), cerrando con la comparación de la nave espacial."
                                                                                  },
                                                                                  {
-                                                                                     "originalText":  "De algo debe haber servido estar obligada a asistir a las aburridas fiestas de la aristocracia a las que mi familia siempre es invitada. En ellas se conoce a mucha gente con poder. Me refiero a poder del de verdad, de aquel en el que alguien quiere que el presidente de nuestro país venga a cantarle el «cumpleaños feliz» a tu hijo y su mano invisible es capaz de conseguirlo.",
-                                                                                     "wordCount":  67,
-                                                                                     "explanation":  "Período explicativo que encadena varias subordinadas y una aclaración parentética, haciendo perder el hilo al lector.",
-                                                                                     "suggestion":  "Separar la anécdota del «cumpleaños feliz» en una frase independiente y condensar la definición de poder en una sola oración breve."
-                                                                                 },
-                                                                                 {
                                                                                      "originalText":  "Si conseguimos descifrar el mensaje y, en última instancia, acabamos comunicándonos con quienes quiera que sean los que lo están enviando, habremos podido crear un canal de comunicación que podría ser la primera ruta comercial de intercambio de información con otro mundo.",
                                                                                      "wordCount":  45,
                                                                                      "explanation":  "Periodo condicional con doble subordinada de relativo que dilata en exceso la consecuencia principal.",
                                                                                      "suggestion":  "Cortar tras «…comunicándonos con ellos» y arrancar una nueva frase: «Eso equivaldría a abrir la primera ruta comercial de intercambio de información con otro mundo»."
-                                                                                 },
-                                                                                 {
-                                                                                     "originalText":  "Un lenguaje que proviene de una raza que, podría ser no humanoide, supone que no podemos acotar la cantidad de sonidos que pueden emitir para comunicarse, como sí es posible con los humanos.",
-                                                                                     "wordCount":  34,
-                                                                                     "explanation":  "Por debajo del umbral de 40 palabras pero la frase incrustada «podría ser no humanoide» interrumpe torpemente la sintaxis principal; se señala por dificultar la lectura.",
-                                                                                     "suggestion":  "Reformular: «Si la raza emisora es no humanoide —algo muy probable—, no podremos acotar su repertorio de sonidos como sí hacemos con los humanos»."
-                                                                                 },
-                                                                                 {
-                                                                                     "originalText":  "Pero, hoy en día, usamos los estados cuánticos para trasmitir los cúbits a través de los fotones cuando se comportan como partícula. Es más que probable que una especie evolucionada haya llegado también a la misma forma de almacenar información que utilizamos nosotros a día de hoy, e incluso hayan obtenido otro modo, aún más eficiente.",
-                                                                                     "wordCount":  55,
-                                                                                     "explanation":  "Dos oraciones encadenadas donde la segunda repite el referente temporal («a día de hoy») y acumula dos conjeturas que podrían separarse.",
-                                                                                     "suggestion":  "Dividir: primera frase hasta «…como partícula». Segunda frase: «Una especie avanzada probablemente usa el mismo método —o uno aún más eficiente»."
-                                                                                 },
-                                                                                 {
-                                                                                     "originalText":  "Partiendo de que, quienes están enviando el mensaje, deben ser una especie muy avanzada, es más que probable que sepan que no serviría de nada enviar un mensaje en su propio idioma, sin un manual de traducción.",
-                                                                                     "wordCount":  38,
-                                                                                     "explanation":  "La doble coma que encierra «quienes están enviando el mensaje» crea un inciso que entorpece la lectura del período condicional.",
-                                                                                     "suggestion":  "Reescribir: «Los emisores deben de ser una especie muy avanzada; por eso es probable que supieran que enviar el mensaje solo en su idioma, sin manual de traducción, no serviría de nada»."
-                                                                                 },
-                                                                                 {
-                                                                                     "originalText":  "Aunque es probable que hayan ideado algún idioma conceptual basado en imágenes, que cualquier especie pueda interpretar como un conjunto de diapositivas encadenadas.",
-                                                                                     "wordCount":  27,
-                                                                                     "explanation":  "Por debajo del umbral estricto, pero la coma antes de «que» crea una fractura sintáctica que convierte la oración en un fragmento sin verbo principal claro.",
-                                                                                     "suggestion":  "Suprimir la coma o reformular: «…o quizás idearon un idioma conceptual basado en imágenes que cualquier especie pueda interpretar como diapositivas encadenadas»."
                                                                                  }
                                                                              ]
                                                             },
@@ -2904,13 +2843,6 @@
                                                       },
                                           "gerundios":  {
                                                             "findings":  [
-                                                                             {
-                                                                                 "originalText":  "El nerviosismo trascendía contaminando el aire, haciéndolo más espeso, menos respirable.",
-                                                                                 "gerund":  "contaminando",
-                                                                                 "errorType":  "especificativo",
-                                                                                 "explanation":  "El gerundio \u0027contaminando\u0027 funciona aquí como complemento especificativo del verbo \u0027trascendía\u0027, indicando el modo o resultado de trascender. El problema es que introduce una acción que es consecuencia o efecto de la acción principal (trascendía → contaminaba), lo que lo convierte en un gerundio de posterioridad encubierto bajo apariencia modal.",
-                                                                                 "correction":  "El nerviosismo trascendía y contaminaba el aire, haciéndolo más espeso, menos respirable."
-                                                                             },
                                                                              {
                                                                                  "originalText":  "las cuatro hormiguillas dejaron de moverse, quedando inmóviles mirando la pantalla de Marcus.",
                                                                                  "gerund":  "quedando",

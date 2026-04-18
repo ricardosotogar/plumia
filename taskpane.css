@@ -284,7 +284,7 @@ body{
 .corr-check.disabled{opacity:.4;cursor:not-allowed}
 .cb-box{
   width:16px;height:16px;border-radius:4px;
-  border:1.5px solid var(--rule);background:white;
+  border:2px solid #9a9590;background:white;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;margin-top:1px;transition:all .15s;
 }
@@ -404,7 +404,7 @@ body{
 }
 .radio-circle{
   width:16px;height:16px;border-radius:50%;
-  border:1.5px solid var(--rule);background:white;
+  border:2px solid #9a9590;background:white;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;margin-top:1px;transition:all .15s;
 }
@@ -615,10 +615,11 @@ body{
 .btn-primary:hover{background:#9a6d25;color:white}
 .btn-primary:disabled{
   background:var(--sepia2);color:var(--muted);cursor:not-allowed;
+  border:1.5px solid #c0bab0;
 }
 .btn-secondary{
   width:100%;background:white;color:var(--mid);
-  border:1.5px solid var(--rule);border-radius:var(--radius);
+  border:1.5px solid #b0aa9e;border-radius:var(--radius);
   padding:11px;font-family:'DM Sans',sans-serif;
   font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;
   margin-top:8px;
@@ -632,6 +633,17 @@ body{
   transition:color .15s;
 }
 .btn-back:hover{color:var(--gold)}
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-sel-all:focus-visible,
+.btn-clear-all:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--gold);
+}
+.corr-check:focus-within .cb-box{
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(176,125,46,.2);
+}
 
 /* ── SCREEN FOOTERS ─────────────────────────────────────────────────────── */
 .screen-footer{
