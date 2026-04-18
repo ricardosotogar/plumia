@@ -448,7 +448,6 @@ window.PLUMIA.runLocalInterrogativasTilde = function(text) {
       if (!captured) continue;
       if (captured.indexOf('\u00F3') !== -1 || captured.indexOf('\u00E1') !== -1 ||
           captured.indexOf('\u00E9') !== -1 || captured.indexOf('\u00FA') !== -1) continue; // ya tiene tilde
-      console.log('[COGN-DBG] m0:', JSON.stringify(m[0]), 'nextChar:', JSON.stringify(text[m.index + m[0].length]), 'boundaryOK:', wordBoundaryOK(text, m.index, m[0].length));
       if (!wordBoundaryOK(text, m.index, m[0].length)) continue;
       const ctx = m[0].trim();
       findings.push({

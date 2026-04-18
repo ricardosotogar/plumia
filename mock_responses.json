@@ -2643,13 +2643,6 @@
                                                                                   "explanation":  "Muletilla que no añade valor semántico; puede suprimirse directamente."
                                                                               },
                                                                               {
-                                                                                  "expression":  "de verdad",
-                                                                                  "occurrences":  [
-                                                                                                      "Me refiero a poder del de verdad"
-                                                                                                  ],
-                                                                                  "explanation":  "Refuerzo redundante e informal que no añade precisión; puede eliminarse."
-                                                                              },
-                                                                              {
                                                                                   "expression":  "Sí, claro, por supuesto",
                                                                                   "occurrences":  [
                                                                                                       "—Sí, claro, por supuesto."
@@ -2902,12 +2895,6 @@
                                                                "explanation":  "El conector \u0027Sin embargo\u0027 al inicio de frase requiere coma después."
                                                            },
                                                            {
-                                                               "originalText":  "En efecto… sí que es un problema.",
-                                                               "errorType":  "ausencia_coma_conector",
-                                                               "correction":  "En efecto,… sí que es un problema.",
-                                                               "explanation":  "El conector discursivo \u0027En efecto\u0027 al inicio de frase requiere coma después."
-                                                           },
-                                                           {
                                                                "originalText":  "En cuanto Marcus conecto el dispositivo",
                                                                "errorType":  "coma_sujeto_verbo",
                                                                "correction":  "En cuanto Marcus conectó el dispositivo",
@@ -2951,19 +2938,522 @@
                                       {
                                           "findings":  [
                                                            {
-                                                               "originalText":  "poder del de verdad",
-                                                               "surplus":  "de",
-                                                               "errorType":  "de_intrusivo",
-                                                               "explanation":  "\u0027del de verdad\u0027 contiene un \u0027de\u0027 intrusivo; la construcción correcta es \u0027poder de verdad\u0027",
-                                                               "correction":  "poder de verdad"
-                                                           },
-                                                           {
                                                                "originalText":  "hay otras cinco personas más, además de ti",
                                                                "surplus":  "más",
                                                                "errorType":  "movimiento_redundante",
                                                                "explanation":  "\u0027otras cinco personas más\u0027 es redundante: \u0027otras\u0027 ya implica adicionalidad, igual que \u0027más\u0027; sobra \u0027más\u0027",
                                                                "correction":  "hay otras cinco personas, además de ti"
                                                            }
+                                                       ]
+                                      }
+                                  ]
+                },
+    "PT cap3":  {
+                    "desc":  "",
+                    "responses":  [
+                                      {
+                                          "leismo":  {
+                                                         "findings":  [
+
+                                                                      ]
+                                                     },
+                                          "ambiguedad":  {
+                                                             "findings":  [
+
+                                                                          ]
+                                                         }
+                                      },
+                                      {
+                                          "concordancia":  {
+                                                               "findings":  [
+                                                                                {
+                                                                                    "originalText":  "la aridez y sobriedad del paisaje contrastaba",
+                                                                                    "errorType":  "sujeto-verbo",
+                                                                                    "explanation":  "El sujeto es compuesto (\u0027la aridez y sobriedad\u0027), por lo que el verbo debe ir en plural.",
+                                                                                    "correction":  "la aridez y sobriedad del paisaje contrastaban"
+                                                                                }
+                                                                            ]
+                                                           },
+                                          "dequeismo":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "Al fijarse, identificÃ³ que tambiÃ©n tenÃ­a un laberinto con rugosidades que tenÃ­a vida propia",
+                                                                                 "errorType":  "queismo",
+                                                                                 "explanation":  "\u0027Fijarse\u0027 rige la preposiciÃ³n \u0027en\u0027: \u0027fijarse en que\u0027. Se omite la preposiciÃ³n obligatoria.",
+                                                                                 "correction":  "Al fijarse en que tambiÃ©n tenÃ­a un laberinto con rugosidades que tenÃ­a vida propia"
+                                                                             }
+                                                                         ]
+                                                        }
+                                      },
+                                      {
+                                          "repeticion":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "word":  "esfera",
+                                                                                  "occurrences":  [
+                                                                                                      "apareciÃ³ una esfera, algo mÃ¡s pequeÃ±a que una pelota de baloncesto",
+                                                                                                      "En uno de los lados de la esfera el metal cobrÃ³ vida",
+                                                                                                      "la esfera explosionÃ³, no sin antes implosionar"
+                                                                                                  ],
+                                                                                  "explanation":  "La palabra \u0027esfera\u0027 se repite tres veces en el mismo pÃ¡rrafo descriptivo sin variaciÃ³n lÃ©xica, lo que empobrece el estilo."
+                                                                              },
+                                                                              {
+                                                                                  "word":  "secuencia",
+                                                                                  "occurrences":  [
+                                                                                                      "La siguiente secuencia de imÃ¡genes fue aÃºn mÃ¡s desconcertante",
+                                                                                                      "Una Ãºltima secuencia de imÃ¡genes terminÃ³ por dejar a todos con la boca abierta",
+                                                                                                      "la misma esfera que habÃ­a explosionado en la secuencia anterior"
+                                                                                                  ],
+                                                                                  "explanation":  "\u0027Secuencia\u0027 se repite tres veces en pÃ¡rrafos consecutivos sin variaciÃ³n, resultando llamativo y mecÃ¡nico."
+                                                                              },
+                                                                              {
+                                                                                  "word":  "pantalla",
+                                                                                  "occurrences":  [
+                                                                                                      "seÃ±alando la oscura pantalla en la que habÃ­a aparecido la esfera",
+                                                                                                      "seÃ±alando la pantalla",
+                                                                                                      "la pantalla se tornÃ³ negro"
+                                                                                                  ],
+                                                                                  "explanation":  "\u0027Pantalla\u0027 aparece tres veces en pÃ¡rrafos muy prÃ³ximos sin necesidad estilÃ­stica."
+                                                                              },
+                                                                              {
+                                                                                  "word":  "dijo",
+                                                                                  "occurrences":  [
+                                                                                                      "dijo Marcus",
+                                                                                                      "dijo, seÃ±alando la oscura pantalla",
+                                                                                                      "dijo de nuevo seÃ±alando la pantalla"
+                                                                                                  ],
+                                                                                  "explanation":  "\u0027Dijo\u0027 aparece tres veces en el mismo bloque de diÃ¡logo de Marcus en pÃ¡rrafos consecutivos, resultando repetitivo y monÃ³tono."
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "verbos":  {
+                                                         "findings":  [
+                                                                          {
+                                                                              "originalText":  "lo hace con un dispositivo que produce un haz de luz estrecho",
+                                                                              "verb":  "hace",
+                                                                              "explanation":  "Verbo comodÃ­n \u0027hacer\u0027. PodrÃ­a sustituirse por \u0027apunta\u0027, \u0027seÃ±ala\u0027 o \u0027proyecta\u0027, mÃ¡s precisos en el contexto del puntero lÃ¡ser."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "pisando el acelerador hasta el fondo, como si estuviese aplastando una cucaracha",
+                                                                              "verb":  "pisando",
+                                                                              "explanation":  "Verbo vago en este contexto; \u0027hundiendo el acelerador\u0027 o \u0027clavando el pie en el acelerador\u0027 serÃ­a mÃ¡s expresivo e intenso."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "haciÃ©ndolo levitar durante unos momentos",
+                                                                              "verb":  "haciÃ©ndolo",
+                                                                              "explanation":  "ConstrucciÃ³n con \u0027hacer\u0027 causativo vaga; podrÃ­a sustituirse por \u0027lanzÃ¡ndolo\u0027 o \u0027elevÃ¡ndolo\u0027 para mayor precisiÃ³n y fuerza."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "tocÃ³ la aplicaciÃ³n de videos musicales en la pantalla del respaldo del asiento delantero",
+                                                                              "verb":  "tocÃ³",
+                                                                              "explanation":  "Verbo genÃ©rico; \u0027pulsÃ³\u0027 o \u0027seleccionÃ³\u0027 serÃ­an mÃ¡s precisos para la acciÃ³n de interactuar con una pantalla tÃ¡ctil."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "devolviÃ©ndole la mirada mientras levantaba la mano para seÃ±alar hacia el gran ventanal",
+                                                                              "verb":  "levantaba",
+                                                                              "explanation":  "Verbo comodÃ­n; \u0027alzaba\u0027 o \u0027extendÃ­a\u0027 la mano serÃ­a mÃ¡s expresivo y preciso para el gesto descrito."
+                                                                          }
+                                                                      ]
+                                                     },
+                                          "sustantivos":  {
+                                                              "findings":  [
+                                                                               {
+                                                                                   "originalText":  "el modo en el que se estÃ¡n comunicando con nosotros",
+                                                                                   "genericWord":  "modo",
+                                                                                   "explanation":  "\u0027Modo\u0027 es vago; podrÃ­a sustituirse por \u0027mÃ©todo\u0027, \u0027mecanismo\u0027 o \u0027procedimiento\u0027 para mayor precisiÃ³n tÃ©cnica en boca de una IA cientÃ­fica."
+                                                                               },
+                                                                               {
+                                                                                   "originalText":  "formando algÃºn tipo de escritura con aspecto de laberinto circular",
+                                                                                   "genericWord":  "algÃºn tipo de",
+                                                                                   "explanation":  "La expresiÃ³n \u0027algÃºn tipo de\u0027 combinada con \u0027escritura\u0027 resulta vaga; podrÃ­a decirse directamente \u0027una escritura\u0027 o \u0027una inscripciÃ³n\u0027 sin el comodÃ­n."
+                                                                               },
+                                                                               {
+                                                                                   "originalText":  "lo que podrÃ­a haber sido un agujero negro cuÃ¡ntico con la caracterÃ­stica distorsiÃ³n visual ondulatoria hacia su interior, de no ser porque al momento su epicentro se tornÃ³",
+                                                                                   "genericWord":  "epicentro",
+                                                                                   "explanation":  "El tÃ©rmino \u0027epicentro\u0027 se usa aquÃ­ de forma imprecisa y genÃ©rica para referirse al centro del agujero; \u0027nÃºcleo\u0027 o \u0027centro\u0027 serÃ­an mÃ¡s exactos en este contexto."
+                                                                               }
+                                                                           ]
+                                                          }
+                                      },
+                                      {
+                                          "muletillas":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "expression":  "de alguna manera",
+                                                                                  "occurrences":  [
+                                                                                                      "posicionemos de manera consecutiva",
+                                                                                                      "pasarlas de manera consecutiva",
+                                                                                                      "transmitiÃ©ndose de manera incremental"
+                                                                                                  ],
+                                                                                  "explanation":  "La expresiÃ³n \u0027de manera + adjetivo\u0027 se repite tres veces como fÃ³rmula vacÃ­a que podrÃ­a sustituirse por el adverbio equivalente (consecutivamente, incrementalmente) o eliminarse"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "al momento",
+                                                                                  "occurrences":  [
+                                                                                                      "Al momento, de nuevo todo pareciÃ³ bambolearse",
+                                                                                                      "Al momento, su epicentro se tornÃ³"
+                                                                                                  ],
+                                                                                  "explanation":  "ExpresiÃ³n temporal comodÃ­n que se repite sin aportar precisiÃ³n, podrÃ­a eliminarse o sustituirse por \u0027de repente\u0027 o \u0027entonces\u0027"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "Se podrÃ­a decir",
+                                                                                  "occurrences":  [
+                                                                                                      "Se podrÃ­a decir que nos estÃ¡n enviando los pÃ­xeles",
+                                                                                                      "Se podrÃ­a decir que la especie que se comunica con nosotros emplea pantallas semiesfÃ©ricas"
+                                                                                                  ],
+                                                                                  "explanation":  "Muletilla dubitativa que se repite dos veces en el mismo parlamento de AiFlash, debilitando innecesariamente las afirmaciones"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "Es decir",
+                                                                                  "occurrences":  [
+                                                                                                      "Es decir, se podrÃ­a decir que nos estÃ¡n enviando los pÃ­xeles"
+                                                                                                  ],
+                                                                                  "explanation":  "Conecta con \u0027se podrÃ­a decir\u0027, acumulando dos muletillas seguidas; el \u0027es decir\u0027 resulta superfluo al reformular lo ya explicado"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "por algÃºn motivo",
+                                                                                  "occurrences":  [
+                                                                                                      "Mary Jane, por algÃºn motivo, intuÃ­a que pronto habrÃ­a resultados",
+                                                                                                      "Mary Jane, por algÃºn motivo, a pesar de su carÃ¡cter ingenuo"
+                                                                                                  ],
+                                                                                  "explanation":  "ExpresiÃ³n vaga que se repite dos veces para introducir estados de Ã¡nimo de Mary Jane, sin aÃ±adir informaciÃ³n"
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "pleonasmos":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "originalText":  "la esfera explosionÃ³, no sin antes implosionar por una dÃ©cima de segundo",
+                                                                                  "explanation":  "Explosionar e implosionar son procesos fÃ­sicamente opuestos pero aquÃ­ el orden narrado (primero explota, luego se dice que antes implosionÃ³) resulta redundante en la descripciÃ³n del mismo evento puntual; ademÃ¡s \u0027por una dÃ©cima de segundo\u0027 junto a \u0027al momento\u0027 que lo precede reitera la inmediatez ya expresada",
+                                                                                  "correction":  "la esfera implosionÃ³ una dÃ©cima de segundo antes de explosionar"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "una distorsiÃ³n parecida a la que desde hacÃ­a dÃ­as estaba apareciendo",
+                                                                                  "explanation":  "\u0027parecida\u0027 y la referencia a la distorsiÃ³n ya conocida repiten la misma informaciÃ³n; basta con decir \u0027la distorsiÃ³n que llevaba dÃ­as apareciendo\u0027",
+                                                                                  "correction":  "la distorsiÃ³n que llevaba dÃ­as apareciendo en las instalaciones"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "con ausencia total de vegetaciÃ³n",
+                                                                                  "explanation":  "Justo antes se dice del paisaje que era \u0027pedregoso\u0027 y mÃ¡s adelante se menciona la \u0027aridez\u0027, por lo que \u0027ausencia total de vegetaciÃ³n\u0027 reitera lo ya implÃ­cito en esos tÃ©rminos; ademÃ¡s \u0027total\u0027 es redundante con \u0027ausencia\u0027",
+                                                                                  "correction":  "sin vegetaciÃ³n"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "sus seres mÃ¡s queridos",
+                                                                                  "explanation":  "\u0027mÃ¡s queridos\u0027 es redundante con \u0027seres queridos\u0027, expresiÃ³n que se repite literal lÃ­neas despuÃ©s (\u0027la de sus seres queridos\u0027), duplicando la misma idea",
+                                                                                  "correction":  "sus seres queridos"
+                                                                              }
+                                                                          ]
+                                                         }
+                                      },
+                                      {
+                                          "adverbios":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "solo habÃ­a tardado cinco dÃ­as en obtenerlas",
+                                                                                 "adverb":  "solo",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "Funciona como adverbio de exclusiÃ³n con valor narrativo claro.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "pasarlas de manera consecutiva para crear movimiento",
+                                                                                 "adverb":  "consecutiva",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "La locuciÃ³n adverbial \u0027de manera consecutiva\u0027 es perifrÃ¡stica y dÃ©bil.",
+                                                                                 "alternatives":  [
+                                                                                                      "encadenarlas para crear movimiento",
+                                                                                                      "ordenarlas en secuencia para generar movimiento"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "lo posicionemos de manera consecutiva formando lÃ­neas paralelas",
+                                                                                 "adverb":  "consecutiva",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "Mismo problema: circunloquio innecesario que ralentiza la frase.",
+                                                                                 "alternatives":  [
+                                                                                                      "los encadenemos formando lÃ­neas paralelas",
+                                                                                                      "los alineemos uno tras otro formando lÃ­neas paralelas"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "explicarles los avances a los que habÃ­a llegado",
+                                                                                 "adverb":  "de manera fÃ¡cil",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "\u0027De una manera fÃ¡cil\u0027 es una locuciÃ³n adverbial vaga y coloquial.",
+                                                                                 "alternatives":  [
+                                                                                                      "lo explicarÃ© con un ejemplo sencillo",
+                                                                                                      "lo ilustrarÃ© sin tecnicismos"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "las alteraciones que generamos pueden estar transmitiÃ©ndose de manera incremental",
+                                                                                 "adverb":  "incremental",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "\u0027De manera incremental\u0027 es un giro burocrÃ¡tico y frÃ­o que rompe el ritmo narrativo.",
+                                                                                 "alternatives":  [
+                                                                                                      "las alteraciones se acumulan conforme avanzamos",
+                                                                                                      "las alteraciones crecen a medida que nos adentramos"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "al principio despacio y luego deprisa",
+                                                                                 "adverb":  "despacio / deprisa",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "El contraste rÃ­tmico entre ambos adverbios genera un efecto visual eficaz.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "a una velocidad vertiginosa",
+                                                                                 "adverb":  "vertiginosa",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "Refuerza la tensiÃ³n del momento con precisiÃ³n expresiva.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             }
+                                                                         ]
+                                                        },
+                                          "voz_pasiva":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "originalText":  "El color de la luz lÃ¡ser viene determinado por su longitud de onda",
+                                                                                  "explanation":  "Pasiva perifrÃ¡stica con \u0027viene determinado\u0027 y agente implÃ­cito; construible en activa.",
+                                                                                  "activeVersion":  "La longitud de onda determina el color de la luz lÃ¡ser."
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "ParecÃ­an fabricados como si hubieran juntado enormes bloques de metal de distintos tamaÃ±os que hubiesen derretido y pulido",
+                                                                                  "explanation":  "ConstrucciÃ³n pasiva con participio \u0027fabricados\u0027 y agente implÃ­cito difuso que debilita la imagen.",
+                                                                                  "activeVersion":  "ParecÃ­an el resultado de fundir y pulir enormes bloques de metal de distintos tamaÃ±os."
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "la pantalla se tornÃ³ negro y AiFlash anunciÃ³ que eso era todo",
+                                                                                  "explanation":  "No es pasiva real; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "su Ãºltimo pensamiento fue para ellos",
+                                                                                  "explanation":  "No es pasiva perifrÃ¡stica; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "el hecho de que nos lo muestren, significa que son capaces de ello",
+                                                                                  "explanation":  "No es pasiva; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "sacudiÃ³ su Ford blanco empujÃ¡ndolo con una gran violencia, haciÃ©ndolo levitar durante unos momentos hasta que se posÃ³ de nuevo de forma descontrolada en el asfalto",
+                                                                                  "explanation":  "No es pasiva; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "voz_pasiva_clean":  {
+                                                                   "findings":  [
+                                                                                    {
+                                                                                        "originalText":  "El color de la luz lÃ¡ser viene determinado por su longitud de onda",
+                                                                                        "explanation":  "Pasiva perifrÃ¡stica con \u0027viene determinado\u0027 y agente implÃ­cito; construible en activa con mÃ¡s energÃ­a.",
+                                                                                        "activeVersion":  "La longitud de onda determina el color de la luz lÃ¡ser."
+                                                                                    },
+                                                                                    {
+                                                                                        "originalText":  "ParecÃ­an fabricados como si hubieran juntado enormes bloques de metal de distintos tamaÃ±os que hubiesen derretido y pulido, para darles maravillosas formas curvas",
+                                                                                        "explanation":  "Participio pasivo \u0027fabricados\u0027 con agente implÃ­cito que diluye la potencia descriptiva.",
+                                                                                        "activeVersion":  "ParecÃ­an surgir de fundir y pulir enormes bloques de metal de distintos tamaÃ±os hasta darles formas curvas."
+                                                                                    },
+                                                                                    {
+                                                                                        "originalText":  "Una serie de focos ovalados que se situaban en las paredes de los edificios iluminaban con luz verdosa las carreteras",
+                                                                                        "explanation":  "ConstrucciÃ³n activa correcta; no es pasiva real.",
+                                                                                        "activeVersion":  ""
+                                                                                    }
+                                                                                ]
+                                                               },
+                                          "frases_largas":  {
+                                                                "findings":  [
+                                                                                 {
+                                                                                     "originalText":  "Gracias al enfoque que habÃ­a seguido, que suponÃ­a buscar una forma con la que generar imÃ¡genes a partir de los fotones de luz recibidos, tan solo habÃ­a tardado cinco dÃ­as en obtenerlas.",
+                                                                                     "wordCount":  34,
+                                                                                     "explanation":  "La doble subordinada relativa (\u0027que habÃ­a seguido, que suponÃ­a\u0027) crea una cadena de incisos que enmaraÃ±a la lectura antes de llegar al verbo principal.",
+                                                                                     "suggestion":  "Separar en dos frases: \u0027Gracias a su enfoque â€”buscar imÃ¡genes a partir de los fotones de luz recibidosâ€”, tardÃ³ solo cinco dÃ­as en obtenerlas.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Te explicarÃ© cÃ³mo funciona un puntero lÃ¡ser para que lo entiendas de una manera fÃ¡cil: cuando un profesor en la universidad utiliza un puntero lÃ¡ser para seÃ±alar la pantalla, lo hace con un dispositivo que produce un haz de luz estrecho en el que todas las ondas de luz tienen longitudes de onda muy similares.",
+                                                                                     "wordCount":  52,
+                                                                                     "explanation":  "Frase explicativa excesivamente larga que acumula subordinadas y resulta pesada en boca de un personaje.",
+                                                                                     "suggestion":  "Cortar tras el ejemplo: \u0027â€¦lo hace con un dispositivo que produce un haz de luz estrecho. En ese haz, todas las ondas tienen longitudes de onda muy similares.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Lo que estÃ¡n haciendo es simplificar la forma de comunicarse proyectando los puntos de luz de distintos colores para que nosotros los posicionemos de manera consecutiva formando lÃ­neas paralelas que forman imÃ¡genes.",
+                                                                                     "wordCount":  35,
+                                                                                     "explanation":  "Cadena de gerundios y subordinadas que convierte una idea clara en una frase enredada.",
+                                                                                     "suggestion":  "Dividir: \u0027Proyectan puntos de luz de distintos colores. Nosotros los encadenamos en lÃ­neas paralelas que componen imÃ¡genes.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Una Ãºltima secuencia de imÃ¡genes terminÃ³ por dejar a todos con la boca abierta. En ella, se apreciÃ³ cÃ³mo la misma esfera que habÃ­a explosionado en la secuencia anterior, aparecÃ­a de nuevo en el mismo paisaje. No muy lejos de ella, se abriÃ³ lo que podrÃ­a haber sido un agujero negro cuÃ¡ntico con la caracterÃ­stica distorsiÃ³n visual ondulatoria hacia su interior, de no ser porque al momento su epicentro se tornÃ³ de un cegador color azul celeste.",
+                                                                                     "wordCount":  75,
+                                                                                     "explanation":  "Secuencia de frases que se encadenan sin pausa y acumulan mÃ¡s de 70 palabras antes de cerrar la idea principal.",
+                                                                                     "suggestion":  "Dividir en al menos tres frases independientes, separando la apariciÃ³n de la esfera, la apertura del agujero y el cambio de color."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "A continuaciÃ³n, la esfera avanzÃ³ hacia el agujero a gran velocidad y se diluyÃ³ en el aire, convirtiÃ©ndose en un delgado haz de luz que dejÃ³ un rastro de finos hilos de humo blanco que culebrearon en el aire.",
+                                                                                     "wordCount":  39,
+                                                                                     "explanation":  "Cadena de tres gerundios y subordinadas que estira la imagen mÃ¡s allÃ¡ de lo necesario.",
+                                                                                     "suggestion":  "Cortar en dos: \u0027La esfera avanzÃ³ hacia el agujero y se diluyÃ³ en un delgado haz de luz. Tras ella quedaron finos hilos de humo blanco culebreando en el aire.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Posiblemente, la energÃ­a que ellos tienen que generar para abrir un canal de comunicaciÃ³n hacia nuestro universo, tenga que ser descomunal, en contraposiciÃ³n a la que nosotros necesitamos para hacer lo mismo.",
+                                                                                     "wordCount":  34,
+                                                                                     "explanation":  "La coma antes de \u0027tenga\u0027 interrumpe el sujeto y la acumulaciÃ³n de subordinadas alarga la idea innecesariamente.",
+                                                                                     "suggestion":  "Simplificar: \u0027Probablemente necesitan una energÃ­a descomunal para abrir ese canal, muy superior a la que usamos nosotros.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Edmund pisÃ³ el freno intentando parar el envite. Las ruedas chirriaron bailando a derecha e izquierda mientras se acercaba a un enorme camiÃ³n sin poder frenar lo suficiente.",
+                                                                                     "wordCount":  31,
+                                                                                     "explanation":  "Acumula tres gerundios seguidos (\u0027intentando\u0027, \u0027bailando\u0027, \u0027frenar\u0027) que dificultan la lectura en un momento de mÃ¡xima tensiÃ³n.",
+                                                                                     "suggestion":  "Separar acciones: \u0027Edmund pisÃ³ el freno. Las ruedas chirriaron, el coche se tambaleÃ³ a derecha e izquierda. Un camiÃ³n enorme llenÃ³ el parabrisas.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Con instinto providencial, corrigiÃ³ la trayectoria para evitar la colisiÃ³n. DespuÃ©s de unos segundos en los que el coche se arrastrÃ³ sonando como una vieja puerta metÃ¡lica oxidada, se detuvo dando paso a un silencio hueco y sepulcral, que se difuminÃ³ rÃ¡pidamente por los gritos de la gente atrapada en otros coches.",
+                                                                                     "wordCount":  50,
+                                                                                     "explanation":  "La frase principal queda enterrada bajo dos incisos y una subordinada relativa, rompiendo el ritmo del clÃ­max.",
+                                                                                     "suggestion":  "Dividir: \u0027CorrigiÃ³ la trayectoria con instinto providencial. El coche se arrastrÃ³ unos segundos, sonando como una vieja puerta oxidada, y se detuvo. Un silencio hueco y sepulcral durÃ³ apenas un instante antes de que los gritos lo rompieran.\u0027"
+                                                                                 }
+                                                                             ]
+                                                            },
+                                          "nombres":  {
+                                                          "findings":  [
+                                                                           {
+                                                                               "name":  "Mary Jane",
+                                                                               "occurrences":  [
+                                                                                                   "Mary Jane, por algÃºn motivo, intuÃ­a que pronto habrÃ­a resultados.",
+                                                                                                   "â€”Buenas tardes, Mary Jane, como te he avanzado",
+                                                                                                   "â€”interrumpiÃ³ Mary Jane embelesada por la informaciÃ³n",
+                                                                                                   "â€”dijo Mary Jane impaciente.",
+                                                                                                   "â€”Si me permites, Mary Jane, tengo una teorÃ­a."
+                                                                                               ],
+                                                                               "explanation":  "El nombre \u0027Mary Jane\u0027 aparece 5 veces en un mismo bloque de diÃ¡logo/narraciÃ³n continuo, lo que satura la referencia al personaje principal.",
+                                                                               "suggestion":  "Alternar con pronombres (\u0027ella\u0027, \u0027su\u0027), aposiciones (\u0027la cientÃ­fica\u0027, \u0027la investigadora\u0027) o simplemente eliminar el vocativo en algunos intercambios de diÃ¡logo donde el contexto identifica al interlocutor."
+                                                                           }
+                                                                       ]
+                                                      }
+                                      },
+                                      {
+                                          "gerundios":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "la luz del dispositivo Sentinel se iluminÃ³ con color naranja expresando sorpresa",
+                                                                                 "gerund":  "expresando",
+                                                                                 "errorType":  "posterioridad",
+                                                                                 "explanation":  "El gerundio \u0027expresando\u0027 indica una acciÃ³n que resulta del iluminarse, pero funciona como consecuencia o resultado posterior al evento de iluminarse, no como acciÃ³n simultÃ¡nea real. AdemÃ¡s, actÃºa como especificativo del sujeto (la luz), uso nominal adjetivo incorrecto del gerundio.",
+                                                                                 "correction":  "la luz del dispositivo Sentinel se iluminÃ³ con color naranja, en seÃ±al de sorpresa"
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "proyectando los puntos de luz de distintos colores para que nosotros los posicionemos de manera consecutiva formando lÃ­neas paralelas que forman imÃ¡genes",
+                                                                                 "gerund":  "formando",
+                                                                                 "errorType":  "especificativo",
+                                                                                 "explanation":  "El gerundio \u0027formando\u0027 modifica al sustantivo \u0027lÃ­neas paralelas\u0027 con valor adjetivo especificativo, uso incorrecto del gerundio en espaÃ±ol.",
+                                                                                 "correction":  "proyectando los puntos de luz de distintos colores para que nosotros los posicionemos de manera consecutiva en lÃ­neas paralelas que forman imÃ¡genes"
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "sintiÃ³ los tentÃ¡culos de la angustia atenazarla, llevÃ¡ndola al pÃ¡nico",
+                                                                                 "gerund":  "llevÃ¡ndola",
+                                                                                 "errorType":  "posterioridad",
+                                                                                 "explanation":  "El gerundio \u0027llevÃ¡ndola\u0027 expresa una acciÃ³n posterior y consecuente al hecho de atenazarla, no simultÃ¡nea. Se trata de un gerundio de posterioridad, uso incorrecto.",
+                                                                                 "correction":  "sintiÃ³ los tentÃ¡culos de la angustia atenazarla hasta llevarla al pÃ¡nico"
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Al fijarse, identificÃ³ que tambiÃ©n tenÃ­a un laberinto con rugosidades que tenÃ­a vida propia, desvaneciÃ©ndose poco a poco",
+                                                                                 "gerund":  "desvaneciÃ©ndose",
+                                                                                 "errorType":  "especificativo",
+                                                                                 "explanation":  "El gerundio \u0027desvaneciÃ©ndose\u0027 modifica al sustantivo \u0027laberinto con rugosidades\u0027 con valor adjetivo especificativo, lo que es un uso incorrecto del gerundio en espaÃ±ol.",
+                                                                                 "correction":  "identificÃ³ que tambiÃ©n tenÃ­a un laberinto con rugosidades que tenÃ­a vida propia y que se desvanecÃ­a poco a poco"
+                                                                             }
+                                                                         ]
+                                                        },
+                                          "tiempos":  {
+                                                          "findings":  [
+                                                                           {
+                                                                               "originalText":  "Mary Jane, por algÃºn motivo, intuÃ­a que pronto habrÃ­a resultados. Aquellos cinco dÃ­as fueron tan emocionantes como los de una niÃ±a esperando que llegue el dÃ­a de PapÃ¡ Noel. Necesitaba permanecer en el laboratorio tanto como respirar; cuando salÃ­a de Ã©l se ahogaba como un pez fuera del agua.",
+                                                                               "verbsFound":  [
+                                                                                                  "intuÃ­a",
+                                                                                                  "fueron",
+                                                                                                  "Necesitaba",
+                                                                                                  "salÃ­a",
+                                                                                                  "se ahogaba"
+                                                                                              ],
+                                                                               "explanation":  "En la misma escena descriptiva se mezcla el indefinido \u0027fueron\u0027 con imperfectos continuos (\u0027intuÃ­a\u0027, \u0027Necesitaba\u0027, \u0027salÃ­a\u0027, \u0027se ahogaba\u0027). El indefinido \u0027fueron\u0027 irrumpe en un bloque de imperfectos que describen estados y hÃ¡bitos, produciendo una mezcla que parece descuido, pues \u0027fueron\u0027 tiene el mismo referente temporal que los imperfectos circundantes.",
+                                                                               "suggestion":  "Unificar en imperfecto: \u0027Aquellos cinco dÃ­as eran tan emocionantes como los de una niÃ±a esperando el dÃ­a de PapÃ¡ Noel\u0027, o bien justificar el indefinido separando claramente el evento puntual del estado habitual."
+                                                                           },
+                                                                           {
+                                                                               "originalText":  "Edmund, sin embargo, reaccionÃ³ pisando el acelerador hasta el fondo, como si estuviese aplastando una cucaracha, sin dejar de mirar por el espejo retrovisor. Como habÃ­a adivinado, la onda expansiva se acercaba por detrÃ¡s a una velocidad vertiginosa. A travÃ©s del espejo retrovisor, observÃ³ cÃ³mo la ola de destrucciÃ³n se aproximaba sin tregua, arrastrando personas y automÃ³viles que salÃ­an despedidos por los aires. Sin poder evitarlo sintiÃ³ el impacto, que sacudiÃ³ su Ford blanco empujÃ¡ndolo con una gran violencia, haciÃ©ndolo levitar durante unos momentos hasta que se posÃ³ de nuevo de forma descontrolada en el asfalto. Edmund pisÃ³ el freno intentando parar el envite. Las ruedas chirriaron bailando a derecha e izquierda mientras se acercaba a un enorme camiÃ³n sin poder frenar lo suficiente.",
+                                                                               "verbsFound":  [
+                                                                                                  "reaccionÃ³",
+                                                                                                  "se acercaba",
+                                                                                                  "observÃ³",
+                                                                                                  "se aproximaba",
+                                                                                                  "salÃ­an",
+                                                                                                  "sintiÃ³",
+                                                                                                  "sacudiÃ³",
+                                                                                                  "pisÃ³",
+                                                                                                  "chirriaron",
+                                                                                                  "se acercaba"
+                                                                                              ],
+                                                                               "explanation":  "En esta escena de acciÃ³n continua se alternan de forma irregular indefinidos (\u0027reaccionÃ³\u0027, \u0027observÃ³\u0027, \u0027sintiÃ³\u0027, \u0027sacudiÃ³\u0027, \u0027pisÃ³\u0027, \u0027chirriaron\u0027) e imperfectos (\u0027se acercaba\u0027, \u0027se aproximaba\u0027, \u0027salÃ­an\u0027, \u0027se acercaba\u0027). Aunque algunos imperfectos pueden justificarse como trasfondo, la alternancia entre \u0027pisÃ³ el freno\u0027 / \u0027chirriaron\u0027 y \u0027se acercaba a un enorme camiÃ³n\u0027 dentro de la misma acciÃ³n puntual secuencial sugiere una mezcla no del todo controlada que parece descuido.",
+                                                                               "suggestion":  "Revisar si \u0027se acercaba a un enorme camiÃ³n\u0027 deberÃ­a ser \u0027se acercÃ³ a un enorme camiÃ³n\u0027, para mantener la coherencia de la secuencia de acciones puntuales en indefinido dentro de la escena de acciÃ³n."
+                                                                           }
+                                                                       ]
+                                                      }
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+                                                           {
+                                                               "originalText":  "Sin poder evitarlo sintiÃ³ el impacto",
+                                                               "errorType":  "ausencia_coma_inciso",
+                                                               "correction":  "Sin poder evitarlo, sintiÃ³ el impacto",
+                                                               "explanation":  "El sintagma \u0027Sin poder evitarlo\u0027 es un inciso o complemento circunstancial antepuesto que debe separarse del resto de la oraciÃ³n mediante coma."
+                                                           }
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+                                                           {
+                                                               "originalText":  "diferente al nuestro, â€”interrumpiÃ³ Mary Jane embelesada por la informaciÃ³n que acababa de recibirâ€”",
+                                                               "errorType":  "Coma innecesaria antes de raya de cierre",
+                                                               "correction":  "diferente al nuestro â€”interrumpiÃ³ Mary Jane embelesada por la informaciÃ³n que acababa de recibirâ€”",
+                                                               "explanation":  "No debe colocarse coma inmediatamente antes de la raya que cierra el parlamento para introducir la acotaciÃ³n. La raya sustituye a esa coma."
+                                                           }
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
                                                        ]
                                       }
                                   ]
