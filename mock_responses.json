@@ -2895,15 +2895,6 @@
         "repeticion": {
           "findings": [
             {
-              "word": "esfera",
-              "occurrences": [
-                "apareció una esfera, algo más pequeña que una pelota de baloncesto",
-                "En uno de los lados de la esfera el metal cobró vida",
-                "la esfera explosionó, no sin antes implosionar"
-              ],
-              "explanation": "La palabra 'esfera' se repite tres veces en el mismo párrafo descriptivo sin variación léxica, lo que empobrece el estilo."
-            },
-            {
               "word": "pantalla",
               "occurrences": [
                 "señalando la oscura pantalla en la que había aparecido la esfera",
@@ -3171,12 +3162,6 @@
               "wordCount": 35,
               "explanation": "Cadena de gerundios y subordinadas que convierte una idea clara en una frase enredada.",
               "suggestion": "Dividir: 'Proyectan puntos de luz de distintos colores. Nosotros los encadenamos en líneas paralelas que componen imágenes.'"
-            },
-            {
-              "originalText": "Una última secuencia de imágenes terminó por dejar a todos con la boca abierta. En ella, se apreció cómo la misma esfera que había explosionado en la secuencia anterior, aparecía de nuevo en el mismo paisaje. No muy lejos de ella, se abrió lo que podría haber sido un agujero negro cuántico con la característica distorsión visual ondulatoria hacia su interior, de no ser porque al momento su epicentro se tornó de un cegador color azul celeste.",
-              "wordCount": 75,
-              "explanation": "Secuencia de frases que se encadenan sin pausa y acumulan más de 70 palabras antes de cerrar la idea principal.",
-              "suggestion": "Dividir en al menos tres frases independientes, separando la aparición de la esfera, la apertura del agujero y el cambio de color."
             },
             {
               "originalText": "A continuación, la esfera avanzó hacia el agujero a gran velocidad y se diluyó en el aire, convirtiéndose en un delgado haz de luz que dejó un rastro de finos hilos de humo blanco que culebrearon en el aire.",

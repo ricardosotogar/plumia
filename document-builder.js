@@ -1297,7 +1297,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   // ── MAPA DE PÁGINAS ───────────────────────────────────────────────────────
   async buildPageMap(findings, selectionText = '') {
     const pageMap = {};
-    const WPP = 250;
+    const WPP = 424;
     console.log('[PAGEMAP] selectionText length=', selectionText ? selectionText.length : 0);
     if (selectionText) {
       const normSel = selectionText.replace(/\r\n?/g, '\n');
@@ -1395,10 +1395,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         }
         raw = raw.replace(/[\r\n]+/g,' ').trim();
         const preview = raw ? `\u00AB${raw.substring(0,100)}${raw.length>100?'\u2026':''}\u00BB` : '(sin texto)';
-        const page    = pageMap[f.originalText];
-        const suffix  = page ? `  \u2014 p\u00E1g. ${page}` : '';
 
-        const np = body.insertParagraph(`${i+1}.  ${preview}${suffix}`,'End'); np.font.bold=true; np.font.size=12; np.font.italic=false; np.font.color='0f3460';
+        const np = body.insertParagraph(`${i+1}.  ${preview}`,'End'); np.font.bold=true; np.font.size=12; np.font.italic=false; np.font.color='0f3460';
 
         const catP = body.insertParagraph(`[${label}]`,'End'); catP.font.size=10; catP.font.bold=false; catP.font.italic=true; catP.font.color='666666';
 
