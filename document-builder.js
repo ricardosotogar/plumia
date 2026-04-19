@@ -1295,9 +1295,22 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ── MAPA DE PÁGINAS ───────────────────────────────────────────────────────
-  async buildPageMap(findings) {
+  async buildPageMap(findings, selectionText = '') {
     const pageMap = {};
     const WPP = 250;
+    if (selectionText) {
+      const lowerSel = selectionText.toLowerCase();
+      for (const f of findings) {
+        const st = (f.originalText||'').substring(0,60).toLowerCase();
+        if (!st || st.length < 3 || pageMap[f.originalText]) continue;
+        const charPos = lowerSel.indexOf(st);
+        if (charPos >= 0) {
+          const wordsBefore = selectionText.substring(0, charPos).split(/\s+/).filter(Boolean).length;
+          pageMap[f.originalText] = Math.max(1, Math.ceil((wordsBefore + 1) / WPP));
+        }
+      }
+      return pageMap;
+    }
     try {
       await Word.run(async (ctx) => {
         const body = ctx.document.body;
@@ -1394,7 +1407,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const revisionName = await this.getRevisionName(originalName);
     const statsName    = this.getStatsName(revisionName);
     const allFindings  = allResults.flatMap(r=>r.findings);
-    const pageMap      = await this.buildPageMap(allFindings);
+    const pageMap      = await this.buildPageMap(allFindings, selectionText);
 
     if (this.outputMode === 'marked') {
       await this.applyMarkings(resolvedFindings, selectionText);

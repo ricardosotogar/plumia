@@ -2904,15 +2904,6 @@
               "explanation": "La palabra 'esfera' se repite tres veces en el mismo párrafo descriptivo sin variación léxica, lo que empobrece el estilo."
             },
             {
-              "word": "secuencia",
-              "occurrences": [
-                "La siguiente secuencia de imágenes fue aún más desconcertante",
-                "Una última secuencia de imágenes terminó por dejar a todos con la boca abierta",
-                "la misma esfera que había explosionado en la secuencia anterior"
-              ],
-              "explanation": "'Secuencia' se repite tres veces en párrafos consecutivos sin variación, resultando llamativo y mecánico."
-            },
-            {
               "word": "pantalla",
               "occurrences": [
                 "señalando la oscura pantalla en la que había aparecido la esfera",
