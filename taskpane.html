@@ -9,7 +9,7 @@
 <title>Plumia</title>
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="taskpane.css?v=9.39h"/>
+<link rel="stylesheet" href="taskpane.css?v=9.40"/>
 </head>
 <body>
 
@@ -111,21 +111,92 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
+     SCREEN 1.5: SELECCIÓN DE MODO
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="screen" id="screen-mode">
+  <!-- Banner de análisis interrumpido -->
+  <div class="resume-banner" id="resumeBanner">
+    <strong>⚡ Análisis interrumpido encontrado</strong>
+    Hay un análisis previo a medias. ¿Deseas retomarlo desde donde se quedó o empezar desde cero?
+    <div class="resume-banner-btns">
+      <button class="btn-resume" onclick="resumeAnalysis()">Retomar análisis</button>
+      <button class="btn-discard" onclick="discardAndStart()">Empezar de cero</button>
+    </div>
+  </div>
+
+  <p class="mode-prompt">¿Qué tipo de revisión quieres hacer?</p>
+
+  <!-- Opción 1: Corrección gramatical, léxica y de estilo -->
+  <div class="mode-card" onclick="goToModeOptions('grammar')">
+    <div class="mode-card-header">
+      <span class="mode-card-title">Revisión Corrección gramatical, léxica y de estilo</span>
+      <span class="mode-card-arrow">→</span>
+    </div>
+    <ul class="mode-feature-list">
+      <li class="mode-feature">
+        <span class="mode-feature-name">Pronombres y deíxis</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">Leísmos, laísmos, loísmos y pronombres con referente ambiguo.</div>
+      </li>
+      <li class="mode-feature">
+        <span class="mode-feature-name">Léxico y vocabulario</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">Repeticiones léxicas cercanas, verbos comodín, sustantivos genéricos, muletillas narrativas y pleonasmos.</div>
+      </li>
+      <li class="mode-feature">
+        <span class="mode-feature-name">Estilo y fluidez</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">Adverbios en -mente, voz pasiva innecesaria, frases demasiado largas, ritmo narrativo y números en letra.</div>
+      </li>
+      <li class="mode-feature">
+        <span class="mode-feature-name">Gramática</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">Gerundios incorrectos, concordancia de género y número, dequeísmo, palabras sobrantes e inconsistencia de tiempos verbales.</div>
+      </li>
+      <li class="mode-feature">
+        <span class="mode-feature-name">Ortotipografía</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">Guiones, comillas, puntos suspensivos, mayúsculas, signos ¿¡, espaciado y puntuación en diálogos.</div>
+      </li>
+      <li class="mode-feature">
+        <span class="mode-feature-name">Tildes diacríticas</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">tú/tu, mí/mi, aún/aun, sí/si, qué/que, cómo/como, cuándo/cuando, quién/quien y similares.</div>
+      </li>
+      <li class="mode-feature">
+        <span class="mode-feature-name">Puntuación en prosa</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">Comas, puntos y comas, y puntos mal colocados o ausentes en prosa narrativa.</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Opción 2: Coherencia narrativa -->
+  <div class="mode-card" onclick="goToModeOptions('coherence')">
+    <div class="mode-card-header">
+      <span class="mode-card-title">Revisión de coherencia narrativa</span>
+      <span class="mode-card-arrow">→</span>
+    </div>
+    <ul class="mode-feature-list">
+      <li class="mode-feature">
+        <span class="mode-feature-name">Coherencia temporal, personajes, etc.</span>
+        <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
+        <div class="info-detail">Contradicciones en personajes, línea temporal, objetos y espacios, conocimiento implícito, cambios de punto de vista (POV), nombres propios escritos de formas distintas y tono narrativo.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="screen-footer">
+    <button class="btn-secondary" onclick="showScreen('welcome')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
      SCREEN 2: OPCIONES
 ═══════════════════════════════════════════════════════════════════════════ -->
 <div class="screen" id="screen-options">
   <div class="options-scroll">
-    <button class="btn-back" onclick="goBack('apikey')">← Cambiar clave</button>
-
-    <!-- Banner de análisis interrumpido -->
-    <div class="resume-banner" id="resumeBanner">
-      <strong>⚡ Análisis interrumpido encontrado</strong>
-      Hay un análisis previo a medias. ¿Deseas retomarlo desde donde se quedó o empezar desde cero?
-      <div class="resume-banner-btns">
-        <button class="btn-resume" onclick="resumeAnalysis()">Retomar análisis</button>
-        <button class="btn-discard" onclick="discardAndStart()">Empezar de cero</button>
-      </div>
-    </div>
+    <button class="btn-back" onclick="goBackToMode()">← Atrás</button>
 
     <!-- Contexto: selección o documento completo -->
     <div class="selection-context" id="selectionContext">
@@ -191,7 +262,7 @@
     <button class="btn-primary" id="btnAnalyze" onclick="requestCostEstimate()" disabled>
       Calcular coste y continuar →
     </button>
-    <button class="btn-secondary" onclick="resetCoherenceState();state.hasSelection=false;showScreen('welcome')" style="margin-top:6px">
+    <button class="btn-secondary" onclick="goBackToMode()" style="margin-top:6px">
       Cancelar
     </button>
   </div>
@@ -376,10 +447,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.39h"></script>
-<script src="synonyms-db.js?v=9.39h"></script>
-<script src="processor.js?v=9.39h"></script>
-<script src="document-builder.js?v=9.39h"></script>
+<script src="corrections-config.js?v=9.40"></script>
+<script src="synonyms-db.js?v=9.40"></script>
+<script src="processor.js?v=9.40"></script>
+<script src="document-builder.js?v=9.40"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -454,6 +525,7 @@ const state = {
   selectedIds:      new Set(),
   outputFormat:     'marked',
   currentScreen:    'welcome',
+  currentMode:      null,   // 'grammar' | 'coherence'
   processor:        null,
   wordCount:        0,
   isResuming:       false,
@@ -798,7 +870,7 @@ function buildCorrectionsList() {
     const isCoherence = group.id === 'coherence';
     const groupIds = groupCorrections.map(c => c.id);
 
-    html += `<div class="group-block">
+    html += `<div class="group-block" data-group="${group.id}">
       <div class="group-header" style="cursor:pointer" onclick="toggleGroup('${group.id}')" title="Marcar/desmarcar todo el grupo">
         <div class="cb-box" id="group-cb-${group.id}" style="flex-shrink:0;margin-right:6px"></div>
         ${group.label}
@@ -904,7 +976,7 @@ function showScreen(id) {
 }
 
 function updateSteps(screenId) {
-  const map = { apikey:1, options:2, progress:3, done:3 };
+  const map = { apikey:1, mode:2, options:2, progress:3, done:3 };
   const current = map[screenId] || 0;
   for (let i = 1; i <= 3; i++) {
     const el = document.getElementById('step-' + i);
@@ -948,13 +1020,71 @@ function resetCoherenceState() {
   }
 }
 
-function goToOptions() {
-  resetCoherenceState();
-  state.hasSelection = false; // resetear hasta que detectSelection() confirme
-  showScreen('options');
+function goToModeScreen() {
+  state.hasSelection = false;
+  showScreen('mode');
   checkSavedProgress();
+}
+
+function goToModeOptions(mode) {
+  state.currentMode = mode;
+  // Resetear todos los checks
+  state.selectedIds.clear();
+  CORRECTIONS.forEach(c => {
+    const el = document.getElementById('check-' + c.id);
+    if (el) el.classList.remove('checked');
+  });
+  updateAllGroupCheckboxes();
+  resetCoherenceState();
+  state.hasSelection = false;
+  filterCorrectionsView(mode);
+  showScreen('options');
   updateAnalyzeButton();
   detectSelection();
+}
+
+function goBackToMode() {
+  // Desmarcar todos los checks y volver a pantalla de modo
+  state.selectedIds.clear();
+  CORRECTIONS.forEach(c => {
+    const el = document.getElementById('check-' + c.id);
+    if (el) el.classList.remove('checked');
+  });
+  updateAllGroupCheckboxes();
+  resetCoherenceState();
+  state.hasSelection = false;
+  state.currentMode = null;
+  showScreen('mode');
+  checkSavedProgress();
+}
+
+function filterCorrectionsView(mode) {
+  GROUPS.forEach(g => {
+    const block = document.querySelector('.group-block[data-group="' + g.id + '"]');
+    if (!block) return;
+    if (mode === 'grammar') {
+      block.style.display = g.id === 'coherence' ? 'none' : '';
+    } else if (mode === 'coherence') {
+      block.style.display = g.id === 'coherence' ? '' : 'none';
+    }
+  });
+}
+
+function toggleInfo(btn, event) {
+  event.stopPropagation();
+  const detail = btn.nextElementSibling;
+  const isVisible = detail.classList.contains('visible');
+  // Cerrar todos los demás
+  document.querySelectorAll('.info-detail.visible').forEach(d => d.classList.remove('visible'));
+  document.querySelectorAll('.info-icon.active').forEach(b => b.classList.remove('active'));
+  if (!isVisible) {
+    detail.classList.add('visible');
+    btn.classList.add('active');
+  }
+}
+
+function goToOptions() {
+  goToModeScreen();
 }
 
 async function detectSelection() {
@@ -1047,7 +1177,8 @@ async function saveApiKey() {
   localStorage.setItem('plumia_api_key', key); // fallback
   state.apiKey = key;
   hideApiError();
-  goToOptions();
+  buildCorrectionsList();
+  goToModeScreen();
 }
 
 async function checkSavedApiKey() {
@@ -1057,11 +1188,8 @@ async function checkSavedApiKey() {
   if (saved) {
     state.apiKey = saved;
     buildCorrectionsList();
+    showScreen('mode');
     checkSavedProgress();
-    resetCoherenceState();
-    showScreen('options');
-    updateAnalyzeButton();
-    setTimeout(() => detectSelection(), 300);
   }
 }
 
@@ -1104,6 +1232,9 @@ function selectAll(checked) {
   CORRECTIONS.forEach(c => {
     const el = document.getElementById('check-' + c.id);
     if (!el || el.classList.contains('disabled')) return;
+    // Respetar el modo activo
+    if (state.currentMode === 'grammar' && c.groupId === 'coherence') return;
+    if (state.currentMode === 'coherence' && c.groupId !== 'coherence') return;
     if (checked) {
       state.selectedIds.add(c.id);
       el.classList.add('checked');

@@ -694,3 +694,64 @@ body{
   padding:2px 7px;border-radius:20px;
 }
 .tag.coherence{background:#f3eeff;color:#6030a0}
+
+/* ── MODE SELECTION SCREEN ───────────────────────────────────────────────── */
+#screen-mode{
+  gap:12px;
+  padding:16px 18px;
+}
+.mode-prompt{
+  font-size:12.5px;font-weight:600;color:var(--ink2);
+  letter-spacing:.01em;margin-bottom:2px;
+}
+.mode-card{
+  border:1.5px solid var(--rule);border-radius:var(--radius);
+  background:var(--paper);padding:14px 14px 10px;
+  cursor:pointer;transition:border-color .18s,box-shadow .18s;
+  user-select:none;
+}
+.mode-card:hover{
+  border-color:var(--gold);
+  box-shadow:0 2px 10px rgba(176,125,46,.12);
+}
+.mode-card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;gap:8px;
+}
+.mode-card-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:600;color:var(--ink);
+  line-height:1.25;flex:1;
+}
+.mode-card-arrow{
+  font-size:16px;color:var(--gold);flex-shrink:0;
+  transition:transform .18s;
+}
+.mode-card:hover .mode-card-arrow{transform:translateX(3px)}
+.mode-feature-list{
+  list-style:none;display:flex;flex-direction:column;gap:4px;
+}
+.mode-feature{
+  display:flex;flex-wrap:wrap;align-items:center;gap:4px;
+  font-size:11.5px;color:var(--mid);
+}
+.mode-feature-name{
+  flex:1;min-width:0;
+}
+.info-icon{
+  width:17px;height:17px;border-radius:50%;flex-shrink:0;
+  background:var(--sepia2);border:1px solid var(--rule);
+  color:var(--muted);font-size:9.5px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s;line-height:1;
+  font-family:'Cormorant Garamond',serif;
+}
+.info-icon:hover,.info-icon.active{
+  background:var(--gold-bg);border-color:var(--gold);color:var(--gold);
+}
+.info-detail{
+  display:none;width:100%;font-size:10.5px;color:var(--mid);
+  background:var(--sepia);border-radius:5px;
+  padding:6px 9px;line-height:1.5;margin-top:2px;
+}
+.info-detail.visible{display:block}
