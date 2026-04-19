@@ -211,10 +211,17 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
     const raw = data.content?.[0]?.text || '';
 
-    // Extraer bloque JSON aunque Claude añada texto extra
+    // Extraer el ÚLTIMO bloque JSON (el modelo a veces razona y da un segundo JSON corregido)
     const stripped = raw.replace(/```json\n?|\n?```/g, '').trim();
-    const jsonMatch = stripped.match(/\{[\s\S]*\}/);
-    const clean = jsonMatch ? jsonMatch[0] : '{}';
+    let clean = '{}';
+    const lastClose = stripped.lastIndexOf('}');
+    if (lastClose >= 0) {
+      let depth = 0;
+      for (let i = lastClose; i >= 0; i--) {
+        if (stripped[i] === '}') depth++;
+        else if (stripped[i] === '{') { if (--depth === 0) { clean = stripped.substring(i, lastClose + 1); break; } }
+      }
+    }
 
     let parsed;
     try {
@@ -508,6 +515,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
               if (f.wordForm && f.correctForm) {
                 if (f.wordForm.toLowerCase().trim() === f.correctForm.toLowerCase().trim()) return null;
               }
+              // Filtrar findings que el modelo marcó explícitamente como descartes
+              const expl = (f.explanation || f.correction || '').toLowerCase();
+              if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error')) return null;
               return { ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
                 label: corr.label, directFix: corr.directFix };
             }).filter(Boolean);
@@ -667,6 +677,8 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const hasMente = candidates.some(a => /mente\b/i.test(a));
           if (!hasMente) return;
         }
+        const expl = (f.explanation || f.correction || '').toLowerCase();
+        if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error')) return;
         accumulated[corrId].push({
           ...f,
           originalText,
