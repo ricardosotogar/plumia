@@ -3458,4 +3458,506 @@
                                       }
                                   ]
                 }
+,
+  "PT cap3": {
+                    "desc":  "",
+                    "responses":  [
+                                      {
+                                          "leismo":  {
+                                                         "findings":  [
+
+                                                                      ]
+                                                     },
+                                          "ambiguedad":  {
+                                                             "findings":  [
+
+                                                                          ]
+                                                         }
+                                      },
+                                      {
+                                          "concordancia":  {
+                                                               "findings":  [
+                                                                                {
+                                                                                    "originalText":  "la aridez y sobriedad del paisaje contrastaba",
+                                                                                    "errorType":  "sujeto-verbo",
+                                                                                    "explanation":  "El sujeto es compuesto (\u0027la aridez y sobriedad\u0027), por lo que el verbo debe ir en plural.",
+                                                                                    "correction":  "la aridez y sobriedad del paisaje contrastaban"
+                                                                                }
+                                                                            ]
+                                                           },
+                                          "dequeismo":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "Al fijarse, identificó que también tenía un laberinto con rugosidades que tenía vida propia",
+                                                                                 "errorType":  "queismo",
+                                                                                 "explanation":  "\u0027Fijarse\u0027 rige la preposición \u0027en\u0027: \u0027fijarse en que\u0027. Se omite la preposición obligatoria.",
+                                                                                 "correction":  "Al fijarse en que también tenía un laberinto con rugosidades que tenía vida propia"
+                                                                             }
+                                                                         ]
+                                                        }
+                                      },
+                                      {
+                                          "repeticion":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "word":  "esfera",
+                                                                                  "occurrences":  [
+                                                                                                      "apareció una esfera, algo más pequeña que una pelota de baloncesto",
+                                                                                                      "En uno de los lados de la esfera el metal cobró vida",
+                                                                                                      "la esfera explosionó, no sin antes implosionar"
+                                                                                                  ],
+                                                                                  "explanation":  "La palabra \u0027esfera\u0027 se repite tres veces en el mismo párrafo descriptivo sin variación léxica, lo que empobrece el estilo."
+                                                                              },
+                                                                              {
+                                                                                  "word":  "secuencia",
+                                                                                  "occurrences":  [
+                                                                                                      "La siguiente secuencia de imágenes fue aún más desconcertante",
+                                                                                                      "Una última secuencia de imágenes terminó por dejar a todos con la boca abierta",
+                                                                                                      "la misma esfera que había explosionado en la secuencia anterior"
+                                                                                                  ],
+                                                                                  "explanation":  "\u0027Secuencia\u0027 se repite tres veces en párrafos consecutivos sin variación, resultando llamativo y mecánico."
+                                                                              },
+                                                                              {
+                                                                                  "word":  "pantalla",
+                                                                                  "occurrences":  [
+                                                                                                      "señalando la oscura pantalla en la que había aparecido la esfera",
+                                                                                                      "señalando la pantalla",
+                                                                                                      "la pantalla se tornó negro"
+                                                                                                  ],
+                                                                                  "explanation":  "\u0027Pantalla\u0027 aparece tres veces en párrafos muy próximos sin necesidad estilística."
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "verbos":  {
+                                                         "findings":  [
+                                                                          {
+                                                                              "originalText":  "lo hace con un dispositivo que produce un haz de luz estrecho",
+                                                                              "verb":  "hace",
+                                                                              "explanation":  "Verbo comodín \u0027hacer\u0027. Podría sustituirse por \u0027apunta\u0027, \u0027señala\u0027 o \u0027proyecta\u0027, más precisos en el contexto del puntero láser."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "pisando el acelerador hasta el fondo, como si estuviese aplastando una cucaracha",
+                                                                              "verb":  "pisando",
+                                                                              "explanation":  "Verbo vago en este contexto; \u0027hundiendo el acelerador\u0027 o \u0027clavando el pie en el acelerador\u0027 sería más expresivo e intenso."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "haciéndolo levitar durante unos momentos",
+                                                                              "verb":  "haciéndolo",
+                                                                              "explanation":  "Construcción con \u0027hacer\u0027 causativo vaga; podría sustituirse por \u0027lanzándolo\u0027 o \u0027elevándolo\u0027 para mayor precisión y fuerza."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "tocó la aplicación de videos musicales en la pantalla del respaldo del asiento delantero",
+                                                                              "verb":  "tocó",
+                                                                              "explanation":  "Verbo genérico; \u0027pulsó\u0027 o \u0027seleccionó\u0027 serían más precisos para la acción de interactuar con una pantalla táctil."
+                                                                          },
+                                                                          {
+                                                                              "originalText":  "devolviéndole la mirada mientras levantaba la mano para señalar hacia el gran ventanal",
+                                                                              "verb":  "levantaba",
+                                                                              "explanation":  "Verbo comodín; \u0027alzaba\u0027 o \u0027extendía\u0027 la mano sería más expresivo y preciso para el gesto descrito."
+                                                                          }
+                                                                      ]
+                                                     },
+                                          "sustantivos":  {
+                                                              "findings":  [
+                                                                               {
+                                                                                   "originalText":  "el modo en el que se están comunicando con nosotros",
+                                                                                   "genericWord":  "modo",
+                                                                                   "explanation":  "\u0027Modo\u0027 es vago; podría sustituirse por \u0027método\u0027, \u0027mecanismo\u0027 o \u0027procedimiento\u0027 para mayor precisión técnica en boca de una IA científica."
+                                                                               },
+                                                                               {
+                                                                                   "originalText":  "formando algún tipo de escritura con aspecto de laberinto circular",
+                                                                                   "genericWord":  "algún tipo de",
+                                                                                   "explanation":  "La expresión \u0027algún tipo de\u0027 combinada con \u0027escritura\u0027 resulta vaga; podría decirse directamente \u0027una escritura\u0027 o \u0027una inscripción\u0027 sin el comodín."
+                                                                               },
+                                                                               {
+                                                                                   "originalText":  "lo que podría haber sido un agujero negro cuántico con la característica distorsión visual ondulatoria hacia su interior, de no ser porque al momento su epicentro se tornó",
+                                                                                   "genericWord":  "epicentro",
+                                                                                   "explanation":  "El término \u0027epicentro\u0027 se usa aquí de forma imprecisa y genérica para referirse al centro del agujero; \u0027núcleo\u0027 o \u0027centro\u0027 serían más exactos en este contexto."
+                                                                               }
+                                                                           ]
+                                                          }
+                                      },
+                                      {
+                                          "muletillas":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "expression":  "de alguna manera",
+                                                                                  "occurrences":  [
+                                                                                                      "posicionemos de manera consecutiva",
+                                                                                                      "pasarlas de manera consecutiva",
+                                                                                                      "transmitiéndose de manera incremental"
+                                                                                                  ],
+                                                                                  "explanation":  "La expresión \u0027de manera + adjetivo\u0027 se repite tres veces como fórmula vacía que podría sustituirse por el adverbio equivalente (consecutivamente, incrementalmente) o eliminarse"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "al momento",
+                                                                                  "occurrences":  [
+                                                                                                      "Al momento, de nuevo todo pareció bambolearse",
+                                                                                                      "Al momento, su epicentro se tornó"
+                                                                                                  ],
+                                                                                  "explanation":  "Expresión temporal comodín que se repite sin aportar precisión, podría eliminarse o sustituirse por \u0027de repente\u0027 o \u0027entonces\u0027"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "Se podría decir",
+                                                                                  "occurrences":  [
+                                                                                                      "Se podría decir que nos están enviando los píxeles",
+                                                                                                      "Se podría decir que la especie que se comunica con nosotros emplea pantallas semiesféricas"
+                                                                                                  ],
+                                                                                  "explanation":  "Muletilla dubitativa que se repite dos veces en el mismo parlamento de AiFlash, debilitando innecesariamente las afirmaciones"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "Es decir",
+                                                                                  "occurrences":  [
+                                                                                                      "Es decir, se podría decir que nos están enviando los píxeles"
+                                                                                                  ],
+                                                                                  "explanation":  "Conecta con \u0027se podría decir\u0027, acumulando dos muletillas seguidas; el \u0027es decir\u0027 resulta superfluo al reformular lo ya explicado"
+                                                                              },
+                                                                              {
+                                                                                  "expression":  "por algún motivo",
+                                                                                  "occurrences":  [
+                                                                                                      "Mary Jane, por algún motivo, intuía que pronto habría resultados",
+                                                                                                      "Mary Jane, por algún motivo, a pesar de su carácter ingenuo"
+                                                                                                  ],
+                                                                                  "explanation":  "Expresión vaga que se repite dos veces para introducir estados de ánimo de Mary Jane, sin añadir información"
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "pleonasmos":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "originalText":  "la esfera explosionó, no sin antes implosionar por una décima de segundo",
+                                                                                  "explanation":  "Explosionar e implosionar son procesos físicamente opuestos pero aquí el orden narrado (primero explota, luego se dice que antes implosionó) resulta redundante en la descripción del mismo evento puntual; además \u0027por una décima de segundo\u0027 junto a \u0027al momento\u0027 que lo precede reitera la inmediatez ya expresada",
+                                                                                  "correction":  "la esfera implosionó una décima de segundo antes de explosionar"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "una distorsión parecida a la que desde hacía días estaba apareciendo",
+                                                                                  "explanation":  "\u0027parecida\u0027 y la referencia a la distorsión ya conocida repiten la misma información; basta con decir \u0027la distorsión que llevaba días apareciendo\u0027",
+                                                                                  "correction":  "la distorsión que llevaba días apareciendo en las instalaciones"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "con ausencia total de vegetación",
+                                                                                  "explanation":  "Justo antes se dice del paisaje que era \u0027pedregoso\u0027 y más adelante se menciona la \u0027aridez\u0027, por lo que \u0027ausencia total de vegetación\u0027 reitera lo ya implícito en esos términos; además \u0027total\u0027 es redundante con \u0027ausencia\u0027",
+                                                                                  "correction":  "sin vegetación"
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "sus seres más queridos",
+                                                                                  "explanation":  "\u0027más queridos\u0027 es redundante con \u0027seres queridos\u0027, expresión que se repite literal líneas después (\u0027la de sus seres queridos\u0027), duplicando la misma idea",
+                                                                                  "correction":  "sus seres queridos"
+                                                                              }
+                                                                          ]
+                                                         }
+                                      },
+                                      {
+                                          "adverbios":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "solo había tardado cinco días en obtenerlas",
+                                                                                 "adverb":  "solo",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "Funciona como adverbio de exclusión con valor narrativo claro.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "pasarlas de manera consecutiva para crear movimiento",
+                                                                                 "adverb":  "consecutiva",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "La locución adverbial \u0027de manera consecutiva\u0027 es perifrástica y débil.",
+                                                                                 "alternatives":  [
+                                                                                                      "encadenarlas para crear movimiento",
+                                                                                                      "ordenarlas en secuencia para generar movimiento"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "lo posicionemos de manera consecutiva formando líneas paralelas",
+                                                                                 "adverb":  "consecutiva",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "Mismo problema: circunloquio innecesario que ralentiza la frase.",
+                                                                                 "alternatives":  [
+                                                                                                      "los encadenemos formando líneas paralelas",
+                                                                                                      "los alineemos uno tras otro formando líneas paralelas"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "explicarles los avances a los que había llegado",
+                                                                                 "adverb":  "de manera fácil",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "\u0027De una manera fácil\u0027 es una locución adverbial vaga y coloquial.",
+                                                                                 "alternatives":  [
+                                                                                                      "lo explicaré con un ejemplo sencillo",
+                                                                                                      "lo ilustraré sin tecnicismos"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "las alteraciones que generamos pueden estar transmitiéndose de manera incremental",
+                                                                                 "adverb":  "incremental",
+                                                                                 "evaluation":  "Mejorable",
+                                                                                 "explanation":  "\u0027De manera incremental\u0027 es un giro burocrático y frío que rompe el ritmo narrativo.",
+                                                                                 "alternatives":  [
+                                                                                                      "las alteraciones se acumulan conforme avanzamos",
+                                                                                                      "las alteraciones crecen a medida que nos adentramos"
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "al principio despacio y luego deprisa",
+                                                                                 "adverb":  "despacio / deprisa",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "El contraste rítmico entre ambos adverbios genera un efecto visual eficaz.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "a una velocidad vertiginosa",
+                                                                                 "adverb":  "vertiginosa",
+                                                                                 "evaluation":  "Adecuado",
+                                                                                 "explanation":  "Refuerza la tensión del momento con precisión expresiva.",
+                                                                                 "alternatives":  [
+
+                                                                                                  ]
+                                                                             }
+                                                                         ]
+                                                        },
+                                          "voz_pasiva":  {
+                                                             "findings":  [
+                                                                              {
+                                                                                  "originalText":  "El color de la luz láser viene determinado por su longitud de onda",
+                                                                                  "explanation":  "Pasiva perifrástica con \u0027viene determinado\u0027 y agente implícito; construible en activa.",
+                                                                                  "activeVersion":  "La longitud de onda determina el color de la luz láser."
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "Parecían fabricados como si hubieran juntado enormes bloques de metal de distintos tamaños que hubiesen derretido y pulido",
+                                                                                  "explanation":  "Construcción pasiva con participio \u0027fabricados\u0027 y agente implícito difuso que debilita la imagen.",
+                                                                                  "activeVersion":  "Parecían el resultado de fundir y pulir enormes bloques de metal de distintos tamaños."
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "la pantalla se tornó negro y AiFlash anunció que eso era todo",
+                                                                                  "explanation":  "No es pasiva real; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "su último pensamiento fue para ellos",
+                                                                                  "explanation":  "No es pasiva perifrástica; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "el hecho de que nos lo muestren, significa que son capaces de ello",
+                                                                                  "explanation":  "No es pasiva; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              },
+                                                                              {
+                                                                                  "originalText":  "sacudió su Ford blanco empujándolo con una gran violencia, haciéndolo levitar durante unos momentos hasta que se posó de nuevo de forma descontrolada en el asfalto",
+                                                                                  "explanation":  "No es pasiva; se descarta.",
+                                                                                  "activeVersion":  ""
+                                                                              }
+                                                                          ]
+                                                         },
+                                          "voz_pasiva_clean":  {
+                                                                   "findings":  [
+                                                                                    {
+                                                                                        "originalText":  "El color de la luz láser viene determinado por su longitud de onda",
+                                                                                        "explanation":  "Pasiva perifrástica con \u0027viene determinado\u0027 y agente implícito; construible en activa con más energía.",
+                                                                                        "activeVersion":  "La longitud de onda determina el color de la luz láser."
+                                                                                    },
+                                                                                    {
+                                                                                        "originalText":  "Parecían fabricados como si hubieran juntado enormes bloques de metal de distintos tamaños que hubiesen derretido y pulido, para darles maravillosas formas curvas",
+                                                                                        "explanation":  "Participio pasivo \u0027fabricados\u0027 con agente implícito que diluye la potencia descriptiva.",
+                                                                                        "activeVersion":  "Parecían surgir de fundir y pulir enormes bloques de metal de distintos tamaños hasta darles formas curvas."
+                                                                                    },
+                                                                                    {
+                                                                                        "originalText":  "Una serie de focos ovalados que se situaban en las paredes de los edificios iluminaban con luz verdosa las carreteras",
+                                                                                        "explanation":  "Construcción activa correcta; no es pasiva real.",
+                                                                                        "activeVersion":  ""
+                                                                                    }
+                                                                                ]
+                                                               },
+                                          "frases_largas":  {
+                                                                "findings":  [
+                                                                                 {
+                                                                                     "originalText":  "Gracias al enfoque que había seguido, que suponía buscar una forma con la que generar imágenes a partir de los fotones de luz recibidos, tan solo había tardado cinco días en obtenerlas.",
+                                                                                     "wordCount":  34,
+                                                                                     "explanation":  "La doble subordinada relativa (\u0027que había seguido, que suponía\u0027) crea una cadena de incisos que enmaraña la lectura antes de llegar al verbo principal.",
+                                                                                     "suggestion":  "Separar en dos frases: \u0027Gracias a su enfoque —buscar imágenes a partir de los fotones de luz recibidos—, tardó solo cinco días en obtenerlas.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Te explicaré cómo funciona un puntero láser para que lo entiendas de una manera fácil: cuando un profesor en la universidad utiliza un puntero láser para señalar la pantalla, lo hace con un dispositivo que produce un haz de luz estrecho en el que todas las ondas de luz tienen longitudes de onda muy similares.",
+                                                                                     "wordCount":  52,
+                                                                                     "explanation":  "Frase explicativa excesivamente larga que acumula subordinadas y resulta pesada en boca de un personaje.",
+                                                                                     "suggestion":  "Cortar tras el ejemplo: \u0027…lo hace con un dispositivo que produce un haz de luz estrecho. En ese haz, todas las ondas tienen longitudes de onda muy similares.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Lo que están haciendo es simplificar la forma de comunicarse proyectando los puntos de luz de distintos colores para que nosotros los posicionemos de manera consecutiva formando líneas paralelas que forman imágenes.",
+                                                                                     "wordCount":  35,
+                                                                                     "explanation":  "Cadena de gerundios y subordinadas que convierte una idea clara en una frase enredada.",
+                                                                                     "suggestion":  "Dividir: \u0027Proyectan puntos de luz de distintos colores. Nosotros los encadenamos en líneas paralelas que componen imágenes.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Una última secuencia de imágenes terminó por dejar a todos con la boca abierta. En ella, se apreció cómo la misma esfera que había explosionado en la secuencia anterior, aparecía de nuevo en el mismo paisaje. No muy lejos de ella, se abrió lo que podría haber sido un agujero negro cuántico con la característica distorsión visual ondulatoria hacia su interior, de no ser porque al momento su epicentro se tornó de un cegador color azul celeste.",
+                                                                                     "wordCount":  75,
+                                                                                     "explanation":  "Secuencia de frases que se encadenan sin pausa y acumulan más de 70 palabras antes de cerrar la idea principal.",
+                                                                                     "suggestion":  "Dividir en al menos tres frases independientes, separando la aparición de la esfera, la apertura del agujero y el cambio de color."
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "A continuación, la esfera avanzó hacia el agujero a gran velocidad y se diluyó en el aire, convirtiéndose en un delgado haz de luz que dejó un rastro de finos hilos de humo blanco que culebrearon en el aire.",
+                                                                                     "wordCount":  39,
+                                                                                     "explanation":  "Cadena de tres gerundios y subordinadas que estira la imagen más allá de lo necesario.",
+                                                                                     "suggestion":  "Cortar en dos: \u0027La esfera avanzó hacia el agujero y se diluyó en un delgado haz de luz. Tras ella quedaron finos hilos de humo blanco culebreando en el aire.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Posiblemente, la energía que ellos tienen que generar para abrir un canal de comunicación hacia nuestro universo, tenga que ser descomunal, en contraposición a la que nosotros necesitamos para hacer lo mismo.",
+                                                                                     "wordCount":  34,
+                                                                                     "explanation":  "La coma antes de \u0027tenga\u0027 interrumpe el sujeto y la acumulación de subordinadas alarga la idea innecesariamente.",
+                                                                                     "suggestion":  "Simplificar: \u0027Probablemente necesitan una energía descomunal para abrir ese canal, muy superior a la que usamos nosotros.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Edmund pisó el freno intentando parar el envite. Las ruedas chirriaron bailando a derecha e izquierda mientras se acercaba a un enorme camión sin poder frenar lo suficiente.",
+                                                                                     "wordCount":  31,
+                                                                                     "explanation":  "Acumula tres gerundios seguidos (\u0027intentando\u0027, \u0027bailando\u0027, \u0027frenar\u0027) que dificultan la lectura en un momento de máxima tensión.",
+                                                                                     "suggestion":  "Separar acciones: \u0027Edmund pisó el freno. Las ruedas chirriaron, el coche se tambaleó a derecha e izquierda. Un camión enorme llenó el parabrisas.\u0027"
+                                                                                 },
+                                                                                 {
+                                                                                     "originalText":  "Con instinto providencial, corrigió la trayectoria para evitar la colisión. Después de unos segundos en los que el coche se arrastró sonando como una vieja puerta metálica oxidada, se detuvo dando paso a un silencio hueco y sepulcral, que se difuminó rápidamente por los gritos de la gente atrapada en otros coches.",
+                                                                                     "wordCount":  50,
+                                                                                     "explanation":  "La frase principal queda enterrada bajo dos incisos y una subordinada relativa, rompiendo el ritmo del clímax.",
+                                                                                     "suggestion":  "Dividir: \u0027Corrigió la trayectoria con instinto providencial. El coche se arrastró unos segundos, sonando como una vieja puerta oxidada, y se detuvo. Un silencio hueco y sepulcral duró apenas un instante antes de que los gritos lo rompieran.\u0027"
+                                                                                 }
+                                                                             ]
+                                                            },
+                                          "nombres":  {
+                                                          "findings":  [
+                                                                           {
+                                                                               "name":  "Mary Jane",
+                                                                               "occurrences":  [
+                                                                                                   "Mary Jane, por algún motivo, intuía que pronto habría resultados.",
+                                                                                                   "—Buenas tardes, Mary Jane, como te he avanzado",
+                                                                                                   "—interrumpió Mary Jane embelesada por la información",
+                                                                                                   "—dijo Mary Jane impaciente.",
+                                                                                                   "—Si me permites, Mary Jane, tengo una teoría."
+                                                                                               ],
+                                                                               "explanation":  "El nombre \u0027Mary Jane\u0027 aparece 5 veces en un mismo bloque de diálogo/narración continuo, lo que satura la referencia al personaje principal.",
+                                                                               "suggestion":  "Alternar con pronombres (\u0027ella\u0027, \u0027su\u0027), aposiciones (\u0027la científica\u0027, \u0027la investigadora\u0027) o simplemente eliminar el vocativo en algunos intercambios de diálogo donde el contexto identifica al interlocutor."
+                                                                           }
+                                                                       ]
+                                                      }
+                                      },
+                                      {
+                                          "gerundios":  {
+                                                            "findings":  [
+                                                                             {
+                                                                                 "originalText":  "la luz del dispositivo Sentinel se iluminó con color naranja expresando sorpresa",
+                                                                                 "gerund":  "expresando",
+                                                                                 "errorType":  "posterioridad",
+                                                                                 "explanation":  "El gerundio \u0027expresando\u0027 indica una acción que resulta del iluminarse, pero funciona como consecuencia o resultado posterior al evento de iluminarse, no como acción simultánea real. Además, actúa como especificativo del sujeto (la luz), uso nominal adjetivo incorrecto del gerundio.",
+                                                                                 "correction":  "la luz del dispositivo Sentinel se iluminó con color naranja, en señal de sorpresa"
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "proyectando los puntos de luz de distintos colores para que nosotros los posicionemos de manera consecutiva formando líneas paralelas que forman imágenes",
+                                                                                 "gerund":  "formando",
+                                                                                 "errorType":  "especificativo",
+                                                                                 "explanation":  "El gerundio \u0027formando\u0027 modifica al sustantivo \u0027líneas paralelas\u0027 con valor adjetivo especificativo, uso incorrecto del gerundio en español.",
+                                                                                 "correction":  "proyectando los puntos de luz de distintos colores para que nosotros los posicionemos de manera consecutiva en líneas paralelas que forman imágenes"
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "sintió los tentáculos de la angustia atenazarla, llevándola al pánico",
+                                                                                 "gerund":  "llevándola",
+                                                                                 "errorType":  "posterioridad",
+                                                                                 "explanation":  "El gerundio \u0027llevándola\u0027 expresa una acción posterior y consecuente al hecho de atenazarla, no simultánea. Se trata de un gerundio de posterioridad, uso incorrecto.",
+                                                                                 "correction":  "sintió los tentáculos de la angustia atenazarla hasta llevarla al pánico"
+                                                                             },
+                                                                             {
+                                                                                 "originalText":  "Al fijarse, identificó que también tenía un laberinto con rugosidades que tenía vida propia, desvaneciéndose poco a poco",
+                                                                                 "gerund":  "desvaneciéndose",
+                                                                                 "errorType":  "especificativo",
+                                                                                 "explanation":  "El gerundio \u0027desvaneciéndose\u0027 modifica al sustantivo \u0027laberinto con rugosidades\u0027 con valor adjetivo especificativo, lo que es un uso incorrecto del gerundio en español.",
+                                                                                 "correction":  "identificó que también tenía un laberinto con rugosidades que tenía vida propia y que se desvanecía poco a poco"
+                                                                             }
+                                                                         ]
+                                                        },
+                                          "tiempos":  {
+                                                          "findings":  [
+                                                                           {
+                                                                               "originalText":  "Mary Jane, por algún motivo, intuía que pronto habría resultados. Aquellos cinco días fueron tan emocionantes como los de una niña esperando que llegue el día de Papá Noel. Necesitaba permanecer en el laboratorio tanto como respirar; cuando salía de él se ahogaba como un pez fuera del agua.",
+                                                                               "verbsFound":  [
+                                                                                                  "intuía",
+                                                                                                  "fueron",
+                                                                                                  "Necesitaba",
+                                                                                                  "salía",
+                                                                                                  "se ahogaba"
+                                                                                              ],
+                                                                               "explanation":  "En la misma escena descriptiva se mezcla el indefinido \u0027fueron\u0027 con imperfectos continuos (\u0027intuía\u0027, \u0027Necesitaba\u0027, \u0027salía\u0027, \u0027se ahogaba\u0027). El indefinido \u0027fueron\u0027 irrumpe en un bloque de imperfectos que describen estados y hábitos, produciendo una mezcla que parece descuido, pues \u0027fueron\u0027 tiene el mismo referente temporal que los imperfectos circundantes.",
+                                                                               "suggestion":  "Unificar en imperfecto: \u0027Aquellos cinco días eran tan emocionantes como los de una niña esperando el día de Papá Noel\u0027, o bien justificar el indefinido separando claramente el evento puntual del estado habitual."
+                                                                           },
+                                                                           {
+                                                                               "originalText":  "Edmund, sin embargo, reaccionó pisando el acelerador hasta el fondo, como si estuviese aplastando una cucaracha, sin dejar de mirar por el espejo retrovisor. Como había adivinado, la onda expansiva se acercaba por detrás a una velocidad vertiginosa. A través del espejo retrovisor, observó cómo la ola de destrucción se aproximaba sin tregua, arrastrando personas y automóviles que salían despedidos por los aires. Sin poder evitarlo sintió el impacto, que sacudió su Ford blanco empujándolo con una gran violencia, haciéndolo levitar durante unos momentos hasta que se posó de nuevo de forma descontrolada en el asfalto. Edmund pisó el freno intentando parar el envite. Las ruedas chirriaron bailando a derecha e izquierda mientras se acercaba a un enorme camión sin poder frenar lo suficiente.",
+                                                                               "verbsFound":  [
+                                                                                                  "reaccionó",
+                                                                                                  "se acercaba",
+                                                                                                  "observó",
+                                                                                                  "se aproximaba",
+                                                                                                  "salían",
+                                                                                                  "sintió",
+                                                                                                  "sacudió",
+                                                                                                  "pisó",
+                                                                                                  "chirriaron",
+                                                                                                  "se acercaba"
+                                                                                              ],
+                                                                               "explanation":  "En esta escena de acción continua se alternan de forma irregular indefinidos (\u0027reaccionó\u0027, \u0027observó\u0027, \u0027sintió\u0027, \u0027sacudió\u0027, \u0027pisó\u0027, \u0027chirriaron\u0027) e imperfectos (\u0027se acercaba\u0027, \u0027se aproximaba\u0027, \u0027salían\u0027, \u0027se acercaba\u0027). Aunque algunos imperfectos pueden justificarse como trasfondo, la alternancia entre \u0027pisó el freno\u0027 / \u0027chirriaron\u0027 y \u0027se acercaba a un enorme camión\u0027 dentro de la misma acción puntual secuencial sugiere una mezcla no del todo controlada que parece descuido.",
+                                                                               "suggestion":  "Revisar si \u0027se acercaba a un enorme camión\u0027 debería ser \u0027se acercó a un enorme camión\u0027, para mantener la coherencia de la secuencia de acciones puntuales en indefinido dentro de la escena de acción."
+                                                                           }
+                                                                       ]
+                                                      }
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+                                                           {
+                                                               "originalText":  "Sin poder evitarlo sintió el impacto",
+                                                               "errorType":  "ausencia_coma_inciso",
+                                                               "correction":  "Sin poder evitarlo, sintió el impacto",
+                                                               "explanation":  "El sintagma \u0027Sin poder evitarlo\u0027 es un inciso o complemento circunstancial antepuesto que debe separarse del resto de la oración mediante coma."
+                                                           }
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+                                                           {
+                                                               "originalText":  "diferente al nuestro, —interrumpió Mary Jane embelesada por la información que acababa de recibir—",
+                                                               "errorType":  "Coma innecesaria antes de raya de cierre",
+                                                               "correction":  "diferente al nuestro —interrumpió Mary Jane embelesada por la información que acababa de recibir—",
+                                                               "explanation":  "No debe colocarse coma inmediatamente antes de la raya que cierra el parlamento para introducir la acotación. La raya sustituye a esa coma."
+                                                           }
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      },
+                                      {
+                                          "findings":  [
+
+                                                       ]
+                                      }
+                                  ]
+                }
 }
