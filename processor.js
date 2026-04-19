@@ -317,6 +317,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     const saved = this._isResuming ? this._loadProgress() : null;
     const resumeFromIndex = (saved && Array.isArray(saved.results)) ? saved.completedIndex : -1;
     const allResults = (saved && Array.isArray(saved.results)) ? [...saved.results] : [];
+    if (saved && saved.selectedIds && this.selectedIds.size === 0) {
+      this.selectedIds = new Set(saved.selectedIds);
+    }
     this._isResuming = false;
     if (resumeFromIndex >= 0) {
       console.log('[RESUME] reanudando desde índice', resumeFromIndex, '— grupos ya completados:', allResults.length);
@@ -729,7 +732,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   }
 
   _countWords(t) { return (t||'').trim().split(/\s+/).filter(Boolean).length; }
-  _saveProgress(d) { try { localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(d)); } catch{} }
+  _saveProgress(d) { try { localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify({ ...d, selectedIds: [...this.selectedIds] })); } catch{} }
   _loadProgress() { try { const r=localStorage.getItem(STORAGE_KEY_PROGRESS); return r?JSON.parse(r):null; } catch{return null;} }
   _clearProgress() { try { localStorage.removeItem(STORAGE_KEY_PROGRESS); } catch{} }
   getSavedProgress() { return this._loadProgress(); }
