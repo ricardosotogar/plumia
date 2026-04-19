@@ -247,7 +247,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           }
           parsed = JSON.parse(fixed);
         } catch {
-          console.warn('Plumia: JSON inválido de la API [stop_reason=' + (data.stop_reason || '?') + ']:', raw.substring(0, 200));
+          console.warn('Plumia: JSON inválido de la API [stop_reason=' + (data.stop_reason || '?') + '] len=' + raw.length + ':\n' + raw);
           parsed = { findings: [] };
         }
       }
@@ -684,7 +684,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   _dedupe(findings) {
     const seen = new Set();
     return findings.filter(f => {
-      const k = (f.originalText||'').trim().substring(0,60);
+      const k = (f.originalText||'').trim().toLowerCase();
       if (seen.has(k)) return false; seen.add(k); return true;
     });
   }
@@ -792,6 +792,23 @@ window.PLUMIA.exportMock = function(testKey, filename) {
     ? dataToExport.length
     : tests.reduce((s, k) => s + (dataToExport[k]?.responses?.length || 0), 0);
   console.log(`[PLUMIA] Descargando "${a.download}" — tests: [${tests.join(', ')}], ${total} respuestas, ${(json.length/1024).toFixed(1)} KB`);
+};
+
+// Uso: PLUMIA.clearCapture('PT cap4-5-6-7')  → borra solo ese test de localStorage
+//      PLUMIA.clearCapture()                  → borra todos los datos de captura
+window.PLUMIA.clearCapture = function(testKey) {
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem('PLUMIA_MOCK_RESPONSES') || 'null'); } catch(e) {}
+  if (!raw) { console.log('[PLUMIA] No hay datos de captura en localStorage'); return; }
+  if (testKey) {
+    if (!raw[testKey]) { console.warn(`[PLUMIA] No existe el test "${testKey}"`); return; }
+    delete raw[testKey];
+    localStorage.setItem('PLUMIA_MOCK_RESPONSES', JSON.stringify(raw));
+    console.log(`[PLUMIA] Captura "${testKey}" eliminada de localStorage`);
+  } else {
+    localStorage.removeItem('PLUMIA_MOCK_RESPONSES');
+    console.log('[PLUMIA] Todos los datos de captura eliminados de localStorage');
+  }
 };
 
 })();
