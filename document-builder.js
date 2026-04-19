@@ -681,8 +681,27 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
     sr.load('items'); await ctx.sync();
     let range;
-    if (sr.items.length) {
+    if (sr.items.length === 1) {
       range = sr.items[0];
+    } else if (sr.items.length > 1) {
+      // Múltiples ocurrencias: usar _paraIdx (que apunta a la PRIMERA ocurrencia
+      // según _resolvePositions) para buscar en el párrafo correcto y no tomar
+      // ciegamente items[0] que es la ÚLTIMA ocurrencia (orden back-to-front de Word).
+      const pi = finding._paraIdx;
+      if (pi !== undefined) {
+        try {
+          body.load('paragraphs');
+          await ctx.sync();
+          const targetPara = body.paragraphs.items[pi];
+          if (targetPara) {
+            const psr = targetPara.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
+            psr.load('items');
+            await ctx.sync();
+            if (psr.items.length) range = psr.items[0];
+          }
+        } catch(e) { dbg(`_applyFinding multi-disambig catch: ${e.message}`); }
+      }
+      if (!range) range = sr.items[0]; // fallback: última ocurrencia (back-to-front)
     } else {
       let shorter = search.substring(0, 40);
       if (shorter.length < 5) return;
