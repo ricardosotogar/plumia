@@ -2886,8 +2886,7 @@
       },
       {
         "repeticion": {
-          "findings": [
-          ]
+          "findings": []
         },
         "verbos": {
           "findings": [
@@ -3250,6 +3249,3197 @@
             "explanation": "No debe colocarse coma inmediatamente antes de la raya que cierra el parlamento para introducir la acotación. La raya sustituye a esa coma."
           }
         ]
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      }
+    ]
+  },
+  "PT cap4-5-6-7": {
+    "desc": "",
+    "responses": [
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "laismo",
+              "originalText": "lo que le extraño",
+              "correction": "lo que la extrañó",
+              "explanation": "'extrañar' aquí significa 'sorprender/llamar la atención', y el sujeto es el hecho (CD neutro), mientras que Émilie es el CD femenino. El verbo requiere 'la' (CD femenino), no 'le'. Además 'extraño' debería ser 'extrañó'."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Ella fue a alargar la mano hasta su pene, pero aunque él le clavaba la mirada, advirtió que su mirada la atravesaba como si no estuviera allí",
+              "pronoun": "su mirada",
+              "possibleReferents": [
+                "la mirada de Émilie",
+                "la mirada de Albert"
+              ],
+              "explanation": "Aparecen dos referencias a 'mirada' en la misma frase: 'le clavaba la mirada' y 'su mirada la atravesaba'. El posesivo 'su' puede referirse a la mirada de él o a la de ella, generando ambigüedad sobre quién atraviesa a quién con la mirada.",
+              "suggestion": "Ella fue a alargar la mano hasta su pene, pero aunque él le clavaba la mirada, advirtió que la mirada de Albert la atravesaba como si no estuviera allí."
+            }
+          ]
+        }
+      },
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "leismo",
+              "originalText": "cuando le descubramos a Albert lo que ocurrió",
+              "correction": "cuando le descubramos a Albert lo que ocurrió",
+              "explanation": "Este caso es correcto: 'le' funciona como CI (a Albert), por lo que no es error."
+            },
+            {
+              "type": "leismo",
+              "originalText": "desconcentrarle y desviarle de las necesidades del proyecto",
+              "correction": "desconcentrarlo y desviarlo de las necesidades del proyecto",
+              "explanation": "'Desconcentrar' y 'desviar' llevan CD (objeto directo). El referente es Albert (masculino), por lo que corresponde 'lo', no 'le'. Usar 'le' como CD masculino es leísmo."
+            },
+            {
+              "type": "leismo",
+              "originalText": "solo con mirarle a los ojos sabías que no te podías fiar",
+              "correction": "solo con mirarlo a los ojos sabías que no te podías fiar",
+              "explanation": "'Mirar' rige CD. El referente es Volderlayer (masculino). Usar 'le' como CD masculino es leísmo."
+            },
+            {
+              "type": "laismo",
+              "originalText": "cuando se la hace girar",
+              "correction": "cuando se le hace girar",
+              "explanation": "'Hacer girar' en construcción causativa con pronombre reflexivo: el referente es 'la peonza' (femenino, CI de la causativa). Corresponde 'le', no 'la'. Usar 'la' como CI es laísmo."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Volderlayer no les caía nada bien a ninguno de los dos porque era ese tipo de personas que solo con mirarle a los ojos sabías que no te podías fiar de sus intenciones",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Volderlayer",
+                "cualquiera de los dos (Albert o Émilie)"
+              ],
+              "explanation": "El 'le' en 'mirarle a los ojos' tiene como referente probable a Volderlayer, pero dado que hay varios personajes masculinos presentes (Albert, Volderlayer), el referente podría confundirse momentáneamente.",
+              "suggestion": "solo con mirarle a los ojos a él sabías que no te podías fiar de sus intenciones"
+            },
+            {
+              "originalText": "Ella le estaba diciendo: «es justo lo que has dicho tú esta mañana en la cama; tu madre encontró un universo interior»",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Albert",
+                "Volderlayer"
+              ],
+              "explanation": "El 'le' tiene como referente a Albert, pero Volderlayer también está presente en la escena y es masculino, por lo que el pronombre resulta momentáneamente ambiguo.",
+              "suggestion": "Ella le estaba diciendo a Albert: «es justo lo que has dicho tú esta mañana en la cama…»"
+            },
+            {
+              "originalText": "uno de los científicos asemejó lo que le sucede a lo que le ocurre a una peonza cuando se la hace girar",
+              "pronoun": "le",
+              "possibleReferents": [
+                "el agujero negro",
+                "la materia"
+              ],
+              "explanation": "El primer 'le' en 'lo que le sucede' tiene referente ambiguo: puede referirse al agujero negro o a la materia que entra en él, ambos conceptos masculinos o neutros mencionados en el contexto inmediato.",
+              "suggestion": "asemejó lo que le sucede al agujero negro a lo que le ocurre a una peonza…"
+            }
+          ]
+        }
+      },
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "laismo",
+              "originalText": "Émilie entró en la sala y les saludó",
+              "correction": "los saludó",
+              "explanation": "El verbo 'saludar' lleva complemento directo. Los referentes son AiFlash, Boris y Albert (masculinos). El uso de 'les' como CD masculino es leísmo."
+            },
+            {
+              "type": "laismo",
+              "originalText": "Agarró la mano de Albert casi con violencia, y la arrastró hacia su vientre",
+              "correction": "lo arrastró",
+              "explanation": "'Arrastrar' lleva complemento directo. El referente es 'la mano' (femenino), pero aquí 'la' podría ser correcto como CD femenino. Sin embargo, el referente inmediato es 'Albert' (masculino, CD), por lo que debería ser 'lo arrastró' si el CD es Albert (a Albert lo arrastró). Revisando el contexto: 'agarró la mano de Albert y la arrastró' — aquí 'la' refiere a 'la mano', CD femenino, lo cual es correcto. Se descarta."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Boris, tras leer por encima en su tableta lo que le acababa de enviar",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Boris",
+                "AiFlash"
+              ],
+              "explanation": "El pronombre 'le' puede referirse a Boris o a AiFlash, ambos mencionados en el contexto previo como destinatarios del envío.",
+              "suggestion": "Boris, tras leer por encima en su tableta lo que Albert acababa de enviarle..."
+            },
+            {
+              "originalText": "Su entrada por la puerta hizo el silencio, que aprovechó Albert para comenzar",
+              "pronoun": "que",
+              "possibleReferents": [
+                "el silencio",
+                "la entrada"
+              ],
+              "explanation": "El pronombre relativo 'que' puede referirse tanto a 'el silencio' como a 'la entrada', generando ambigüedad sobre qué aprovechó Albert.",
+              "suggestion": "Su entrada por la puerta hizo el silencio, momento que aprovechó Albert para comenzar."
+            }
+          ]
+        }
+      },
+      {
+        "findings": []
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "escogió a uno de sus favoritos habituales, de los que realizaba preguntas menos incómodas",
+              "errorType": "sujeto-verbo",
+              "explanation": "El pronombre relativo 'los que' tiene como antecedente 'uno' (singular), por lo que el verbo debería concordar en singular: 'el que realizaba'",
+              "correction": "escogió a uno de sus favoritos habituales, del que realizaba preguntas menos incómodas"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "Una vez hablamos de que cuando llegásemos al poder averiguaríamos",
+              "errorType": "dequeismo",
+              "explanation": "La locución 'una vez que' no admite la preposición 'de'. El verbo 'hablar' sí rige 'de', pero aquí la estructura es 'una vez que hablamos', donde 'que' es conjunción subordinante y no debe ir precedida de 'de'",
+              "correction": "Una vez que hablamos de que cuando llegásemos al poder averiguaríamos — o bien: En su momento hablamos de que cuando llegásemos al poder averiguaríamos"
+            }
+          ]
+        }
+      },
+      {
+        "findings": []
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "Mis pensamientos, mi forma de ser, se ha visto influenciada por las ideas y pensamientos de tu madre",
+              "errorType": "sujeto-verbo",
+              "explanation": "El sujeto compuesto 'Mis pensamientos, mi forma de ser' exige verbo en plural: 'se han visto', y el participio debe concordar: 'influenciados'.",
+              "correction": "Mis pensamientos, mi forma de ser, se han visto influenciados por las ideas y pensamientos de tu madre"
+            },
+            {
+              "originalText": "había decido actuar así",
+              "errorType": "sujeto-verbo",
+              "explanation": "El participio 'decido' es una forma incorrecta; debe ser 'decidido'.",
+              "correction": "había decidido actuar así"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "estoy de acuerdo que no es el mejor momento",
+              "errorType": "queismo",
+              "explanation": "La expresión 'estar de acuerdo' exige la preposición 'en' antes de 'que': 'estar de acuerdo en que'.",
+              "correction": "estoy de acuerdo en que no es el mejor momento"
+            },
+            {
+              "originalText": "no pienses que no me había dado cuenta",
+              "errorType": "queismo",
+              "explanation": "El verbo 'darse cuenta' exige la preposición 'de' antes de 'que': 'darse cuenta de que'.",
+              "correction": "no pienses que no me había dado cuenta de ello / no me había dado cuenta de que"
+            },
+            {
+              "originalText": "Me he fijado en que Boris te mira mucho",
+              "errorType": "queismo",
+              "explanation": "Correcto tal como está; 'fijarse en que' es la forma correcta.",
+              "correction": "Correcto"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": []
+        },
+        "dequeismo": {
+          "findings": []
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "acelerador de partículas",
+              "occurrences": [
+                "Señores, créanme cuando les digo que la única forma de descifrar todos los misterios del universo es gracias a los experimentos que vamos a realizar en el acelerador de partículas que vamos a construir.",
+                "Me gustaría que llegase ya el lunes para poner en marcha por primera vez el acelerador de partículas.",
+                "El proyecto inicial para construir el acelerador de hadrones en Ganímedes"
+              ],
+              "explanation": "'acelerador de partículas' aparece repetido en párrafos cercanos del discurso y del diálogo posterior, lo que resulta monótono dado que alterna sin variación con 'acelerador de hadrones'."
+            },
+            {
+              "word": "experimentos",
+              "occurrences": [
+                "Ahora podremos continuar el trabajo de los experimentos",
+                "los experimentos que se llevaron a cabo en el segundo colisionador de partículas",
+                "retomar los experimentos de una manera segura",
+                "los proyectos de investigación posteriores",
+                "los experimentos que vamos a realizar en el acelerador de partículas"
+              ],
+              "explanation": "'experimentos' se repite cinco veces en párrafos consecutivos del discurso del presidente y del narrador sin variación léxica."
+            },
+            {
+              "word": "encontremos",
+              "occurrences": [
+                "la inversión podrá ser recuperada por los descubrimientos que encontremos",
+                "los beneficios que los descubrimientos que encontremos pueden traer",
+                "si es que al final encontremos algo"
+              ],
+              "explanation": "'encontremos' se repite tres veces en párrafos muy próximos con el mismo sentido, empobreciendo el estilo."
+            },
+            {
+              "word": "algo",
+              "occurrences": [
+                "Me huelo que nos van a desvelar algo. Algo importante.",
+                "Hay algo más que no nos han contado.",
+                "si es que al final encontramos algo"
+              ],
+              "explanation": "'algo' aparece tres veces en párrafos inmediatamente adyacentes del mismo diálogo, resultando vago y repetitivo."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Ella deslizó la mano para agarrar la de su marido",
+              "verb": "agarrar",
+              "explanation": "'Agarrar' es genérico; podría sustituirse por 'tomar', 'estrechar' o 'entrelazar', más expresivos para el gesto afectuoso descrito."
+            },
+            {
+              "originalText": "dijo engatillando dos veces los dedos índice y corazón de cada mano al pronunciar la palabra «manipular», marcando unas comillas en el aire",
+              "verb": "marcando",
+              "explanation": "'Marcando' es vago para el gesto específico de hacer comillas en el aire; 'trazando' o 'dibujando' serían más precisos y visuales."
+            },
+            {
+              "originalText": "Albert ocupó su lugar",
+              "verb": "ocupó",
+              "explanation": "'Ocupar su lugar' es una construcción genérica; verbos como 'tomó su posición' o 'se situó ante el micrófono' serían más específicos para el contexto."
+            },
+            {
+              "originalText": "poner en marcha por primera vez el acelerador de partículas",
+              "verb": "poner en marcha",
+              "explanation": "'Poner en marcha' es un verbo comodín; 'activar', 'arrancar' o 'encender' serían más precisos para el contexto tecnológico."
+            },
+            {
+              "originalText": "colocó, entre ambos, el dedo índice y pulgar",
+              "verb": "colocó",
+              "explanation": "'Colocar' es genérico; 'alzó' o 'levantó' resultarían más expresivos y naturales para el gesto descrito."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "Me huelo que nos van a desvelar algo. Algo importante.",
+              "genericWord": "algo",
+              "explanation": "'Algo importante' es vago en este contexto; podría concretarse en 'información relevante', 'un hallazgo' o 'un secreto'."
+            },
+            {
+              "originalText": "Hay algo más que no nos han contado.",
+              "genericWord": "algo",
+              "explanation": "'Algo' resulta impreciso; podría sustituirse por 'información', 'una razón' u 'otro motivo' para enriquecer el texto."
+            },
+            {
+              "originalText": "las aplicaciones prácticas que podremos derivar de los descubrimientos no solo serán significativas, sino que también generarán beneficios tangibles en diversas áreas",
+              "genericWord": "áreas",
+              "explanation": "'Diversas áreas' es vago; el texto no concreta a qué sectores o campos se refiere, lo que empobrece el discurso."
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "proyecto",
+              "occurrences": [
+                "el proyecto más importante será este",
+                "el proyecto más importante que los demás",
+                "deberíamos crear cortafuegos para evitar fugas de información. Lo ideal sería eliminar a los participantes del proyecto",
+                "Cuando eso ocurra, tanto Albert como Émilie, dejarán de ser un problema para ti"
+              ],
+              "explanation": "La palabra 'proyecto' aparece más de tres veces en párrafos consecutivos del mismo monólogo, acumulándose de forma llamativa y empobreciendo el estilo."
+            },
+            {
+              "word": "intramundo",
+              "occurrences": [
+                "buscar intramundos con vida inteligente",
+                "con un intramundo con vida más avanzada",
+                "lo que provoca la desestabilización es que la mayor parte de la materia que entra al agujero no está focalizada",
+                "evitando que el universo interior se desestabilice"
+              ],
+              "explanation": "'Intramundo/intramundos' se repite tres o más veces en párrafos adyacentes del mismo diálogo sin variación ni necesidad técnica que lo justifique."
+            },
+            {
+              "word": "secreto",
+              "occurrences": [
+                "estas personas han estado estudiando y desbrozando en secreto",
+                "llevamos años trabajando en secreto en este proyecto",
+                "un nuevo proyecto secreto",
+                "Todos los proyectos son secretos"
+              ],
+              "explanation": "La palabra 'secreto/secretos' se repite cuatro veces en párrafos consecutivos del mismo discurso, resultando redundante."
+            },
+            {
+              "word": "agujero",
+              "occurrences": [
+                "al crear nuevos agujeros negros en Ganímedes",
+                "si diésemos con un intramundo con vida más avanzada que nosotros en los agujeros negros que abramos",
+                "¿cómo se supone que vamos a evitar provocar la misma destrucción en su intramundo cuando abramos un agujero negro cuántico?",
+                "cuando se abre una pareja de agujeros negro y blanco"
+              ],
+              "explanation": "'Agujero/agujeros' aparece repetidamente en párrafos consecutivos del diálogo técnico, acumulándose de forma monótona más allá de la precisión necesaria."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Volderlayer, tras hacer un leve gesto afirmativo con la cabeza, les habló.",
+              "verb": "hacer",
+              "explanation": "'Hacer un gesto afirmativo con la cabeza' puede sustituirse por 'asintió levemente con la cabeza' o simplemente 'asintió', verbo más preciso y expresivo."
+            },
+            {
+              "originalText": "Sus finos labios marcaban una eterna sonrisa maquiavélica.",
+              "verb": "marcaban",
+              "explanation": "'Marcar una sonrisa' es vago; verbos como 'esbozaban' o 'dibujaban' describirían con más precisión la acción de los labios al formar una sonrisa."
+            },
+            {
+              "originalText": "les pasó una tableta digital con un contrato digital de confidencialidad",
+              "verb": "pasó",
+              "explanation": "'Pasar una tableta' es comodín; 'entregó' o 'tendió' serían más precisos para la acción de dar un objeto a alguien."
+            },
+            {
+              "originalText": "Un recuerdo fugaz tintineó su mente trayéndole a la memoria a su madre escribiendo en el ordenador.",
+              "verb": "tintineó",
+              "explanation": "'Tintinear la mente' resulta vago e impreciso para describir el surgimiento de un recuerdo; verbos como 'cruzó', 'asaltó' o 'sacudió' serían más expresivos."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "el camino para conseguirlo es usando la fuerza, porque ninguna de las doce confederaciones estaría dispuesta a perder su hegemonía, poder y dinero de manera voluntaria en pro de un reparto igualitario de la riqueza",
+              "genericWord": "dinero",
+              "explanation": "En el contexto político-geopolítico del discurso, 'dinero' es un término demasiado coloquial y vago; 'recursos', 'capital' o 'riqueza' serían más precisos y coherentes con el registro."
+            },
+            {
+              "originalText": "información valiosa para mejorar nuestra tecnología",
+              "genericWord": "información",
+              "explanation": "'Información valiosa' es genérico en este contexto; podría concretarse en 'conocimiento tecnológico' o 'datos científicos' para mayor precisión."
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "agujeros negros",
+              "occurrences": [
+                "abrir múltiples agujeros a la vez",
+                "solapar varios agujeros negros cuánticos a la vez",
+                "los actuales sistemas de seguridad pensados para el colapso de uno de los agujeros negros",
+                "apertura automática de agujeros negros",
+                "Los agujeros negros que nosotros generamos"
+              ],
+              "explanation": "La expresión 'agujeros negros' se repite cinco veces en párrafos consecutivos de forma llamativa, empobreciendo el estilo."
+            },
+            {
+              "word": "pensamientos",
+              "occurrences": [
+                "Mis pensamientos, mi forma de ser",
+                "ideas y pensamientos de tu madre",
+                "estoy sincronizado con tu forma de pensar"
+              ],
+              "explanation": "'Pensamientos' aparece dos veces en el mismo párrafo junto a 'pensar', dentro del mismo bloque discursivo, generando una repetición notable."
+            },
+            {
+              "word": "comunicación",
+              "occurrences": [
+                "ejecutaremos el procedimiento de comunicación establecido para originar una forma de comunicación fluida",
+                "los flujos de comunicación que establezcamos",
+                "cualquier comunicación con los seres de ese intramundo"
+              ],
+              "explanation": "'Comunicación' se repite tres veces en párrafos consecutivos del mismo bloque temático, con clara redundancia estilística."
+            },
+            {
+              "word": "peaksons",
+              "occurrences": [
+                "se hacían llamar los peaksons",
+                "hablar fuera de las instalaciones del proyecto sobre cualquier tema relacionado con los peaksons",
+                "les habían dado con la puerta en las narices cuando habían intentado por enésima vez que les dejasen participar de las conversaciones con los peaksons"
+              ],
+              "explanation": "Aunque es un nombre propio, su repetición acumulada en párrafos cercanos junto con la de 'intramundo' genera saturación léxica evitable."
+            },
+            {
+              "word": "detalles",
+              "occurrences": [
+                "arrojaron detalles fascinantes",
+                "Tras detallar y exponer los detalles del descubrimiento"
+              ],
+              "explanation": "'Detalles/detallar' aparece en dos párrafos adyacentes de forma redundante."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "dijo al entrar en la sala sin tan siquiera saludar",
+              "verb": "dijo",
+              "explanation": "'¿Qué es lo que tenemos?' podría introducirse con 'preguntó' o 'espetó', verbo más preciso para una pregunta lanzada al entrar."
+            },
+            {
+              "originalText": "Boris hizo un par de gestos con la mano sobre el dispositivo de su muñeca",
+              "verb": "hizo",
+              "explanation": "Verbo comodín; podría reemplazarse por 'trazó', 'deslizó' o 'ejecutó' para describir la acción concreta sobre el dispositivo."
+            },
+            {
+              "originalText": "Volderlayer tomó cartas en el asunto",
+              "verb": "tomó",
+              "explanation": "Aunque es una expresión hecha, en contexto narrativo 'intervino' o 'actuó' sería más directo y expresivo."
+            },
+            {
+              "originalText": "dio unos pasos hacia atrás apartando la silla con sus corvas",
+              "verb": "dio",
+              "explanation": "Verbo comodín; 'retrocedió unos pasos' o 'se echó hacia atrás' resultan más precisos y expresivos."
+            },
+            {
+              "originalText": "Agarró la mano de Albert casi con violencia, y la arrastró hacia su vientre",
+              "verb": "Agarró",
+              "explanation": "'Agarrar' es genérico; 'tomó', 'asió' o 'cogió de golpe' describen mejor la acción brusca indicada por 'casi con violencia'."
+            },
+            {
+              "originalText": "Su entrada por la puerta hizo el silencio",
+              "verb": "hizo",
+              "explanation": "Construcción con verbo comodín; podría reemplazarse por 'impuso silencio' o 'silenció la sala'."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "para originar una forma de comunicación fluida",
+              "genericWord": "forma",
+              "explanation": "'Forma' es vago en este contexto; 'canal', 'método' o 'vía' serían más precisos para describir el tipo de comunicación que se pretende establecer."
+            },
+            {
+              "originalText": "optimizando todo aquello que hacían",
+              "genericWord": "todo aquello",
+              "explanation": "Expresión vaga; podría concretarse con 'cada proceso' o 'cada actividad' para mayor precisión."
+            },
+            {
+              "originalText": "Eso me ha proporcionado una valiosa información para entender mejor vuestro comportamiento",
+              "genericWord": "información",
+              "explanation": "'Información' es demasiado genérico; 'perspectiva', 'conocimiento' o 'clave' serían más expresivos en el contexto de la reflexión de AiFlash."
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "hablar",
+              "occurrences": [
+                "terminantemente prohibido hablar fuera de las instalaciones",
+                "no podían dejar de hablar de ello incluso por los pasillos",
+                "habían intentado por enésima vez que les dejasen participar de las conversaciones",
+                "Casi no hemos podido hablar con ellos"
+              ],
+              "explanation": "'hablar' aparece repetidas veces en párrafos consecutivos de forma llamativa y sin intención estilística clara"
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Albert, que había entablado algo más que una amistad con AiFlash y siempre tenía en cuenta su opinión",
+              "verb": "tenía en cuenta",
+              "explanation": "expresión comodín con 'tener'; podría sustituirse por un verbo más preciso como 'valoraba' o 'consideraba'"
+            },
+            {
+              "originalText": "Ha tirado por los suelos todos nuestros sueños",
+              "verb": "tirar",
+              "explanation": "verbo genérico en este contexto; podría sustituirse por 'destruido', 'arruinado' o 'aplastado' para mayor expresividad"
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "el cariz que ha tomado esto",
+              "genericWord": "esto",
+              "explanation": "'esto' es vago en este contexto; podría concretarse como 'la situación' o 'el asunto' para mayor precisión"
+            },
+            {
+              "originalText": "cualquier detalle fuera de lo común",
+              "genericWord": "detalle",
+              "explanation": "aunque no es de los términos más vagos, en este contexto podría concretarse; sin embargo, se mantiene como señalamiento menor pues 'detalle' es suficientemente preciso — descartado"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "de alguna manera",
+              "occurrences": [
+                "retomar los experimentos de una manera segura para la Tierra",
+                "pueda ser aplicado de manera práctica en el mundo"
+              ],
+              "explanation": "La expresión 'de manera + adjetivo' se repite como fórmula comodín que podría sustituirse por el adverbio correspondiente ('seguramente', 'prácticamente') o restructurando la frase."
+            },
+            {
+              "expression": "Calma, amigos. Calma.",
+              "occurrences": [
+                "Calma, amigos. Calma."
+              ],
+              "explanation": "Repetición innecesaria de la misma palabra en dos oraciones consecutivas sin añadir valor expresivo adicional."
+            },
+            {
+              "expression": "por último, pero no menos importante",
+              "occurrences": [
+                "Por último, pero no menos importante, podremos llegar a conseguir el mayor tesoro"
+              ],
+              "explanation": "Expresión hecha y gastada, muletilla retórica frecuente en discursos que no aporta contenido real."
+            },
+            {
+              "expression": "aún más cerca",
+              "occurrences": [
+                "si miramos aún más cerca dentro de un átomo de nitrógeno",
+                "si mirásemos aún más cerca dentro del protón"
+              ],
+              "explanation": "La misma construcción se repite dos veces seguidas de forma casi idéntica, convirtiéndose en una muletilla estructural dentro del mismo párrafo."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "señalando con su dedo índice",
+              "explanation": "'Dedo índice' ya implica que es un dedo; 'señalando con su dedo índice' es normal, pero 'señalando con el índice' es suficiente. Sin embargo, el pleonasmo real es 'señalando con su dedo índice a otro periodista, indicó': señalar e indicar expresan lo mismo en el mismo sintagma.",
+              "correction": "señalando con el índice a otro periodista, le cedió la palabra"
+            },
+            {
+              "originalText": "el único satélite de nuestro sistema solar que consta de un campo magnético provocado",
+              "explanation": "Dentro del discurso ya se ha establecido el contexto de 'nuestro sistema solar', por lo que repetirlo en la misma oración donde ya se habla de lunas del sistema solar es redundante. Además, segundos antes se dijo 'lunas del sistema solar'.",
+              "correction": "el único satélite que posee campo magnético propio"
+            },
+            {
+              "originalText": "Me muero por dentro de impaciencia",
+              "explanation": "'Morirse de impaciencia' ya es una expresión interiorizada; añadir 'por dentro' es redundante, pues morirse de algo siempre alude a un estado interno.",
+              "correction": "Me muero de impaciencia"
+            },
+            {
+              "originalText": "subir y bajar la rodilla",
+              "explanation": "'Subir y bajar' es una pareja redundante en este contexto de movimiento repetitivo sobre una superficie; el vaivén ya está implícito en el movimiento descrito.",
+              "correction": "deslizar la rodilla"
+            },
+            {
+              "originalText": "tanto nosotros, como nuestros colegas científicos",
+              "explanation": "'Colegas' ya implica que son personas del mismo ámbito profesional; añadir 'científicos' es redundante en un contexto donde ya se habla exclusivamente de científicos.",
+              "correction": "tanto nosotros como nuestros colegas"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "de hecho",
+              "occurrences": [
+                "De hecho, de haber descifrado el mensaje tan solo unas horas antes",
+                "de hecho, las últimas palabras que dejó escritas fueron pensando en ti"
+              ],
+              "explanation": "Expresión repetida que no aporta valor semántico real; puede eliminarse o sustituirse sin perder significado."
+            },
+            {
+              "expression": "de manera",
+              "occurrences": [
+                "Descubrieron de manera empírica que cada agujero negro cuántico",
+                "No se ha probado aún de manera empírica",
+                "en Liberty Universe llevamos años trabajando en secreto en este proyecto de manera estanca",
+                "controlando de manera exhaustiva a nuestros científicos"
+              ],
+              "explanation": "La construcción 'de manera + adjetivo' se repite como muletilla estructural donde bastaría el adverbio correspondiente (empíricamente, exhaustivamente)."
+            },
+            {
+              "expression": "lo antes posible",
+              "occurrences": [
+                "queremos hablar con tus científicos lo antes posible"
+              ],
+              "explanation": "Expresión comodín muy recurrente en el lenguaje informal que podría sustituirse por una formulación más precisa o narrativa."
+            },
+            {
+              "expression": "en cierto modo",
+              "occurrences": [
+                "En cierto modo, era lo único en lo que se podría decir que había cierta sinceridad"
+              ],
+              "explanation": "Muletilla que atenúa innecesariamente la afirmación sin añadir matiz relevante."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "otras tres personas más que serán elegidas",
+              "explanation": "'Otras' ya implica adición, por lo que 'más' es redundante.",
+              "correction": "otras tres personas que serán elegidas"
+            },
+            {
+              "originalText": "un canal diplomático de comunicación",
+              "explanation": "Un canal diplomático es por definición un medio de comunicación; 'de comunicación' resulta redundante.",
+              "correction": "un canal diplomático"
+            },
+            {
+              "originalText": "filtraciones de información",
+              "explanation": "Aparece junto a 'fugas de información' en el mismo párrafo con idéntico significado, y 'filtración' ya implica información por definición en este contexto; la reiteración crea redundancia conceptual.",
+              "correction": "filtraciones"
+            },
+            {
+              "originalText": "volvió a reincidir",
+              "explanation": "'Reincidir' ya significa volver a caer en algo, por lo que 'volver a' es redundante. (Aunque no aparece literalmente, sí aparece la estructura equivalente en 'provocar la misma destrucción… cuando abramos' — el caso más claro en el texto es:) 'Lo ideal sería eliminar a los participantes del proyecto, para que no haya filtraciones de información' precedido de 'crear cortafuegos para evitar fugas de información': ambas frases dicen exactamente lo mismo.",
+              "correction": "Se debe suprimir una de las dos frases que expresan la misma idea."
+            },
+            {
+              "originalText": "sus dedos pulgares sobre la pantalla",
+              "explanation": "'Pulgares' son dedos por definición; 'dedos pulgares' es redundante.",
+              "correction": "sus pulgares sobre la pantalla"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "De repente",
+              "occurrences": [
+                "De repente, sus ojos mostraron sorpresa."
+              ],
+              "explanation": "Expresión comodín para introducir una acción brusca que podría eliminarse o sustituirse con mayor precisión narrativa."
+            },
+            {
+              "expression": "de una manera",
+              "occurrences": [
+                "fluyan de una manera más lineal",
+                "actuaba de manera alocada"
+              ],
+              "explanation": "Construcción perifrástica repetida que puede sustituirse por un adverbio ('linealmente', 'alocadamente')."
+            },
+            {
+              "expression": "supongo que",
+              "occurrences": [
+                "supongo que son los genes",
+                "Supongo que ahora que has dicho que lo tengamos",
+                "supongo que eso es lo que ha ocurrido",
+                "supongo que, para bien o para mal"
+              ],
+              "explanation": "Muletilla reiterativa que el personaje AiFlash usa en exceso, diluyendo su valor expresivo."
+            },
+            {
+              "expression": "a continuación",
+              "occurrences": [
+                "A continuación, se dirigió a Albert",
+                "A continuación, anunció que"
+              ],
+              "explanation": "Conector narrativo repetido como muletilla de transición que podría variarse o eliminarse."
+            },
+            {
+              "expression": "al mismo tiempo",
+              "occurrences": [
+                "diciéndole al mismo tiempo"
+              ],
+              "explanation": "Expresión redundante con la simultaneidad ya implícita en el gerundio de la oración."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "asintió con la cabeza",
+              "explanation": "Asentir implica necesariamente un movimiento de cabeza; 'con la cabeza' es redundante.",
+              "correction": "asintió"
+            },
+            {
+              "originalText": "intentando comprender y entender",
+              "explanation": "'Comprender' y 'entender' son sinónimos; usar ambos juntos es redundante.",
+              "correction": "intentando comprender"
+            },
+            {
+              "originalText": "detallar y exponer los detalles",
+              "explanation": "'Detallar' ya implica exponer con detalle; repetir 'detalles' es una redundancia doble.",
+              "correction": "exponer los detalles"
+            },
+            {
+              "originalText": "originar una forma de comunicación fluida",
+              "explanation": "El verbo 'ejecutaremos el procedimiento de comunicación establecido para originar una forma de comunicación' repite 'comunicación' de forma redundante en la misma oración.",
+              "correction": "establecer una comunicación fluida"
+            },
+            {
+              "originalText": "en el conticinio de la noche",
+              "explanation": "'Conticinio' significa por definición el silencio de la noche (medianoche); añadir 'de la noche' es redundante.",
+              "correction": "en el conticinio"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "de todos modos",
+              "occurrences": [
+                "De todos modos, os ayudaré en lo que pueda."
+              ],
+              "explanation": "Expresión de relleno que no aporta información nueva; podría eliminarse sin perder significado."
+            },
+            {
+              "expression": "en efecto",
+              "occurrences": [
+                "—En efecto. Eso pienso yo."
+              ],
+              "explanation": "Muletilla confirmativa que se podría suprimir o integrar directamente en la frase siguiente sin pérdida de significado."
+            },
+            {
+              "expression": "ahora mismo",
+              "occurrences": [
+                "Dios, cómo odio a ese tío ahora mismo"
+              ],
+              "explanation": "Expresión temporal redundante en el contexto; el presente del verbo ya indica inmediatez."
+            },
+            {
+              "expression": "en mi opinión",
+              "occurrences": [
+                "—En mi opinión —interrumpió AiFlash—"
+              ],
+              "explanation": "Muletilla de toma de posición que resulta innecesaria cuando ya se atribuye la intervención al personaje."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "cuándo otro se le adelanta y apaga las velas de su tarta",
+              "explanation": "No es pleonasmo, sino error ortográfico: 'cuándo' con tilde es incorrecto en oración subordinada temporal (no interrogativa ni exclamativa).",
+              "correction": "cuando otro se le adelanta y apaga las velas de su tarta"
+            },
+            {
+              "originalText": "Eso pienso yo",
+              "explanation": "El pronombre 'yo' es redundante cuando el verbo conjugado 'pienso' ya indica la primera persona del singular.",
+              "correction": "Eso pienso."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "dijo Émilie con entusiasmo comedido",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente; se menciona solo por contexto.",
+              "alternatives": []
+            },
+            {
+              "originalText": "de manera relativamente sencilla",
+              "adverb": "relativamente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio añade poca precisión; la idea puede expresarse con más concreción.",
+              "alternatives": [
+                "con procedimientos accesibles",
+                "sin complicaciones técnicas mayores"
+              ]
+            },
+            {
+              "originalText": "de manera segura para la Tierra",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente.",
+              "alternatives": []
+            },
+            {
+              "originalText": "que también generarán beneficios tangibles en diversas áreas",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No hay adverbio en -mente aquí.",
+              "alternatives": []
+            },
+            {
+              "originalText": "eliminando este tipo de combustibles tan inflamables por completo",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente.",
+              "alternatives": []
+            },
+            {
+              "originalText": "de manera práctica en el mundo",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente.",
+              "alternatives": []
+            },
+            {
+              "originalText": "no es rentable debido al alto gasto necesario para llevar las naves espaciales a esos destinos",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No hay adverbio en -mente.",
+              "alternatives": []
+            },
+            {
+              "originalText": "de manera salvaje",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente.",
+              "alternatives": []
+            },
+            {
+              "originalText": "realmente",
+              "adverb": "realmente",
+              "evaluation": "Mejorable",
+              "explanation": "'realmente' es una muletilla que no añade peso narrativo en 'conocían lo sucedido realmente'.",
+              "alternatives": [
+                "conocían la verdad de lo sucedido",
+                "conocían lo que había ocurrido de verdad"
+              ]
+            },
+            {
+              "originalText": "sincronizaban todo lo que hacían para que, en caso de accidente o destrucción de un contenedor, se pudiesen regenerar de nuevo",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No hay adverbio en -mente.",
+              "alternatives": []
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "la rueda de prensa se dio por terminada",
+              "explanation": "Construcción pasiva refleja con participio que puede activarse para mayor dinamismo narrativo.",
+              "activeVersion": "dieron por terminada la rueda de prensa"
+            },
+            {
+              "originalText": "los experimentos que se llevaron a cabo en el segundo colisionador de partículas que provocó la catástrofe de Fratenburgo hace cuarenta años, quedaron detenidos desde entonces",
+              "explanation": "Pasiva perifrástica con 'quedaron detenidos'; el agente es implícito pero la estructura es pasiva.",
+              "activeVersion": "nadie retomó los experimentos del segundo colisionador desde la catástrofe de Fratenburgo, cuarenta años atrás"
+            },
+            {
+              "originalText": "tal y como se les había indicado",
+              "explanation": "Pasiva refleja con agente implícito (el equipo organizador); puede activarse.",
+              "activeVersion": "tal y como el equipo organizador les había indicado"
+            },
+            {
+              "originalText": "Toda la información se destruyó",
+              "explanation": "Pasiva refleja con agente implícito; puede activarse para mayor precisión narrativa.",
+              "activeVersion": "alguien destruyó toda la información / la destrucción borró toda la información"
+            },
+            {
+              "originalText": "estas personas han estado estudiando y desbrozando en secreto toda la información que conocemos gracias a AiFlash",
+              "explanation": "No es pasiva; se deja solo como nota. Descartado.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "será cuestión de tiempo encontrar intramundos con vida inteligente",
+              "explanation": "No es pasiva. Descartado.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "le ordenaron que guardara silencio",
+              "explanation": "Pasiva impersonal con agente implícito plural; puede activarse.",
+              "activeVersion": "Liberty Universe le ordenó que guardara silencio"
+            },
+            {
+              "originalText": "la física es contemplada",
+              "explanation": "Pasiva perifrástica pura (ser + participio) con agente implícito (la comunidad científica).",
+              "activeVersion": "la forma en que la comunidad científica contempla la física"
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Saber que vamos a poder llevar a cabo todos los experimentos que, tanto nosotros, como nuestros colegas científicos, hemos pensado y planeado a nivel teórico en un nuevecito colisionador de partículas, me pone.",
+              "wordCount": 41,
+              "explanation": "Frase subordinada muy extendida con incisos que dificultan seguir el hilo.",
+              "suggestion": "Dividir: 'Saber que por fin lo haremos posible me pone. Todos esos experimentos que planeamos junto a nuestros colegas, ahora en un colisionador de partículas de verdad.'"
+            },
+            {
+              "originalText": "La verdad es que me siento afortunado de saber que, diciéndote al oído las palabras mágicas «colisionador de partículas», te puedo tumbar y hacerte el amor de manera salvaje.",
+              "wordCount": 35,
+              "explanation": "Aunque roza el límite, la acumulación de subordinadas la hace pesada para el ritmo del diálogo.",
+              "suggestion": "Dividir en dos intervenciones o acortar: 'Me siento afortunado. Con solo susurrarte «colisionador de partículas» al oído ya te puedo tumbar.'"
+            },
+            {
+              "originalText": "Querido amigo, te aseguro que si logramos alcanzar este objetivo, las aplicaciones prácticas que podremos derivar de los descubrimientos no solo serán significativas, sino que también generarán beneficios tangibles en diversas áreas.",
+              "wordCount": 40,
+              "explanation": "Frase retórica recargada con doble subordinación que ralentiza el ritmo del discurso.",
+              "suggestion": "Dividir: 'Querido amigo, si logramos ese objetivo, las aplicaciones prácticas serán significativas. Generarán beneficios tangibles en áreas que hoy ni imaginamos.'"
+            },
+            {
+              "originalText": "Gracias a lo que descubramos, podremos averiguar cómo viajar a velocidades cercanas a la velocidad de la luz a un coste reducido.",
+              "wordCount": 24,
+              "explanation": "Dentro del límite; no se señala.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Todas ellas tenían un núcleo central de almacenamiento seguro en la Tierra, donde sincronizaban todo lo que hacían para que, en caso de accidente o destrucción de un contenedor, se pudiesen regenerar de nuevo.",
+              "wordCount": 38,
+              "explanation": "Frase con inciso extenso que interrumpe la lectura; roza el límite con la acumulación de cláusulas.",
+              "suggestion": "Dividir: 'Todas tenían un núcleo de almacenamiento seguro en la Tierra. Allí sincronizaban su actividad: si un contenedor sufría un accidente, podían regenerarse.'"
+            },
+            {
+              "originalText": "Como ya hemos acordado, haremos partícipes a Albert y Émilie de todo lo que sabemos y se les encomendará la tarea de crear un equipo de investigación paralelo e independiente del resto de proyectos de investigación planificados.",
+              "wordCount": 42,
+              "explanation": "Frase de más de 40 palabras con dos cláusulas principales encadenadas que pueden separarse.",
+              "suggestion": "Dividir: 'Como acordamos, pondremos a Albert y Émilie al corriente de todo. Su tarea será crear un equipo de investigación paralelo e independiente del resto de proyectos.'"
+            },
+            {
+              "originalText": "El equipo estará formado, en primer lugar, por las siete personas que deben estar llegando a Ganímedes en estos momentos.",
+              "wordCount": 23,
+              "explanation": "Dentro del límite; no se señala.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Cualquier tecnología lejos de la que hoy manejamos nos proporcionará una ventaja operativa para doblegar al resto de confederaciones.",
+              "wordCount": 21,
+              "explanation": "Dentro del límite; no se señala.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "De acercarnos a un agujero negro, la gravedad que nos atraería sería tan grande que nos destrozaría al succionarnos, desgarrándonos átomo por átomo.",
+              "wordCount": 28,
+              "explanation": "Dentro del límite; no se señala.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Y es demasiado dinero. La ratio de riesgo es enorme. Un fondo de inversión privado nunca se metería en algo con tanta probabilidad de perder todo lo invertido.",
+              "wordCount": 31,
+              "explanation": "Dentro del límite; no se señala.",
+              "suggestion": ""
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Albert",
+              "occurrences": [
+                "Los científicos Albert Emmet y Émilie Cloutier aguardaban",
+                "Ha pasado mucho tiempo, pero a mí aún me duele —Respondió Albert susurrando",
+                "Albert asintió con la cabeza para saludar",
+                "prefiero que sea Albert Emmet quien les responda",
+                "Al llegar a la tarima se posicionaron detrás del presidente, a su izquierda, tal y como se les había indicado. En cuanto el presidente Haddon se acercó al habitual atril"
+              ],
+              "explanation": "El nombre 'Albert' aparece más de 4 veces a lo largo del capítulo 4, pero distribuido en distintos párrafos, por lo que no se cumple la regla de 4 apariciones en un único párrafo. Se descarta.",
+              "suggestion": ""
+            },
+            {
+              "name": "AiFlash",
+              "occurrences": [
+                "siete personas y la inteligencia artificial AiFlash aterrizaron en la plataforma",
+                "AiFlash seguía existiendo después de cuarenta años",
+                "AiFlash fue la primera inteligencia artificial en evolucionar",
+                "El contenedor de AiFlash era un dron",
+                "solo AiFlash y unos pocos escogidos de la corporación Liberty Universe conocían lo sucedido realmente"
+              ],
+              "explanation": "AiFlash aparece 5 veces dentro del mismo párrafo extenso que describe su naturaleza y características, lo que genera saturación del nombre propio.",
+              "suggestion": "Sustituir algunas apariciones por pronombres ('ella', 'la IA') o por sintagmas como 'la inteligencia artificial' para aligerar la repetición."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "llevan tiempo trabajando con la información que AiFlash nos proporcionó. Trabajaréis con ellos. También los acompaña el propio AiFlash que trabaja para nosotros. Vuestra labor, no solo supondrá dirigir todos los proyectos de investigación que se han planificado, sino involucrarse principalmente en un nuevo proyecto secreto",
+              "adverb": "principalmente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio es débil y puede sustituirse por una construcción más precisa y narrativamente más rica.",
+              "alternatives": [
+                "sino volcarse en un nuevo proyecto secreto que concentrará todos sus esfuerzos",
+                "sino asumir como tarea central un nuevo proyecto secreto"
+              ]
+            },
+            {
+              "originalText": "De hecho, de haber descifrado el mensaje tan solo unas horas antes, se podría haber evitado el desastre.",
+              "adverb": "tan solo",
+              "evaluation": "Adecuado",
+              "explanation": "Refuerza la idea de margen mínimo de tiempo con precisión expresiva y emotiva.",
+              "alternatives": []
+            },
+            {
+              "originalText": "No se ha probado aún de manera empírica",
+              "adverb": "aún",
+              "evaluation": "Adecuado",
+              "explanation": "Marca temporalidad relevante en el contexto científico de la conversación.",
+              "alternatives": []
+            },
+            {
+              "originalText": "Descubrieron de manera empírica que cada agujero negro cuántico tiene un equivalente agujero blanco",
+              "adverb": "de manera empírica",
+              "evaluation": "Mejorable",
+              "explanation": "La locución adverbial es genérica y puede integrarse en el verbo o en una construcción más concreta.",
+              "alternatives": [
+                "Lo demostraron con experimentos: cada agujero negro cuántico tiene un equivalente agujero blanco",
+                "Sus experimentos revelaron que cada agujero negro cuántico tiene un equivalente agujero blanco"
+              ]
+            },
+            {
+              "originalText": "controlando de manera exhaustiva a nuestros científicos",
+              "adverb": "de manera exhaustiva",
+              "evaluation": "Mejorable",
+              "explanation": "Construcción perifrástica y vaga. Un verbo más preciso gana en fuerza narrativa.",
+              "alternatives": [
+                "vigilando cada movimiento de nuestros científicos",
+                "sometiendo a nuestros científicos a un control sin fisuras"
+              ]
+            },
+            {
+              "originalText": "añadiendo así energía de manera focalizada",
+              "adverb": "de manera focalizada",
+              "evaluation": "Mejorable",
+              "explanation": "Locución adverbial técnica pero débil; puede integrarse mejor en el verbo.",
+              "alternatives": [
+                "concentrando así la energía en un único punto",
+                "canalizando la energía con precisión sobre el centro"
+              ]
+            },
+            {
+              "originalText": "teóricamente, por supuesto",
+              "adverb": "teóricamente",
+              "evaluation": "Adecuado",
+              "explanation": "Funciona como matiz dramático en el discurso del personaje, marcando la incertidumbre del plan.",
+              "alternatives": []
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "el equipo incluirá otras tres personas más que serán elegidas por Albert y Émilie",
+              "explanation": "Pasiva perifrástica con agente explícito ('por Albert y Émilie'). Puede convertirse en activa para ganar dinamismo.",
+              "activeVersion": "el equipo incluirá otras tres personas más que Albert y Émilie elegirán"
+            },
+            {
+              "originalText": "en un momento determinado, apareció en las instalaciones de aquel acelerador de hadrones una distorsión que no había sido creada desde la Tierra, sino desde un intramundo del universo interior",
+              "explanation": "Pasiva perifrástica con agente implícito ('desde un intramundo'). La voz activa es más directa.",
+              "activeVersion": "una distorsión que no procedía de la Tierra, sino que unos seres de un intramundo del universo interior habían generado"
+            },
+            {
+              "originalText": "A través de la distorsión nos mandaron una bomba. Eso fue lo que causó la catástrofe de Fratenburgo.",
+              "explanation": "Aunque 'causó' es activa, 'Eso fue lo que causó' es una construcción enfática que puede agilizarse, aunque no es pasiva perifrástica estricta. Se descarta.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "La información de lo que ocurrió y de los experimentos que se llevaron a cabo en el colisionador de partículas de Fratenburgo, la conocemos de primera mano gracias a AiFlash.",
+              "explanation": "Pasiva refleja ('se llevaron a cabo') con agente implícito. Puede sustituirse por activa.",
+              "activeVersion": "La información de lo que ocurrió y de los experimentos que el equipo realizó en el colisionador de partículas de Fratenburgo, la conocemos de primera mano gracias a AiFlash."
+            },
+            {
+              "originalText": "Cuando aún no era una IA FreeWill, participó en el descifrado del mensaje de manera remota y llegó a conectarse a la supercomputadora del ODIN.",
+              "explanation": "No es voz pasiva. Se descarta.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "en un agujero negro cuántico al que se le denominó BH88",
+              "explanation": "Pasiva refleja con agente implícito. Revisable para mayor precisión narrativa.",
+              "activeVersion": "un agujero negro cuántico al que los científicos denominaron BH88"
+            },
+            {
+              "originalText": "Lo han denominado «generación de la dualidad»",
+              "explanation": "Voz activa. Se descarta.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "AiFlash transmitió el código de acceso al panel que había en el lateral de la puerta y se abrió.",
+              "explanation": "No es pasiva perifrástica. Se descarta.",
+              "activeVersion": ""
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "En Liberty Universe llevamos años trabajando en secreto en este proyecto de manera estanca, sin que nadie conozca en lo que trabajábamos y controlando de manera exhaustiva a nuestros científicos. Sin embargo, una vez que hemos dado el paso a seguir con las investigaciones de la mano del gobierno, los proyectos que estamos desarrollando en Ganímedes están en el radar de todas las confederaciones, porque saben que lo que descubramos podría darnos ventajas operativas.",
+              "wordCount": 78,
+              "explanation": "Dos frases encadenadas con varias subordinadas que ralentizan la lectura y mezclan distintas ideas (secreto, control, exposición ante confederaciones).",
+              "suggestion": "Dividir en tres oraciones: 1) la situación anterior de secretismo, 2) el cambio al incorporarse al gobierno, 3) la consecuencia de la exposición ante las confederaciones."
+            },
+            {
+              "originalText": "Del mismo modo, creen que, una vez abierto el agujero negro, si se emite un haz de luz láser en el mismo centro, añadiendo así energía de manera focalizada, se le daría la suficiente estabilidad como para mantenerlo centrado, evitando que el universo interior se desestabilice.",
+              "wordCount": 47,
+              "explanation": "Frase con múltiples subordinadas y gerundios encadenados que dificultan seguir la lógica técnica del argumento.",
+              "suggestion": "Dividir: 'Una vez abierto el agujero negro, proponen emitir un haz de luz láser en su centro. Eso añadiría energía focalizada y daría al agujero la estabilidad necesaria para mantenerse centrado, sin desestabilizar el universo interior.'"
+            },
+            {
+              "originalText": "Vuestra labor, no solo supondrá dirigir todos los proyectos de investigación que se han planificado, sino involucrarse principalmente en un nuevo proyecto secreto en el que contaréis con los siete científicos que acaban de llegar, AiFlash, y otros tres científicos que elijáis vosotros.",
+              "wordCount": 46,
+              "explanation": "La enumeración de participantes del proyecto alarga innecesariamente la frase y dificulta la asimilación de la información.",
+              "suggestion": "Dividir en dos: la descripción de la labor general y luego los recursos humanos disponibles para el proyecto secreto."
+            },
+            {
+              "originalText": "Esas miradas que solían cruzar, con sus pequeños matices en el gesto de los párpados, cejas o en las imperceptibles arrugas que aparecían en la comisura de sus ojos, eran una forma de comunicación más efectiva que cualquier otra conversación de voz.",
+              "wordCount": 41,
+              "explanation": "La acumulación de incisos descriptivos interrumpe el ritmo y dificulta llegar al núcleo de la oración.",
+              "suggestion": "Reducir los incisos: 'Esas miradas que solían cruzar —un leve gesto de párpados o cejas, una arruga imperceptible en la comisura— valían más que cualquier conversación en voz alta.'"
+            },
+            {
+              "originalText": "Por eso creo que, si tenemos éxito en algún momento, deberíamos crear cortafuegos para evitar fugas de información. Lo ideal sería eliminar a los participantes del proyecto, para que no haya filtraciones de información. Cuando eso ocurra, tanto Albert como Émilie, dejarán de ser un problema para ti.",
+              "wordCount": 48,
+              "explanation": "Las tres frases repiten la misma idea (eliminar participantes para evitar filtraciones) con escasa variación, lo que genera redundancia y alarga el pasaje.",
+              "suggestion": "Condensar: 'Por eso, si tenemos éxito, lo más seguro será eliminar a todos los participantes —Albert y Émilie incluidos— antes de que puedan convertirse en una filtración.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "AiFlash",
+              "occurrences": [
+                "AiFlash lo acompañaba suspendido en el aire a la altura de sus ojos.",
+                "—dijo AiFlash.",
+                "AiFlash continuó hablando, iluminándose de color verde",
+                "AiFlash, captó como los músculos de su cara se relajaban",
+                "Decidió continuar hablando."
+              ],
+              "explanation": "El nombre 'AiFlash' aparece 4 veces dentro del mismo párrafo narrativo de la escena del pasillo, lo que produce una repetición densa en un espacio reducido.",
+              "suggestion": "Sustituir alguna aparición por pronombres ('él', 'la IA') o por referencias descriptivas ('el contenedor', 'la voz sintética') para aligerar la densidad nominal."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "provocaba cierta aversión, ya que les hacía sentir inútiles",
+              "adverb": "adelantarse",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente, se excluye.",
+              "alternatives": []
+            },
+            {
+              "originalText": "terminantemente prohibido hablar fuera de las instalaciones",
+              "adverb": "terminantemente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio resulta redundante junto a 'prohibido'; la fuerza semántica ya está en el adjetivo.",
+              "alternatives": [
+                "recordó a todos la prohibición absoluta de hablar fuera de las instalaciones del proyecto",
+                "advirtió con dureza que hablar fuera de las instalaciones estaba prohibido"
+              ]
+            },
+            {
+              "originalText": "personalmente",
+              "adverb": "personalmente",
+              "evaluation": "Mejorable",
+              "explanation": "Aporta poco: el contexto ya implica que Volderlayer lo dirigirá él mismo.",
+              "alternatives": [
+                "tengo órdenes de tomar el mando de ese procedimiento",
+                "me han encomendado dirigirlo a mí"
+              ]
+            },
+            {
+              "originalText": "de manera más acentuada, la sonrisa maquiavélica",
+              "adverb": "de manera más acentuada",
+              "evaluation": "Mejorable",
+              "explanation": "Locución adverbial débil que puede sustituirse por una acción visual más precisa.",
+              "alternatives": [
+                "Volderlayer acentuó la sonrisa maquiavélica que siempre habitaba en sus labios",
+                "la sonrisa maquiavélica de Volderlayer se ensanchó"
+              ]
+            },
+            {
+              "originalText": "de inmediato, comenzarían con la estrategia de comunicación",
+              "adverb": "de inmediato",
+              "evaluation": "Adecuado",
+              "explanation": "Locución adverbial que marca urgencia narrativa relevante en el contexto del descubrimiento.",
+              "alternatives": []
+            },
+            {
+              "originalText": "finalizándolo con las palabras «fin de mensaje»",
+              "adverb": "finalizándolo",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente, se excluye.",
+              "alternatives": []
+            },
+            {
+              "originalText": "casi a oscuras si no fuese por la tenue luz verdosa",
+              "adverb": "casi",
+              "evaluation": "Adecuado",
+              "explanation": "Matiz imprescindible para la descripción; no es reemplazable sin pérdida.",
+              "alternatives": []
+            },
+            {
+              "originalText": "esfumó, dejándoles la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta",
+              "adverb": "cuándo",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente, se excluye.",
+              "alternatives": []
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "cualquier comunicación con los seres de ese intramundo quedará clasificada como secreto de nivel arcano",
+              "explanation": "Voz pasiva perifrástica con 'quedar + participio' de agente implícito (el gobierno/Volderlayer).",
+              "activeVersion": "clasificaremos cualquier comunicación con los seres de ese intramundo como secreto de nivel arcano"
+            },
+            {
+              "originalText": "todos los implicados quedarán bajo vigilancia",
+              "explanation": "Construcción pasiva con agente implícito (el gobierno/seguridad).",
+              "activeVersion": "los servicios de seguridad vigilarán a todos los implicados"
+            },
+            {
+              "originalText": "será acusado por alta traición",
+              "explanation": "Pasiva perifrástica con 'ser + participio' y agente implícito (el gobierno).",
+              "activeVersion": "el gobierno lo acusará de alta traición"
+            },
+            {
+              "originalText": "será detenido y juzgado por traición",
+              "explanation": "Pasiva perifrástica doble con agente implícito.",
+              "activeVersion": "las autoridades lo detendrán y lo juzgarán por traición"
+            },
+            {
+              "originalText": "a él también le habían retirado el permiso para acceder a las instalaciones",
+              "explanation": "Pasiva perifrástica con agente implícito (los responsables del proyecto).",
+              "activeVersion": "los responsables también le habían retirado el permiso para acceder a las instalaciones"
+            },
+            {
+              "originalText": "fue la forma más aproximada de saber cómo piensa una persona",
+              "explanation": "Pasiva perifrástica con 'ser + participio' implícita en la construcción nominal.",
+              "activeVersion": "ese diario le permitió aproximarse como nunca a la forma de pensar de una persona"
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Hacía años que había decido actuar así, porque se había dado cuenta de que adelantarse a los demás en las conclusiones, provocaba cierta aversión, ya que les hacía sentir inútiles.",
+              "wordCount": 33,
+              "explanation": "Aunque roza el límite, la subordinación encadenada (porque… de que… ya que) genera una lectura entrecortada que puede simplificarse.",
+              "suggestion": "Dividir: 'Hacía años que había decidido actuar así. Con el tiempo comprendió que adelantarse a los demás en las conclusiones provocaba aversión: les hacía sentir inútiles.'"
+            },
+            {
+              "originalText": "Si bien es cierto que durante aquel intercambio de información ofrecieron detalles sobre cómo lo habían logrado (modificando virus a nivel subatómico programando órdenes en ellos), se negaron, por el momento, a proporcionarnos la tecnología necesaria para crear el dispositivo con el que lo hacían.",
+              "wordCount": 47,
+              "explanation": "Frase de más de 40 palabras con subordinada concesiva, inciso parentético y complemento de finalidad encadenados.",
+              "suggestion": "Dividir: 'Durante aquel intercambio ofrecieron detalles sobre cómo lo habían logrado: modificando virus a nivel subatómico y programando órdenes en ellos. Sin embargo, se negaron a proporcionarnos la tecnología necesaria para replicarlo.'"
+            },
+            {
+              "originalText": "Sabían que cualquier tipo de respuesta debería tardar en llegar, puesto que los habitantes de aquel intramundo tenían que descifrar el mensaje y porque teorizaban que el tiempo en los intramundos pasaba más despacio respecto al nuestro debido a la dilatación gravitacional del tiempo o a la velocidad cercana a la luz a la que se mueven las partículas subatómicas.",
+              "wordCount": 60,
+              "explanation": "Frase muy larga con dos causales coordinadas y una explicación técnica compleja que fatiga la lectura.",
+              "suggestion": "Dividir: 'Sabían que la respuesta tardaría en llegar. Los habitantes del intramundo necesitaban descifrar el mensaje; además, el equipo teorizaba que el tiempo allí transcurría más despacio que en el nuestro, consecuencia de la dilatación gravitacional o de la velocidad subatómica cercana a la luz.'"
+            },
+            {
+              "originalText": "La tensa espera y las dudas que tanto le quitaban el sueño a Albert, desaparecieron dando paso a la efervescente excitación de saber que ya podrían conocer quiénes eran aquellos seres.",
+              "wordCount": 33,
+              "explanation": "No supera las 40 palabras; se descarta.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "esfumó, dejándoles la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta",
+              "wordCount": 28,
+              "explanation": "No supera las 40 palabras; se descarta.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Pudieron observar un lugar con grandes edificaciones que podrían asemejarse a enormes termiteros de cientos de metros de alto, posicionados cada uno en el centro de enormes parcelas cuadradas.",
+              "wordCount": 31,
+              "explanation": "No supera las 40 palabras; se descarta.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Tras detallar y exponer los detalles del descubrimiento durante un buen rato, Albert pasó a comentar que, de inmediato, comenzarían con la estrategia de comunicación:",
+              "wordCount": 27,
+              "explanation": "No supera las 40 palabras; se descarta.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Alrededor de las enormes edificaciones, se distinguían cultivos, todos ellos de una misma planta con frutos rojos del tamaño de un pomelo.",
+              "wordCount": 24,
+              "explanation": "No supera las 40 palabras; se descarta.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "También había rutas de comunicación por donde circulaban vehículos de carga en forma de cuña cargados con los frutos rojos.",
+              "wordCount": 21,
+              "explanation": "No supera las 40 palabras; se descarta.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Cuando Albert les había expresado que le llamaba la atención que en las imágenes obtenidas no habían observado canales ni estanques de agua, le respondieron que aquella fruta les proporcionaba agua para consumo y que para regar las cosechas «hacían caer agua».",
+              "wordCount": 46,
+              "explanation": "Frase de más de 40 palabras con subordinadas encadenadas que ralentizan la lectura.",
+              "suggestion": "Dividir: 'Albert les señaló que en las imágenes no se apreciaban canales ni estanques de agua. Ellos respondieron que aquella fruta les proporcionaba agua para el consumo y que para regar las cosechas «hacían caer agua».'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Albert",
+              "occurrences": [
+                "le dijo a Albert: «Cuando quieras, quedamos»",
+                "Albert asintió con la cabeza.",
+                "Albert necesitaba que la velocidad de escaneo",
+                "—dijo Albert mirando a sus colegas—"
+              ],
+              "explanation": "Albert aparece 4 veces en el párrafo de apertura que abarca desde 'le dijo a Albert' hasta 'dijo Albert mirando a sus colegas'.",
+              "suggestion": "Sustituir algunas apariciones por pronombres o por su rol: 'él asintió', 'el científico', o reestructurar para que el sujeto quede implícito en los verbos."
+            },
+            {
+              "name": "Émilie",
+              "occurrences": [
+                "Cuando Émilie fue a decir algo más",
+                "Émilie sonrió.",
+                "—dijo Émilie —",
+                "—repitió Émilie con sarcasmo—"
+              ],
+              "explanation": "Émilie aparece 4 veces dentro del mismo párrafo de la escena nocturna/conversación sobre Boris y Claudia.",
+              "suggestion": "Alternar con pronombres ('ella', 'su mujer') o con gestos que sustituyan la atribución explícita del diálogo."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "estaba terminantemente prohibido hablar fuera de las instalaciones",
+              "adverb": "terminantemente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio intensifica una prohibición que podría expresarse con mayor fuerza mediante un verbo o construcción más directa.",
+              "alternatives": [
+                "quedaba prohibido bajo cualquier circunstancia hablar fuera de las instalaciones",
+                "prohibió sin excepción hablar fuera de las instalaciones"
+              ]
+            },
+            {
+              "originalText": "acompañaba en silencio",
+              "adverb": "en silencio",
+              "evaluation": "Adecuado",
+              "explanation": "Aunque no es un adverbio en -mente, la locución adverbial aporta un valor narrativo concreto y evocador en el contexto emocional de la escena."
+            },
+            {
+              "originalText": "dijo Albert encolerizado",
+              "adverb": "encolerizado",
+              "evaluation": "Adecuado",
+              "explanation": "No es un adverbio en -mente; se incluye solo por contexto. No aplica al análisis."
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "les habían retirado el permiso para acceder a las instalaciones",
+              "explanation": "Construcción pasiva con agente implícito (las autoridades/Volderlayer). Puede ganar en dinamismo en voz activa.",
+              "activeVersion": "Las autoridades les habían retirado el permiso para acceder a las instalaciones."
+            },
+            {
+              "originalText": "truncada por la ambición de un gobierno que solo quiere sacar provecho",
+              "explanation": "Participio en función pasiva con agente explícito ('por la ambición de un gobierno'). Puede reformularse en activa.",
+              "activeVersion": "La ambición de un gobierno que solo quiere sacar provecho de la tecnología truncó esa posibilidad."
+            },
+            {
+              "originalText": "Me han dado órdenes de guardar silencio",
+              "explanation": "Pasiva refleja/impersonal con agente implícito. Puede concretarse con un sujeto activo.",
+              "activeVersion": "Me han ordenado guardar silencio."
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Albert, que había entablado algo más que una amistad con AiFlash y siempre tenía en cuenta su opinión, arrugó la frente durante un momento para pensar y, tras unos segundos, relajó el semblante diciendo:",
+              "wordCount": 38,
+              "explanation": "La frase acumula una subordinada relativa larga más dos acciones encadenadas, lo que ralentiza el ritmo narrativo antes de la réplica.",
+              "suggestion": "Dividir: 'Albert siempre tenía en cuenta la opinión de AiFlash; entre ellos había algo más que una amistad. Arrugó la frente, pensó unos segundos y relajó el semblante.'"
+            },
+            {
+              "originalText": "La posibilidad de hablar con una especie de otro planeta truncada por la ambición de un gobierno que solo quiere sacar provecho de la tecnología que puedan conseguir.",
+              "wordCount": 30,
+              "explanation": "Fragmento nominal sin verbo principal que, unido al contexto anterior, forma una construcción incompleta y extensa que dificulta la lectura.",
+              "suggestion": "Reformular con verbo principal: 'La ambición de un gobierno que solo busca rentabilizar la tecnología ha truncado la posibilidad de hablar con una especie de otro planeta.'"
+            },
+            {
+              "originalText": "Me han dado órdenes de guardar silencio y opino que, como lo he hecho durante tantos años, sobre lo que ocurrió en Fratenburgo, creen que, a pesar de todo, me tienen controlado.",
+              "wordCount": 34,
+              "explanation": "La acumulación de incisos y subordinadas dentro del parlamento de AiFlash genera una estructura confusa y difícil de seguir.",
+              "suggestion": "Dividir: 'Me han ordenado guardar silencio. Supongo que, dado que lo hice durante años con lo de Fratenburgo, creen que me tienen controlado.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": []
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "desgarrándonos átomo por átomo",
+              "gerund": "desgarrándonos",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'desgarrándonos' expresa una acción posterior o consecuencia de 'succionarnos', no simultánea. La destrucción ocurriría después o como resultado de la succión, no al mismo tiempo.",
+              "correction": "la gravedad que nos atraería sería tan grande que nos destrozaría al succionarnos y nos desgarraría átomo por átomo"
+            },
+            {
+              "originalText": "señalando con su dedo índice a otro periodista, indicó que podía preguntar",
+              "gerund": "señalando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'señalando' introduce una acción que en la lógica narrativa es la forma de indicar, pero está construido como modificador de 'indicó', creando una redundancia donde el señalar y el indicar son en realidad el mismo acto expresado dos veces; sin embargo, la estructura es ambigua y el gerundio funciona como anterioridad inmediata o simultaneidad dudosa.",
+              "correction": "Señaló con su dedo índice a otro periodista para indicar que podía preguntar"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "lo que le extraño",
+              "verbsFound": [
+                "extraño"
+              ],
+              "explanation": "'Extraño' parece un error ortográfico/morfológico: debería ser 'extrañó' (pretérito indefinido), ya que toda la escena está narrada en indefinido/imperfecto y aquí falta la tilde que marca la forma de tercera persona del singular del indefinido. Sin la tilde, 'extraño' es adjetivo o primera persona del presente, lo que rompe la coherencia temporal de la narración.",
+              "suggestion": "Corregir 'extraño' por 'extrañó' para mantener la coherencia con el pretérito indefinido de la escena"
+            },
+            {
+              "originalText": "Albert no estaba reaccionando a sus caricias, lo que le extraño. Su rodilla, moviéndose aún sobre él, lo había despertado del corto letargo; pero Albert había abierto sus ojos recordando lo que acababa de soñar.",
+              "verbsFound": [
+                "extraño",
+                "había despertado",
+                "había abierto"
+              ],
+              "explanation": "La mezcla entre el pretérito imperfecto ('estaba reaccionando'), el indefinido sin tilde ('extraño' por 'extrañó') y los pluscuamperfectos ('había despertado', 'había abierto') genera una ruptura de coherencia temporal en la misma escena, agravada por el error tipográfico en 'extrañó'.",
+              "suggestion": "Unificar los tiempos: 'lo que le extrañó. Su rodilla [...] lo había despertado [...]; pero Albert había abierto los ojos recordando lo que acababa de soñar.'"
+            },
+            {
+              "originalText": "Una vez hablamos de que cuando llegásemos al poder averiguaríamos cómo conseguir un mundo más igualitario y justo.",
+              "verbsFound": [
+                "hablamos",
+                "llegásemos",
+                "averiguaríamos"
+              ],
+              "explanation": "'Una vez hablamos' usa el pretérito indefinido en primera persona del plural con valor de pasado puntual, pero en el contexto de un discurso formal en presente y condicional ('averiguaríamos'), resulta incongruente. Lo esperable sería 'una vez dijimos' o 'en su momento acordamos', o bien una construcción que no mezcle el indefinido coloquial con el condicional de manera abrupta.",
+              "suggestion": "Sustituir por 'En su momento acordamos que cuando llegásemos al poder averiguaríamos...' o 'Dijimos que cuando llegásemos al poder averiguaríamos...'"
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "las siete personas que deben estar llegando a Ganímedes en estos momentos",
+              "gerund": "llegando",
+              "errorType": "especificativo",
+              "explanation": "El gerundio 'llegando' funciona como modificador especificativo del sustantivo 'personas', uso incorrecto en español. Debería usarse una construcción relativa.",
+              "correction": "las siete personas que deben de estar llegando → las siete personas que en estos momentos deben llegar / que llegarán"
+            },
+            {
+              "originalText": "el camino para conseguirlo es usando la fuerza",
+              "gerund": "usando",
+              "errorType": "especificativo",
+              "explanation": "El gerundio 'usando' funciona como atributo o complemento predicativo de modo tras el verbo copulativo 'es', construcción incorrecta en español normativo. Debería sustituirse por una construcción nominal o preposicional.",
+              "correction": "el camino para conseguirlo es el uso de la fuerza / pasa por usar la fuerza"
+            },
+            {
+              "originalText": "Tú te ocuparás de controlar todo lo que hagan manteniendo un perfil bajo hasta que tengamos éxito",
+              "gerund": "manteniendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'manteniendo' expresa una acción que se desarrolla en paralelo de forma vaga, pero la construcción 'te ocuparás de controlar... manteniendo' implica una condición o modo que en contexto resulta ambiguo y puede leerse como posterioridad respecto al control; además, gramaticalmente el sujeto del gerundio es ambiguo (¿quién mantiene el perfil bajo, Volderlayer o los que hacen?). El uso es incorrecto.",
+              "correction": "Tú te ocuparás de controlar todo lo que hagan mientras mantienes un perfil bajo hasta que tengamos éxito"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "En Liberty Universe llevamos años trabajando en secreto en este proyecto de manera estanca, sin que nadie conozca en lo que trabajábamos y controlando de manera exhaustiva a nuestros científicos.",
+              "verbsFound": [
+                "conozca (presente de subjuntivo)",
+                "trabajábamos (imperfecto de indicativo)"
+              ],
+              "explanation": "Dentro de la misma frase hay una mezcla de tiempos que parece un descuido: 'sin que nadie conozca' está en presente de subjuntivo, pero inmediatamente 'en lo que trabajábamos' salta al imperfecto de indicativo, creando una incongruencia temporal dentro del mismo sintagma que describe la misma situación.",
+              "suggestion": "Unificar el tiempo: 'sin que nadie conozca en lo que trabajamos' o 'sin que nadie conociese en lo que trabajábamos'"
+            },
+            {
+              "originalText": "AiFlash, captó como los músculos de su cara se relajaban",
+              "verbsFound": [
+                "captó (indefinido)",
+                "se relajaban (imperfecto)"
+              ],
+              "explanation": "Mezcla de indefinido ('captó') e imperfecto ('se relajaban') en la misma escena narrativa que parece un descuido. Aunque el imperfecto puede justificarse como descripción de un proceso, la combinación inmediata con el indefinido resulta inconsistente con el estilo narrativo del resto del pasaje, que usa imperfecto sostenido para las descripciones.",
+              "suggestion": "Unificar: 'AiFlash captó cómo los músculos de su cara se relajaron' o mantener todo en imperfecto: 'AiFlash captaba cómo los músculos de su cara se relajaban'"
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "Albert levantó las cejas con sorpresa queriendo saber cómo interpretar por qué su mujer no podía esperar hasta que acabase su turno para hablar.",
+              "gerund": "queriendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'queriendo' expresa una acción que es consecuencia o interpretación posterior al gesto de levantar las cejas, no simultánea a él. La acción de querer saber es el resultado o la razón del gesto, no algo que ocurre al mismo tiempo de forma natural. Debería reformularse con una construcción que exprese causa o finalidad.",
+              "correction": "Albert levantó las cejas con sorpresa, intentando entender por qué su mujer no podía esperar hasta que acabase su turno para hablar."
+            },
+            {
+              "originalText": "habían estado haciendo el amor sin protección, finalizando con la marcha atrás.",
+              "gerund": "finalizando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'finalizando' indica una acción posterior al acto descrito ('haciendo el amor sin protección'), no simultánea. La marcha atrás es el final del acto, una acción que se produce después y como conclusión, no durante. Se trata de un gerundio de posterioridad incorrecto.",
+              "correction": "habían estado haciendo el amor sin protección, terminando siempre con la marcha atrás."
+            },
+            {
+              "originalText": "Enviaban un mensaje de voz, finalizándolo con las palabras «fin de mensaje», y esperaban a recibir una respuesta",
+              "gerund": "finalizándolo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'finalizándolo' expresa una acción que concluye o pone fin al mensaje, es decir, es la acción final dentro del proceso de enviar, no una acción estrictamente simultánea. Implica posterioridad respecto al envío del mensaje propiamente dicho.",
+              "correction": "Enviaban un mensaje de voz que finalizaban con las palabras «fin de mensaje», y esperaban a recibir una respuesta"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "La tensa espera y las dudas que tanto le quitaban el sueño a Albert, desaparecieron dando paso a la efervescente excitación de saber que ya podrían conocer quiénes eran aquellos seres.",
+              "verbsFound": [
+                "quitaban",
+                "desaparecieron"
+              ],
+              "explanation": "En la misma oración se mezcla el imperfecto 'quitaban' con el indefinido 'desaparecieron' en una misma secuencia narrativa referida al mismo momento. Aunque la alternancia puede ser intencional, aquí la espera y las dudas son parte del mismo marco temporal que la acción puntual de 'desaparecieron', lo que produce una mezcla que parece descuido.",
+              "suggestion": "Unificar los tiempos: 'La tensa espera y las dudas que tanto le habían quitado el sueño a Albert desaparecieron, dando paso a la efervescente excitación...'"
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "relajó el semblante diciendo:\n—Está bien, dos contra uno.",
+              "gerund": "diciendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'diciendo' expresa una acción posterior a 'relajó el semblante': primero relajó el semblante y después dijo las palabras. El gerundio no puede expresar posterioridad respecto al verbo principal.",
+              "correction": "relajó el semblante y dijo: / relajó el semblante antes de decir:"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "Fue algo tan impresionante que los implicados no podían dejar de hablar de ello incluso por los pasillos.",
+              "verbsFound": [
+                "Fue",
+                "podían"
+              ],
+              "explanation": "Mezcla de indefinido ('Fue') e imperfecto ('podían') en la misma oración que describe una reacción inmediata ante un hecho puntual. Aunque a veces esta combinación es válida, aquí la cláusula consecutiva ('que los implicados no podían') describe un estado resultante que en el contexto narrativo de hechos puntuales encadenados debería ir en indefinido ('pudieron') para mantener coherencia con el ritmo narrativo del pasaje.",
+              "suggestion": "Fue algo tan impresionante que los implicados no pudieron dejar de hablar de ello incluso por los pasillos."
+            }
+          ]
+        }
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": [
+          {
+            "originalText": "la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta",
+            "wordForm": "cuándo",
+            "correctForm": "cuando",
+            "errorType": "tilde_sobrante",
+            "context": "conjuncion",
+            "explanation": "'cuando' introduce aquí una oración temporal que especifica en qué momento de su cumpleaños ocurre la acción; no depende de ningún verbo de duda o conocimiento previo, sino que funciona como conjunción temporal. Por tanto, no debe llevar tilde."
+          }
+        ]
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "leismo",
+              "originalText": "cuando le descubramos a Albert lo que ocurrió",
+              "correction": "cuando le descubramos a Albert lo que ocurrió",
+              "explanation": "Correcto: 'le' es CI (a Albert). No es error."
+            },
+            {
+              "type": "loismo",
+              "originalText": "desconcentrarle y desviarle de las necesidades del proyecto",
+              "correction": "desconcentrarlo y desviarlo de las necesidades del proyecto",
+              "explanation": "'desconcentrar' y 'desviar' toman CD, no CI. El referente es Albert (masculino), por lo que corresponde 'lo', no 'le'. Uso incorrecto de 'le' como CD masculino (leísmo)."
+            },
+            {
+              "type": "laismo",
+              "originalText": "cuando se la hace girar",
+              "correction": "cuando se le hace girar",
+              "explanation": "'hacer girar algo' implica un CI en la construcción pronominal ('hacérselo girar a algo'). La peonza es el referente femenino que recibe la acción indirectamente; corresponde 'le', no 'la'. Laísmo."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Volderlayer no les caía nada bien a ninguno de los dos porque era ese tipo de personas que solo con mirarle a los ojos sabías que no te podías fiar de sus intenciones",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Volderlayer",
+                "ninguno de los dos (Albert o Émilie)"
+              ],
+              "explanation": "El pronombre 'le' en 'mirarle a los ojos' podría referirse a Volderlayer o a cualquiera de los dos hombres mencionados (Albert, Volderlayer), aunque el contexto favorece a Volderlayer. La construcción impersonal con 'sabías' introduce ambigüedad sobre a quién se le mira.",
+              "suggestion": "solo con mirarle a los ojos a Volderlayer sabías que no te podías fiar de sus intenciones"
+            },
+            {
+              "originalText": "Émilie giró su cabeza para mirar a su marido, que le devolvió la mirada",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Émilie",
+                "Volderlayer"
+              ],
+              "explanation": "El sujeto gramatical de 'devolvió' es 'su marido' (Albert), y 'le' podría referirse a Émilie o a Volderlayer, ambos presentes en la escena. El contexto favorece a Émilie, pero la presencia de Volderlayer como tercer participante introduce ambigüedad.",
+              "suggestion": "Émilie giró su cabeza para mirar a su marido, que le devolvió la mirada a ella"
+            },
+            {
+              "originalText": "uno de los científicos asemejó lo que le sucede a lo que le ocurre a una peonza cuando se la hace girar",
+              "pronoun": "le (primero)",
+              "possibleReferents": [
+                "el agujero negro",
+                "el universo interior",
+                "la desestabilización"
+              ],
+              "explanation": "El primer 'le' en 'lo que le sucede' carece de referente claro: puede aludir al agujero negro, al sistema de apertura o al universo interior, todos mencionados en el contexto inmediato.",
+              "suggestion": "uno de los científicos asemejó lo que le sucede al agujero negro a lo que le ocurre a una peonza cuando se la hace girar"
+            }
+          ]
+        }
+      },
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "laismo",
+              "originalText": "Émilie entró en la sala y les saludó.",
+              "correction": "los saludó",
+              "explanation": "El CD es masculino plural (Albert, Boris, AiFlash). 'Saludar a alguien' rige CD, por lo que corresponde 'los', no 'les'."
+            },
+            {
+              "type": "laismo",
+              "originalText": "Agarró la mano de Albert casi con violencia, y la arrastró hacia su vientre diciéndole al mismo tiempo",
+              "correction": "lo arrastró",
+              "explanation": "'Arrastrar' rige CD. El referente es 'la mano' (femenino, CD), por lo que 'la' es correcto aquí; sin embargo, el antecedente inmediato de 'la' es 'la mano de Albert' y se arrastra hacia el vientre, lo cual es correcto. — DESCARTADO, no hay error real aquí."
+            },
+            {
+              "type": "laismo",
+              "originalText": "dejándoles la misma sensación que experimenta un niño",
+              "correction": "dejándoles",
+              "explanation": "'Dejar' en este uso rige CI (dejar a alguien algo), por lo que 'les' es correcto. — DESCARTADO."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Boris, tras leer por encima en su tableta lo que le acababa de enviar, respondió",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Boris",
+                "Albert"
+              ],
+              "explanation": "El pronombre 'le' puede referirse tanto a Boris como a Albert, ya que ambos son masculinos y están presentes en el contexto inmediato. Aunque por contexto se entiende que Albert envió algo a Boris, la construcción es ambigua.",
+              "suggestion": "Boris, tras leer por encima en su tableta lo que Albert acababa de enviarle, respondió"
+            },
+            {
+              "originalText": "Sus gestos y su forma de actuar posterior me sugirieron que quería protegerlo de mí",
+              "pronoun": "protegerlo",
+              "possibleReferents": [
+                "el niño",
+                "la madre"
+              ],
+              "explanation": "Aunque contextualmente se entiende que la madre quería proteger al niño, 'protegerlo' podría referirse tanto al niño como, en un sentido forzado, a otro referente masculino. El riesgo principal es que 'su forma de actuar' y 'quería' tienen como sujeto implícito 'la madre', pero el objeto 'protegerlo' no está del todo libre de ambigüedad respecto al niño de dos años.",
+              "suggestion": "Sus gestos y su forma de actuar posterior me sugirieron que quería proteger al niño de mí"
+            }
+          ]
+        }
+      },
+      {
+        "findings": []
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "de los que realizaba preguntas menos incómodas",
+              "errorType": "sujeto-verbo",
+              "explanation": "El antecedente es Jason Mason (singular), pero 'los que realizaba' usa un relativo en plural. Debería ser 'de los que realizaban' concordando con 'sus favoritos habituales', o reestructurar: 'de los que realizaba' concuerda con el sujeto tácito singular, pero el referente plural 'favoritos habituales' exige 'realizaban'.",
+              "correction": "de los que realizaban preguntas menos incómodas"
+            },
+            {
+              "originalText": "lo que le extraño",
+              "errorType": "sujeto-verbo",
+              "explanation": "'extraño' está en presente pero el contexto narrativo está en pasado; además falta tilde: debería ser 'extrañó' (pretérito indefinido). La forma 'extraño' (presente) no concuerda con el tiempo narrativo del pasado.",
+              "correction": "lo que le extrañó"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "parte de la información que disponemos",
+              "errorType": "queismo",
+              "explanation": "El verbo 'disponer' rige la preposición 'de': 'disponer de algo'. Al relativizar, la preposición debe mantenerse: 'la información de que disponemos'.",
+              "correction": "parte de la información de que disponemos"
+            },
+            {
+              "originalText": "Una vez hablamos de que cuando llegásemos al poder averiguaríamos",
+              "errorType": "dequeismo",
+              "explanation": "La construcción 'una vez hablamos de que' introduce un dequeísmo. El verbo 'hablar' en este contexto introduce un complemento directo oracional que no requiere 'de': 'una vez hablamos de que' debería ser 'una vez hablamos que', o bien reformularse como 'en algún momento hablamos de conseguir'.",
+              "correction": "Una vez hablamos que cuando llegásemos al poder averiguaríamos"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "Sus ojos verdes, de pupilas desproporcionas",
+              "errorType": "sustantivo-adjetivo",
+              "explanation": "El adjetivo 'desproporcionas' no concuerda en género ni forma correcta con el sustantivo 'pupilas'; debe ser 'desproporcionadas'.",
+              "correction": "de pupilas desproporcionadas"
+            },
+            {
+              "originalText": "Volderlayer no les caía nada bien a ninguno de los dos porque era ese tipo de personas que solo con mirarle a los ojos sabías que no te podías fiar de sus intenciones",
+              "errorType": "sujeto-verbo",
+              "explanation": "El sujeto es 'ese tipo de personas' (plural semántico) pero el verbo 'era' y el pronombre 'mirarle' tratan a Volderlayer como singular, lo que es inconsistente internamente; sin embargo, el error más claro es que 'era ese tipo de personas' refiere a un solo individuo con concordancia singular cuando la aposición exige plural: 'eran ese tipo de personas'.",
+              "correction": "eran ese tipo de personas que solo con mirarles a los ojos sabías que no te podías fiar de sus intenciones"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "Una vez hablamos de que cuando llegásemos al poder averiguaríamos",
+              "errorType": "dequeismo",
+              "explanation": "El verbo 'hablar' en el sentido de 'mencionar/tratar un tema' no exige la preposición 'de' antes de la conjunción 'que' en este contexto; equivale a 'dijimos que', por lo que 'de que' es un dequeísmo.",
+              "correction": "Una vez hablamos de que → Una vez dijimos que / Una vez comentamos que"
+            },
+            {
+              "originalText": "sin que nadie conozca en lo que trabajábamos",
+              "errorType": "queismo",
+              "explanation": "La construcción 'conocer en lo que' no es la correcta; debe ser 'supiera en qué trabajábamos' o bien 'sin que nadie supiese lo que trabajábamos', pero el error concreto es la mezcla de tiempos y la preposición: 'conozca' debería ser 'conociera/supiese' para concordar con el pasado narrativo.",
+              "correction": "sin que nadie supiese en qué trabajábamos"
+            },
+            {
+              "originalText": "darse cuenta de que haya un proyecto más importante",
+              "errorType": "queismo",
+              "explanation": "La expresión 'el hecho de que haya' es correcta, no hay error aquí.",
+              "correction": "N/A"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "Mis pensamientos, mi forma de ser, se ha visto influenciada por las ideas y pensamientos de tu madre",
+              "errorType": "sujeto-verbo",
+              "explanation": "El sujeto compuesto 'Mis pensamientos, mi forma de ser' exige verbo en plural 'se han visto', y el participio debe concordar con el sujeto plural masculino: 'influenciados'",
+              "correction": "Mis pensamientos, mi forma de ser, se han visto influenciados por las ideas y pensamientos de tu madre"
+            },
+            {
+              "originalText": "había decido actuar así",
+              "errorType": "sujeto-verbo",
+              "explanation": "El participio 'decido' es incorrecto; la forma correcta del participio de 'decidir' es 'decidido'",
+              "correction": "había decidido actuar así"
+            },
+            {
+              "originalText": "estoy de acuerdo que no es el mejor momento",
+              "errorType": "sujeto-verbo",
+              "explanation": "La construcción 'estar de acuerdo' rige la preposición 'en' antes de 'que': 'estoy de acuerdo en que'",
+              "correction": "estoy de acuerdo en que no es el mejor momento"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "estoy de acuerdo que no es el mejor momento",
+              "errorType": "queismo",
+              "explanation": "La locución 'estar de acuerdo' exige la preposición 'en' antes de 'que': 'de acuerdo en que'",
+              "correction": "estoy de acuerdo en que no es el mejor momento"
+            },
+            {
+              "originalText": "Me he fijado en que Boris te mira mucho",
+              "errorType": "queismo",
+              "explanation": "Construcción correcta, no es error — DESCARTADO (no debe aparecer aquí)"
+            },
+            {
+              "originalText": "no pienses que no me había dado cuenta",
+              "errorType": "queismo",
+              "explanation": "El verbo 'darse cuenta' exige 'de que': 'me había dado cuenta de que'",
+              "correction": "no pienses que no me había dado cuenta de que"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": []
+        },
+        "dequeismo": {
+          "findings": []
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "acelerador de partículas",
+              "occurrences": [
+                "Señores, créanme cuando les digo que la única forma de descifrar todos los misterios del universo es gracias a los experimentos que vamos a realizar en el acelerador de partículas que vamos a construir.",
+                "El proyecto inicial para construir el acelerador de hadrones en Ganímedes lo comenzamos hace cuatro años",
+                "Me gustaría que llegase ya el lunes para poner en marcha por primera vez el acelerador de partículas."
+              ],
+              "explanation": "'acelerador de partículas' se repite varias veces en párrafos muy próximos del discurso y la conversación posterior, alternando además con 'acelerador de hadrones', lo que genera redundancia notable."
+            },
+            {
+              "word": "experimentos",
+              "occurrences": [
+                "Ahora podremos continuar el trabajo de los experimentos",
+                "Saber que vamos a poder llevar a cabo todos los experimentos que, tanto nosotros, como nuestros colegas científicos, hemos pensado y planeado",
+                "los experimentos que se llevaron a cabo en el segundo colisionador de partículas",
+                "retomar los experimentos de una manera segura",
+                "los experimentos que vamos a realizar en el acelerador de partículas"
+              ],
+              "explanation": "'experimentos' aparece repetidamente en párrafos consecutivos del discurso presidencial y los diálogos previos, sin variación estilística que lo justifique."
+            },
+            {
+              "word": "descubramos / encontremos / descubrimientos",
+              "occurrences": [
+                "la inversión podrá ser recuperada por los descubrimientos que encontremos",
+                "los descubrimientos que encontremos pueden traer para nuestra confederación",
+                "si es que al final encontramos algo",
+                "Gracias a lo que descubramos, podremos averiguar",
+                "Podremos descubrir cómo manipular la gravedad"
+              ],
+              "explanation": "Las formas del campo léxico descubrir/encontrar/descubrimientos se acumulan en párrafos consecutivos del discurso de Albert, empobreciendo el estilo."
+            },
+            {
+              "word": "algo",
+              "occurrences": [
+                "Mi madre encontró algo",
+                "Mi madre encontró algo.",
+                "Me huelo que nos van a desvelar algo. Algo importante.",
+                "si es que al final encontramos algo"
+              ],
+              "explanation": "'algo' se repite cuatro veces en párrafos adyacentes del diálogo entre Albert y Émilie, con escasa variación y efecto empobrecedor."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Ella deslizó la mano para agarrar la de su marido",
+              "verb": "agarrar",
+              "explanation": "'Agarrar' es verbo genérico y brusco para un gesto afectuoso; podría sustituirse por 'tomar', 'asir' o 'estrechar'."
+            },
+            {
+              "originalText": "Albert asintió con la cabeza para saludar",
+              "verb": "asintió con la cabeza",
+              "explanation": "La perífrasis 'asintió con la cabeza' es redundante e imprecisa en contexto de saludo; podría decirse 'cabeceó a modo de saludo' o simplemente 'saludó con una inclinación'."
+            },
+            {
+              "originalText": "dijo engatillando dos veces los dedos índice y corazón de cada mano al pronunciar la palabra «manipular», marcando unas comillas en el aire",
+              "verb": "marcando",
+              "explanation": "'Marcando unas comillas en el aire' es una perífrasis vaga; podría reemplazarse por 'dibujando comillas en el aire' o directamente integrarse en el gesto ya descrito, eliminando la redundancia."
+            },
+            {
+              "originalText": "prendió la mecha de sus pensamientos",
+              "verb": "prendió",
+              "explanation": "Aunque metafórico, 'prendió la mecha' es un cliché muy gastado; verbos como 'encendió', 'detonó' o 'desató' resultarían más expresivos en contexto."
+            },
+            {
+              "originalText": "Empezó a subir y bajar la rodilla sobre los genitales de Albert",
+              "verb": "subir y bajar",
+              "explanation": "'Subir y bajar' es una descripción mecánica y vaga; un verbo como 'deslizar' o 'frotar' expresaría la acción de forma más precisa y fluida."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "Me huelo que nos van a desvelar algo. Algo importante.",
+              "genericWord": "algo",
+              "explanation": "'Algo importante' es vago en un contexto en que los personajes tienen sospechas concretas sobre información clasificada; podría concretarse como 'información', 'revelación' o 'dato clave'."
+            },
+            {
+              "originalText": "Hay algo más que no nos han contado.",
+              "genericWord": "algo",
+              "explanation": "'Algo' funciona como sustantivo indefinido donde cabría un término más concreto como 'información', 'motivo' o 'interés oculto', enriqueciendo el texto."
+            },
+            {
+              "originalText": "hemos desarrollado y para la obtención de oxígeno de manera relativamente sencilla",
+              "genericWord": "manera",
+              "explanation": "'De manera relativamente sencilla' es una construcción vaga y perifrástica; podría sustituirse por 'con relativa sencillez' o un adverbio más preciso."
+            }
+          ]
+        }
+      },
+      {
+        "findings": []
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "agujeros negros",
+              "occurrences": [
+                "abrir múltiples agujeros a la vez",
+                "solapar varios agujeros negros cuánticos a la vez",
+                "los actuales sistemas de seguridad pensados para el colapso de uno de los agujeros negros",
+                "apertura automática de agujeros negros",
+                "Los agujeros negros que nosotros generamos"
+              ],
+              "explanation": "La expresión 'agujeros negros' aparece 5 veces en párrafos consecutivos del mismo intercambio de diálogo, lo que resulta repetitivo y empobrece el estilo."
+            },
+            {
+              "word": "peaksons",
+              "occurrences": [
+                "aquellos seres que se hacían llamar los peaksons",
+                "hablar fuera de las instalaciones del proyecto sobre cualquier tema relacionado con los peaksons",
+                "los diplomáticos se ocuparían de las comunicaciones",
+                "que les dejasen participar de las conversaciones con los peaksons"
+              ],
+              "explanation": "'peaksons' aparece repetido en párrafos muy próximos con alternativas posibles como 'ellos', 'aquellos seres' o 'sus interlocutores'."
+            },
+            {
+              "word": "intramundo",
+              "occurrences": [
+                "hemos encontrado un intramundo con vida inteligente",
+                "hemos encontrado un intramundo con vida inteligente",
+                "cualquier comunicación con los seres de ese intramundo"
+              ],
+              "explanation": "'intramundo' aparece 3 veces en párrafos consecutivos de la misma escena de la reunión, resultando llamativamente repetitivo."
+            },
+            {
+              "word": "comunicación",
+              "occurrences": [
+                "comenzarían con la estrategia de comunicación",
+                "ejecutaremos el procedimiento de comunicación establecido para originar una forma de comunicación fluida",
+                "respecto al procedimiento de comunicación, tengo órdenes de dirigirlo personalmente",
+                "los flujos de comunicación que establezcamos",
+                "cualquier comunicación con los seres de ese intramundo"
+              ],
+              "explanation": "'comunicación' se repite 5 veces en párrafos adyacentes del mismo pasaje, con alternativas disponibles como 'contacto', 'diálogo' o 'intercambio'."
+            },
+            {
+              "word": "tripa",
+              "occurrences": [
+                "Ella se palpaba la tripa con las manos",
+                "Albert abrió la palma de su mano izquierda sobre la tripa"
+              ],
+              "explanation": "Aunque solo son dos ocurrencias, están en párrafos inmediatamente consecutivos y podrían alternarse con 'vientre', que ya aparece en el mismo pasaje."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Boris hizo un par de gestos con la mano sobre el dispositivo de su muñeca",
+              "verb": "hizo",
+              "explanation": "'Hizo gestos' es vago; podría sustituirse por 'deslizó los dedos sobre el dispositivo' o 'manipuló el dispositivo' para describir la acción con precisión."
+            },
+            {
+              "originalText": "le dijo a Albert: «Cuando quieras, quedamos y te cuento todo lo que sé de tu madre»",
+              "verb": "dijo",
+              "explanation": "El verbo 'dijo' es comodín aquí; dado el contexto de una oferta personal y cargada emocionalmente, verbos como 'propuso' o 'susurró' serían más expresivos."
+            },
+            {
+              "originalText": "Su entrada por la puerta hizo el silencio",
+              "verb": "hizo",
+              "explanation": "'Hacer el silencio' es una construcción con verbo comodín; podría reemplazarse por 'impuso silencio' o 'silenció la sala' para mayor precisión y fuerza expresiva."
+            },
+            {
+              "originalText": "Volderlayer tomó cartas en el asunto",
+              "verb": "tomó",
+              "explanation": "Aunque es una expresión hecha, 'tomó cartas' con 'tomar' como verbo comodín podría sustituirse por 'intervino' o 'actuó' para evitar el cliché y ganar en precisión."
+            },
+            {
+              "originalText": "dijo al entrar en la sala sin tan siquiera saludar",
+              "verb": "dijo",
+              "explanation": "'Dijo' es genérico para introducir una pregunta directa y brusca; verbos como 'preguntó' o 'exigió' captarían mejor el tono urgente de la entrada."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "originar una forma de comunicación fluida",
+              "genericWord": "forma",
+              "explanation": "'Forma' es un sustantivo vago aquí; podría sustituirse por 'canal', 'método' o 'protocolo' para dar más precisión técnica al contexto científico."
+            },
+            {
+              "originalText": "optimizando todo aquello que hacían",
+              "genericWord": "todo aquello",
+              "explanation": "'Todo aquello' es excesivamente vago en un contexto donde se habla de procesos sociales y productivos concretos; podría concretarse como 'cada proceso' o 'cada actividad'."
+            },
+            {
+              "originalText": "dejaron la puerta abierta a regalarnos la tecnología más adelante",
+              "genericWord": "tecnología",
+              "explanation": "En este contexto ya se ha especificado de qué tecnología se trata; 'tecnología' resulta vago y podría sustituirse por 'el dispositivo' o 'los conocimientos necesarios'."
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "hablar",
+              "occurrences": [
+                "terminantemente prohibido hablar fuera de las instalaciones",
+                "no podían dejar de hablar de ello",
+                "habían intentado por enésima vez que les dejasen participar de las conversaciones",
+                "Casi no hemos podido hablar con ellos"
+              ],
+              "explanation": "'Hablar' aparece repetidas veces en párrafos muy próximos sin variación estilística, lo que empobrece el texto."
+            },
+            {
+              "word": "instalaciones",
+              "occurrences": [
+                "hablar fuera de las instalaciones del proyecto",
+                "el permiso para acceder a las instalaciones"
+              ],
+              "explanation": "Aparece dos veces en párrafos inmediatamente consecutivos de forma llamativa."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Albert, que había entablado algo más que una amistad con AiFlash y siempre tenía en cuenta su opinión",
+              "verb": "tener en cuenta",
+              "explanation": "'Tenía en cuenta' es una construcción vaga; podría sustituirse por 'valoraba' o 'consideraba', verbos más precisos y expresivos."
+            },
+            {
+              "originalText": "Ha tirado por los suelos todos nuestros sueños",
+              "verb": "tirar",
+              "explanation": "Aunque es una expresión hecha, 'tirar por los suelos' podría sustituirse por 'destruido' o 'arruinado' para mayor precisión expresiva fuera del registro coloquial."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "el cariz que ha tomado esto",
+              "genericWord": "esto",
+              "explanation": "'Esto' es vago en este contexto; podría concretarse como 'la situación' o 'el asunto' para mayor claridad."
+            },
+            {
+              "originalText": "atento a cualquier detalle fuera de lo común",
+              "genericWord": "detalle",
+              "explanation": "Aunque no es de los sustantivos más vagos, en este contexto 'detalle' podría concretarse con 'señal' o 'indicio', que refuerzan el tono de alerta."
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "de cualquier modo",
+              "occurrences": [
+                "Bueno, de cualquier modo, estoy muy excitada"
+              ],
+              "explanation": "Muletilla introductoria que no aporta significado; podría eliminarse sin alterar el mensaje."
+            },
+            {
+              "expression": "por último, pero no menos importante",
+              "occurrences": [
+                "Por último, pero no menos importante, podremos llegar a conseguir el mayor tesoro"
+              ],
+              "explanation": "Fórmula cliché muy gastada que no añade valor real al discurso."
+            },
+            {
+              "expression": "créanme cuando les digo",
+              "occurrences": [
+                "Señores, créanme cuando les digo que la única forma"
+              ],
+              "explanation": "Muletilla retórica de énfasis que puede suprimirse sin pérdida de significado."
+            },
+            {
+              "expression": "Calma, amigos. Calma.",
+              "occurrences": [
+                "Calma, amigos. Calma."
+              ],
+              "explanation": "Repetición inmediata de la misma palabra sin añadir información nueva; la segunda instancia es muletilla redundante."
+            },
+            {
+              "expression": "etcétera",
+              "occurrences": [
+                "partículas de polvo, etcétera"
+              ],
+              "explanation": "Muletilla de cierre de lista que puede sustituirse por una formulación más precisa o eliminarse."
+            },
+            {
+              "expression": "cuanto menos",
+              "occurrences": [
+                "es cuanto menos una idea que me maravillaría"
+              ],
+              "explanation": "Expresión comodín de matización que no aporta significado concreto y puede eliminarse."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "señalando con su dedo índice",
+              "explanation": "Se señala necesariamente con el dedo; 'con su dedo índice' es redundante respecto a 'señalando'.",
+              "correction": "señalando con el índice"
+            },
+            {
+              "originalText": "subir y bajar la rodilla",
+              "explanation": "'Subir y bajar' describe un movimiento de vaivén que podría expresarse sin redundancia, pero además el movimiento ascendente ya implica el descendente en el contexto de una caricia continua; la acumulación resulta pleonástica.",
+              "correction": "deslizar la rodilla"
+            },
+            {
+              "originalText": "marcando unas comillas en el aire",
+              "explanation": "'Engatillando los dedos índice y corazón de cada mano' ya describe el gesto de comillas; añadir 'marcando unas comillas en el aire' repite la misma información.",
+              "correction": "engatillando los dedos índice y corazón de cada mano"
+            },
+            {
+              "originalText": "un acuerdo de cooperación mutua",
+              "explanation": "'Cooperación' implica necesariamente mutualidad; 'mutua' es redundante.",
+              "correction": "un acuerdo de cooperación"
+            },
+            {
+              "originalText": "regenerar de nuevo",
+              "explanation": "'Regenerar' ya contiene el significado de volver a generarse; 'de nuevo' es redundante.",
+              "correction": "regenerarse"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "de manera",
+              "occurrences": [
+                "de manera voluntaria en pro de un reparto igualitario",
+                "controlando de manera exhaustiva a nuestros científicos",
+                "En Liberty Universe llevamos años trabajando en secreto en este proyecto de manera estanca"
+              ],
+              "explanation": "La expresión 'de manera + adjetivo' se repite tres veces como perífrasis evitable: 'voluntariamente', 'exhaustivamente', 'de forma estanca' serían más directas o simplemente se puede reformular."
+            },
+            {
+              "expression": "de hecho",
+              "occurrences": [
+                "De hecho, de haber descifrado el mensaje tan solo unas horas antes",
+                "de hecho, las últimas palabras que dejó escritas fueron pensando en ti"
+              ],
+              "explanation": "'De hecho' aparece dos veces como muletilla sin aportar valor real al discurso; puede eliminarse sin pérdida de significado."
+            },
+            {
+              "expression": "por lo visto",
+              "occurrences": [
+                "Por lo visto, cuando se abre un agujero…",
+                "Bueno, por lo visto, lo que provoca la desestabilización"
+              ],
+              "explanation": "'Por lo visto' aparece dos veces seguidas en el mismo intercambio dialógico como muletilla que introduce información sin añadir matiz real."
+            },
+            {
+              "expression": "lo antes posible",
+              "occurrences": [
+                "queremos hablar con tus científicos lo antes posible"
+              ],
+              "explanation": "Expresión comodín muy gastada que podría sustituirse por algo más preciso o eliminarse dado el contexto ('ya mismo' aparece a continuación, lo que la hace redundante respecto a la siguiente frase)."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "otras tres personas más que serán elegidas",
+              "explanation": "'Otras' ya implica que son adicionales; añadir 'más' es redundante.",
+              "correction": "otras tres personas que serán elegidas"
+            },
+            {
+              "originalText": "vía de comunicación de la que podamos obtener información",
+              "explanation": "Anteriormente en el mismo párrafo ya se dijo 'canal diplomático de comunicación'; aquí 'vía de comunicación' repite el mismo concepto siendo pleonástico respecto al contexto inmediato, y 'vía' ya implica canal/medio de comunicación.",
+              "correction": "vía de la que podamos obtener información"
+            },
+            {
+              "originalText": "parpadeó varias veces seguidas",
+              "explanation": "Parpadear implica necesariamente una acción repetida; 'varias veces seguidas' es redundante.",
+              "correction": "parpadeó varias veces"
+            },
+            {
+              "originalText": "un recuerdo fugaz tintineó su mente trayéndole a la memoria",
+              "explanation": "'Trayéndole a la memoria' es redundante con 'recuerdo': si es un recuerdo, ya viene a la memoria por definición.",
+              "correction": "Un recuerdo fugaz tintineó su mente"
+            },
+            {
+              "originalText": "filtraciones de información",
+              "explanation": "En el mismo párrafo aparece antes 'fugas de información'; ambas expresiones se usan como sinónimas en frases contiguas, siendo la segunda una repetición pleonástica del mismo concepto.",
+              "correction": "Eliminar una de las dos expresiones, manteniendo solo 'fugas de información' o 'filtraciones'."
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "De repente",
+              "occurrences": [
+                "De repente, sus ojos mostraron sorpresa."
+              ],
+              "explanation": "Expresión comodín que podría eliminarse o sustituirse por una descripción más precisa de la acción."
+            },
+            {
+              "expression": "supongo que",
+              "occurrences": [
+                "supongo que son los genes",
+                "Sí, supongo que eso es lo que ha ocurrido.",
+                "Supongo que sintió miedo.",
+                "supongo que, para bien o para mal, ha moldeado mi personalidad",
+                "Supongo que ahora que has dicho que lo tengamos, lo veo con más optimismo"
+              ],
+              "explanation": "Se repite en exceso como muletilla dubitativa que pierde fuerza expresiva por acumulación."
+            },
+            {
+              "expression": "de una manera",
+              "occurrences": [
+                "Estar contigo hace que mis pensamientos fluyan de una manera más lineal",
+                "luego actuaba de manera distinta de cara a los demás",
+                "Le gustaba cuando su marido actuaba de manera alocada"
+              ],
+              "explanation": "Construcción perifrástica repetida que podría sustituirse por un adverbio o adjetivo directo."
+            },
+            {
+              "expression": "a partir de",
+              "occurrences": [
+                "a partir de ahora, todos los implicados quedarán bajo vigilancia",
+                "a partir del día en el que Albert les preguntó"
+              ],
+              "explanation": "Locución temporal repetida que podría variarse con 'desde ahora' u otras alternativas."
+            },
+            {
+              "expression": "tomó cartas en el asunto",
+              "occurrences": [
+                "Volderlayer tomó cartas en el asunto."
+              ],
+              "explanation": "Frase hecha muy gastada que no aporta precisión ni originalidad al estilo narrativo."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "Albert asintió con la cabeza",
+              "explanation": "Asentir implica necesariamente el movimiento de cabeza; 'con la cabeza' es redundante.",
+              "correction": "Albert asintió."
+            },
+            {
+              "originalText": "intentar comprender y entender a través de las imágenes",
+              "explanation": "'Comprender' y 'entender' son sinónimos exactos; usar ambos es redundante.",
+              "correction": "intentar comprender a través de las imágenes"
+            },
+            {
+              "originalText": "Tras detallar y exponer los detalles del descubrimiento",
+              "explanation": "'Detallar' ya implica exponer detalles; además se repite la raíz léxica 'detall-'.",
+              "correction": "Tras exponer los detalles del descubrimiento"
+            },
+            {
+              "originalText": "originar una forma de comunicación fluida",
+              "explanation": "En el contexto inmediato ya se habla de 'el procedimiento de comunicación'; 'originar una forma de comunicación' es redundante respecto al concepto ya nombrado, y 'originar' más 'forma' es perifrástico cuando bastaría 'establecer una comunicación fluida'.",
+              "correction": "establecer una comunicación fluida"
+            },
+            {
+              "originalText": "en el conticinio de la noche",
+              "explanation": "'Conticinio' significa por definición la parte más callada y oscura de la noche; añadir 'de la noche' es redundante.",
+              "correction": "en el conticinio"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "de todos modos",
+              "occurrences": [
+                "De todos modos, os ayudaré en lo que pueda"
+              ],
+              "explanation": "Expresión de relleno que no aporta significado adicional al contexto; la frase funciona igual sin ella."
+            },
+            {
+              "expression": "en efecto",
+              "occurrences": [
+                "En efecto. Eso pienso yo."
+              ],
+              "explanation": "Muletilla confirmativa redundante junto a 'Eso pienso yo', que ya expresa la misma afirmación."
+            },
+            {
+              "expression": "en mi opinión",
+              "occurrences": [
+                "En mi opinión —interrumpió AiFlash— Émilie podría no estar mal encaminada"
+              ],
+              "explanation": "Expresión introductoria que no añade información; el verbo 'opino' más adelante cumple la misma función modal."
+            },
+            {
+              "expression": "está bien",
+              "occurrences": [
+                "—Está bien, dos contra uno."
+              ],
+              "explanation": "Muletilla de aceptación sin valor semántico propio en el contexto; puede eliminarse sin alterar el significado."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "cuándo otro se le adelanta y apaga las velas de su tarta",
+              "explanation": "'cuándo' lleva tilde diacrítica incorrecta en una oración de relativo temporal subordinada (no interrogativa ni exclamativa); debe escribirse 'cuando' sin tilde.",
+              "correction": "cuando otro se le adelanta y apaga las velas de su tarta"
+            },
+            {
+              "originalText": "la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta",
+              "explanation": "Redundancia conceptual: 'su tarta' en el contexto de 'su cumpleaños' ya implica que la tarta pertenece al niño; 'de su tarta' repite la posesión ya establecida.",
+              "correction": "la misma sensación que experimenta un niño en su cumpleaños cuando otro se le adelanta y apaga las velas"
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "dijo Émilie con entusiasmo comedido",
+              "adverb": "N/A - no aplica aquí, ver siguiente",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente",
+              "alternatives": []
+            },
+            {
+              "originalText": "de manera relativamente sencilla",
+              "adverb": "relativamente",
+              "evaluation": "Mejorable",
+              "explanation": "Debilita la afirmación sin añadir precisión literaria ni técnica",
+              "alternatives": [
+                "de manera sencilla, accesible incluso con tecnología básica",
+                "con un proceso que no exige infraestructura compleja"
+              ]
+            },
+            {
+              "originalText": "de manera segura para la Tierra",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente",
+              "alternatives": []
+            },
+            {
+              "originalText": "no solo serán significativas, sino que también generarán beneficios tangibles",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente",
+              "alternatives": []
+            },
+            {
+              "originalText": "de manera práctica en el mundo",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente",
+              "alternatives": []
+            },
+            {
+              "originalText": "eliminando este tipo de combustibles tan inflamables por completo",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente",
+              "alternatives": []
+            },
+            {
+              "originalText": "exactamente mi madre cuando ocurrió",
+              "adverb": "exactamente",
+              "evaluation": "Mejorable",
+              "explanation": "Resulta redundante junto a 'qué es lo que pasó' y 'en qué estaba trabajando'; ocupa espacio sin añadir fuerza emocional",
+              "alternatives": [
+                "qué ocupaba a mi madre en aquel momento",
+                "en qué experimento estaba mi madre cuando ocurrió"
+              ]
+            },
+            {
+              "originalText": "realmente",
+              "adverb": "realmente",
+              "evaluation": "Mejorable",
+              "explanation": "En 'conocían lo sucedido realmente' el adverbio es redundante: si lo conocían, ya es real",
+              "alternatives": [
+                "solo AiFlash y unos pocos escogidos sabían la verdad de lo ocurrido",
+                "solo AiFlash y unos pocos escogidos guardaban la verdad de lo sucedido"
+              ]
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "la rueda de prensa se dio por terminada",
+              "explanation": "Construcción pasiva refleja que oculta el agente; puede ganar dinamismo en activa",
+              "activeVersion": "el presidente Haddon dio por terminada la rueda de prensa"
+            },
+            {
+              "originalText": "los experimentos que se llevaron a cabo en el segundo colisionador de partículas que provocó la catástrofe de Fratenburgo hace cuarenta años, quedaron detenidos desde entonces",
+              "explanation": "Pasiva perifrástica con participio 'detenidos' y agente implícito; la voz activa aporta más claridad",
+              "activeVersion": "nadie retomó los experimentos del segundo colisionador —aquel que provocó la catástrofe de Fratenburgo— desde hacía cuarenta años"
+            },
+            {
+              "originalText": "tal y como se les había indicado",
+              "explanation": "Pasiva con agente implícito; convertible en activa para mayor concreción",
+              "activeVersion": "tal y como el protocolo les había indicado / tal y como les habían indicado los organizadores"
+            },
+            {
+              "originalText": "Toda la información se destruyó",
+              "explanation": "Pasiva refleja con agente implícito; en activa se puede insinuar responsabilidad o accidente",
+              "activeVersion": "alguien destruyó toda la información / la explosión destruyó toda la información"
+            },
+            {
+              "originalText": "se pudiesen regenerar de nuevo",
+              "explanation": "Pasiva refleja con agente implícito; en activa resulta más directo",
+              "activeVersion": "el sistema pudiese regenerarlas de nuevo"
+            },
+            {
+              "originalText": "le ordenaron que guardara silencio",
+              "explanation": "Pasiva con agente implícito 'le ordenaron' (sujeto indeterminado); en activa se precisa quién ordenó",
+              "activeVersion": "Liberty Universe le ordenó guardar silencio / los responsables le ordenaron guardar silencio"
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Saber que vamos a poder llevar a cabo todos los experimentos que, tanto nosotros, como nuestros colegas científicos, hemos pensado y planeado a nivel teórico en un nuevecito colisionador de partículas, me pone.",
+              "wordCount": 42,
+              "explanation": "Frase subordinada muy extensa con incisos que interrumpen el flujo y hacen perder el remate cómico-erótico",
+              "suggestion": "Dividir: 'Saber que vamos a poder llevar a cabo todos los experimentos que hemos planeado a nivel teórico… —hizo una pausa— en un nuevecito colisionador de partículas, me pone.'"
+            },
+            {
+              "originalText": "Querido amigo, te aseguro que si logramos alcanzar este objetivo, las aplicaciones prácticas que podremos derivar de los descubrimientos no solo serán significativas, sino que también generarán beneficios tangibles en diversas áreas.",
+              "wordCount": 43,
+              "explanation": "Frase grandilocuente y genérica que se extiende sin aportar contenido concreto; el tono político la infla",
+              "suggestion": "Cortar en dos: 'Te aseguro que si alcanzamos ese objetivo, las aplicaciones prácticas serán significativas. Los beneficios se extenderán a áreas que hoy apenas imaginamos.'"
+            },
+            {
+              "originalText": "Gracias a lo que descubramos, podremos averiguar cómo viajar a velocidades cercanas a la velocidad de la luz a un coste reducido.",
+              "wordCount": 23,
+              "explanation": "Dentro del límite, no supera 40 palabras",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Ya hemos hablado de lo raro que es que un fondo de inversión privado tenga tanto interés en algo tan etéreo como lo que vamos a estudiar aquí. Es cierto que lo que descubramos puede traer beneficios, pero no recuperarán de inmediato lo invertido. Podrían pasar dos décadas hasta que lo que encontremos pueda ser aplicado de manera práctica en el mundo, si es que al final encontramos algo. Y es demasiado dinero. La ratio de riesgo es enorme.",
+              "wordCount": 85,
+              "explanation": "Bloque de reflexión de Émilie compuesto por oraciones encadenadas que acumulan el mismo argumento repetido; la redundancia lo hace pesado",
+              "suggestion": "Condensar: 'Ya hemos hablado de lo extraño que resulta que Liberty Universe apueste tanto por algo tan etéreo. Los beneficios tardarán décadas en materializarse, si es que llegan. La ratio de riesgo es absurda para un fondo privado. Hay algo que no nos han contado.'"
+            },
+            {
+              "originalText": "El equipo estará formado, en primer lugar, por las siete personas que deben estar llegando a Ganímedes en estos momentos. Estas personas han estado estudiando y desbrozando en secreto toda la información que conocemos gracias a AiFlash. Además, el equipo incluirá otras tres personas más que serán elegidas por Albert y Émilie.",
+              "wordCount": 53,
+              "explanation": "Tres oraciones seguidas que repiten el sujeto 'equipo/personas' y detallan su composición de forma acumulativa y plana",
+              "suggestion": "Unificar: 'El equipo lo formarán las siete personas que deben estar llegando a Ganímedes ahora mismo —llevan tiempo desbrozando en secreto todo lo que conocemos gracias a AiFlash— más otras tres que elegirán Albert y Émilie.'"
+            },
+            {
+              "originalText": "Actualmente, no se puede decir que haya nada dentro de estas últimas, lo que es lo mismo que decir que son el inicio de las cosas. Pero, ¿y si dentro de estas partículas subatómicas hay algo más?",
+              "wordCount": 41,
+              "explanation": "La frase acumula dos subordinadas que se solapan ('lo que es lo mismo que decir') y ralentizan la tensión especulativa del diálogo",
+              "suggestion": "Abreviar: 'Actualmente no sabemos qué hay dentro de ellas; son, en teoría, el inicio de todo. ¿Pero y si hubiera algo más?'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Albert",
+              "occurrences": [
+                "Los científicos Albert Emmet y Émilie Cloutier aguardaban",
+                "Ha pasado mucho tiempo, pero a mí aún me duele —Respondió Albert susurrando",
+                "—¿Excitada? ¿Cómo de excitada? Excitada de cachonda o excitada en plan, ¡ay, qué contenta me siento! —dijo Albert con sicalipsis",
+                "Albert asintió con la cabeza para saludar",
+                "prefiero que sea Albert Emmet quien les responda",
+                "y Albert ocupó su lugar"
+              ],
+              "explanation": "El nombre 'Albert' aparece repetidamente en el mismo párrafo/escena de la rueda de prensa y en párrafos inmediatamente consecutivos sin alternancia suficiente con pronombres o epítetos",
+              "suggestion": "Alternar con pronombres ('él'), su apellido o epítetos contextuales ('el científico', 'el físico') para aligerar la repetición"
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "Descubrieron de manera empírica que cada agujero negro cuántico tiene un equivalente agujero blanco que se abre en un universo interior.",
+              "adverb": "de manera empírica",
+              "evaluation": "Mejorable",
+              "explanation": "La locución adverbial 'de manera empírica' es una perífrasis débil que puede sustituirse con un verbo o construcción más directa.",
+              "alternatives": [
+                "Descubrieron en sus experimentos que cada agujero negro cuántico tiene un equivalente agujero blanco que se abre en un universo interior.",
+                "Sus experimentos demostraron que cada agujero negro cuántico tiene un equivalente agujero blanco que se abre en un universo interior."
+              ]
+            },
+            {
+              "originalText": "No se ha probado aún de manera empírica, pero presumen haber descubierto que la desestabilización proviene del desequilibrio en el traspaso de materia entre nuestro mundo y el intramundo.",
+              "adverb": "de manera empírica",
+              "evaluation": "Mejorable",
+              "explanation": "Segunda aparición de la misma locución débil; repetición que resta fuerza al texto.",
+              "alternatives": [
+                "No se ha sometido aún a prueba real, pero presumen haber descubierto que la desestabilización proviene del desequilibrio en el traspaso de materia entre nuestro mundo y el intramundo.",
+                "Ningún experimento lo ha validado aún, pero presumen haber descubierto que la desestabilización proviene del desequilibrio en el traspaso de materia entre nuestro mundo y el intramundo."
+              ]
+            },
+            {
+              "originalText": "añadiendo así energía de manera focalizada, se le daría la suficiente estabilidad como para mantenerlo centrado",
+              "adverb": "de manera focalizada",
+              "evaluation": "Mejorable",
+              "explanation": "Perífrasis adverbial sustituible por un adjetivo o verbo que gane precisión y economía expresiva.",
+              "alternatives": [
+                "añadiendo así energía concentrada en un único punto, se le daría la suficiente estabilidad como para mantenerlo centrado",
+                "focalizando así la energía emitida, se le daría la suficiente estabilidad como para mantenerlo centrado"
+              ]
+            },
+            {
+              "originalText": "controlando de manera exhaustiva a nuestros científicos",
+              "adverb": "de manera exhaustiva",
+              "evaluation": "Mejorable",
+              "explanation": "Locución adverbial genérica; un verbo más preciso ganaría densidad narrativa.",
+              "alternatives": [
+                "escrutando cada paso de nuestros científicos",
+                "vigilando sin fisuras a nuestros científicos"
+              ]
+            },
+            {
+              "originalText": "Fue al grano, sin preámbulos, sin aderezar ni adornar la conversación; nunca trataba de crear un ambiente más distendido.",
+              "adverb": "nunca",
+              "evaluation": "Adecuado",
+              "explanation": "'Nunca' construye con eficacia el retrato frío de Volderlayer y resulta necesario para el contraste con la frase anterior.",
+              "alternatives": []
+            },
+            {
+              "originalText": "en Liberty Universe llevamos años trabajando en secreto en este proyecto de manera estanca",
+              "adverb": "de manera estanca",
+              "evaluation": "Mejorable",
+              "explanation": "La locución puede integrarse en el verbo o el sustantivo para mayor concisión.",
+              "alternatives": [
+                "en Liberty Universe llevamos años blindando este proyecto en secreto, sin vasos comunicantes con el exterior",
+                "en Liberty Universe llevamos años trabajando en secreto en este proyecto, aislado herméticamente del resto"
+              ]
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "El equipo estará formado, en primer lugar, por las siete personas que deben estar llegando a Ganímedes en estos momentos.",
+              "explanation": "Voz pasiva perifrástica con 'estar + participio + agente explícito (las siete personas)'; puede activarse para mayor dinamismo.",
+              "activeVersion": "Las siete personas que deben estar llegando a Ganímedes en estos momentos integrarán el equipo en primer lugar."
+            },
+            {
+              "originalText": "otras tres personas más que serán elegidas por Albert y Émilie",
+              "explanation": "Pasiva perifrástica con 'ser + participio + agente explícito (Albert y Émilie)'.",
+              "activeVersion": "otras tres personas más que Albert y Émilie elegirán"
+            },
+            {
+              "originalText": "Cuando descifraron el mensaje, comprendieron que era un aviso para que parásemos de abrir los agujeros negros o de lo contrario nos atacarían. Por desgracia, aquello no se descubrió a tiempo y terminaron cumpliendo su amenaza. A través de la distorsión nos mandaron una bomba. Eso fue lo que causó la catástrofe de Fratenburgo.",
+              "explanation": "La frase 'aquello no se descubrió a tiempo' es pasiva refleja con agente implícito; puede activarse para mayor claridad.",
+              "activeVersion": "Por desgracia, nadie descifró aquello a tiempo y terminaron cumpliendo su amenaza."
+            },
+            {
+              "originalText": "a un agujero negro cuántico al que se le denominó BH88",
+              "explanation": "Pasiva refleja con agente implícito ('se denominó'); puede activarse para mayor fluidez.",
+              "activeVersion": "a un agujero negro cuántico que denominaron BH88"
+            },
+            {
+              "originalText": "sino algo distinto que han denominado agujero espejo negro y agujero espejo blanco",
+              "explanation": "Aunque está en voz activa, la forma impersonal con sujeto tácito difuso puede concretarse; sin embargo, la construcción real más cercana a pasiva es la denominación impuesta desde fuera.",
+              "activeVersion": "sino algo distinto, al que llamaron agujero espejo negro y agujero espejo blanco"
+            },
+            {
+              "originalText": "AiFlash transmitió el código de acceso al panel que había en el lateral de la puerta y se abrió.",
+              "explanation": "La construcción 'se abrió' funciona como pasiva refleja con agente implícito (el panel/la puerta).",
+              "activeVersion": "AiFlash transmitió el código de acceso al panel lateral y la puerta se deslizó."
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "En Liberty Universe llevamos años trabajando en secreto en este proyecto de manera estanca, sin que nadie conozca en lo que trabajábamos y controlando de manera exhaustiva a nuestros científicos.",
+              "wordCount": 36,
+              "explanation": "Acumulación de gerundios y subordinadas que alarga la frase y mezcla tiempos verbales (trabajábamos/llevamos).",
+              "suggestion": "Dividir en dos oraciones: 'En Liberty Universe llevamos años trabajando en secreto en este proyecto, de forma completamente estanca. Nadie conocía nuestra labor y controlábamos a nuestros científicos con mano de hierro.'"
+            },
+            {
+              "originalText": "Vuestra labor, no solo supondrá dirigir todos los proyectos de investigación que se han planificado, sino involucrarse principalmente en un nuevo proyecto secreto en el que contaréis con los siete científicos que acaban de llegar, AiFlash, y otros tres científicos que elijáis vosotros.",
+              "wordCount": 46,
+              "explanation": "Oración muy extensa con dos ramas coordinadas y varias incrustaciones; dificulta la comprensión en lectura lineal.",
+              "suggestion": "Dividir: 'Vuestra labor supondrá dirigir todos los proyectos de investigación planificados. Pero también —y principalmente— os involucraréis en un nuevo proyecto secreto: contaréis con los siete científicos recién llegados, con AiFlash y con otros tres que vosotros elijáis.'"
+            },
+            {
+              "originalText": "El objetivo de este proyecto secreto será buscar intramundos con vida inteligente con los que contactar para establecer una vía de comunicación de la que podamos obtener información valiosa para mejorar nuestra tecnología —paró de hablar un momento para observar la reacción de ambos, hasta que Albert respondió.",
+              "wordCount": 48,
+              "explanation": "La frase acumula tres encadenamientos de finalidad ('para contactar', 'de la que podamos obtener', 'para mejorar') más una acotación narrativa, todo en un solo bloque.",
+              "suggestion": "Separar el diálogo de la acotación: 'El objetivo será buscar intramundos con vida inteligente, contactar con ellos y establecer una vía de comunicación que nos permita mejorar nuestra tecnología. Volderlayer hizo una pausa para observar la reacción de ambos. Fue Albert quien habló primero.'"
+            },
+            {
+              "originalText": "Del mismo modo, creen que, una vez abierto el agujero negro, si se emite un haz de luz láser en el mismo centro, añadiendo así energía de manera focalizada, se le daría la suficiente estabilidad como para mantenerlo centrado, evitando que el universo interior se desestabilice.",
+              "wordCount": 47,
+              "explanation": "Condicional anidada con gerundio y consecuencia encadenada; la densidad técnica se ve agravada por la longitud.",
+              "suggestion": "Dividir: 'Del mismo modo, creen que basta emitir un haz láser en el centro exacto del agujero una vez abierto. Esa energía focalizada le daría estabilidad suficiente para mantenerse centrado y evitar que el universo interior se desestabilice.'"
+            },
+            {
+              "originalText": "Esas miradas que solían cruzar, con sus pequeños matices en el gesto de los párpados, cejas o en las imperceptibles arrugas que aparecían en la comisura de sus ojos, eran una forma de comunicación más efectiva que cualquier otra conversación de voz.",
+              "wordCount": 42,
+              "explanation": "El inciso descriptivo es muy extenso y desconecta sujeto ('esas miradas') de su predicado ('eran').",
+              "suggestion": "Reducir el inciso: 'Esas miradas que solían cruzar —párpados, cejas, arrugas en la comisura de los ojos— eran más elocuentes que cualquier conversación.'"
+            },
+            {
+              "originalText": "Recordaba el color de sus ojos, su cabello prístino cuando estaba de espaldas, o la pequeña arruga que surgía en la comisura de sus labios cuando sonreía. Pero nunca era capaz de recordar una imagen clara y completa de su cara.",
+              "wordCount": 42,
+              "explanation": "La enumeración de detalles más la oración adversativa forman un bloque largo que puede allegarse con un punto intermedio sin perder lirismo.",
+              "suggestion": "Mantener el primer punto y acortar: 'Recordaba el color de sus ojos, su cabello prístino de espaldas, la arruga en la comisura de sus labios al sonreír. Nunca lograba reunir esos fragmentos en una imagen completa.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Albert",
+              "occurrences": [
+                "Émilie, Albert, buenos días",
+                "Volderlayer no les caía nada bien a ninguno de los dos",
+                "cuando le descubramos a Albert lo que ocurrió",
+                "Albert, eso es un problema que nuestros científicos",
+                "Hace cuatro décadas, los experimentos que realizó tu madre —dijo clavando la mirada en Albert—",
+                "Albert, desconcertado, parpadeó varias veces seguidas"
+              ],
+              "explanation": "El nombre 'Albert' aparece 4 o más veces en el mismo bloque de escena de la reunión con Volderlayer, generando una densidad nominal que interrumpe la fluidez.",
+              "suggestion": "Alternar con pronombres ('él', 'su'), con apodos de referencia ('el científico', 'el hijo de Emmet') o con verbos en tercera persona sin sujeto explícito cuando el antecedente sea claro."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "terminantemente prohibido hablar fuera de las instalaciones",
+              "adverb": "terminantemente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio es redundante con 'prohibido'; la prohibición ya implica rotundidad.",
+              "alternatives": [
+                "prohibido bajo cualquier circunstancia hablar fuera de las instalaciones",
+                "recordó a todos la prohibición absoluta de hablar fuera de las instalaciones"
+              ]
+            },
+            {
+              "originalText": "luego actuaba de manera distinta de cara a los demás",
+              "adverb": "luego",
+              "evaluation": "Adecuado",
+              "explanation": "Funciona bien como marcador temporal que contrasta con el comportamiento interior.",
+              "alternatives": []
+            },
+            {
+              "originalText": "mis sensores de sonido tienen un alcance bastante grande",
+              "adverb": "bastante",
+              "evaluation": "Mejorable",
+              "explanation": "Modificador débil que diluye la afirmación; una acción o cuantificación concreta sería más eficaz.",
+              "alternatives": [
+                "mis sensores de sonido cubren toda la sala sin esfuerzo",
+                "mis sensores de sonido capturan conversaciones al otro extremo del corredor"
+              ]
+            },
+            {
+              "originalText": "adelantarse a los demás en las conclusiones, provocaba cierta aversión",
+              "adverb": "cierta",
+              "evaluation": "Mejorable",
+              "explanation": "'Cierta' actúa como atenuador vago que debilita la observación psicológica del personaje.",
+              "alternatives": [
+                "adelantarse a los demás despertaba aversión en sus colegas",
+                "adelantarse a los demás levantaba muros de silencio a su alrededor"
+              ]
+            },
+            {
+              "originalText": "La comunicación se parecía a la que se lleva a cabo mediante un walkie-talkie",
+              "adverb": null,
+              "evaluation": "Adecuado",
+              "explanation": "No hay adverbio en -mente; se descarta.",
+              "alternatives": []
+            },
+            {
+              "originalText": "de manera más acentuada, la sonrisa maquiavélica",
+              "adverb": "de manera más acentuada",
+              "evaluation": "Mejorable",
+              "explanation": "Perífrasis equivalente a un adverbio modal; se puede sustituir por un verbo o imagen más precisa.",
+              "alternatives": [
+                "Volderlayer ensanchó la sonrisa maquiavélica que habitaba su boca",
+                "la sonrisa maquiavélica de Volderlayer se abrió un poco más"
+              ]
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "cualquier comunicación con los seres de ese intramundo quedará clasificada como secreto de nivel arcano",
+              "explanation": "Voz pasiva perifrástica con 'quedar' + participio; el agente implícito es el gobierno.",
+              "activeVersion": "el gobierno clasificará cualquier comunicación con los seres de ese intramundo como secreto de nivel arcano"
+            },
+            {
+              "originalText": "todos los implicados quedarán bajo vigilancia",
+              "explanation": "Construcción pasiva con 'quedar' + complemento; agente implícito institucional.",
+              "activeVersion": "vigilaremos a todos los implicados"
+            },
+            {
+              "originalText": "será acusado por alta traición",
+              "explanation": "Pasiva perifrástica con 'ser' + participio; agente implícito (el gobierno/la justicia).",
+              "activeVersion": "el gobierno lo acusará de alta traición"
+            },
+            {
+              "originalText": "será detenido y juzgado por traición",
+              "explanation": "Doble pasiva perifrástica con 'ser' + participio; agente implícito.",
+              "activeVersion": "las autoridades lo detendrán y lo juzgarán por traición"
+            },
+            {
+              "originalText": "los diplomáticos se ocuparían de las comunicaciones",
+              "explanation": "Construcción activa con se reflexivo; no es pasiva perifrástica. Se descarta.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "ha moldeado mi personalidad",
+              "explanation": "Construcción activa; no es pasiva perifrástica. Se descarta.",
+              "activeVersion": ""
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Sabían que cualquier tipo de respuesta debería tardar en llegar, puesto que los habitantes de aquel intramundo tenían que descifrar el mensaje y porque teorizaban que el tiempo en los intramundos pasaba más despacio respecto al nuestro debido a la dilatación gravitacional del tiempo o a la velocidad cercana a la luz a la que se mueven las partículas subatómicas.",
+              "wordCount": 58,
+              "explanation": "La frase acumula dos causas subordinadas y una explicación técnica que dificultan la lectura lineal.",
+              "suggestion": "Dividir en dos: 'Sabían que cualquier respuesta tardaría en llegar: los habitantes de aquel intramundo necesitaban descifrar el mensaje. Además, teorizaban que el tiempo en los intramundos transcurría más despacio que en el nuestro, debido a la dilatación gravitacional o a la velocidad subatómica de sus partículas.'"
+            },
+            {
+              "originalText": "Habían averiguado que su sociedad estaba organizada de una forma equilibrada, optimizando todo aquello que hacían para conseguir una mayor eficiencia. Esa era la razón por la que todos los edificios eran uniformes y el motivo por el que todo lo que había en su planeta era tan «cuadriculado».",
+              "wordCount": 46,
+              "explanation": "La segunda oración encadena dos estructuras relativas paralelas ('la razón por la que… el motivo por el que') que ralentizan el ritmo.",
+              "suggestion": "Separar: 'Su sociedad se organizaba con equilibrio, optimizando cada acción para maximizar la eficiencia. De ahí que sus edificios fueran uniformes y que todo en su planeta resultase tan cuadriculado.'"
+            },
+            {
+              "originalText": "Si bien es cierto que durante aquel intercambio de información ofrecieron detalles sobre cómo lo habían logrado (modificando virus a nivel subatómico programando órdenes en ellos), se negaron, por el momento, a proporcionarnos la tecnología necesaria para crear el dispositivo con el que lo hacían.",
+              "wordCount": 47,
+              "explanation": "La estructura concesiva inicial más el inciso parentético y la subordinada final forman una cadena difícil de sostener en una sola lectura.",
+              "suggestion": "Dividir: 'Durante aquel intercambio ofrecieron algunos detalles: modificaban virus a nivel subatómico programando órdenes en ellos. Sin embargo, se negaron por el momento a facilitarnos la tecnología para crear ese dispositivo.'"
+            },
+            {
+              "originalText": "La euforia inicial que emanaba de todos los miembros del equipo se esfumó, dejándoles la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta.",
+              "wordCount": 38,
+              "explanation": "Roza el límite y el símil final, aunque evocador, alarga la frase hasta hacerla levemente pesada.",
+              "suggestion": "Acortar el símil: 'La euforia del equipo se esfumó de golpe, como la de un niño al que otro le apaga las velas del pastel.'"
+            },
+            {
+              "originalText": "Por el pasillo, de vuelta a sus alojamientos, Albert y Émilie caminaban muy enfadados; les habían dado con la puerta en las narices cuando habían intentado por enésima vez que les dejasen participar de las conversaciones con los peaksons.",
+              "wordCount": 41,
+              "explanation": "La frase combina circunstanciales iniciales, un sujeto compuesto y una subordinada causal extensa que superan los 40 palabras.",
+              "suggestion": "Dividir en dos oraciones: 'Por el pasillo, de vuelta a sus alojamientos, Albert y Émilie caminaban muy enfadados. Les habían dado con la puerta en las narices cuando intentaron por enésima vez participar en las conversaciones con los peaksons.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Albert",
+              "occurrences": [
+                "le dijo a Albert: «Cuando quieras, quedamos»",
+                "Albert asintió con la cabeza",
+                "Albert necesitaba que la velocidad de escaneo",
+                "dijo Albert mirando a sus colegas"
+              ],
+              "explanation": "Albert aparece 4 veces en el párrafo de apertura que va desde 'le dijo a Albert' hasta 'Es hora de pasar al ataque', saturando el inicio del fragmento.",
+              "suggestion": "Sustituir alguna aparición por el pronombre 'él' o por una referencia de rol ('el científico', 'el líder del equipo') para aligerar la repetición."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "estaba terminantemente prohibido hablar fuera de las instalaciones",
+              "adverb": "terminantemente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio es enfático pero predecible; el énfasis puede lograrse con recursos más directos.",
+              "alternatives": [
+                "recordó a todos la prohibición absoluta de hablar fuera de las instalaciones",
+                "advirtió que hablar fuera de las instalaciones estaba vedado bajo cualquier circunstancia"
+              ]
+            },
+            {
+              "originalText": "AiFlash los acompañaba en silencio",
+              "adverb": "en silencio",
+              "evaluation": "Adecuado",
+              "explanation": "Locución adverbial que aporta imagen concreta y contraste emocional con la rabia de los otros personajes.",
+              "alternatives": []
+            },
+            {
+              "originalText": "dijo Albert encolerizado",
+              "adverb": "encolerizado",
+              "evaluation": "Adecuado",
+              "explanation": "Participio adjetival, no adverbio en -mente. No procede evaluarlo aquí.",
+              "alternatives": []
+            },
+            {
+              "originalText": "de una manera fiable",
+              "adverb": "de una manera fiable",
+              "evaluation": "Mejorable",
+              "explanation": "Perífrasis adverbial vaga; puede sustituirse por un verbo o construcción más precisa.",
+              "alternatives": [
+                "la única forma de garantizarlo es eliminar los cabos sueltos",
+                "la única salida que no deja fisuras es eliminar los cabos sueltos"
+              ]
+            },
+            {
+              "originalText": "intentaría estar atento a cualquier detalle fuera de lo común",
+              "adverb": "fuera de lo común",
+              "evaluation": "Adecuado",
+              "explanation": "Locución que funciona bien en boca de AiFlash, con tono neutro y analítico propio del personaje.",
+              "alternatives": []
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "los diplomáticos se ocuparían de las comunicaciones",
+              "explanation": "No es pasiva perifrástica real; es construcción activa con sujeto explícito. Se excluye.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "a él también le habían retirado el permiso para acceder a las instalaciones, ya no hacían falta sus servicios",
+              "explanation": "Pasiva perifrástica con agente implícito (los responsables del proyecto); el sujeto paciente es 'el permiso'.",
+              "activeVersion": "a él también le habían retirado el permiso para acceder a las instalaciones; ya no necesitaban sus servicios"
+            },
+            {
+              "originalText": "Dispongo de documentación sobre atrocidades perpetradas por gobiernos cuya finalidad era salvaguardar intereses nacionales",
+              "explanation": "Pasiva de participio con agente explícito ('por gobiernos'); estructura perifrástica integrada en sintagma nominal.",
+              "activeVersion": "Dispongo de documentación sobre atrocidades que gobiernos cometieron para salvaguardar intereses nacionales"
+            },
+            {
+              "originalText": "Me han dado órdenes de guardar silencio",
+              "explanation": "Pasiva perifrástica impersonal con agente implícito; el foco recae en AiFlash como receptor de la orden.",
+              "activeVersion": "Me ordenaron guardar silencio"
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Albert, que había entablado algo más que una amistad con AiFlash y siempre tenía en cuenta su opinión, arrugó la frente durante un momento para pensar y, tras unos segundos, relajó el semblante diciendo:",
+              "wordCount": 43,
+              "explanation": "La frase acumula una oración de relativo larga más dos acciones encadenadas, lo que ralentiza el ritmo en un momento de tensión dramática.",
+              "suggestion": "Dividir: 'Albert había entablado algo más que una amistad con AiFlash y siempre tenía en cuenta su opinión. Arrugó la frente un instante; luego relajó el semblante.'"
+            },
+            {
+              "originalText": "En mi opinión —interrumpió AiFlash— Émilie podría no estar mal encaminada. Dispongo de documentación sobre atrocidades perpetradas por gobiernos cuya finalidad era salvaguardar intereses nacionales. Si yo estuviese en vuestro lugar, intentaría estar atento a cualquier detalle fuera de lo común.",
+              "wordCount": 48,
+              "explanation": "El parlamento de AiFlash encadena tres ideas distintas (valoración, evidencia, consejo) sin pausa estructural, diluyendo el impacto de cada una.",
+              "suggestion": "Separar en al menos dos intervenciones o introducir un breve narrador entre la evidencia y el consejo para marcar los distintos registros lógicos del personaje."
+            },
+            {
+              "originalText": "Me han dado órdenes de guardar silencio y opino que, como lo he hecho durante tantos años, sobre lo que ocurrió en Fratenburgo, creen que, a pesar de todo, me tienen controlado.",
+              "wordCount": 34,
+              "explanation": "Aunque no supera las 40 palabras, la incrustación de dos incisos seguidos ('como lo he hecho…' y 'sobre lo que ocurrió…') genera ambigüedad sintáctica que dificulta la comprensión.",
+              "suggestion": "Reorganizar: 'Me han dado órdenes de guardar silencio. Creo que, dado que lo hice durante tantos años con lo de Fratenburgo, piensan que me tienen bajo control.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": []
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "eliminando este tipo de combustibles tan inflamables por completo",
+              "gerund": "eliminando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio expresa una consecuencia o resultado posterior a la acción principal ('levitarán sin tener que usar combustibles'), no una acción simultánea. La eliminación sería el resultado final, no una acción que ocurre al mismo tiempo que la levitación.",
+              "correction": "lo que eliminará por completo este tipo de combustibles tan inflamables"
+            },
+            {
+              "originalText": "señalando con su dedo índice a otro periodista, indicó que podía preguntar",
+              "gerund": "señalando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'señalando' no es problemático en sí mismo aquí, pero la construcción resulta redundante e incorrecta: señalar con el dedo índice es el modo en que indica, no una acción simultánea diferente. El gerundio de modo es aceptable, pero la frase es tautológica.",
+              "correction": "señalando con su dedo índice a otro periodista, le indicó que podía preguntar"
+            },
+            {
+              "originalText": "desgarrándonos átomo por átomo",
+              "gerund": "desgarrándonos",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'desgarrándonos átomo por átomo' se presenta como acción simultánea a 'nos destrozaría al succionarnos', pero en realidad describe una consecuencia posterior o el resultado final del proceso, no algo que ocurre al mismo tiempo.",
+              "correction": "hasta desgarrarnos átomo por átomo"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "lo que le extraño. Su rodilla, moviéndose aún sobre él, lo había despertado del corto letargo; pero Albert había abierto sus ojos recordando lo que acababa de soñar.",
+              "verbsFound": [
+                "extraño",
+                "había despertado",
+                "había abierto"
+              ],
+              "explanation": "'Le extraño' aparece como indefinido (pretérito perfecto simple) mezclado con pluscuamperfectos ('había despertado', 'había abierto') en la misma escena narrativa. Además, 'extraño' parece una errata por 'extrañó', lo que agrava la inconsistencia temporal.",
+              "suggestion": "Unificar en indefinido: 'lo que le extrañó. Su rodilla [...] lo despertó del corto letargo; pero Albert abrió los ojos recordando lo que acababa de soñar.'"
+            },
+            {
+              "originalText": "Una vez hablamos de que cuando llegásemos al poder averiguaríamos cómo conseguir un mundo más igualitario y justo.",
+              "verbsFound": [
+                "hablamos",
+                "llegásemos",
+                "averiguaríamos"
+              ],
+              "explanation": "'Una vez hablamos' usa el indefinido en primera persona del plural en un contexto de discurso formal donde se esperaría 'una vez hablamos' o bien 'una vez dijimos/acordamos'. La mezcla con el condicional 'averiguaríamos' y el subjuntivo 'llegásemos' no es en sí un error de tiempos narrativos, pero el uso de 'hablamos' (indefinido) en lugar de 'dijimos' o 'acordamos' rompe el registro y la coherencia del discurso del personaje.",
+              "suggestion": "«En su momento acordamos que cuando llegásemos al poder averiguaríamos cómo conseguir un mundo más igualitario y justo.»"
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "las siete personas que deben estar llegando a Ganímedes en estos momentos",
+              "gerund": "llegando",
+              "errorType": "especificativo",
+              "explanation": "El gerundio 'llegando' funciona como adjetivo especificativo del sustantivo 'personas', lo cual es incorrecto en español. Debería usarse una oración de relativo.",
+              "correction": "las siete personas que deben de estar llegando → las siete personas que en estos momentos deben llegar a Ganímedes"
+            },
+            {
+              "originalText": "el camino para conseguirlo es usando la fuerza",
+              "gerund": "usando",
+              "errorType": "especificativo",
+              "explanation": "El gerundio 'usando' actúa como complemento predicativo en función casi adjetiva o nominal, complementando al sustantivo 'camino'. Es un uso incorrecto; debería emplearse una construcción con preposición o infinitivo.",
+              "correction": "el camino para conseguirlo es el uso de la fuerza / pasa por usar la fuerza"
+            },
+            {
+              "originalText": "Tú te ocuparás de controlar todo lo que hagan manteniendo un perfil bajo hasta que tengamos éxito",
+              "gerund": "manteniendo",
+              "errorType": "posterioridad",
+              "explanation": "Aunque podría interpretarse como simultaneidad, en el contexto la acción de 'mantener un perfil bajo' se presenta como condición o modo que acompaña a 'controlar', pero resulta ambiguo y forzado; sin embargo, el uso principal es modal simultáneo, por lo que no constituye un error claro de posterioridad. Se mantiene como hallazgo por uso forzado y ambiguo.",
+              "correction": "Tú te ocuparás de controlar todo lo que hagan, con un perfil bajo, hasta que tengamos éxito"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "En Liberty Universe llevamos años trabajando en secreto en este proyecto de manera estanca, sin que nadie conozca en lo que trabajábamos y controlando de manera exhaustiva a nuestros científicos.",
+              "verbsFound": [
+                "conozca (presente de subjuntivo)",
+                "trabajábamos (imperfecto de indicativo)"
+              ],
+              "explanation": "Dentro de la misma frase hay una mezcla de tiempos que parece un descuido: 'sin que nadie conozca' (presente) referido a un estado actual, pero inmediatamente 'en lo que trabajábamos' salta al imperfecto de indicativo, creando una incoherencia temporal dentro de la misma cláusula subordinada.",
+              "suggestion": "Unificar el tiempo: 'sin que nadie conozca en lo que trabajamos' o 'sin que nadie conociese en lo que trabajábamos'"
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "Albert levantó las cejas con sorpresa queriendo saber cómo interpretar por qué su mujer no podía esperar hasta que acabase su turno para hablar.",
+              "gerund": "queriendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'queriendo saber' expresa una acción posterior o resultado de levantar las cejas, no simultánea. El levantamiento de cejas es la reacción que lleva a querer saber, no una acción que ocurre al mismo tiempo de forma natural. Debería expresarse con una construcción distinta.",
+              "correction": "Albert levantó las cejas con sorpresa, pues quería saber cómo interpretar por qué su mujer no podía esperar hasta que acabase su turno para hablar."
+            },
+            {
+              "originalText": "habían estado haciendo el amor sin protección, finalizando con la marcha atrás.",
+              "gerund": "finalizando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'finalizando' indica una acción posterior a 'hacer el amor sin protección', no simultánea. La marcha atrás es el modo en que terminaba el acto, lo que debería expresarse de otra forma.",
+              "correction": "habían estado haciendo el amor sin protección, terminando siempre con la marcha atrás."
+            },
+            {
+              "originalText": "Enviaban un mensaje de voz, finalizándolo con las palabras «fin de mensaje», y esperaban a recibir una respuesta",
+              "gerund": "finalizándolo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'finalizándolo' indica el final del mensaje, es decir, una acción que cierra o concluye la acción principal, lo que supone una relación de posterioridad inmediata respecto al envío. Sería más correcto usar una construcción coordinada.",
+              "correction": "Enviaban un mensaje de voz y lo finalizaban con las palabras «fin de mensaje», y esperaban a recibir una respuesta"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "La tensa espera y las dudas que tanto le quitaban el sueño a Albert, desaparecieron dando paso a la efervescente excitación de saber que ya podrían conocer quiénes eran aquellos seres.",
+              "verbsFound": [
+                "quitaban",
+                "desaparecieron"
+              ],
+              "explanation": "Mezcla de imperfecto ('quitaban') e indefinido ('desaparecieron') en la misma oración referida al mismo momento narrativo. El imperfecto 'quitaban' describe un estado pasado habitual y el indefinido 'desaparecieron' narra el evento puntual, pero la construcción resulta disonante al estar en la misma cláusula nominal sujeto-verbo, generando una mezcla que parece un descuido.",
+              "suggestion": "La tensa espera y las dudas que tanto le habían quitado el sueño a Albert desaparecieron, dando paso a la efervescente excitación de saber que ya podrían conocer quiénes eran aquellos seres."
+            },
+            {
+              "originalText": "Émilie entró en la sala y les saludó. A continuación, se dirigió a Albert con una sonrisa para decirle que quería hablar con él en privado.",
+              "verbsFound": [
+                "entró",
+                "saludó",
+                "dirigió",
+                "quería"
+              ],
+              "explanation": "La narración avanza en indefinido ('entró', 'saludó', 'dirigió') y de repente aparece 'quería' en imperfecto dentro del mismo contexto de acción puntual. Aunque el imperfecto puede justificarse en estilo indirecto, el cambio resulta inconsistente con el ritmo narrativo en indefinido de la misma escena.",
+              "suggestion": "Émilie entró en la sala y les saludó. A continuación, se dirigió a Albert con una sonrisa para decirle que quería hablar con él en privado. (Aceptable si es estilo indirecto libre, pero considerar: 'para decirle que quería hablar con él en privado' → coherente; revisar el conjunto de la escena para uniformar el tratamiento.)"
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "relajó el semblante diciendo:\n—Está bien, dos contra uno.",
+              "gerund": "diciendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'diciendo' expresa una acción posterior al verbo principal 'relajó': primero relajó el semblante y después dijo las palabras. La acción de decir no es simultánea ni modo de la acción principal, sino que la sucede.",
+              "correction": "relajó el semblante y dijo: / relajó el semblante para decir:"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "Por el pasillo, de vuelta a sus alojamientos, Albert y Émilie caminaban muy enfadados; les habían dado con la puerta en las narices cuando habían intentado por enésima vez que les dejasen participar de las conversaciones con los peaksons. AiFlash los acompañaba en silencio; a él también le habían retirado el permiso para acceder a las instalaciones, ya no hacían falta sus servicios.",
+              "verbsFound": [
+                "caminaban",
+                "habían dado",
+                "habían intentado",
+                "acompañaba",
+                "habían retirado",
+                "hacían"
+              ],
+              "explanation": "La escena es coherente en su uso del imperfecto descriptivo y el pluscuamperfecto para acciones anteriores, sin mezcla problemática. No se detecta error de mezcla indefinido/imperfecto.",
+              "suggestion": "Sin cambios necesarios"
+            }
+          ]
+        }
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": [
+          {
+            "originalText": "la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta",
+            "wordForm": "cuándo",
+            "correctForm": "cuando",
+            "errorType": "tilde_sobrante",
+            "context": "conjuncion",
+            "explanation": "'cuando' introduce una cláusula temporal relativa que especifica en qué momento se experimenta esa sensación. No depende de ningún verbo de duda o desconocimiento previo, sino que actúa como conjunción temporal. Por tanto, no debe llevar tilde."
+          }
+        ]
+      },
+      {
+        "findings": [
+          {
+            "originalText": "sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta",
+            "wordForm": "cuándo",
+            "correctForm": "cuando",
+            "errorType": "tilde_sobrante",
+            "context": "conjuncion",
+            "explanation": "'cuándo' no introduce aquí una pregunta indirecta ni depende de un verbo de conocimiento o duda. Es una conjunción temporal que introduce una subordinada temporal ('cuando otro se le adelanta y apaga las velas'), equivalente a 'en el momento en que'. No hay interrogación ni duda: es conjunción temporal → sin tilde."
+          }
+        ]
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
+      },
+      {
+        "findings": []
       },
       {
         "findings": []
