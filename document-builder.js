@@ -322,6 +322,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       case 'pleonasmos': {
         const orig = (f.originalText||'').split(/\s+/);
         const corr = (f.correction  ||'').split(/\s+/);
+        const unique = orig.filter(w => w.replace(/[^a-z\u00C0-\u024F]/gi,'').length > 3 &&
+                                        !corr.some(c => c.toLowerCase() === w.toLowerCase()));
+        if (unique.length) return unique.reduce((a,b) => a.length >= b.length ? a : b);
         return orig.find(w => !corr.some(c=>c.toLowerCase()===w.toLowerCase())) || f.originalText;
       }
       case 'gerundios':        return f.gerund || f.originalText;

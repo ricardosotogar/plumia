@@ -3015,15 +3015,6 @@
                                                                                                   ],
                                                                                   "explanation":  "\u0027Pantalla\u0027 aparece tres veces en pÃ¡rrafos muy prÃ³ximos sin necesidad estilÃ­stica."
                                                                               },
-                                                                              {
-                                                                                  "word":  "dijo",
-                                                                                  "occurrences":  [
-                                                                                                      "dijo Marcus",
-                                                                                                      "dijo, seÃ±alando la oscura pantalla",
-                                                                                                      "dijo de nuevo seÃ±alando la pantalla"
-                                                                                                  ],
-                                                                                  "explanation":  "\u0027Dijo\u0027 aparece tres veces en el mismo bloque de diÃ¡logo de Marcus en pÃ¡rrafos consecutivos, resultando repetitivo y monÃ³tono."
-                                                                              }
                                                                           ]
                                                          },
                                           "verbos":  {
