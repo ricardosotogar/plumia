@@ -2881,28 +2881,12 @@
           ]
         },
         "dequeismo": {
-          "findings": [
-            {
-              "originalText": "Al fijarse, identificó que también tenía un laberinto con rugosidades que tenía vida propia",
-              "errorType": "queismo",
-              "explanation": "'Fijarse' rige la preposición 'en': 'fijarse en que'. Se omite la preposición obligatoria.",
-              "correction": "Al fijarse en que también tenía un laberinto con rugosidades que tenía vida propia"
-            }
-          ]
+          "findings": []
         }
       },
       {
         "repeticion": {
           "findings": [
-            {
-              "word": "pantalla",
-              "occurrences": [
-                "señalando la oscura pantalla en la que había aparecido la esfera",
-                "señalando la pantalla",
-                "la pantalla se tornó negro"
-              ],
-              "explanation": "'Pantalla' aparece tres veces en párrafos muy próximos sin necesidad estilística."
-            }
           ]
         },
         "verbos": {
@@ -3101,26 +3085,6 @@
               "originalText": "Parecían fabricados como si hubieran juntado enormes bloques de metal de distintos tamaños que hubiesen derretido y pulido",
               "explanation": "Construcción pasiva con participio 'fabricados' y agente implícito difuso que debilita la imagen.",
               "activeVersion": "Parecían el resultado de fundir y pulir enormes bloques de metal de distintos tamaños."
-            },
-            {
-              "originalText": "la pantalla se tornó negro y AiFlash anunció que eso era todo",
-              "explanation": "No es pasiva real; se descarta.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "su último pensamiento fue para ellos",
-              "explanation": "No es pasiva perifrástica; se descarta.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "el hecho de que nos lo muestren, significa que son capaces de ello",
-              "explanation": "No es pasiva; se descarta.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "sacudió su Ford blanco empujándolo con una gran violencia, haciéndolo levitar durante unos momentos hasta que se posó de nuevo de forma descontrolada en el asfalto",
-              "explanation": "No es pasiva; se descarta.",
-              "activeVersion": ""
             }
           ]
         },
@@ -3162,12 +3126,6 @@
               "wordCount": 34,
               "explanation": "La coma antes de 'tenga' interrumpe el sujeto y la acumulación de subordinadas alarga la idea innecesariamente.",
               "suggestion": "Simplificar: 'Probablemente necesitan una energía descomunal para abrir ese canal, muy superior a la que usamos nosotros.'"
-            },
-            {
-              "originalText": "Edmund pisó el freno intentando parar el envite. Las ruedas chirriaron bailando a derecha e izquierda mientras se acercaba a un enorme camión sin poder frenar lo suficiente.",
-              "wordCount": 31,
-              "explanation": "Acumula tres gerundios seguidos ('intentando', 'bailando', 'frenar') que dificultan la lectura en un momento de máxima tensión.",
-              "suggestion": "Separar acciones: 'Edmund pisó el freno. Las ruedas chirriaron, el coche se tambaleó a derecha e izquierda. Un camión enorme llenó el parabrisas.'"
             },
             {
               "originalText": "Con instinto providencial, corrigió la trayectoria para evitar la colisión. Después de unos segundos en los que el coche se arrastró sonando como una vieja puerta metálica oxidada, se detuvo dando paso a un silencio hueco y sepulcral, que se difuminó rápidamente por los gritos de la gente atrapada en otros coches.",
