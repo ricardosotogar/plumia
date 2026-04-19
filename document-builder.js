@@ -609,10 +609,12 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             }
           }
         } else {
-          // origText completo con puntuación final, solo truncado para la búsqueda inicial.
-          // Ancla = últimas 3 palabras de origText (sin el signo de puntuación final).
-          const origTail = origText.replace(/[.!?;,\u2026\u2014]+$/, '').trim();
-          searchAnchor   = origTail.split(/\s+/).slice(-3).join(' ').trim();
+          // origText completo con puntuación final: ancla = últimas 3 palabras + signo de cierre.
+          // Incluir el signo hace el ancla única (no aparece antes en el párrafo).
+          const lastPunct = origText.trim().slice(-1);
+          const withoutPunct = origText.trim().slice(0, -1).trim();
+          const words = withoutPunct.split(/\s+/);
+          searchAnchor = words.slice(-3).join(' ') + lastPunct;
         }
 
         dbg(`_markBrackets CaseB anchor="${searchAnchor}"`);
@@ -624,7 +626,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           await ctx.sync();
           dbg(`_markBrackets CaseB items=${endSr.items.length}`);
           if (endSr.items.length) {
-            const ins2 = endSr.items[0].getRange('End').insertText('\u25C6\u00B2', 'After');
+            const ins2 = endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
             ins2.font.color = colorHex;
             ins2.font.bold  = true;
             await ctx.sync();
