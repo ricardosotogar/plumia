@@ -132,7 +132,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     return [];
   }
 
-  async _callAPI(prompt) {
+  async _callAPI(prompt, _retryCount = 0) {
 
     // ── MODO MOCK: devolver respuesta guardada sin llamar a la API ────────────
     if (window.PLUMIA_MOCK) {
@@ -150,6 +150,13 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       console.warn(`[PLUMIA MOCK "${testName}"] llamada ${idx + 1}: no hay respuesta guardada (solo hay ${stored.length})`);
       return { findings: [] };
     }
+
+    // ── Delay entre llamadas para evitar rate limit (1s entre requests) ────────
+    if (this._lastCallTime) {
+      const elapsed = Date.now() - this._lastCallTime;
+      if (elapsed < 1000) await new Promise(r => setTimeout(r, 1000 - elapsed));
+    }
+    this._lastCallTime = Date.now();
 
     const MAX_CHARS = 480000;
     const safePrompt = prompt.length > MAX_CHARS
@@ -179,7 +186,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       }
       const msg = d.error?.message || `HTTP ${resp.status}`;
       if (resp.status === 401) throw new Error('API_KEY_INVALID: ' + msg);
-      if (resp.status === 429) throw new Error('RATE_LIMIT: ' + msg);
+      if (resp.status === 429) {
+        if (_retryCount < 2) {
+          const wait = ((_retryCount + 1) * 30000); // 30s primer retry, 60s segundo
+          console.warn(`[PLUMIA] Rate limit (429) — reintento ${_retryCount + 1}/2 en ${wait/1000}s…`);
+          await new Promise(r => setTimeout(r, wait));
+          return this._callAPI(prompt, _retryCount + 1);
+        }
+        throw new Error('RATE_LIMIT: ' + msg);
+      }
       if (resp.status === 402 || msg.toLowerCase().includes('credit') || msg.toLowerCase().includes('balance') || msg.toLowerCase().includes('insufficient')) {
         throw new Error('INSUFFICIENT_CREDITS: ' + msg);
       }
@@ -297,7 +312,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     }
     console.log('[A2] selectedIds=', [...this.selectedIds].join(','));
     const selectedIds = this.selectedIds;
-    const allResults  = [];
+
+    // ── REANUDACIÓN tras error de rate-limit ─────────────────────────────────
+    const saved = this._isResuming ? this._loadProgress() : null;
+    const resumeFromIndex = (saved && Array.isArray(saved.results)) ? saved.completedIndex : -1;
+    const allResults = (saved && Array.isArray(saved.results)) ? [...saved.results] : [];
+    this._isResuming = false;
+    if (resumeFromIndex >= 0) {
+      console.log('[RESUME] reanudando desde índice', resumeFromIndex, '— grupos ya completados:', allResults.length);
+    }
 
     // ── Preservar texto de selección original ────────────────────────────────
     // Si el usuario seleccionó un fragmento, las correcciones normales deben
@@ -370,7 +393,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       return c && c.requiresFullDoc;
     });
 
-    if (coherenceIds.length > 0 && !this.aborted) {
+    if (coherenceIds.length > 0 && !this.aborted && resumeFromIndex < coherenceIds.length - 1) {
       const activeCoherenceCorrs = coherenceIds.map(id => CORRECTIONS.find(c => c.id === id)).filter(Boolean);
       this.onProgress(5, 'Analizando coherencia narrativa…');
       const accumulated = {};
@@ -418,6 +441,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     const groupTotal = apiGroups.length;
     for (let gi = 0; gi < apiGroups.length; gi++) {
       if (this.aborted) break;
+      if (gi + coherenceIds.length <= resumeFromIndex) {
+        console.log('[RESUME] saltando grupo ya completado:', apiGroups[gi].label);
+        continue;
+      }
       const group = apiGroups[gi];
       const activeIds = group.ids.filter(id => nonCoherenceIds.includes(id));
       const pct = Math.round(35 + (gi / Math.max(groupTotal, 1)) * 60);
