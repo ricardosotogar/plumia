@@ -1323,20 +1323,25 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         body.load('paragraphs'); await ctx.sync();
         const paras = body.paragraphs.items;
         paras.forEach(p=>p.load('text')); await ctx.sync();
+        console.log('[PAGEMAP-FB] párrafos=', paras.length);
+        if (paras.length > 0) console.log('[PAGEMAP-FB] primer párrafo=', (paras[0].text||'').substring(0,80));
         let wc = 0;
         const positions = paras.map(p => {
           const words = (p.text||'').trim().split(/\s+/).filter(Boolean).length;
           const start = wc; wc += words;
           return {text:(p.text||'').trim(), start};
         });
+        const totalWords = wc;
+        console.log('[PAGEMAP-FB] total words en doc=', totalWords);
         for (const f of findings) {
           const st = (f.originalText||'').substring(0,60).toLowerCase();
           if (!st || st.length<3 || pageMap[f.originalText]) continue;
           const match = positions.find(p=>p.text.toLowerCase().includes(st));
           if (match) pageMap[f.originalText] = Math.max(1, Math.ceil((match.start+1)/WPP));
         }
+        console.log('[PAGEMAP-FB] pageMap entries=', Object.keys(pageMap).length);
       });
-    } catch(e) {}
+    } catch(e) { console.log('[PAGEMAP-FB] error=', e.message); }
     return pageMap;
   }
 
