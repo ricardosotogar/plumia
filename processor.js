@@ -226,8 +226,30 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           .replace(/([{,]\s*)(\w+):/g, '$1"$2":');
         parsed = JSON.parse(repaired);
       } catch {
-        console.warn('Plumia: JSON inválido de la API:', raw.substring(0, 200));
-        parsed = { findings: [] };
+        try {
+          // Reparar comillas sin escapar y saltos de línea literales dentro de valores de cadena
+          let fixed = '', inStr = false, i = 0;
+          while (i < clean.length) {
+            const c = clean[i];
+            if (c === '\\' && inStr) { fixed += c + (clean[i+1]||''); i+=2; continue; }
+            if (inStr && (c === '\n' || c === '\r')) { fixed += c === '\n' ? '\\n' : '\\r'; i++; continue; }
+            if (c === '"') {
+              if (!inStr) { inStr = true; fixed += c; }
+              else {
+                let j = i+1;
+                while (j < clean.length && clean[j] === ' ') j++;
+                const nx = clean[j];
+                if (!nx || nx===':'||nx===','||nx==='}'||nx===']'||nx==='\n'||nx==='\r') { inStr=false; fixed+=c; }
+                else { fixed += '\\"'; }
+              }
+            } else { fixed += c; }
+            i++;
+          }
+          parsed = JSON.parse(fixed);
+        } catch {
+          console.warn('Plumia: JSON inválido de la API [stop_reason=' + (data.stop_reason || '?') + ']:', raw.substring(0, 200));
+          parsed = { findings: [] };
+        }
       }
     }
 
