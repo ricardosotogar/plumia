@@ -1298,17 +1298,23 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   async buildPageMap(findings, selectionText = '') {
     const pageMap = {};
     const WPP = 250;
+    console.log('[PAGEMAP] selectionText length=', selectionText ? selectionText.length : 0);
     if (selectionText) {
-      const lowerSel = selectionText.toLowerCase();
+      const normSel = selectionText.replace(/\r\n?/g, '\n');
+      const lowerSel = normSel.toLowerCase();
+      let hits = 0, misses = 0;
       for (const f of findings) {
-        const st = (f.originalText||'').substring(0,60).toLowerCase();
+        const raw = (f.originalText||'').replace(/[\r\n]+/g,' ').trim();
+        const st = raw.substring(0,60).toLowerCase();
         if (!st || st.length < 3 || pageMap[f.originalText]) continue;
         const charPos = lowerSel.indexOf(st);
         if (charPos >= 0) {
-          const wordsBefore = selectionText.substring(0, charPos).split(/\s+/).filter(Boolean).length;
+          const wordsBefore = normSel.substring(0, charPos).split(/\s+/).filter(Boolean).length;
           pageMap[f.originalText] = Math.max(1, Math.ceil((wordsBefore + 1) / WPP));
-        }
+          hits++;
+        } else { misses++; }
       }
+      console.log('[PAGEMAP] hits=', hits, 'misses=', misses, 'entries=', Object.keys(pageMap).length);
       return pageMap;
     }
     try {
