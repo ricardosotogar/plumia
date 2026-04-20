@@ -9,7 +9,7 @@
 <title>Plumia</title>
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="taskpane.css?v=9.40b"/>
+<link rel="stylesheet" href="taskpane.css?v=9.50"/>
 </head>
 <body>
 
@@ -347,6 +347,11 @@
 
   <div class="done-stats" id="doneStats"></div>
 
+  <div id="doneCappedWarning" style="display:none;margin:10px 0;padding:10px 12px;background:#fff8e6;border-left:3px solid #e8a800;border-radius:4px;font-size:11.5px;color:#6b4f00;line-height:1.5">
+    <strong style="display:block;margin-bottom:4px">⚠ Análisis posiblemente incompleto</strong>
+    El texto contenía muchos errores en algunas categorías (<span id="doneCappedGroups" style="font-style:italic"></span>). Es posible que hayan quedado fuera del análisis algunos casos debido a limitaciones de procesamiento. Cuando hayas corregido los detectados, vuelve a pasar el análisis.
+  </div>
+
   <button class="btn-primary" style="margin-top:8px" onclick="goToOptions()">
     Nuevo análisis
   </button>
@@ -447,10 +452,10 @@
      MÓDULOS EXTERNOS
      Orden de carga: config → synonyms → processor → document-builder
 ═══════════════════════════════════════════════════════════════════════════ -->
-<script src="corrections-config.js?v=9.40b"></script>
-<script src="synonyms-db.js?v=9.40b"></script>
-<script src="processor.js?v=9.40b"></script>
-<script src="document-builder.js?v=9.40b"></script>
+<script src="corrections-config.js?v=9.50"></script>
+<script src="synonyms-db.js?v=9.50"></script>
+<script src="processor.js?v=9.50"></script>
+<script src="document-builder.js?v=9.50"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      UI — Estado y lógica de pantallas (solo interfaz, sin módulos)
@@ -508,7 +513,7 @@ console.log('Plumia taskpane v' + PLUMIA_UI_VERSION + ' loaded');
 // Inyectar versión en el header (funciona aunque el HTML esté cacheado)
 document.addEventListener('DOMContentLoaded', function() {
   var el = document.querySelector('.brand-sub');
-  if (el) el.innerHTML = 'Corrector ortotipogr\u00E1fico <span style="font-size:9px;opacity:0.55">v' + PLUMIA_UI_VERSION + '</span>';
+  if (el) el.innerHTML = 'Corrector ortotipogr\u00E1fico <span style="font-size:10px;opacity:0.85;font-weight:600"> v' + PLUMIA_UI_VERSION + '</span>';
 });
 // Aliases locales — los módulos ya están cargados como window.*
 const COLOR_MAP        = window.PLUMIA.COLOR_MAP;
@@ -1717,8 +1722,8 @@ async function runAnalysis() {
 
   // Análisis
   console.log('[DBG9] iniciando proc.analyze…');
-  const allResults = await proc.analyze(text, isSelection);
-  console.log('[DBG10] analyze completado, errored=', proc.errored, 'results=', allResults.length);
+  const { results: allResults, cappedGroups } = await proc.analyze(text, isSelection);
+  console.log('[DBG10] analyze completado, errored=', proc.errored, 'results=', allResults.length, 'capped=', cappedGroups);
 
   // Si el análisis se interrumpió por error, no generar output parcial
   if (proc.errored) return;
@@ -1744,7 +1749,7 @@ async function runAnalysis() {
     ? state.estimatedCostUSD / state.estimatedCostEUR
     : 1.08);
 
-  showDoneScreen(output, allResults, realCostUSD, realCostEUR);
+  showDoneScreen(output, allResults, realCostUSD, realCostEUR, cappedGroups);
 }
 
 function updateProgress(pct, msg) {
@@ -1876,7 +1881,7 @@ function resumeFromError() {
 }
 
 // ── PANTALLA DE COMPLETADO ────────────────────────────────────────────────────
-function showDoneScreen(output, allResults, realCostUSD, realCostEUR) {
+function showDoneScreen(output, allResults, realCostUSD, realCostEUR, cappedGroups) {
   const totalFindings = allResults.reduce((sum, r) => sum + r.findings.length, 0);
 
   // Mostrar coste real (de la API) o estimado si algo falló
@@ -1924,6 +1929,16 @@ function showDoneScreen(output, allResults, realCostUSD, realCostEUR) {
       <span class="done-stat-value"><strong>${totalFindings}</strong></span>
     </div>
     ${statsHTML}`;
+
+  const capWarnEl = document.getElementById('doneCappedWarning');
+  if (capWarnEl) {
+    if (cappedGroups && cappedGroups.length > 0) {
+      capWarnEl.style.display = 'block';
+      document.getElementById('doneCappedGroups').textContent = cappedGroups.join(', ');
+    } else {
+      capWarnEl.style.display = 'none';
+    }
+  }
 
   showScreen('done');
 }

@@ -346,6 +346,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     const saved = this._isResuming ? this._loadProgress() : null;
     const resumeFromIndex = (saved && Array.isArray(saved.results)) ? saved.completedIndex : -1;
     const allResults = (saved && Array.isArray(saved.results)) ? [...saved.results] : [];
+    const cappedGroups = new Set();
     if (saved && saved.selectedIds && this.selectedIds.size === 0) {
       this.selectedIds = new Set(saved.selectedIds);
     }
@@ -459,7 +460,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         this._saveProgress({ text: coherenceText.substring(0, 100), completedIndex: -1, results: allResults });
         this.errored = true;
         this.onError(err, false, 'Coherencia narrativa');
-        return allResults;
+        return { results: allResults, cappedGroups: [...cappedGroups] };
       }
     }
 
@@ -494,11 +495,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           if (this.aborted) break;
           let response;
           console.log('[A5] llamando API, grupo=', group.label, 'chunkLen=', ch.length);
+          const chunkWords = ch.split(/\s+/).filter(Boolean).length;
+          const maxFindings = Math.max(8, Math.round(chunkWords / 120));
 
           if (group.ids.length === 1) {
             const corr = CORRECTIONS.find(c => c.id === group.ids[0]);
-            response = await this._callAPI(corr.prompt.replace('{TEXT}', ch));
+            response = await this._callAPI(corr.prompt.replace('{TEXT}', ch).replace('{MAX_FINDINGS}', String(maxFindings)));
             console.log('[A6] API respondió, grupo=', group.label);
+            if ((response.total_found || 0) > maxFindings && (response.findings || []).length >= maxFindings) {
+              cappedGroups.add(corr.label);
+            }
             const chLower = ch.toLowerCase();
             const findings = (response.findings || []).map(f => {
               const originalText = this._extractOriginalText(f);
@@ -541,8 +547,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             }
           } else {
             // Prompt agrupado
-            response = await this._callAPI(group.buildPrompt(ch));
+            response = await this._callAPI(group.buildPrompt(ch).replace('{MAX_FINDINGS}', String(maxFindings)));
             this._parseGroupedResponse(response, group, activeIds, accumulated, ch);
+            // Detectar cap en grupos agrupados (la respuesta tiene claves por correction id)
+            for (const id of activeIds) {
+              const section = response[id] || response;
+              if ((section.total_found || 0) > maxFindings && (section.findings || []).length >= maxFindings) {
+                const corr = CORRECTIONS.find(c => c.id === id);
+                if (corr) cappedGroups.add(corr.label);
+              }
+            }
           }
         }
 
@@ -589,7 +603,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         if (err.message?.includes('API_KEY_INVALID') || err.message?.includes('RATE_LIMIT') || err.message?.includes('INSUFFICIENT_CREDITS')) {
           this.errored = true;
           this.onError(err, gi > 0 || coherenceIds.length > 0, group.label);
-          return allResults;
+          return { results: allResults, cappedGroups: [...cappedGroups] };
         }
         // Otros errores (JSON inválido, timeout, etc.) → avisar y continuar con el siguiente grupo
         console.warn('Plumia: grupo fallido, continuando:', group.label, err.message);
@@ -602,7 +616,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
     this._clearProgress();
     this.onProgress(100, 'Análisis completado.');
-    return allResults;
+    return { results: allResults, cappedGroups: [...cappedGroups] };
   }
 
   // Extrae originalText de cualquier estructura de finding (normalización temprana)
