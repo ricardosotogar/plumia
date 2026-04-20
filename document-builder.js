@@ -577,6 +577,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const ins2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
         ins2.font.color = colorHex;
         ins2.font.bold  = true;
+        ins2.font.size  = 9;
         await ctx.sync();
         endInserted = true;
       } catch(e) { dbg(`_markBrackets CaseA ◆²: ${e.message}`); }
@@ -643,6 +644,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const ins2 = range.getRange('End').insertText('\u25C6\u00B2', 'After');
         ins2.font.color = colorHex;
         ins2.font.bold  = true;
+        ins2.font.size  = 9;
         await ctx.sync();
       } catch(e) { console.warn(`_markBrackets lastResort ◆² catch: ${e.message}`); }
     }
@@ -652,6 +654,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       const ins1 = range.getRange('Start').insertText('\u25C6\u00B9', 'Before');
       ins1.font.color = colorHex;
       ins1.font.bold  = true;
+      ins1.font.size  = 9;
       if (commentText) ins1.insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 1500));
       await ctx.sync();
     } catch(e) { dbg(`_markBrackets ◆¹: ${e.message}`); }

@@ -523,7 +523,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
               }
               // Filtrar findings que el modelo marcó explícitamente como descartes
               const expl = (f.explanation || f.correction || '').toLowerCase();
-              if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error') ||
+              if (expl.includes('descar') || expl.includes('no incluir') || expl.includes('no es error') ||
                   expl.includes('no se señala') || expl.includes('no aplica') || expl.includes('dentro del límite') ||
                   expl.includes('no procede') || expl.includes('no es un error')) return null;
               return { ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
@@ -622,11 +622,13 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     // Validación local de proximidad para repeticion_lexica:
     // descarta findings donde las dos ocurrencias estén a >40 palabras en el texto real
     const cleanedResults = allResults.map(r => {
-      if (r.correctionId !== 'repeticion_lexica') return r;
-      const filtered = r.findings.filter(f => this._repeticionIsClose(f.word, selectionText, 40));
-      const removed = r.findings.length - filtered.length;
-      if (removed > 0) console.log(`[REPLEX] ${removed} finding(s) descartados por distancia real >40 palabras`);
-      return { ...r, findings: filtered };
+      if (r.correctionId === 'repeticion_lexica') {
+        const filtered = r.findings.filter(f => this._repeticionIsClose(f.word, selectionText, 40));
+        const removed = r.findings.length - filtered.length;
+        if (removed > 0) console.log(`[REPLEX] ${removed} finding(s) descartados por distancia real >40 palabras`);
+        return { ...r, findings: filtered };
+      }
+      return r;
     });
 
     return { results: cleanedResults, cappedGroups: [...cappedGroups] };
@@ -704,6 +706,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const section = response[key];
       if (!section || !Array.isArray(section.findings)) continue;
       section.findings.forEach(f => {
+        // frases_largas: descartar si el texto RAW cruza un punto de cierre + mayúscula
+        // (el modelo construyó una "frase" que abarca varias oraciones distintas).
+        // Hay que comprobarlo ANTES de truncar, porque el truncado a 75 chars elimina el punto.
+        if (corrId === 'frases_largas') {
+          const raw = (f.originalText || '').replace(/[\r\n]+/g, ' ').trim();
+          if (/[.!?…]\s+[A-ZÁÉÍÓÚÜÑ]/.test(raw)) {
+            console.log(`[FRASES] descartado por cruce de oración: "${raw.substring(0, 60)}…"`);
+            return;
+          }
+        }
         // Normalizar originalText AQUÍ, antes de deduplicar
         const originalText = this._extractOriginalText(f);
         if (!originalText) return; // descartar findings sin texto localizable
