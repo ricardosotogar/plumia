@@ -523,7 +523,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
               }
               // Filtrar findings que el modelo marcó explícitamente como descartes
               const expl = (f.explanation || f.correction || '').toLowerCase();
-              if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error')) return null;
+              if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error') ||
+                  expl.includes('no se señala') || expl.includes('no aplica') || expl.includes('dentro del límite') ||
+                  expl.includes('no procede') || expl.includes('no es un error')) return null;
               return { ...f, originalText, correctionId: corr.id, colorId: corr.colorId,
                 label: corr.label, directFix: corr.directFix };
             }).filter(Boolean);
@@ -616,7 +618,34 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
     this._clearProgress();
     this.onProgress(100, 'Análisis completado.');
-    return { results: allResults, cappedGroups: [...cappedGroups] };
+
+    // Validación local de proximidad para repeticion_lexica:
+    // descarta findings donde las dos ocurrencias estén a >40 palabras en el texto real
+    const cleanedResults = allResults.map(r => {
+      if (r.correctionId !== 'repeticion_lexica') return r;
+      const filtered = r.findings.filter(f => this._repeticionIsClose(f.word, selectionText, 40));
+      const removed = r.findings.length - filtered.length;
+      if (removed > 0) console.log(`[REPLEX] ${removed} finding(s) descartados por distancia real >40 palabras`);
+      return { ...r, findings: filtered };
+    });
+
+    return { results: cleanedResults, cappedGroups: [...cappedGroups] };
+  }
+
+  _repeticionIsClose(word, text, maxDistance) {
+    if (!word || !text) return true;
+    const wordLower = word.toLowerCase().trim();
+    const tokens = text.toLowerCase().split(/\s+/);
+    const positions = [];
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i].replace(/^[^a-záéíóúüñ]+|[^a-záéíóúüñ]+$/gi, '');
+      if (t === wordLower) positions.push(i);
+    }
+    if (positions.length < 2) return false; // solo una ocurrencia → alucinación del modelo
+    for (let i = 1; i < positions.length; i++) {
+      if (positions[i] - positions[i - 1] <= maxDistance) return true;
+    }
+    return false; // todas las ocurrencias están lejos entre sí
   }
 
   // Extrae originalText de cualquier estructura de finding (normalización temprana)
@@ -692,7 +721,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           if (!hasMente) return;
         }
         const expl = (f.explanation || f.correction || '').toLowerCase();
-        if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error')) return;
+        if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error') ||
+            expl.includes('no se señala') || expl.includes('no aplica') || expl.includes('dentro del límite') ||
+            expl.includes('no procede') || expl.includes('no es un error')) return;
         accumulated[corrId].push({
           ...f,
           originalText,

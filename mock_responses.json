@@ -2769,13 +2769,6 @@
               "errorType": "posterioridad",
               "explanation": "El gerundio 'sonando' expresa el resultado o efecto posterior al acto de aporrear: primero aporreó y luego sonó. Es un gerundio de posterioridad, incorrecto en este uso.",
               "correction": "Marcus aporreó el teclado con fuerza, que sonó con más profundidad que nunca"
-            },
-            {
-              "originalText": "Por último, atizó la tecla intro con gran violencia con su dedo índice, para terminar de introducir los datos de acceso.",
-              "gerund": "introducir",
-              "errorType": "posterioridad",
-              "explanation": "Aunque 'introducir' aparece en infinitivo dentro de 'para terminar de introducir', la construcción indica que introducir los datos es la finalidad que se completa con el gesto, lo cual es lógicamente posterior al atizar la tecla. No es un error de gerundio propiamente, se descarta.",
-              "correction": ""
             }
           ]
         }
@@ -3291,12 +3284,6 @@
       {
         "leismo": {
           "findings": [
-            {
-              "type": "leismo",
-              "originalText": "cuando le descubramos a Albert lo que ocurrió",
-              "correction": "cuando le descubramos a Albert lo que ocurrió",
-              "explanation": "Este caso es correcto: 'le' funciona como CI (a Albert), por lo que no es error."
-            },
             {
               "type": "leismo",
               "originalText": "desconcentrarle y desviarle de las necesidades del proyecto",
@@ -4209,12 +4196,6 @@
               "suggestion": "Dividir: 'Querido amigo, si logramos ese objetivo, las aplicaciones prácticas serán significativas. Generarán beneficios tangibles en áreas que hoy ni imaginamos.'"
             },
             {
-              "originalText": "Gracias a lo que descubramos, podremos averiguar cómo viajar a velocidades cercanas a la velocidad de la luz a un coste reducido.",
-              "wordCount": 24,
-              "explanation": "Dentro del límite; no se señala.",
-              "suggestion": ""
-            },
-            {
               "originalText": "Todas ellas tenían un núcleo central de almacenamiento seguro en la Tierra, donde sincronizaban todo lo que hacían para que, en caso de accidente o destrucción de un contenedor, se pudiesen regenerar de nuevo.",
               "wordCount": 38,
               "explanation": "Frase con inciso extenso que interrumpe la lectura; roza el límite con la acumulación de cláusulas.",
@@ -4225,30 +4206,6 @@
               "wordCount": 42,
               "explanation": "Frase de más de 40 palabras con dos cláusulas principales encadenadas que pueden separarse.",
               "suggestion": "Dividir: 'Como acordamos, pondremos a Albert y Émilie al corriente de todo. Su tarea será crear un equipo de investigación paralelo e independiente del resto de proyectos.'"
-            },
-            {
-              "originalText": "El equipo estará formado, en primer lugar, por las siete personas que deben estar llegando a Ganímedes en estos momentos.",
-              "wordCount": 23,
-              "explanation": "Dentro del límite; no se señala.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "Cualquier tecnología lejos de la que hoy manejamos nos proporcionará una ventaja operativa para doblegar al resto de confederaciones.",
-              "wordCount": 21,
-              "explanation": "Dentro del límite; no se señala.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "De acercarnos a un agujero negro, la gravedad que nos atraería sería tan grande que nos destrozaría al succionarnos, desgarrándonos átomo por átomo.",
-              "wordCount": 28,
-              "explanation": "Dentro del límite; no se señala.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "Y es demasiado dinero. La ratio de riesgo es enorme. Un fondo de inversión privado nunca se metería en algo con tanta probabilidad de perder todo lo invertido.",
-              "wordCount": 31,
-              "explanation": "Dentro del límite; no se señala.",
-              "suggestion": ""
             }
           ]
         },
@@ -4658,12 +4615,6 @@
               "adverb": "en silencio",
               "evaluation": "Adecuado",
               "explanation": "Aunque no es un adverbio en -mente, la locución adverbial aporta un valor narrativo concreto y evocador en el contexto emocional de la escena."
-            },
-            {
-              "originalText": "dijo Albert encolerizado",
-              "adverb": "encolerizado",
-              "evaluation": "Adecuado",
-              "explanation": "No es un adverbio en -mente; se incluye solo por contexto. No aplica al análisis."
             }
           ]
         },
@@ -6249,11 +6200,6 @@
               "originalText": "cortafuegos para evitar fugas de información. Lo ideal sería eliminar a los participantes del proyecto, para que no haya filtraciones de información.",
               "genericWord": "información",
               "explanation": "'Fugas de información' y 'filtraciones de información' en frases consecutivas repiten el mismo sustantivo genérico; la segunda podría concretarse en 'filtraciones sobre el proyecto' o 'revelaciones'."
-            },
-            {
-              "originalText": "cualquier otra pregunta banal para no mostrar frialdad",
-              "genericWord": "frialdad",
-              "explanation": "No es un error de sustantivo vago; se mantiene. — NOTA: este entry no debería incluirse."
             }
           ]
         },
@@ -7449,14 +7395,6 @@
               "explanation": "'Intramundo' se repite tres veces en párrafos muy cercanos de la misma escena de reunión, resultando repetitivo sin necesidad estilística."
             },
             {
-              "word": "tripa",
-              "occurrences": [
-                "Ella se palpaba la tripa con las manos",
-                "Albert abrió la palma de su mano izquierda sobre la tripa"
-              ],
-              "explanation": "Solo aparece dos veces; no cumple el mínimo de 3. — DESCARTADO (no incluir en findings reales)."
-            },
-            {
               "word": "peaksons",
               "occurrences": [
                 "terminantemente prohibido hablar fuera de las instalaciones del proyecto sobre cualquier tema relacionado con los peaksons",
@@ -7982,13 +7920,6 @@
         "adverbios": {
           "findings": [
             {
-              "originalText": "finalizándolo con las palabras «fin de mensaje», y esperaban a recibir una respuesta que tardaba en llegar unos tres días.",
-              "adverb": "finalizándolo",
-              "evaluation": "Adecuado",
-              "explanation": "No es un adverbio en -mente, no aplica.",
-              "alternatives": []
-            },
-            {
               "originalText": "tendría que dirigirlo personalmente",
               "adverb": "personalmente",
               "evaluation": "Mejorable",
@@ -8018,23 +7949,10 @@
           ]
         },
         "voz_pasiva": {
-          "findings": [
-            {
-              "originalText": "Pudieron observar un lugar con grandes edificaciones que podrían asemejarse a enormes termiteros",
-              "explanation": "Construcción activa. No aplica.",
-              "activeVersion": ""
-            }
-          ]
+          "findings": []
         },
         "frases_largas": {
-          "findings": [
-            {
-              "originalText": "Además, desde este mismo momento, cualquier comunicación con los seres de ese intramundo quedará clasificada como secreto de nivel arcano.",
-              "wordCount": 27,
-              "explanation": "Dentro del límite; no supera las 40 palabras. No aplica.",
-              "suggestion": ""
-            }
-          ]
+          "findings": []
         },
         "nombres": {
           "findings": [
@@ -8204,18 +8122,6 @@
       {
         "findings": [
           {
-            "originalText": "Sin embargo, lo que más la excitaba era introducírselo",
-            "errorType": "ausencia_coma_conector",
-            "correction": "Sin embargo, lo que más la excitaba era introducírselo",
-            "explanation": "El conector «sin embargo» al inicio de frase requiere coma después. En este caso ya la tiene, por lo que no es un error."
-          },
-          {
-            "originalText": "el dedo índice y pulgar",
-            "errorType": "ausencia_coma_inciso",
-            "correction": "el dedo índice y pulgar",
-            "explanation": "No es error de puntuación relevante."
-          },
-          {
             "originalText": "el enlace de Liberty Universe ¿No te parece",
             "errorType": "ausencia_coma_inciso",
             "correction": "el enlace de Liberty Universe. ¿No te parece",
@@ -8322,12 +8228,6 @@
       },
       {
         "findings": [
-          {
-            "originalText": "—Así es. Podría ocurrir, sin embargo, la calibración",
-            "errorType": "Falta de raya antes de acotación / punto incorrecto",
-            "correction": "—Así es —dijo—. Podría ocurrir, sin embargo, la calibración",
-            "explanation": "La intervención directa continúa sin acotación explícita marcada, pero el fragmento «Así es.» aparece sin raya de cierre antes de continuar el diálogo; sin embargo, revisando el texto, esta línea no tiene acotación, por lo que no aplica. Se omite."
-          },
           {
             "originalText": "—¿Estás seguro? —yo no, ¿y tú?",
             "errorType": "Mayúscula incorrecta en verbo de acotación",
@@ -8454,12 +8354,6 @@
           "findings": [
             {
               "type": "leismo",
-              "originalText": "cuando le descubramos a Albert lo que ocurrió",
-              "correction": "cuando le descubramos a Albert lo que ocurrió",
-              "explanation": "Este caso es correcto: 'le' funciona como CI (a Albert). No es un error."
-            },
-            {
-              "type": "leismo",
               "originalText": "desconcentrarle y desviarle de las necesidades del proyecto",
               "correction": "desconcentrarlo y desviarlo de las necesidades del proyecto",
               "explanation": "'Desconcentrar' y 'desviar' son verbos transitivos que llevan CD masculino (referente: Albert, persona masculina). El uso de 'le' como CD masculino es leísmo. Debe usarse 'lo'."
@@ -8507,20 +8401,7 @@
       },
       {
         "leismo": {
-          "findings": [
-            {
-              "type": "laismo",
-              "originalText": "Agarró la mano de Albert casi con violencia, y la arrastró hacia su vientre diciéndole al mismo tiempo",
-              "correction": "le arrastró",
-              "explanation": "'arrastrar' aquí tiene como CD 'la mano' y como CI 'Albert' (le dijo al mismo tiempo). Sin embargo, 'la arrastró' se refiere a 'la mano' como CD, por lo que es correcto. Descarte."
-            },
-            {
-              "type": "laismo",
-              "originalText": "Émilie entró en la sala y les saludó",
-              "correction": "los saludó",
-              "explanation": "'saludar' construye complemento directo con personas. Los referentes son AiFlash, Boris y colegas (masculinos). 'Les saludó' es leísmo de persona, aunque aceptado en España. No es error normativo claro en español peninsular."
-            }
-          ]
+          "findings": []
         },
         "ambiguedad": {
           "findings": [
@@ -8666,12 +8547,6 @@
               "errorType": "queismo",
               "explanation": "'Darse cuenta' exige la preposición 'de' antes de 'que': 'darse cuenta de que'.",
               "correction": "Sí, no pienses que no me había dado cuenta de ello"
-            },
-            {
-              "originalText": "Me he fijado en que Boris te mira mucho",
-              "errorType": "queismo",
-              "explanation": "Esta construcción es correcta ('fijarse en que'). No es un error.",
-              "correction": "correcto"
             }
           ]
         },
@@ -9235,11 +9110,6 @@
               "originalText": "en el conticinio de la noche",
               "explanation": "'Conticinio' ya significa 'hora de la noche en que todo está en silencio'; añadir 'de la noche' es redundante.",
               "correction": "en el conticinio"
-            },
-            {
-              "originalText": "boca arriba sobre la cama",
-              "explanation": "'Boca arriba' ya sitúa la posición; aunque no es un error absoluto, combinado con 'sobre la cama' acumula información posicional que puede simplificarse.",
-              "correction": "boca arriba en la cama"
             }
           ]
         },
@@ -9804,22 +9674,10 @@
               "suggestion": "Hacía años que había decidido actuar así: adelantarse a los demás en las conclusiones provocaba cierta aversión y les hacía sentir inútiles."
             },
             {
-              "originalText": "Pudieron observar un lugar con grandes edificaciones que podrían asemejarse a enormes termiteros de cientos de metros de alto, posicionados cada uno en el centro de enormes parcelas cuadradas.",
-              "wordCount": 31,
-              "explanation": "Dentro del límite, pero la acumulación de modificadores la hace densa; queda en el umbral.",
-              "suggestion": "Se puede mantener; si se quiere aligerar: 'Grandes edificaciones dominaban el paisaje, semejantes a termiteros de cientos de metros, cada una en el centro de una parcela cuadrada.'"
-            },
-            {
               "originalText": "La euforia inicial que emanaba de todos los miembros del equipo se esfumó, dejándoles la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta.",
               "wordCount": 38,
               "explanation": "Cerca del límite; el símil es largo y la tilde errónea en 'cuándo' (conjunción temporal) añade un problema ortográfico dentro de una frase ya extensa.",
               "suggestion": "Mantener el símil pero acortar: 'La euforia se esfumó como la de un niño que ve cómo otro apaga las velas de su tarta.'"
-            },
-            {
-              "originalText": "A partir del día en el que Albert les preguntó sobre sus avances médicos y estos respondieron que no tenían enfermedades porque habían averiguado cómo combatirlas, todo cambió.",
-              "wordCount": 31,
-              "explanation": "Dentro del límite; se señala porque la construcción subordinada es densa aunque manejable.",
-              "suggestion": "Se puede mantener tal cual."
             },
             {
               "originalText": "Si bien es cierto que durante aquel intercambio de información ofrecieron detalles sobre cómo lo habían logrado (modificando virus a nivel subatómico programando órdenes en ellos), se negaron, por el momento, a proporcionarnos la tecnología necesaria para crear el dispositivo con el que lo hacían.",
@@ -10111,22 +9969,6 @@
             "errorType": "falta_tilde",
             "context": "conjuncion",
             "explanation": "Aquí 'extraño' es el pretérito indefinido de tercera persona singular del verbo 'extrañar' (le extrañó), no el adjetivo. Debe llevar tilde en la 'o' final: 'extrañó'."
-          },
-          {
-            "originalText": "Nadie sabe cómo se produjo aquel accidente y en qué estaba trabajando exactamente mi madre cuando ocurrió",
-            "wordForm": "cómo",
-            "correctForm": "cómo",
-            "errorType": "falta_tilde",
-            "context": "interrogativo_indirecto",
-            "explanation": "'cómo' ya lleva tilde correctamente aquí como interrogativa indirecta; no es un error."
-          },
-          {
-            "originalText": "Una vez hablamos de que cuando llegásemos al poder averiguaríamos cómo conseguir un mundo más igualitario",
-            "wordForm": "cuando",
-            "correctForm": "cuando",
-            "errorType": "tilde_sobrante",
-            "context": "conjuncion",
-            "explanation": "'cuando' en 'averiguaríamos cómo conseguir' no aplica; revisión: 'cuando llegásemos' es subordinada temporal introducida por verbo de conocimiento implícito. Sin embargo, funciona como conjunción temporal y no depende de un verbo de duda/ignorancia, por lo que no lleva tilde."
           }
         ]
       },
