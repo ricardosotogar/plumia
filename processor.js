@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.55
+// PLUMIA — processor.js  v9.57
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -654,31 +654,22 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   _extractOriginalText(f) {
     let text = f.originalText || '';
     if (!text) {
-      // nombres_propios: elegir la ocurrencia donde el nombre aparece más pronto,
-      // para que tras truncar a 75 chars el nombre siga presente y Word lo localice.
+      // nombres_propios: usar occ[0] como texto ancla (es la ocurrencia más representativa
+      // del cluster detectado por el modelo). Solo buscar otra si el nombre aparece más
+      // allá del char 55 en occ[0] (quedaría cortado por el truncado a 75 chars).
       if (f.name && Array.isArray(f.occurrences) && f.occurrences.length > 0) {
         const nameLower = f.name.toLowerCase();
-        // Buscar la ocurrencia donde el nombre aparece y extraer ventana centrada en él,
-        // para que tras truncar a 75 chars el nombre siempre esté presente.
-        let best = null, bestPos = 9999;
-        for (const occ of f.occurrences) {
-          const pos = occ.toLowerCase().indexOf(nameLower);
-          if (pos !== -1 && pos < bestPos) { best = occ; bestPos = pos; }
-        }
-        if (best !== null) {
-          const start = Math.max(0, bestPos - 10);
-          let window = best.substring(start, start + 70).trim();
-          // Si cortamos en medio de una palabra, avanzar al siguiente espacio
-          if (start > 0 && window.length > 0 && best[start - 1] !== ' ') {
-            const sp = window.indexOf(' ');
-            if (sp > 0) window = window.substring(sp + 1);
+        let chosen = f.occurrences[0];
+        const pos0 = chosen.toLowerCase().indexOf(nameLower);
+        if (pos0 === -1 || pos0 > 55) {
+          // occ[0] no sirve: buscar la primera ocurrencia donde el nombre esté antes del char 55
+          for (const occ of f.occurrences) {
+            const p = occ.toLowerCase().indexOf(nameLower);
+            if (p !== -1 && p <= 55) { chosen = occ; break; }
           }
-          text = window;
-          console.log(`[NP] _extractOriginalText name="${f.name}" bestOcc="${best.substring(0,60)}" bestPos=${bestPos} window="${text}"`);
-        } else {
-          text = f.occurrences[0];
-          console.log(`[NP] _extractOriginalText name="${f.name}" no-match → occ[0]="${text.substring(0,60)}"`);
         }
+        text = chosen;
+        console.log(`[NP] _extractOriginalText name="${f.name}" chosen="${text.substring(0,70)}" pos0=${pos0}`);
       } else if (f.occurrences?.[0]) text = f.occurrences[0];
       else if (f.occurrence1?.text)  text = f.occurrence1.text;
       else if (f.occurrence?.text)   text = f.occurrence.text;
@@ -796,25 +787,18 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         if (!text) {
           if (f.occurrences && f.occurrences.length > 0) {
             // repeticion_lexica, muletillas: primer fragmento
-            // nombres_propios: elegir la ocurrencia donde el nombre aparece más pronto
+            // nombres_propios: usar occ[0] (más representativo del cluster); fallback si nombre > char 55
             if (f.name) {
               const nameLower = f.name.toLowerCase();
-              let best = null, bestPos = 9999;
-              for (const occ of f.occurrences) {
-                const pos = occ.toLowerCase().indexOf(nameLower);
-                if (pos !== -1 && pos < bestPos) { best = occ; bestPos = pos; }
-              }
-              if (best !== null) {
-                const start = Math.max(0, bestPos - 10);
-                let window = best.substring(start, start + 70).trim();
-                if (start > 0 && window.length > 0 && best[start - 1] !== ' ') {
-                  const sp = window.indexOf(' ');
-                  if (sp > 0) window = window.substring(sp + 1);
+              let chosen = f.occurrences[0];
+              const pos0 = chosen.toLowerCase().indexOf(nameLower);
+              if (pos0 === -1 || pos0 > 55) {
+                for (const occ of f.occurrences) {
+                  const p = occ.toLowerCase().indexOf(nameLower);
+                  if (p !== -1 && p <= 55) { chosen = occ; break; }
                 }
-                text = window;
-              } else {
-                text = f.occurrences[0];
               }
+              text = chosen;
             } else {
               text = f.occurrences[0];
             }

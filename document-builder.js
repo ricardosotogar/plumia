@@ -411,7 +411,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (corrId === 'nombres_propios') console.log(`[NP] _markWord ENTER keyText="${keyText}"`);
     try {
       if (!skipBracketSr) {
-        const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:true, matchWildcards:false});
+        // Buscar ◆¹+keyText SOLO dentro del rango actual (no en todo el body):
+        // si se busca en body, un ◆¹Albert en otro párrafo dispara falsa colisión.
+        const bracketSr = range.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:false, matchWildcards:false});
         bracketSr.load('items');
         const sr = range.search(keyText, {matchCase:false, matchWholeWord:mww, matchWildcards:false});
         sr.load('items');
