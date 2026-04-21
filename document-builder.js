@@ -257,6 +257,7 @@ async function _styleAndComment(ctx, body, searchPattern, colorHex, commentText,
       if (!commentOnly) {
         symSr.items[0].font.color = colorHex;
         symSr.items[0].font.bold  = true;
+        symSr.items[0].font.size  = 9;
       }
       if (commentText) symSr.items[0].insertComment(commentText.replace(/[\r\n]+/g, ' | ').substring(0, 1500));
     }
@@ -635,6 +636,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             const ins2 = endSr.items[endSr.items.length - 1].getRange('End').insertText('\u25C6\u00B2', 'After');
             ins2.font.color = colorHex;
             ins2.font.bold  = true;
+            ins2.font.size  = 9;
             await ctx.sync();
             endInserted = true;
           }
