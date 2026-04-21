@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.35
+// PLUMIA — processor.js  v9.54
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -776,7 +776,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   _dedupe(findings) {
     const seen = new Set();
     return findings.filter(f => {
-      const k = (f.originalText||'').trim().toLowerCase();
+      // nombres_propios: deduplicar por nombre — chunks solapados pueden producir el mismo
+      // nombre con distinto originalText (variaciones de puntuación en la cita)
+      const k = f.name ? ('name:' + f.name.toLowerCase().trim()) : (f.originalText||'').trim().toLowerCase();
       if (seen.has(k)) return false; seen.add(k); return true;
     });
   }
