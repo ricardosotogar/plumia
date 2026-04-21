@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.54
+// PLUMIA — processor.js  v9.55
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -674,8 +674,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             if (sp > 0) window = window.substring(sp + 1);
           }
           text = window;
+          console.log(`[NP] _extractOriginalText name="${f.name}" bestOcc="${best.substring(0,60)}" bestPos=${bestPos} window="${text}"`);
         } else {
           text = f.occurrences[0];
+          console.log(`[NP] _extractOriginalText name="${f.name}" no-match → occ[0]="${text.substring(0,60)}"`);
         }
       } else if (f.occurrences?.[0]) text = f.occurrences[0];
       else if (f.occurrence1?.text)  text = f.occurrence1.text;

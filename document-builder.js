@@ -408,6 +408,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const skipBracketSr = corrId === 'aun_tilde' || corrId === 'mi_tilde'
                        || corrId === 'si_tilde'  || corrId === 'tu_tilde';
     dbg(`_markWord ENTER corrId="${corrId}" keyText="${keyText}" mww=${mww} skip=${skipBracketSr}`);
+    if (corrId === 'nombres_propios') console.log(`[NP] _markWord ENTER keyText="${keyText}"`);
     try {
       if (!skipBracketSr) {
         const bracketSr = body.search('\u25C6\u00B9' + keyText, {matchCase:false, matchWholeWord:true, matchWildcards:false});
@@ -416,6 +417,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         sr.load('items');
         await ctx.sync();
         dbg(`_markWord L1 bracketSr=${bracketSr.items.length} sr=${sr.items.length}`);
+        if (corrId === 'nombres_propios') console.log(`[NP] _markWord L1 bracketSr=${bracketSr.items.length} sr=${sr.items.length}`);
         if (bracketSr.items.length) { hadBracketCollision = true; }
         else { items = sr.items; }
       } else {
@@ -476,6 +478,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       } catch(e) { dbg(`_markWord L3 CATCH: ${e.message}`); }
     }
     dbg(`_markWord items final=${items.length} hadCollision=${hadBracketCollision}`);
+    if (corrId === 'nombres_propios') console.log(`[NP] _markWord items final=${items && items.length} hadCollision=${hadBracketCollision}`);
     if (!items.length) return;
 
     const target = items[0];
@@ -683,6 +686,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const sr = body.search(search, {matchCase:false,matchWholeWord:false,matchWildcards:false});
     sr.load('items'); await ctx.sync();
+    if (corrId === 'nombres_propios') {
+      console.log(`[NP] corrId=${corrId} name="${finding.name}" originalText="${(finding.originalText||'').substring(0,60)}" search="${search.substring(0,60)}" sr.items=${sr.items.length} _paraIdx=${finding._paraIdx}`);
+    }
     let range;
     if (sr.items.length === 1) {
       range = sr.items[0];
