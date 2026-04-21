@@ -2316,12 +2316,6 @@
       {
         "findings": [
           {
-            "originalText": "Sin embargo, según su marido Edmund Emmet, lo que más atracción provocaba no eran sus curvas o sus facciones simétricas, sino sus ojos",
-            "errorType": "ausencia_coma_inciso",
-            "correction": "Sin embargo, según su marido Edmund Emmet, lo que más atracción provocaba no eran sus curvas o sus facciones simétricas, sino sus ojos",
-            "explanation": "Este fragmento es correcto; se descarta."
-          },
-          {
             "originalText": "apenas hacía unos minutos había escuchado la puerta de la entrada, abrirse y cerrarse",
             "errorType": "coma_sujeto_verbo",
             "correction": "apenas hacía unos minutos había escuchado la puerta de la entrada abrirse y cerrarse",
@@ -2332,12 +2326,6 @@
             "errorType": "coma_especificativa",
             "correction": "Era una hermosa varita de ébano que tenía engastado otro fragmento de esmeralda",
             "explanation": "La subordinada adjetiva es especificativa (identifica cuál varita), no explicativa, por lo que no debe ir precedida de coma."
-          },
-          {
-            "originalText": "Bueno, pues a Quark, sin embargo, le gustaba mirar hacia el interior de las cosas.",
-            "errorType": "ausencia_coma_inciso",
-            "correction": "Bueno, pues a Quark, sin embargo, le gustaba mirar hacia el interior de las cosas.",
-            "explanation": "El uso es correcto aquí; se descarta."
           },
           {
             "originalText": "Al fin se habían encontrado… Y creo que por hoy ya es suficiente cariño.",
@@ -3348,12 +3336,6 @@
               "originalText": "Émilie entró en la sala y les saludó",
               "correction": "los saludó",
               "explanation": "El verbo 'saludar' lleva complemento directo. Los referentes son AiFlash, Boris y Albert (masculinos). El uso de 'les' como CD masculino es leísmo."
-            },
-            {
-              "type": "laismo",
-              "originalText": "Agarró la mano de Albert casi con violencia, y la arrastró hacia su vientre",
-              "correction": "lo arrastró",
-              "explanation": "'Arrastrar' lleva complemento directo. El referente es 'la mano' (femenino), pero aquí 'la' podría ser correcto como CD femenino. Sin embargo, el referente inmediato es 'Albert' (masculino, CD), por lo que debería ser 'lo arrastró' si el CD es Albert (a Albert lo arrastró). Revisando el contexto: 'agarró la mano de Albert y la arrastró' — aquí 'la' refiere a 'la mano', CD femenino, lo cual es correcto. Se descarta."
             }
           ]
         },
@@ -3781,11 +3763,6 @@
               "originalText": "el cariz que ha tomado esto",
               "genericWord": "esto",
               "explanation": "'esto' es vago en este contexto; podría concretarse como 'la situación' o 'el asunto' para mayor precisión"
-            },
-            {
-              "originalText": "cualquier detalle fuera de lo común",
-              "genericWord": "detalle",
-              "explanation": "aunque no es de los términos más vagos, en este contexto podría concretarse; sin embargo, se mantiene como señalamiento menor pues 'detalle' es suficientemente preciso — descartado"
             }
           ]
         },
@@ -4154,16 +4131,6 @@
               "activeVersion": "alguien destruyó toda la información / la destrucción borró toda la información"
             },
             {
-              "originalText": "estas personas han estado estudiando y desbrozando en secreto toda la información que conocemos gracias a AiFlash",
-              "explanation": "No es pasiva; se deja solo como nota. Descartado.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "será cuestión de tiempo encontrar intramundos con vida inteligente",
-              "explanation": "No es pasiva. Descartado.",
-              "activeVersion": ""
-            },
-            {
               "originalText": "le ordenaron que guardara silencio",
               "explanation": "Pasiva impersonal con agente implícito plural; puede activarse.",
               "activeVersion": "Liberty Universe le ordenó que guardara silencio"
@@ -4211,18 +4178,6 @@
         },
         "nombres": {
           "findings": [
-            {
-              "name": "Albert",
-              "occurrences": [
-                "Los científicos Albert Emmet y Émilie Cloutier aguardaban",
-                "Ha pasado mucho tiempo, pero a mí aún me duele —Respondió Albert susurrando",
-                "Albert asintió con la cabeza para saludar",
-                "prefiero que sea Albert Emmet quien les responda",
-                "Al llegar a la tarima se posicionaron detrás del presidente, a su izquierda, tal y como se les había indicado. En cuanto el presidente Haddon se acercó al habitual atril"
-              ],
-              "explanation": "El nombre 'Albert' aparece más de 4 veces a lo largo del capítulo 4, pero distribuido en distintos párrafos, por lo que no se cumple la regla de 4 apariciones en un único párrafo. Se descarta.",
-              "suggestion": ""
-            },
             {
               "name": "AiFlash",
               "occurrences": [
@@ -4318,34 +4273,14 @@
               "activeVersion": "una distorsión que no procedía de la Tierra, sino que unos seres de un intramundo del universo interior habían generado"
             },
             {
-              "originalText": "A través de la distorsión nos mandaron una bomba. Eso fue lo que causó la catástrofe de Fratenburgo.",
-              "explanation": "Aunque 'causó' es activa, 'Eso fue lo que causó' es una construcción enfática que puede agilizarse, aunque no es pasiva perifrástica estricta. Se descarta.",
-              "activeVersion": ""
-            },
-            {
               "originalText": "La información de lo que ocurrió y de los experimentos que se llevaron a cabo en el colisionador de partículas de Fratenburgo, la conocemos de primera mano gracias a AiFlash.",
               "explanation": "Pasiva refleja ('se llevaron a cabo') con agente implícito. Puede sustituirse por activa.",
               "activeVersion": "La información de lo que ocurrió y de los experimentos que el equipo realizó en el colisionador de partículas de Fratenburgo, la conocemos de primera mano gracias a AiFlash."
             },
             {
-              "originalText": "Cuando aún no era una IA FreeWill, participó en el descifrado del mensaje de manera remota y llegó a conectarse a la supercomputadora del ODIN.",
-              "explanation": "No es voz pasiva. Se descarta.",
-              "activeVersion": ""
-            },
-            {
               "originalText": "en un agujero negro cuántico al que se le denominó BH88",
               "explanation": "Pasiva refleja con agente implícito. Revisable para mayor precisión narrativa.",
               "activeVersion": "un agujero negro cuántico al que los científicos denominaron BH88"
-            },
-            {
-              "originalText": "Lo han denominado «generación de la dualidad»",
-              "explanation": "Voz activa. Se descarta.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "AiFlash transmitió el código de acceso al panel que había en el lateral de la puerta y se abrió.",
-              "explanation": "No es pasiva perifrástica. Se descarta.",
-              "activeVersion": ""
             }
           ]
         },
@@ -4524,42 +4459,6 @@
               "wordCount": 60,
               "explanation": "Frase muy larga con dos causales coordinadas y una explicación técnica compleja que fatiga la lectura.",
               "suggestion": "Dividir: 'Sabían que la respuesta tardaría en llegar. Los habitantes del intramundo necesitaban descifrar el mensaje; además, el equipo teorizaba que el tiempo allí transcurría más despacio que en el nuestro, consecuencia de la dilatación gravitacional o de la velocidad subatómica cercana a la luz.'"
-            },
-            {
-              "originalText": "La tensa espera y las dudas que tanto le quitaban el sueño a Albert, desaparecieron dando paso a la efervescente excitación de saber que ya podrían conocer quiénes eran aquellos seres.",
-              "wordCount": 33,
-              "explanation": "No supera las 40 palabras; se descarta.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "esfumó, dejándoles la misma sensación que experimenta un niño en su cumpleaños cuándo otro se le adelanta y apaga las velas de su tarta",
-              "wordCount": 28,
-              "explanation": "No supera las 40 palabras; se descarta.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "Pudieron observar un lugar con grandes edificaciones que podrían asemejarse a enormes termiteros de cientos de metros de alto, posicionados cada uno en el centro de enormes parcelas cuadradas.",
-              "wordCount": 31,
-              "explanation": "No supera las 40 palabras; se descarta.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "Tras detallar y exponer los detalles del descubrimiento durante un buen rato, Albert pasó a comentar que, de inmediato, comenzarían con la estrategia de comunicación:",
-              "wordCount": 27,
-              "explanation": "No supera las 40 palabras; se descarta.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "Alrededor de las enormes edificaciones, se distinguían cultivos, todos ellos de una misma planta con frutos rojos del tamaño de un pomelo.",
-              "wordCount": 24,
-              "explanation": "No supera las 40 palabras; se descarta.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "También había rutas de comunicación por donde circulaban vehículos de carga en forma de cuña cargados con los frutos rojos.",
-              "wordCount": 21,
-              "explanation": "No supera las 40 palabras; se descarta.",
-              "suggestion": ""
             },
             {
               "originalText": "Cuando Albert les había expresado que le llamaba la atención que en las imágenes obtenidas no habían observado canales ni estanques de agua, le respondieron que aquella fruta les proporcionaba agua para consumo y que para regar las cosechas «hacían caer agua».",
@@ -4914,18 +4813,6 @@
               "originalText": "Émilie entró en la sala y les saludó.",
               "correction": "los saludó",
               "explanation": "El CD es masculino plural (Albert, Boris, AiFlash). 'Saludar a alguien' rige CD, por lo que corresponde 'los', no 'les'."
-            },
-            {
-              "type": "laismo",
-              "originalText": "Agarró la mano de Albert casi con violencia, y la arrastró hacia su vientre diciéndole al mismo tiempo",
-              "correction": "lo arrastró",
-              "explanation": "'Arrastrar' rige CD. El referente es 'la mano' (femenino, CD), por lo que 'la' es correcto aquí; sin embargo, el antecedente inmediato de 'la' es 'la mano de Albert' y se arrastra hacia el vientre, lo cual es correcto. — DESCARTADO, no hay error real aquí."
-            },
-            {
-              "type": "laismo",
-              "originalText": "dejándoles la misma sensación que experimenta un niño",
-              "correction": "dejándoles",
-              "explanation": "'Dejar' en este uso rige CI (dejar a alguien algo), por lo que 'les' es correcto. — DESCARTADO."
             }
           ]
         },
@@ -5703,29 +5590,11 @@
                 "adelantarse a los demás despertaba aversión en sus colegas",
                 "adelantarse a los demás levantaba muros de silencio a su alrededor"
               ]
-            },
-            {
-              "originalText": "La comunicación se parecía a la que se lleva a cabo mediante un walkie-talkie",
-              "adverb": null,
-              "evaluation": "Adecuado",
-              "explanation": "No hay adverbio en -mente; se descarta.",
-              "alternatives": []
             }
           ]
         },
         "voz_pasiva": {
-          "findings": [
-            {
-              "originalText": "los diplomáticos se ocuparían de las comunicaciones",
-              "explanation": "Construcción activa con se reflexivo; no es pasiva perifrástica. Se descarta.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "ha moldeado mi personalidad",
-              "explanation": "Construcción activa; no es pasiva perifrástica. Se descarta.",
-              "activeVersion": ""
-            }
-          ]
+          "findings": []
         },
         "frases_largas": {
           "findings": [
@@ -6532,18 +6401,7 @@
           ]
         },
         "pleonasmos": {
-          "findings": [
-            {
-              "originalText": "sus propios ojos",
-              "explanation": "No aparece en el texto analizado; descartado.",
-              "correction": ""
-            },
-            {
-              "originalText": "tomó cartas en el asunto",
-              "explanation": "No es pleonasmo; descartado.",
-              "correction": ""
-            }
-          ]
+          "findings": []
         },
         "findings": []
       },
@@ -6589,11 +6447,6 @@
               "originalText": "fue la primera inteligencia artificial en evolucionar a la categoría «FreeWill»",
               "explanation": "Construcción pasiva con 'fue' + participio equivalente; puede reformularse en activa.",
               "activeVersion": "AiFlash alcanzó la primera la categoría «FreeWill»"
-            },
-            {
-              "originalText": "hemos desarrollado en secreto",
-              "explanation": "Forma activa en primera persona del plural; no es pasiva. Se descarta.",
-              "activeVersion": "N/A"
             }
           ]
         },
@@ -6855,15 +6708,7 @@
       },
       {
         "gerundios": {
-          "findings": [
-            {
-              "originalText": "AiFlash, captó como los músculos de su cara se relajaban",
-              "gerund": "",
-              "errorType": "",
-              "explanation": "No es gerundio, se descarta.",
-              "correction": ""
-            }
-          ]
+          "findings": []
         },
         "tiempos": {
           "findings": [
@@ -7444,11 +7289,6 @@
               "explanation": "Aunque 'dirigirse a' es aceptable, el giro completo es circunloquio: podría simplificarse con un verbo más expresivo como 'se acercó a Albert sonriendo'."
             },
             {
-              "originalText": "Boris lo interrumpió atacado por la impaciencia, alzando la voz por encima de la de Svenson",
-              "verb": "interrumpió",
-              "explanation": "No es un verbo comodín. DESCARTADO."
-            },
-            {
               "originalText": "Agarró la mano de Albert casi con violencia",
               "verb": "Agarró",
               "explanation": "'Agarrar' es genérico aquí; 'arrebató', 'tomó bruscamente' o 'le tomó la mano de un tirón' serían más expresivos para la acción descrita."
@@ -7461,16 +7301,6 @@
               "originalText": "para originar una forma de comunicación fluida con la especie",
               "genericWord": "forma",
               "explanation": "'Una forma de comunicación' es vaga; podría sustituirse por 'un canal de comunicación' o 'un sistema de comunicación fluida'."
-            },
-            {
-              "originalText": "Cuando Albert les había expresado que le llamaba la atención que en las imágenes obtenidas no habían observado canales ni estanques de agua",
-              "genericWord": "la atención",
-              "explanation": "No es un sustantivo vago en sentido estricto; forma parte de locución verbal. DESCARTADO."
-            },
-            {
-              "originalText": "sus frutos rojos del tamaño de un pomelo",
-              "genericWord": "frutos",
-              "explanation": "No es vago; es término preciso botánicamente. DESCARTADO."
             },
             {
               "originalText": "dejándoles la misma sensación que experimenta un niño en su cumpleaños",
@@ -7754,18 +7584,6 @@
               "wordCount": 71,
               "explanation": "Tres frases encadenadas que forman un bloque explicativo muy denso; el salto del razonamiento científico al cuento infantil necesita más espacio para respirar.",
               "suggestion": "Separar el argumento científico del recuerdo del cuento en párrafos distintos o con un punto y aparte que marque el cambio de registro."
-            },
-            {
-              "originalText": "Podrían pasar dos décadas hasta que lo que encontremos pueda ser aplicado de manera práctica en el mundo, si es que al final encontramos algo.",
-              "wordCount": 28,
-              "explanation": "Menos de 40 palabras, se descarta.",
-              "suggestion": ""
-            },
-            {
-              "originalText": "Cuando lo consigamos, nuestra meta final será establecer un canal diplomático de comunicación que nos sirva",
-              "wordCount": 17,
-              "explanation": "Frase incompleta al final del texto; menos de 40 palabras. Se descarta.",
-              "suggestion": ""
             }
           ]
         },
@@ -8176,12 +7994,6 @@
       {
         "findings": [
           {
-            "originalText": "La euforia inicial que emanaba de todos los miembros del equipo se esfumó",
-            "errorType": "coma_especificativa",
-            "correction": "La euforia inicial que emanaba de todos los miembros del equipo se esfumó",
-            "explanation": "La subordinada «que emanaba de todos los miembros del equipo» es especificativa (identifica de qué euforia se habla), por lo que no debe ir entre comas. El texto no tiene comas aquí, así que esto es correcto — descartado."
-          },
-          {
             "originalText": "cuándo otro se le adelanta",
             "errorType": "coma_sujeto_verbo",
             "correction": "cuando otro se le adelanta",
@@ -8211,12 +8023,6 @@
             "errorType": "Falta de punto tras acotación cuando el diálogo continúa",
             "correction": "Albert se quedó callado unos segundos hasta que le dijo: «Gracias».",
             "explanation": "El parlamento entrecomillado que cierra una intervención necesita punto final tras las comillas de cierre."
-          },
-          {
-            "originalText": "Antes de acceder, le dijo a Albert: «Cuando quieras, quedamos y te cuento todo lo que sé de tu madre».",
-            "errorType": "Mayúscula incorrecta en verbo de acotación",
-            "correction": "Antes de acceder, le dijo a Albert: «Cuando quieras, quedamos y te cuento todo lo que sé de tu madre».",
-            "explanation": "No hay error aquí. Revisión descartada."
           },
           {
             "originalText": "—Bien, queremos hablar con tus científicos lo antes posible, nos gustaría ponernos a trabajar en esto, ya mismo —dijo mirando a su mujer buscando su complicidad.",
@@ -8273,20 +8079,7 @@
         ]
       },
       {
-        "findings": [
-          {
-            "originalText": "—En mi opinión —interrumpió AiFlash— Émilie podría no estar mal encaminada.",
-            "errorType": "Mayúscula incorrecta en verbo de acotación",
-            "correction": "—En mi opinión —interrumpió AiFlash— Émilie podría no estar mal encaminada.",
-            "explanation": "Tras la raya de cierre de la acotación intercalada, la continuación del diálogo lleva minúscula si no es inicio de nueva oración. Aquí 'Émilie' inicia con mayúscula correctamente al ser nombre propio, por lo que no hay error real. DESCARTADO."
-          },
-          {
-            "originalText": "—¿Tú crees que podrían llegar a eso? No seas paranoica.",
-            "errorType": "Mayúscula incorrecta en verbo de acotación",
-            "correction": "—¿Tú crees que podrían llegar a eso? No seas paranoica.",
-            "explanation": "No hay acotación, no hay error de puntuación en diálogo. DESCARTADO."
-          }
-        ]
+        "findings": []
       },
       {
         "findings": []
@@ -9452,16 +9245,6 @@
               "activeVersion": "otras tres personas más que Albert y Émilie elegirán"
             },
             {
-              "originalText": "Todos los participantes tendrán que firmar un acuerdo de confidencialidad",
-              "explanation": "No es pasiva; es activa con sujeto 'todos los participantes'. Se descarta — no debe aparecer aquí.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "información confidencial sobre el verdadero motivo de este proyecto",
-              "explanation": "No es pasiva. Se descarta.",
-              "activeVersion": ""
-            },
-            {
               "originalText": "La información de lo que ocurrió y de los experimentos que se llevaron a cabo en el colisionador de partículas de Fratenburgo, la conocemos de primera mano gracias a AiFlash.",
               "explanation": "Pasiva refleja ('se llevaron a cabo') con agente implícito; puede activarse especificando el sujeto.",
               "activeVersion": "La información de lo que ocurrió y de los experimentos que realizaron en el colisionador de partículas de Fratenburgo, la conocemos de primera mano gracias a AiFlash."
@@ -9475,16 +9258,6 @@
               "originalText": "De aquella distorsión surgió un mensaje enviado por seres de ese intramundo",
               "explanation": "Participio pasivo con agente explícito ('por seres de ese intramundo'); puede activarse.",
               "activeVersion": "De aquella distorsión surgió un mensaje que seres de ese intramundo habían enviado"
-            },
-            {
-              "originalText": "cuando aún no era una IA FreeWill, participó en el descifrado del mensaje de manera remota y llegó a conectarse a la supercomputadora del ODIN",
-              "explanation": "No es pasiva; construcción activa. Se descarta.",
-              "activeVersion": ""
-            },
-            {
-              "originalText": "Lo han denominado «generación de la dualidad»",
-              "explanation": "No es pasiva perifrástica; es activa con sujeto implícito 'ellos'. Se descarta.",
-              "activeVersion": ""
             }
           ]
         },
@@ -9513,12 +9286,6 @@
               "wordCount": 42,
               "explanation": "La acumulación de incisos descriptivos dentro de la oración principal dificulta localizar el núcleo de la frase.",
               "suggestion": "Separar descripción de valoración: 'Esas miradas que solían cruzar contenían un lenguaje propio: pequeños matices en los párpados, las cejas, las arrugas imperceptibles en la comisura de los ojos. Un código más efectivo que cualquier conversación de voz.'"
-            },
-            {
-              "originalText": "Si tuviésemos éxito y algún espía se enterase, todas las confederaciones se unirían para declararnos la guerra antes de que podamos sacar partido de la tecnología en su contra.",
-              "wordCount": 31,
-              "explanation": "Dentro del umbral, no supera las 40 palabras. Se descarta.",
-              "suggestion": ""
             },
             {
               "originalText": "Cuando era niño, ella lo hacía a menudo. Normalmente, no era capaz de recordar con nitidez su cara. En sus recuerdos solo había pequeños fogonazos de imágenes inconexas que era incapaz de unir para formar su rostro, como si fuese un puzle al que le faltan piezas.",

@@ -778,8 +778,18 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         // Tipos con estructura distinta
         if (!text) {
           if (f.occurrences && f.occurrences.length > 0) {
-            // repeticion_lexica, muletillas, nombres_propios: tiene occurrences[]
-            text = f.occurrences[0];
+            // repeticion_lexica, muletillas: primer fragmento
+            // nombres_propios: elegir la ocurrencia donde el nombre aparece más pronto
+            if (f.name) {
+              const nameLower = f.name.toLowerCase();
+              text = f.occurrences.reduce((a, b) => {
+                const ai = a.toLowerCase().indexOf(nameLower); const aPos = ai === -1 ? 9999 : ai;
+                const bi = b.toLowerCase().indexOf(nameLower); const bPos = bi === -1 ? 9999 : bi;
+                return bPos < aPos ? b : a;
+              });
+            } else {
+              text = f.occurrences[0];
+            }
           } else if (f.occurrence1 && f.occurrence1.text) {
             // coherencia: occurrence1.text
             text = f.occurrence1.text;
