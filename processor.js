@@ -658,12 +658,25 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       // para que tras truncar a 75 chars el nombre siga presente y Word lo localice.
       if (f.name && Array.isArray(f.occurrences) && f.occurrences.length > 0) {
         const nameLower = f.name.toLowerCase();
-        const best = f.occurrences.reduce((a, b) => {
-          const ai = a.toLowerCase().indexOf(nameLower); const aPos = ai === -1 ? 9999 : ai;
-          const bi = b.toLowerCase().indexOf(nameLower); const bPos = bi === -1 ? 9999 : bi;
-          return bPos < aPos ? b : a;
-        });
-        text = best;
+        // Buscar la ocurrencia donde el nombre aparece y extraer ventana centrada en él,
+        // para que tras truncar a 75 chars el nombre siempre esté presente.
+        let best = null, bestPos = 9999;
+        for (const occ of f.occurrences) {
+          const pos = occ.toLowerCase().indexOf(nameLower);
+          if (pos !== -1 && pos < bestPos) { best = occ; bestPos = pos; }
+        }
+        if (best !== null) {
+          const start = Math.max(0, bestPos - 10);
+          let window = best.substring(start, start + 70).trim();
+          // Si cortamos en medio de una palabra, avanzar al siguiente espacio
+          if (start > 0 && window.length > 0 && best[start - 1] !== ' ') {
+            const sp = window.indexOf(' ');
+            if (sp > 0) window = window.substring(sp + 1);
+          }
+          text = window;
+        } else {
+          text = f.occurrences[0];
+        }
       } else if (f.occurrences?.[0]) text = f.occurrences[0];
       else if (f.occurrence1?.text)  text = f.occurrence1.text;
       else if (f.occurrence?.text)   text = f.occurrence.text;
@@ -782,11 +795,22 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             // nombres_propios: elegir la ocurrencia donde el nombre aparece más pronto
             if (f.name) {
               const nameLower = f.name.toLowerCase();
-              text = f.occurrences.reduce((a, b) => {
-                const ai = a.toLowerCase().indexOf(nameLower); const aPos = ai === -1 ? 9999 : ai;
-                const bi = b.toLowerCase().indexOf(nameLower); const bPos = bi === -1 ? 9999 : bi;
-                return bPos < aPos ? b : a;
-              });
+              let best = null, bestPos = 9999;
+              for (const occ of f.occurrences) {
+                const pos = occ.toLowerCase().indexOf(nameLower);
+                if (pos !== -1 && pos < bestPos) { best = occ; bestPos = pos; }
+              }
+              if (best !== null) {
+                const start = Math.max(0, bestPos - 10);
+                let window = best.substring(start, start + 70).trim();
+                if (start > 0 && window.length > 0 && best[start - 1] !== ' ') {
+                  const sp = window.indexOf(' ');
+                  if (sp > 0) window = window.substring(sp + 1);
+                }
+                text = window;
+              } else {
+                text = f.occurrences[0];
+              }
             } else {
               text = f.occurrences[0];
             }
