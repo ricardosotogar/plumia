@@ -654,10 +654,20 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   _extractOriginalText(f) {
     let text = f.originalText || '';
     if (!text) {
-      if (f.occurrences?.[0])       text = f.occurrences[0];
-      else if (f.occurrence1?.text) text = f.occurrence1.text;
-      else if (f.occurrence?.text)  text = f.occurrence.text;
-      else if (f.frase)             text = f.frase;
+      // nombres_propios: elegir la ocurrencia donde el nombre aparece más pronto,
+      // para que tras truncar a 75 chars el nombre siga presente y Word lo localice.
+      if (f.name && Array.isArray(f.occurrences) && f.occurrences.length > 0) {
+        const nameLower = f.name.toLowerCase();
+        const best = f.occurrences.reduce((a, b) => {
+          const ai = a.toLowerCase().indexOf(nameLower); const aPos = ai === -1 ? 9999 : ai;
+          const bi = b.toLowerCase().indexOf(nameLower); const bPos = bi === -1 ? 9999 : bi;
+          return bPos < aPos ? b : a;
+        });
+        text = best;
+      } else if (f.occurrences?.[0]) text = f.occurrences[0];
+      else if (f.occurrence1?.text)  text = f.occurrence1.text;
+      else if (f.occurrence?.text)   text = f.occurrence.text;
+      else if (f.frase)              text = f.frase;
     }
     // Limpiar saltos de línea
     text = text.replace(/[\r\n]+/g, ' ').trim();
