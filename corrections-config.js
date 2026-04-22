@@ -5,7 +5,7 @@
 // ============================================================================
 (function() {
 window.PLUMIA = {};
-window.PLUMIA.CONFIG_VERSION = '9.61';
+window.PLUMIA.CONFIG_VERSION = '9.62';
 console.log('📦 corrections-config.js v9.37 cargado');
 window.PLUMIA.COLOR_MAP = {
   1:{name:"Rojo",hex:"FF0000",type:"text"},
@@ -96,13 +96,16 @@ Texto a analizar:\n{TEXT}\n\nREGLA ABSOLUTA: Si un fragmento no contiene error r
   {id:"voz_pasiva", groupId:"style", label:"Voz pasiva innecesaria", description:"Construcciones pasivas que podrían ser activas", colorId:5, includesSynonyms:true, directFix:false,
    prompt:`Eres un corrector de estilo experto en español. Analiza el texto en busca de construcciones en VOZ PASIVA REAL que resultarían más naturales en voz activa.
 
+PRUEBA ESTRUCTURAL OBLIGATORIA — aplícala ANTES de señalar cualquier construcción:
+La pasiva perifrástica requiere que el participio sea el PREDICADO DIRECTO del auxiliar ser/estar, es decir, que aparezca inmediatamente tras él (o con solo adverbios entre ellos): "fue destruido", "fue rápidamente destruido". Si entre ser/estar y el participio hay un ARTÍCULO o DETERMINANTE seguido de un SUSTANTIVO, entonces ser es copulativo y el participio es únicamente un adjetivo que modifica a ese sustantivo — NO es pasiva en ningún caso. Ejemplos PROHIBIDOS: "fue la forma más aproximada" (forma = sustantivo, aproximada = adjetivo de forma), "fue el método más utilizado" (método = sustantivo, utilizado = adjetivo de método), "era la solución más esperada". En todos estos casos ser atribuye una cualidad al sujeto a través del sintagma nominal, no expresa una acción sufrida.
+
 SOLO señala construcciones que cumplan UNA de estas dos formas:
-1. Pasiva perifrástica: auxiliar SER/ESTAR conjugado + participio + (opcionalmente "por" + agente). Ejemplos válidos: "fue abierto por", "es conocido por", "había sido destruido".
+1. Pasiva perifrástica: auxiliar SER/ESTAR conjugado + participio INMEDIATAMENTE (sin artículo+sustantivo de por medio) + (opcionalmente "por" + agente). Ejemplos válidos: "fue abierto por", "es conocido por", "había sido destruido".
 2. Pasiva refleja donde "se" actúa como marca de pasividad con sujeto paciente explícito. Ejemplo válido: "se publicaron los resultados".
 
 NO señales (son falsos positivos habituales):
 - Participios adjetivales que modifican un sustantivo dentro de una frase nominal, aunque vayan seguidos de "por": "proyecto lanzado por X", "experimentos llevados a cabo", "ángel sacado de una iglesia", "telescopio regalado". Prueba: si puedes sustituir el participio por un adjetivo cualquiera sin cambiar la estructura, NO es pasiva.
-- Construcciones copulativas «ser + sintagma nominal»: "será el mayor descubrimiento", "es un problema", "fue un error" — aquí «ser» es verbo copulativo, no auxiliar de pasiva. La pasiva perifrástica exige ser + PARTICIPIO ("será descubierto"), no ser + sustantivo. Esto incluye los casos en que el sintagma nominal contiene un participio que funciona como adjetivo del nombre: "fue la forma más aproximada de…", "era la solución más esperada", "fue el camino más transitado" — la prueba es que «ser» no relaciona sujeto paciente con agente, sino que atribuye una cualidad al sujeto.
+- Construcciones copulativas «ser + sintagma nominal»: "será el mayor descubrimiento", "es un problema", "fue un error", "fue la forma más aproximada de…", "era la solución más esperada", "fue el camino más transitado" — aquí «ser» es verbo copulativo, no auxiliar de pasiva.
 - Participios descriptivos en aposición (tras coma, modificando el sustantivo anterior): "un meteorito, compuesto de material X", "una mujer, conocida en el sector", "el edificio, construido en 1920". La frase principal puede estar perfectamente en voz activa ("había adquirido un meteorito, compuesto de…") y el participio es solo un adjetivo descriptivo del nombre, NO una pasiva.
 - Construcciones activas con sujeto implícito o indeterminado: cualquier verbo conjugado en tercera persona (singular o plural) con sujeto omitido NO es pasiva aunque tenga complemento indirecto con «le/les». Ejemplos: "le habían regalado", "le dijeron que", "le avisaron de", "le ordenaron que", "le comunicaron", "le prohibieron", "le pidieron". La prueba: si no hay «ser/estar + participio», NO es pasiva.\n- Perífrasis verbales activas con sujeto omitido aunque incluyan verbos causativos: «han debido hacer llegar», «han podido hacer saber», «debieron mandar traer» — la cadena verbal no contiene ser/estar + participio en ningún punto, por lo que NO es pasiva perifrástica.
 - Oraciones de relativo con participio: "los que fueron enviados" solo si el contexto hace natural la forma pasiva.
