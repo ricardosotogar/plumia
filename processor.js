@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.62
+// PLUMIA — processor.js  v9.63
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -567,6 +567,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const corr = CORRECTIONS.find(c => c.id === id);
           let findings = this._dedupe(accumulated[id] || []);
 
+          // Filtro post-proceso: descartar falsos positivos de voz_pasiva
+          if (id === 'voz_pasiva') findings = this._filterVozPasiva(findings);
+
           // Enriquecer con sinónimos del diccionario local
           if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
             findings = enrichWithLocalSynonyms(findings, id);
@@ -588,6 +591,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const corr = CORRECTIONS.find(c => c.id === id);
           if (!corr) continue;
           let partialFindings = this._dedupe(accumulated[id] || []);
+          if (id === 'voz_pasiva') partialFindings = this._filterVozPasiva(partialFindings);
           if (partialFindings.length > 0 && !allResults.find(r => r.correctionId === id)) {
             if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
               partialFindings = enrichWithLocalSynonyms(partialFindings, id);
@@ -765,6 +769,29 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   }
 
   abort() { this.aborted = true; }
+
+  // Descarta findings de voz_pasiva que son construcciones copulativas, no pasivas reales.
+  // Patrón falso positivo: ser/estar conjugado + artículo/determinante + sustantivo + adjetivo-participio.
+  // La prueba estructural: si tras la forma de ser/estar viene inmediatamente un artículo o
+  // determinante, ser es copulativo (no auxiliar de pasiva) y el finding debe descartarse.
+  _filterVozPasiva(findings) {
+    // Formas conjugadas de ser/estar que pueden actuar como copulativas
+    const serFormas = 'fue|es|era|será|son|eran|fueron|fuera|sea|sean|fuesen|fueran|sido|estar[aá]|estuvo|estaba|estará|está|están|estaban|estuvieron';
+    // Determinantes/artículos que siguen a ser copulativo
+    const det = 'el|la|los|las|un|una|unos|unas|este|esta|estos|estas|ese|esa|esos|esas|aquel|aquella|aquellos|aquellas|mi|tu|su|sus|mis|tus|nuestro|nuestra|nuestros|nuestras|su|sus';
+    const reCopulative = new RegExp(
+      `\\b(?:${serFormas})\\s+(?:${det})\\b`,
+      'i'
+    );
+    return findings.filter(f => {
+      const text = (f.originalText || '').trim();
+      if (reCopulative.test(text)) {
+        console.log(`[VOZ_PASIVA] Descartado por copulativo: "${text.substring(0, 80)}"`);
+        return false;
+      }
+      return true;
+    });
+  }
 
   _dedupe(findings) {
     const seen = new Set();
