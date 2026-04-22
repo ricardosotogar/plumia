@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.64
+// PLUMIA — processor.js  v9.65
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -800,9 +800,25 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   _filterDequeismo(findings) {
     return findings.filter(f => {
       const corr = (f.correction || '').trim().toLowerCase();
+      // Descartar si el modelo mismo dice que es correcto
       if (corr === 'correcto' || corr.startsWith('correcto')) {
-        console.log(`[DEQUEISMO] Descartado por auto-correcto: "${(f.originalText||'').substring(0,80)}"`);
+        console.log(`[DEQUEISMO] Descartado auto-correcto: "${(f.originalText||'').substring(0,80)}"`);
         return false;
+      }
+      // Queísmo falso: el patrón queísta requiere que el verbo vaya seguido de "que"
+      // SIN la preposición. Si el verbo termina la frase (punto, coma...) sin ningún
+      // "que" a continuación, no hay subordinada y no puede haber queísmo.
+      if (f.errorType === 'queismo') {
+        const text = (f.originalText || '').toLowerCase();
+        // Extraer la palabra-ancla de la corrección: "[ancla] de que" → ancla
+        const m = (f.correction || '').toLowerCase().match(/\b(\w{4,})\s+de\s+que\b/);
+        if (m) {
+          const anchor = m[1]; // ej. "cuenta", "seguro", "enterado"
+          if (!text.includes(anchor + ' que')) {
+            console.log(`[DEQUEISMO] Queísmo falso ("${anchor} que" no aparece): "${text.substring(0,80)}"`);
+            return false;
+          }
+        }
       }
       return true;
     });
