@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.63
+// PLUMIA — processor.js  v9.64
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -567,8 +567,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const corr = CORRECTIONS.find(c => c.id === id);
           let findings = this._dedupe(accumulated[id] || []);
 
-          // Filtro post-proceso: descartar falsos positivos de voz_pasiva
+          // Filtro post-proceso: descartar falsos positivos
           if (id === 'voz_pasiva') findings = this._filterVozPasiva(findings);
+          if (id === 'dequeismo')  findings = this._filterDequeismo(findings);
 
           // Enriquecer con sinónimos del diccionario local
           if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
@@ -592,6 +593,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           if (!corr) continue;
           let partialFindings = this._dedupe(accumulated[id] || []);
           if (id === 'voz_pasiva') partialFindings = this._filterVozPasiva(partialFindings);
+          if (id === 'dequeismo')  partialFindings = this._filterDequeismo(partialFindings);
           if (partialFindings.length > 0 && !allResults.find(r => r.correctionId === id)) {
             if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
               partialFindings = enrichWithLocalSynonyms(partialFindings, id);
@@ -787,6 +789,19 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const text = (f.originalText || '').trim();
       if (reCopulative.test(text)) {
         console.log(`[VOZ_PASIVA] Descartado por copulativo: "${text.substring(0, 80)}"`);
+        return false;
+      }
+      return true;
+    });
+  }
+
+  // Descarta findings de dequeismo donde el modelo reconoce que la construcción es correcta
+  // (correction = "Correcto" o similar) — violación de REGLA ABSOLUTA del prompt.
+  _filterDequeismo(findings) {
+    return findings.filter(f => {
+      const corr = (f.correction || '').trim().toLowerCase();
+      if (corr === 'correcto' || corr.startsWith('correcto')) {
+        console.log(`[DEQUEISMO] Descartado por auto-correcto: "${(f.originalText||'').substring(0,80)}"`);
         return false;
       }
       return true;
