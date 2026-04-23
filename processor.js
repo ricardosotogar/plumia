@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.68
+// PLUMIA — processor.js  v9.69
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -921,6 +921,19 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     }));
   }
 
+  // Devuelve la palabra-ancla específica de un finding (la palabra concreta marcada).
+  // Si dos findings comparten originalText pero tienen anclas distintas, son errores
+  // independientes y deben recibir cada uno su propio marcador ◆.
+  _findingAnchor(f) {
+    return (
+      f.word || f.verb ||
+      (Array.isArray(f.adverbs) ? f.adverbs[0] : f.adverb) ||
+      f.expression || f.genericWord || f.name ||
+      f.wordForm || f.miForm || f.siForm || f.tuForm || f.aunForm ||
+      ''
+    ).toLowerCase().trim();
+  }
+
   resolveOverlaps(allResults) {
     // Normalizar primero para garantizar originalText en todos los findings
     const normalized = this.normalizeFindings(allResults);
@@ -942,12 +955,30 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         resolved.push({...outer, mergedFindings:brackets});
       } else if (brackets.length && colors.length) {
         brackets.forEach(b => resolved.push({...b, mergedFindings:[b]}));
-        resolved.push({...colors[colors.length-1], mergedFindings:colors});
+        // Los color-findings se agrupan por ancla (palabra concreta marcada).
+        // Si tienen anclas distintas → marcadores independientes.
+        const colorsByAnchor = {};
+        for (const c of colors) {
+          const ak = this._findingAnchor(c) || '__none__';
+          if (!colorsByAnchor[ak]) colorsByAnchor[ak] = [];
+          colorsByAnchor[ak].push(c);
+        }
+        for (const group of Object.values(colorsByAnchor)) {
+          const primary = group.find(f => f.correctionId === 'nombres_propios') || group[group.length-1];
+          resolved.push({...primary, mergedFindings:group});
+        }
       } else {
-        // nombres_propios tiene prioridad sobre repeticion_lexica cuando coexisten
-        const primary = colors.find(f => f.correctionId === 'nombres_propios')
-                     || colors[colors.length-1];
-        resolved.push({...primary, mergedFindings:colors});
+        // Solo color-findings: agrupar por ancla
+        const colorsByAnchor = {};
+        for (const c of colors) {
+          const ak = this._findingAnchor(c) || '__none__';
+          if (!colorsByAnchor[ak]) colorsByAnchor[ak] = [];
+          colorsByAnchor[ak].push(c);
+        }
+        for (const group of Object.values(colorsByAnchor)) {
+          const primary = group.find(f => f.correctionId === 'nombres_propios') || group[group.length-1];
+          resolved.push({...primary, mergedFindings:group});
+        }
       }
     }
     return resolved;
