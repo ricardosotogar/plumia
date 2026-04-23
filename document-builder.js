@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v9.67 cargado');
+console.log('📦 document-builder.js v9.68 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -857,17 +857,29 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     const positions = await this._resolvePositions(others, selectionText);
 
     // ── Paso 2: ordenar de atrás hacia adelante ───────────────────────────────
-    // Dentro de la misma posición: word markers PRIMERO, bracket markers DESPUÉS.
-    // Así, cuando el bracket inserta ◆¹ la palabra ya tiene su propio ◆ y no hay
-    // colisión falsa que suprima el marcador de la corrección de palabra.
-    const ordered = others
-      .map((f, i) => ({ ...f, _paraIdx: positions[i][0], _charIdx: positions[i][1] }))
-      .sort((a, b) => {
-        if (b._paraIdx !== a._paraIdx) return b._paraIdx - a._paraIdx;
-        if (b._charIdx !== a._charIdx) return b._charIdx - a._charIdx;
-        // Misma posición: word markers (0) antes que bracket markers (1)
-        return (BRACKET_TYPES.has(a.correctionId) ? 1 : 0) - (BRACKET_TYPES.has(b.correctionId) ? 1 : 0);
-      });
+    // BRACKETS PRIMERO (globalmente), luego WORD MARKERS.
+    // Dentro de cada grupo, orden back-to-front (párrafo mayor → char mayor).
+    //
+    // Razón: un word marker inserta ◆ dentro del texto (p.ej. antes de "que"),
+    // lo que rompe el body.search() del bracket cuyo anchor text incluye esa
+    // palabra. Procesando brackets primero, su anchor se encuentra intacto y
+    // los ◆ de word markers se insertan después, dentro del span ya bracketado.
+    // Si un word marker coincide exactamente con el inicio del bracket, la
+    // comprobación bracketSr en _markWord detecta ◆¹+keyText y entra en modo
+    // commentOnly (comportamiento correcto: el bracket ya ocupa esa posición).
+    const mapped = others.map((f, i) => ({
+      ...f,
+      _paraIdx:    positions[i][0],
+      _charIdx:    positions[i][1],
+      _isBracket:  BRACKET_TYPES.has(f.correctionId) ? 0 : 1, // 0=bracket primero
+    }));
+    const ordered = mapped.sort((a, b) => {
+      // 1) brackets antes que word markers
+      if (a._isBracket !== b._isBracket) return a._isBracket - b._isBracket;
+      // 2) dentro del mismo tipo: back-to-front
+      if (b._paraIdx !== a._paraIdx) return b._paraIdx - a._paraIdx;
+      return b._charIdx - a._charIdx;
+    });
 
     // ── Paso 3: aplicar en el orden calculado ────────────────────────────────
     for (let i = 0; i < ordered.length; i++) {
