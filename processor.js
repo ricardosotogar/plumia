@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.66
+// PLUMIA — processor.js  v9.67
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -568,9 +568,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           let findings = this._dedupe(accumulated[id] || []);
 
           // Filtro post-proceso: descartar falsos positivos
-          if (id === 'voz_pasiva')    findings = this._filterVozPasiva(findings);
-          if (id === 'dequeismo')     findings = this._filterDequeismo(findings);
-          if (id === 'verbos_comedin') findings = this._filterVerbosComedin(findings);
+          if (id === 'voz_pasiva')         findings = this._filterVozPasiva(findings);
+          if (id === 'dequeismo')          findings = this._filterDequeismo(findings);
+          if (id === 'verbos_comedin')     findings = this._filterVerbosComedin(findings);
+          if (id === 'interrogativas_tilde') findings = this._filterInterrogativasTilde(findings);
 
           // Enriquecer con sinónimos del diccionario local
           if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
@@ -593,9 +594,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const corr = CORRECTIONS.find(c => c.id === id);
           if (!corr) continue;
           let partialFindings = this._dedupe(accumulated[id] || []);
-          if (id === 'voz_pasiva')    partialFindings = this._filterVozPasiva(partialFindings);
-          if (id === 'dequeismo')     partialFindings = this._filterDequeismo(partialFindings);
-          if (id === 'verbos_comedin') partialFindings = this._filterVerbosComedin(partialFindings);
+          if (id === 'voz_pasiva')          partialFindings = this._filterVozPasiva(partialFindings);
+          if (id === 'dequeismo')           partialFindings = this._filterDequeismo(partialFindings);
+          if (id === 'verbos_comedin')      partialFindings = this._filterVerbosComedin(partialFindings);
+          if (id === 'interrogativas_tilde') partialFindings = this._filterInterrogativasTilde(partialFindings);
           if (partialFindings.length > 0 && !allResults.find(r => r.correctionId === id)) {
             if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
               partialFindings = enrichWithLocalSynonyms(partialFindings, id);
@@ -801,6 +803,25 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
   // (correction = "Correcto" o similar) — violación de REGLA ABSOLUTA del prompt.
   // Descarta findings de verbos_comedin donde "decir" funciona como acotación de diálogo.
   // "dijo al entrar", "dijo en voz baja", etc. son tags narrativos estándar, no comodines.
+  // Descarta falsos positivos de interrogativas_tilde donde el modelo propone añadir tilde
+  // a "que" cuando en realidad es conjunción subordinante tras verbo de conocimiento/volición.
+  // Prueba: "saber/pensar/creer/querer... que [cláusula declarativa]" → conjunción, sin tilde.
+  _filterInterrogativasTilde(findings) {
+    // Verbos de conocimiento, emoción y volición que rigen conjunción "que" (sin tilde)
+    const verbosConocimiento = /\b(sab[eií]a[ns]?|sab[eé]n?|sup[oe]|supieron|supe|conoc[eií]a[ns]?|pens[aáe]ba[ns]?|piensan?|cre[eií]a[ns]?|creen?|dec[íi]a[ns]?|dijeron|dijo|dije|quer[íi]a[ns]?|quieren?|entend[íi]a[ns]?|entienden?|imaginab[a]n?|temía[ns]?|esperaba[ns]?|afirmab[a]n?)\s+que\b/i;
+    return findings.filter(f => {
+      // Solo nos interesa cuando el modelo propone añadir tilde a "que" → "qué"
+      if ((f.wordForm || '').toLowerCase() === 'que' && (f.correctForm || '').toLowerCase() === 'qué') {
+        const text = (f.originalText || '');
+        if (verbosConocimiento.test(text)) {
+          console.log(`[INTERROG_TILDE] Descartado "que" conjunción tras verbo conocimiento: "${text.substring(0,80)}"`);
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
   _filterVerbosComedin(findings) {
     const formasDecir = /\b(dij[oe]|dijeron|dije|dec[ií]a|dec[ií]an|dice|dicen|dir[aá]|dir[aá]n)\b/i;
     return findings.filter(f => {
