@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v9.70 cargado');
+console.log('📦 document-builder.js v9.72 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -554,7 +554,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     const corrId        = finding.correctionId;
     const origText      = (finding.originalText || '').replace(/[\r\n]+/g, ' ').trim();
-    const endsWithPunct = /[.!?\u2026]$/.test(origText);
+    const endsWithPunct = /[.!?:;\u2026]$/.test(origText);
 
     // Cuándo necesitamos buscar el final real en el párrafo (Case B):
     //
@@ -607,7 +607,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           if (origStart >= 0) {
             const origEnd  = origStart + origText.length;
             const rest     = paraClean.substring(origEnd);
-            const punctIdx = rest.search(/[.!?\u2026]/);
+            const punctIdx = rest.search(/[.!?:;\u2026]/);
             if (punctIdx >= 0) {
               const zone  = paraClean.substring(Math.max(0, origEnd + punctIdx - 30), origEnd + punctIdx);
               const words = zone.trim().split(/\s+/).filter(w => w.length > 0);
