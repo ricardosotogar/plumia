@@ -1465,7 +1465,8 @@ async function cleanDocument() {
       // 1er sync: cargar OOXML de todos los párrafos a la vez
       const ooxmls = paras.map(p => p.getOoxml());
       await ctx.sync();
-      // Modificar en JS puro (sin API calls) y encolar los inserts
+      // Procesar párrafo a párrafo con sync individual para que un párrafo
+      // con OOXML conflictivo no cancele la limpieza de los demás.
       for (let i = 0; i < paras.length; i++) {
         let xml = ooxmls[i].value || '';
         if (xml.includes('w:color') || xml.includes('w:highlight') || xml.includes('<w:b/>') || xml.includes('<w:b ')) {
@@ -1473,11 +1474,12 @@ async function cleanDocument() {
           xml = xml.replace(/<w:highlight\s[^>]*\/>/g, '');
           xml = xml.replace(/<w:b\/>/g, '');
           xml = xml.replace(/<w:b\s[^>]*\/>/g, '');
-          paras[i].getRange().insertOoxml(xml, 'Replace');
+          try {
+            paras[i].insertOoxml(xml, 'Replace');
+            await ctx.sync();
+          } catch(e) { /* párrafo conflictivo: se salta */ }
         }
       }
-      // 2o sync: aplicar todos los cambios de una vez
-      await ctx.sync();
     });
   } catch(e) {}
 
