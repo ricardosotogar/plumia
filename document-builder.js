@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v9.72 cargado');
+console.log('📦 document-builder.js v9.73 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -607,7 +607,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
           if (origStart >= 0) {
             const origEnd  = origStart + origText.length;
             const rest     = paraClean.substring(origEnd);
-            const punctIdx = rest.search(/[.!?:;\u2026]/);
+            // Prioridad: puntuaci\u00f3n fuerte (.!?\u2026) primero; solo si no hay,
+            // usar puntuaci\u00f3n secundaria (:;) para no parar en mitad de frase.
+            let punctIdx = rest.search(/[.!?\u2026]/);
+            if (punctIdx < 0) punctIdx = rest.search(/[:;]/);
             if (punctIdx >= 0) {
               const zone  = paraClean.substring(Math.max(0, origEnd + punctIdx - 30), origEnd + punctIdx);
               const words = zone.trim().split(/\s+/).filter(w => w.length > 0);
