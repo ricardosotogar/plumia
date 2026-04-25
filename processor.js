@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.75
+// PLUMIA — processor.js  v9.76
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -789,12 +789,32 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       `\\b(?:${serFormas})\\s+(?:${det})\\b`,
       'i'
     );
+    // Palabras en la explicación que indican que el modelo sabe que NO es pasiva real
+    const reAutoDescarte = /no\s+(es|voz)\s+pasiva|participio\s+adjetival|copulat|no\s+hay\s+agente|sin\s+agente/i;
+
     return findings.filter(f => {
       const text = (f.originalText || '').trim();
+      const expl = (f.explanation || '').trim();
+      const active = (f.activeVersion || '').trim();
+
+      // Descartar si activeVersion está vacío (el modelo no pudo dar versión activa → no es pasiva real)
+      if (!active) {
+        console.log(`[VOZ_PASIVA] Descartado por activeVersion vacío: "${text.substring(0, 80)}"`);
+        return false;
+      }
+
+      // Descartar si la explicación reconoce que no es pasiva real
+      if (reAutoDescarte.test(expl)) {
+        console.log(`[VOZ_PASIVA] Descartado por auto-reconocimiento en explicación: "${text.substring(0, 80)}"`);
+        return false;
+      }
+
+      // Descartar construcciones copulativas (ser/estar + artículo + sustantivo)
       if (reCopulative.test(text)) {
         console.log(`[VOZ_PASIVA] Descartado por copulativo: "${text.substring(0, 80)}"`);
         return false;
       }
+
       return true;
     });
   }
