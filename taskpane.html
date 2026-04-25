@@ -1473,7 +1473,7 @@ async function cleanDocument() {
           xml = xml.replace(/<w:highlight\s[^>]*\/>/g, '');
           xml = xml.replace(/<w:b\/>/g, '');
           xml = xml.replace(/<w:b\s[^>]*\/>/g, '');
-          paras[i].insertOoxml(xml, 'Replace');
+          paras[i].getRange().insertOoxml(xml, 'Replace');
         }
       }
       // 2o sync: aplicar todos los cambios de una vez
