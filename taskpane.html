@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
@@ -1425,6 +1425,10 @@ async function cleanDocument() {
   const origText = btn ? btn.textContent : 'Limpiar ahora';
   if (btn) { btn.disabled = true; btn.textContent = 'Limpiando\u2026'; }
 
+  // Safety net: si Word.run se cuelga sin resolver, restaurar el boton tras 30s.
+  const restoreBtn = () => { if (btn) { btn.disabled = false; btn.textContent = origText; } };
+  const safetyTimer = setTimeout(restoreBtn, 30000);
+
   // ── Paso 1: eliminar símbolos ◆ ¹ ² ──────────────────────────────────────
   try {
     await Word.run(async (ctx) => {
@@ -1477,6 +1481,7 @@ async function cleanDocument() {
     });
   } catch(e) {}
 
+  clearTimeout(safetyTimer);
   if (btn) {
     btn.disabled = false;
     btn.textContent = '\u2713 Limpiado';
