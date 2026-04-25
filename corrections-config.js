@@ -5,7 +5,7 @@
 // ============================================================================
 (function() {
 window.PLUMIA = {};
-window.PLUMIA.CONFIG_VERSION = '9.76';
+window.PLUMIA.CONFIG_VERSION = '9.77';
 console.log('📦 corrections-config.js v9.37 cargado');
 window.PLUMIA.COLOR_MAP = {
   1:{name:"Rojo",hex:"FF0000",type:"text"},
@@ -55,7 +55,7 @@ CLAVE PARA NO EQUIVOCARTE — test CD vs CI:
 - Si el verbo responde a "¿a quién le?" o "¿para quién?" (indirecto) → el pronombre correcto es le/les (CI). Usar "la" o "lo" aquí SÍ sería laísmo o loísmo.
 
 VERBOS QUE RIGEN CD (usar "lo/la" es CORRECTO, nunca marcar como error):
-reconocer, ver, oír, conocer, querer, amar, abrazar, besar, coger, tomar, llevar, notar, encontrar, buscar, llamar (convocar), echar de menos, ayudar, escuchar, mirar, observar, sentir, imaginar, recordar, olvidar, esperar (aguardar a alguien), recibir (acoger a alguien).
+reconocer, ver, oír, conocer, querer, amar, abrazar, besar, coger, tomar, llevar, notar, encontrar, buscar, llamar (convocar), echar de menos, ayudar, escuchar, mirar, observar, sentir, imaginar, recordar, olvidar, esperar (aguardar a alguien), recibir (acoger a alguien), señalar (apuntar/indicar a alguien: «los señaló» = señaló ¿a quiénes? → CD ✓; distinto de «señalarle algo a alguien» donde la persona es CI), seguir, perseguir, vigilar, acompañar, visitar, saludar, ignorar, evitar, contemplar.
 
 NO marques como error:
 - "la reconociera" (reconocer = CD ✓)
