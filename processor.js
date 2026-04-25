@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.74
+// PLUMIA — processor.js  v9.75
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -824,16 +824,38 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
   _filterVerbosComedin(findings) {
     const formasDecir = /\b(dij[oe]|dijeron|dije|dec[ií]a|dec[ií]an|dice|dicen|dir[aá]|dir[aá]n)\b/i;
+    // Locuciones fijas con "hacer" que no son comodines
+    const locucionesFijas = /\bhac[eéií](r|ndo)?\s+(ruido|caso|falta|gracia|daño|bien|mal|fr[íi]o|calor|efecto|tiempo|sitio|las\s+paces|la\s+vista\s+gorda)\b/i;
     return findings.filter(f => {
       const verb = (f.verb || '').toLowerCase().trim();
+      const text  = (f.originalText || '');
+      const expl  = (f.explanation || '');
+
+      // Descartar "decir" como tag de diálogo
       if (verb === 'decir' || formasDecir.test(verb)) {
-        // Comprobar que el originalText contiene guion de diálogo o contexto de habla
-        const text = (f.originalText || '');
         if (/—|«|»|"/.test(text) || formasDecir.test(text)) {
           console.log(`[VERBOS_COMEDIN] Descartado "decir" en diálogo: "${text.substring(0,80)}"`);
           return false;
         }
       }
+
+      // Descartar locuciones fijas con "hacer"
+      if (locucionesFijas.test(text)) {
+        console.log(`[VERBOS_COMEDIN] Descartado locución fija "hacer": "${text.substring(0,80)}"`);
+        return false;
+      }
+
+      // Descartar alucinaciones: la explicación menciona una frase que no aparece en el originalText
+      // (el modelo comenta algo que no está en el texto analizado)
+      const phraseInExpl = expl.match(/'([^']{6,40})'/);
+      if (phraseInExpl) {
+        const cited = phraseInExpl[1].toLowerCase().trim();
+        if (!text.toLowerCase().includes(cited)) {
+          console.log(`[VERBOS_COMEDIN] Posible alucinación — explicación cita "${cited}" pero no está en el texto: "${text.substring(0,80)}"`);
+          return false;
+        }
+      }
+
       return true;
     });
   }
