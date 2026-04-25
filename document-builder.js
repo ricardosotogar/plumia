@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v9.77 cargado');
+console.log('📦 document-builder.js v9.78 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -612,9 +612,10 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             let punctIdx = rest.search(/[.!?\u2026]/);
             if (punctIdx < 0) punctIdx = rest.search(/[:;]/);
             if (punctIdx >= 0) {
+              const punctChar = rest[punctIdx];
               const zone  = paraClean.substring(Math.max(0, origEnd + punctIdx - 30), origEnd + punctIdx);
               const words = zone.trim().split(/\s+/).filter(w => w.length > 0);
-              searchAnchor = words.slice(-3).join(' ').trim();
+              searchAnchor = words.slice(-3).join(' ').trim() + punctChar;
             }
           }
         } else {
