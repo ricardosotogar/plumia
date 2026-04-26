@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.00
+// PLUMIA — processor.js  v10.01
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -659,7 +659,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     while (true) {
       const idx = text.indexOf(snippet, searchFrom);
       if (idx < 0) break;
-      const lineStart = text.lastIndexOf('\n', idx - 1) + 1;
+      const lineStart = Math.max(text.lastIndexOf('\n', idx - 1), text.lastIndexOf('\r', idx - 1)) + 1;
       const linePrefix = text.substring(lineStart, idx);
       if (/^\s*(?:◆[¹²³]?\s*)*—/.test(linePrefix)) return true;
       searchFrom = idx + 1;
