@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v9.97 cargado');
+console.log('📦 document-builder.js v9.99 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -197,6 +197,8 @@ function _singleComment(f) {
       return `Tiempo verbal: ${f.explanation||''} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
     case 'ortotipografia_pura':
       return f.isFirstOccurrence ? `Ortotipografía corregida en todo el documento: ${f.explanation}` : null;
+    case 'puntuacion_prosa':
+      return `Puntuación en prosa (${f.errorType||''}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'puntuacion_dialogo':
       return `Puntuación de diálogo (${f.errorType||''}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'ritmo_narrativo':
@@ -1461,7 +1463,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   }
 
   // ── BUILD OUTPUT ──────────────────────────────────────────────────────────
-  async buildOutput(allResults, resolvedFindings, originalName, selectedIds, selectionText = '') {
+  async buildOutput(allResults, resolvedFindings, originalName, selectedIds, selectionText = '', includeSummary = true) {
     const revisionName = await this.getRevisionName(originalName);
     const statsName    = this.getStatsName(revisionName);
     const allFindings  = allResults.flatMap(r=>r.findings);
@@ -1470,8 +1472,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     if (this.outputMode === 'marked') {
       await this.applyMarkings(resolvedFindings, selectionText);
       await this.highlightBrackets();
-      await this.appendStatsReport(allResults, pageMap);
-      return {mode:'marked', revisionName, statsName, totalFindings:resolvedFindings.length};
+      if (includeSummary) await this.appendStatsReport(allResults, pageMap);
+      return {mode:'marked', revisionName, statsName, totalFindings:resolvedFindings.length, includeSummary};
     } else {
       await this.appendStatsReport(allResults, pageMap);
       return {mode:'report', revisionName, statsName, totalFindings:allResults.reduce((s,r)=>s+r.findings.length,0)};

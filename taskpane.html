@@ -18,7 +18,7 @@
   <div class="brand">
     <div>
       <div class="brand-name">Plum<em>ia</em></div>
-      <div class="brand-sub">Corrector ortotipográfico <span style="font-size:9px;opacity:0.55">v9.97</span></div>
+      <div class="brand-sub">Corrector ortotipográfico <span style="font-size:9px;opacity:0.55">v9.99</span></div>
     </div>
   </div>
   <button class="help-btn" onclick="openHelp()" title="Ayuda">?</button>
@@ -218,7 +218,11 @@
           <div class="radio-circle"></div>
           <div>
             <div class="format-opt-label">Documento marcado con colores</div>
-            <div class="format-opt-desc">Actualiza el documento actual con las incidencias resaltadas, comentarios explicativos y un listado resumen al final, para que puedas guardarlo con otro nombre.</div>
+            <div class="format-opt-desc">Actualiza el documento actual con las incidencias resaltadas y comentarios explicativos, para que puedas guardarlo con otro nombre.</div>
+            <label style="display:flex;align-items:center;gap:6px;margin-top:7px;font-size:12px;cursor:pointer;color:var(--ink)" onclick="event.stopPropagation()">
+              <input type="checkbox" id="chkIncludeSummary" onclick="event.stopPropagation()" style="margin:0;cursor:pointer">
+              Añadir un listado resumen al final del documento
+            </label>
           </div>
         </div>
         <div class="format-opt" id="format-report" onclick="selectFormat('report')">
@@ -415,10 +419,10 @@
 	  es de ±30%, aunque en casos extremos puede ser mayor.
 	</div>
 
-    <button class="btn-primary" id="btnConfirmAnalyze" onclick="confirmAndAnalyze()">
+    <button class="btn-primary" id="btnConfirmAnalyze" onclick="confirmAndAnalyze()" style="padding:9px;font-size:14px">
       ✦ Confirmar y analizar
     </button>
-    <button class="btn-secondary" onclick="closeCostPopup()">
+    <button class="btn-secondary" onclick="closeCostPopup()" style="margin-top:6px;padding:8px;font-size:12px">
       Cancelar
     </button>
   </div>
@@ -505,8 +509,8 @@ window.plumiaLog = function() {
   return t;
 };
 
-// ── PLUMIA v9.97 ────────────────────────────────────────────────────────────
-const PLUMIA_UI_VERSION = window.PLUMIA.CONFIG_VERSION || '9.97';
+// ── PLUMIA v9.99 ────────────────────────────────────────────────────────────
+const PLUMIA_UI_VERSION = window.PLUMIA.CONFIG_VERSION || '9.99';
 console.log('Plumia taskpane v' + PLUMIA_UI_VERSION + ' loaded');
 // Inyectar versión en el header (funciona aunque el HTML esté cacheado)
 document.addEventListener('DOMContentLoaded', function() {
@@ -1745,7 +1749,8 @@ async function runAnalysis() {
   // Pasar selectionText para que buildOutput/applyMarkings evite body.load('paragraphs')
   // en documentos grandes y restrinja ortotipografía al fragmento analizado.
   const selectionTextForBuilder = state.capturedSelectionText || text || '';
-  const output = await builder.buildOutput(allResults, resolved, originalName, [...state.selectedIds], selectionTextForBuilder);
+  const includeSummary = document.getElementById('chkIncludeSummary')?.checked ?? false;
+  const output = await builder.buildOutput(allResults, resolved, originalName, [...state.selectedIds], selectionTextForBuilder, includeSummary);
   console.log('[DBG13] buildOutput completado');
 
   // Obtener coste real de la API (tokens acumulados durante el análisis)
@@ -1910,7 +1915,9 @@ function showDoneScreen(output, allResults, realCostUSD, realCostEUR, cappedGrou
 
   if (output.mode === 'marked') {
     document.getElementById('doneDesc').textContent =
-      `Se han aplicado ${totalFindings} marcas al documento con comentarios y resumen al final.`;
+      output.includeSummary
+        ? `Se han aplicado ${totalFindings} marcas al documento con comentarios y resumen al final.`
+        : `Se han aplicado ${totalFindings} marcas al documento con comentarios explicativos.`;
     document.getElementById('saveAsInstructions').style.display = 'block';
     document.getElementById('saveAsName').textContent = output.revisionName + '.docx';
   } else {
