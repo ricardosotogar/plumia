@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.82
+// PLUMIA — processor.js  v9.83
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -633,7 +633,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     // descarta findings donde las dos ocurrencias estén a >40 palabras en el texto real
     const cleanedResults = allResults.map(r => {
       if (r.correctionId === 'repeticion_lexica') {
-        const filtered = r.findings.filter(f => this._repeticionIsClose(f.word, f._chunkText || selectionText, 40));
+        const filtered = r.findings.filter(f => this._repeticionIsCloseOccurrences(f, f._chunkText || selectionText, 40));
         const removed = r.findings.length - filtered.length;
         if (removed > 0) console.log(`[REPLEX] ${removed} finding(s) descartados por distancia real >40 palabras`);
         return { ...r, findings: filtered };
@@ -653,11 +653,42 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const t = tokens[i].replace(/^[^a-záéíóúüñ]+|[^a-záéíóúüñ]+$/gi, '');
       if (t === wordLower) positions.push(i);
     }
-    if (positions.length < 2) return false; // solo una ocurrencia → alucinación del modelo
+    if (positions.length < 2) return false;
     for (let i = 1; i < positions.length; i++) {
       if (positions[i] - positions[i - 1] <= maxDistance) return true;
     }
-    return false; // todas las ocurrencias están lejos entre sí
+    return false;
+  }
+
+  // Valida la distancia entre las dos ocurrencias ESPECÍFICAS que citó el modelo
+  // (f.occurrences[0] y f.occurrences[1]), no cualquier par del texto.
+  // Fallback a _repeticionIsClose si los fragmentos no se localizan.
+  _repeticionIsCloseOccurrences(f, text, maxDistance) {
+    const word = (f.word || '').toLowerCase().trim();
+    if (!word || !text) return true;
+    const occs = Array.isArray(f.occurrences) ? f.occurrences : [];
+    if (occs.length >= 2) {
+      const textLower = text.toLowerCase();
+      let searchFrom = 0;
+      const tokenPositions = [];
+      for (let k = 0; k < 2; k++) {
+        const occLower = (occs[k] || '').toLowerCase().trim().substring(0, 50);
+        if (occLower.length < 5) continue;
+        const occIdx = textLower.indexOf(occLower, searchFrom);
+        if (occIdx < 0) continue;
+        const wordInOcc = occLower.indexOf(word);
+        if (wordInOcc < 0) continue;
+        const charPos = occIdx + wordInOcc;
+        tokenPositions.push(text.substring(0, charPos).split(/\s+/).length);
+        searchFrom = occIdx + 1;
+      }
+      if (tokenPositions.length === 2) {
+        const dist = tokenPositions[1] - tokenPositions[0];
+        console.log(`[REPLEX] '${word}' distancia específica=${dist} palabras`);
+        return dist <= maxDistance;
+      }
+    }
+    return this._repeticionIsClose(word, text, maxDistance);
   }
 
   // Extrae originalText de cualquier estructura de finding (normalización temprana)
