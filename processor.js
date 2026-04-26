@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.81
+// PLUMIA — processor.js  v9.82
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -633,7 +633,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     // descarta findings donde las dos ocurrencias estén a >40 palabras en el texto real
     const cleanedResults = allResults.map(r => {
       if (r.correctionId === 'repeticion_lexica') {
-        const filtered = r.findings.filter(f => this._repeticionIsClose(f.word, selectionText, 40));
+        const filtered = r.findings.filter(f => this._repeticionIsClose(f.word, f._chunkText || selectionText, 40));
         const removed = r.findings.length - filtered.length;
         if (removed > 0) console.log(`[REPLEX] ${removed} finding(s) descartados por distancia real >40 palabras`);
         return { ...r, findings: filtered };
@@ -769,6 +769,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           colorId:      corr.colorId,
           label:        corr.label,
           directFix:    corr.directFix,
+          ...(corrId === 'repeticion_lexica' && chunkText ? { _chunkText: chunkText } : {}),
         });
       });
     }
