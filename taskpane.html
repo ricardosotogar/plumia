@@ -186,8 +186,14 @@
     </ul>
   </div>
 
+
+  <div class="result-format" style="margin-top:12px">
+    <div class="format-title">Limpiar texto de formato y comentarios</div>
+    <p class="clean-desc">Elimina colores, negrita, símbolos ◆ ◆¹ ◆² y comentarios de un análisis anterior.</p>
+    <button id="btnClean" class="btn-clean" onclick="cleanDocument()">Limpiar ahora</button>
+  </div>
   <div class="screen-footer">
-    <button class="btn-secondary" onclick="showScreen('welcome')">Cancelar</button>
+    <button class="btn-secondary" onclick="showScreen('welcome')" style="font-size:12px;padding:5px 14px">Cancelar</button>
   </div>
 </div>
 
@@ -248,13 +254,6 @@
     </div>
     <div style="height:8px"></div>
 
-    <!-- Limpiar texto de formato y comentarios -->
-    <div class="result-format" style="margin-top:4px">
-      <div class="format-title">Limpiar texto de formato y comentarios</div>
-      <p class="clean-desc">Si quieres eliminar colores de resaltado y texto, negrita, símbolos ◆ ◆¹ ◆² y comentarios del documento de un anterior análisis pulsa en "limpiar ahora".</p>
-      <button id="btnClean" class="btn-clean" onclick="cleanDocument()">Limpiar ahora</button>
-    </div>
-    <div style="height:8px"></div>
   </div><!-- /options-scroll -->
 
   <div class="screen-footer">
