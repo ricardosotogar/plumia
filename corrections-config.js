@@ -5,7 +5,7 @@
 // ============================================================================
 (function() {
 window.PLUMIA = {};
-window.PLUMIA.CONFIG_VERSION = '9.86';
+window.PLUMIA.CONFIG_VERSION = '9.87';
 console.log('📦 corrections-config.js v9.37 cargado');
 window.PLUMIA.COLOR_MAP = {
   1:{name:"Rojo",hex:"FF0000",type:"text"},
@@ -115,6 +115,8 @@ NO señales (son falsos positivos habituales):
 No señales cuando la forma pasiva sea la más natural en contexto o no haya agente claro que recuperar.
 
 REGLA ABSOLUTA: Si al analizar una construcción concluyes que NO es voz pasiva, NO la incluyas en findings bajo ningún concepto — ni con explanation "no es pasiva", "revisión descartada" ni similar. Solo incluye findings de construcciones que SÍ sean pasivas reales y SÍ tengan una versión activa concreta. El campo "activeVersion" nunca puede estar vacío.
+
+REGLA CRÍTICA PARA originalText: El campo originalText debe abarcar el fragmento que CONTIENE la construcción pasiva (el auxiliar ser/estar conjugado + participio). Si la pasiva está en una oración subordinada, el originalText debe incluir esa subordinada — NO el sujeto de la oración principal ni el inicio de la oración si la pasiva aparece más adelante. Ejemplo incorrecto: si la pasiva es "habían sido asignados a distintos proyectos", devolver como originalText "todos los científicos involucrados en el proyecto" es un error. Ejemplo correcto: devolver "se les informaba que habían sido asignados a distintos proyectos en la Tierra" o simplemente el fragmento que contiene "habían sido asignados".
 
 Texto a analizar:\n{TEXT}\n\nResponde ÚNICAMENTE con un JSON válido:\n{"findings":[{"originalText":"frase completa con la construcción pasiva","explanation":"estructura pasiva exacta encontrada y por qué revisarla","activeVersion":"reformulación en voz activa"}],"total_found":N}\nDevuelve MÁXIMO {MAX_FINDINGS} hallazgos. Incluye siempre el campo "total_found" con el número total de casos que identificaste en el texto, incluyendo los que no caben por el límite. Si no encuentras ninguno: {"findings":[],"total_found":0}\nIMPORTANTE: tu respuesta debe ser ÚNICAMENTE el JSON. Sin razonamiento previo, sin texto adicional, sin bloques de código markdown.`},
 
