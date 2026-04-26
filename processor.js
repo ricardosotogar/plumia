@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v9.96
+// PLUMIA — processor.js  v9.97
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -638,10 +638,33 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         if (removed > 0) console.log(`[REPLEX] ${removed} finding(s) descartados por distancia real >40 palabras`);
         return { ...r, findings: filtered };
       }
+      if (r.correctionId === 'puntuacion_prosa') {
+        const filtered = r.findings.filter(f => !this._isInDialogueLine(f.originalText, selectionText));
+        const removed = r.findings.length - filtered.length;
+        if (removed > 0) console.log(`[PROSA] ${removed} finding(s) descartados por estar en línea de diálogo`);
+        return { ...r, findings: filtered };
+      }
       return r;
     });
 
     return { results: cleanedResults, cappedGroups: [...cappedGroups] };
+  }
+
+  // Devuelve true si originalText aparece dentro de una línea de diálogo (que empieza con —)
+  _isInDialogueLine(originalText, text) {
+    if (!originalText || !text) return false;
+    const snippet = originalText.substring(0, 50).trim();
+    if (snippet.length < 5) return false;
+    let searchFrom = 0;
+    while (true) {
+      const idx = text.indexOf(snippet, searchFrom);
+      if (idx < 0) break;
+      const lineStart = text.lastIndexOf('\n', idx - 1) + 1;
+      const linePrefix = text.substring(lineStart, idx);
+      if (/^\s*—/.test(linePrefix)) return true;
+      searchFrom = idx + 1;
+    }
+    return false;
   }
 
   _repeticionIsClose(word, text, maxDistance) {
