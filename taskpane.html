@@ -191,9 +191,7 @@
     <div class="format-title">Limpiar texto de formato y comentarios</div>
     <p class="clean-desc">Elimina colores, negrita, símbolos ◆ ◆¹ ◆² y comentarios de un análisis anterior.</p>
     <button id="btnClean" class="btn-clean" onclick="cleanDocument()">Limpiar ahora</button>
-  </div>
-  <div class="screen-footer">
-    <button class="btn-secondary" onclick="showScreen('welcome')" style="font-size:12px;padding:5px 14px">Cancelar</button>
+    <button class="btn-secondary" onclick="showScreen('welcome')" style="margin-top:6px">Cancelar</button>
   </div>
 </div>
 
@@ -203,11 +201,6 @@
 <div class="screen" id="screen-options">
   <div class="options-scroll">
     <button class="btn-back" onclick="goBackToMode()">← Atrás</button>
-
-    <!-- Contexto: selección o documento completo -->
-    <div class="selection-context" id="selectionContext">
-      <span id="selectionContextText">Detectando selección…</span>
-    </div>
 
     <div class="select-all-row">
       <button class="btn-sel-all" onclick="selectAll(true)">✓ Seleccionar todo</button>
@@ -254,14 +247,19 @@
     </div>
     <div style="height:8px"></div>
 
+
+    <!-- Contexto: selección o documento completo -->
+    <div class="selection-context" id="selectionContext">
+      <span id="selectionContextText">Detectando selección…</span>
+    </div>
   </div><!-- /options-scroll -->
 
   <div class="screen-footer">
     <div class="footer-hint" id="selectionHint">Selecciona al menos una opción</div>
-    <button class="btn-primary" id="btnAnalyze" onclick="requestCostEstimate()" disabled>
+    <button class="btn-primary" id="btnAnalyze" onclick="requestCostEstimate()" disabled style="padding:9px;font-size:14px">
       Calcular coste y continuar →
     </button>
-    <button class="btn-secondary" onclick="goBackToMode()" style="margin-top:6px">
+    <button class="btn-secondary" onclick="goBackToMode()" style="margin-top:6px;padding:8px;font-size:12px">
       Cancelar
     </button>
   </div>
