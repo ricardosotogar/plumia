@@ -5,7 +5,7 @@
 // ============================================================================
 (function() {
 window.PLUMIA = {};
-window.PLUMIA.CONFIG_VERSION = '9.87';
+window.PLUMIA.CONFIG_VERSION = '9.88';
 console.log('📦 corrections-config.js v9.37 cargado');
 window.PLUMIA.COLOR_MAP = {
   1:{name:"Rojo",hex:"FF0000",type:"text"},
@@ -107,6 +107,7 @@ SOLO señala construcciones que cumplan UNA de estas dos formas:
 NO señales (son falsos positivos habituales):
 - Participios adjetivales que modifican un sustantivo dentro de una frase nominal, aunque vayan seguidos de "por": "proyecto lanzado por X", "experimentos llevados a cabo", "ángel sacado de una iglesia", "telescopio regalado". Prueba: si puedes sustituir el participio por un adjetivo cualquiera sin cambiar la estructura, NO es pasiva.
 - Construcciones copulativas «ser + sintagma nominal»: "será el mayor descubrimiento", "es un problema", "fue un error", "fue la forma más aproximada de…", "era la solución más esperada", "fue el camino más transitado" — aquí «ser» es verbo copulativo, no auxiliar de pasiva.
+- «Ser» copulativo + pronombre relativo + verbo activo: construcciones como "ser los que pueden convencer", "a ser quienes deciden", "ser el que manda", "fue quien lo organizó", "llegar a ser los que consiguen" — aquí «ser» enlaza con una cláusula relativa en voz activa; no hay participio que funcione como predicado pasivo. Estas construcciones NO son pasivas en ningún caso. Que el contexto mencione implícitamente un cambio de situación no convierte la construcción en pasiva.
 - «Estar + participio adjetival» que describe un ESTADO resultante, no una acción sufrida: «estaba cansado», «estaba abierto», «estaba roto», «está prohibido» (sin agente). La prueba: si no hay ni puede haber agente que realizó la acción, es estado adjetival, no pasiva. Además, si no puedes formular una versión activa concreta, NO es pasiva — el campo activeVersion nunca puede quedar vacío.\n- Participios descriptivos en aposición (tras coma, modificando el sustantivo anterior): "un meteorito, compuesto de material X", "una mujer, conocida en el sector", "el edificio, construido en 1920". La frase principal puede estar perfectamente en voz activa ("había adquirido un meteorito, compuesto de…") y el participio es solo un adjetivo descriptivo del nombre, NO una pasiva.
 - Construcciones activas con sujeto implícito o indeterminado: cualquier verbo conjugado en tercera persona (singular o plural) con sujeto omitido NO es pasiva aunque tenga complemento indirecto con «le/les». Ejemplos: "le habían regalado", "le dijeron que", "le avisaron de", "le ordenaron que", "le comunicaron", "le prohibieron", "le pidieron". La prueba: si no hay «ser/estar + participio», NO es pasiva.\n- Perífrasis verbales activas con sujeto omitido aunque incluyan verbos causativos: «han debido hacer llegar», «han podido hacer saber», «debieron mandar traer» — la cadena verbal no contiene ser/estar + participio en ningún punto, por lo que NO es pasiva perifrástica.
 - Oraciones de relativo con participio: "los que fueron enviados" solo si el contexto hace natural la forma pasiva.
