@@ -210,21 +210,6 @@
     <!-- Las opciones de corrección se generan por JS -->
     <div id="corrections-list"></div>
 
-    <!-- Aviso coherencia narrativa v3 -->
-    <div class="coherence-warning" id="coherenceWarning">
-      <div class="coherence-warning-text">
-        ⚠ Las opciones de coherencia narrativa solo pueden revisarse si se analiza el documento completo. ¿Quieres que se analice todo el documento?<br>
-        <em style="font-size:10.5px;opacity:.8">(El análisis puede tardar más y ser más costoso.)</em>
-      </div>
-      <div class="coherence-warning-btns">
-        <button class="btn-coherence-yes" onclick="acceptCoherenceFullDoc()">Sí, analizar todo</button>
-        <button class="btn-coherence-no" onclick="rejectCoherenceFullDoc()">No</button>
-      </div>
-      <div class="coherence-dismissed" id="coherenceDismissed">
-        Checks de coherencia narrativa desmarcados.
-      </div>
-    </div>
-
     <!-- Formato de resultado -->
     <div class="result-format">
       <div class="format-title">¿Cómo quieres recibir el resultado?</div>
@@ -247,6 +232,22 @@
     </div>
     <div style="height:8px"></div>
 
+
+
+    <!-- Aviso coherencia narrativa v3 -->
+    <div class="coherence-warning" id="coherenceWarning">
+      <div class="coherence-warning-text">
+        ⚠ Las opciones de coherencia narrativa solo pueden revisarse si se analiza el documento completo. ¿Quieres que se analice todo el documento?<br>
+        <em style="font-size:10.5px;opacity:.8">(El análisis puede tardar más y ser más costoso.)</em>
+      </div>
+      <div class="coherence-warning-btns">
+        <button class="btn-coherence-yes" onclick="acceptCoherenceFullDoc()">Sí, analizar todo</button>
+        <button class="btn-coherence-no" onclick="rejectCoherenceFullDoc()">No</button>
+      </div>
+      <div class="coherence-dismissed" id="coherenceDismissed">
+        Checks de coherencia narrativa desmarcados.
+      </div>
+    </div>
 
     <!-- Contexto: selección o documento completo -->
     <div class="selection-context" id="selectionContext">
