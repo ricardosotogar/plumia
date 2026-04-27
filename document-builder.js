@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v10.01 cargado');
+console.log('📦 document-builder.js v10.02 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -115,7 +115,7 @@ function _singleComment(f) {
     case 'ambiguedad_pronominal':
       return `Ambigüedad pronominal: «${f.pronoun}» puede referirse a ${(f.possibleReferents||[]).join(' o ')}. ${f.suggestion?'Posible revisión: '+f.suggestion:''}`;
     case 'repeticion_lexica':
-      return `Repetición léxica: «${f.word}» aparece varias veces cerca. ${f.synonyms?.length?'Sinónimos: '+f.synonyms.join(', ')+'.':''}`;
+      return `Repetición léxica: «${f.word}» aparece varias veces cerca. Evalúa si es redundante y considera eliminar algunas o sustituirlas por sinónimos. ${f.synonyms?.length?'Sinónimos: '+f.synonyms.join(', ')+'.':''}`;
     case 'verbos_comedin':
       return `Verbo comodín «${f.verb}»: ${f.explanation||''} ${(f.alternatives||[]).length?'Alternativas: '+(f.alternatives||[]).join(', ')+'.':''}`;
     case 'sustantivos_genericos':

@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.01
+// PLUMIA — processor.js  v10.02
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -632,19 +632,57 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     // Validación local de proximidad para repeticion_lexica:
     // descarta findings donde las dos ocurrencias estén a >40 palabras en el texto real
     const cleanedResults = allResults.map(r => {
+      let findings = r.findings;
+
+      // Filtro REGLA ABSOLUTA: descarta findings cuya explanation indica que no hay error real
+      const NO_ERROR_RE = /\bse omite\b|\bno (hay|presenta|existe|contiene) error\b|\bno es un error\b|\bsin error real\b|\bel fragmento (está bien|es correcto)\b|\bno (hay|presenta) error real\b|\b(sin error|anulado|descartado|ninguno)\b/i;
+      const before0 = findings.length;
+      findings = findings.filter(f => !NO_ERROR_RE.test(f.explanation || ''));
+      if (findings.length < before0) console.log(`[ABSOLUTA] ${r.correctionId}: ${before0 - findings.length} finding(s) descartados por explanation inválida`);
+
       if (r.correctionId === 'repeticion_lexica') {
-        const filtered = r.findings.filter(f => this._repeticionIsCloseOccurrences(f, f._chunkText || selectionText, 40));
-        const removed = r.findings.length - filtered.length;
-        if (removed > 0) console.log(`[REPLEX] ${removed} finding(s) descartados por distancia real >40 palabras`);
-        return { ...r, findings: filtered };
+        const before = findings.length;
+        findings = findings.filter(f => this._repeticionIsCloseOccurrences(f, f._chunkText || selectionText, 40));
+        if (findings.length < before) console.log(`[REPLEX] ${before - findings.length} finding(s) descartados por distancia real >40 palabras`);
       }
+
       if (r.correctionId === 'puntuacion_prosa') {
-        const filtered = r.findings.filter(f => !this._isInDialogueLine(f.originalText, selectionText));
-        const removed = r.findings.length - filtered.length;
-        if (removed > 0) console.log(`[PROSA] ${removed} finding(s) descartados por estar en línea de diálogo`);
-        return { ...r, findings: filtered };
+        const before = findings.length;
+        findings = findings.filter(f => !this._isInDialogueLine(f.originalText, selectionText));
+        if (findings.length < before) console.log(`[PROSA] ${before - findings.length} finding(s) descartados por estar en línea de diálogo`);
       }
-      return r;
+
+      // Deduplicación por solapamiento de chunks: si dos findings del mismo correctionId
+      // comparten los primeros 40 chars de originalText, se considera duplicado y se queda
+      // solo el que tiene el originalText más largo (más contexto).
+      // Pass 1: deduplicar por prefijo de originalText
+      const seen = new Map();
+      const deduped = [];
+      for (const f of findings) {
+        const key = (f.originalText || '').substring(0, 40).toLowerCase();
+        if (!seen.has(key)) {
+          seen.set(key, deduped.length);
+          deduped.push(f);
+        } else {
+          const idx = seen.get(key);
+          if ((f.originalText || '').length > (deduped[idx].originalText || '').length) {
+            deduped[idx] = f;
+          }
+        }
+      }
+      // Pass 2: deduplicar por prefijo de correction (mismo error, distinto originalText por chunk overlap)
+      const seen2 = new Map();
+      const deduped2 = [];
+      for (const f of deduped) {
+        const key2 = (f.correction || f.correctedForm || '').substring(0, 40).toLowerCase();
+        if (!key2 || !seen2.has(key2)) {
+          if (key2) seen2.set(key2, true);
+          deduped2.push(f);
+        }
+      }
+      if (deduped2.length < findings.length) console.log(`[DEDUP] ${r.correctionId}: ${findings.length - deduped2.length} duplicado(s) eliminados`);
+
+      return { ...r, findings: deduped2 };
     });
 
     return { results: cleanedResults, cappedGroups: [...cappedGroups] };
