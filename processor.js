@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.03
+// PLUMIA — processor.js  v10.05
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================

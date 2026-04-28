@@ -13477,5 +13477,1001 @@
                                                   "total_found":  1
                                               }
                                           ]
+                        },
+    "PT cap 14-15-16":  {
+                            "desc":  "",
+                            "responses":  [
+                                              {
+                                                  "leismo":  {
+                                                                 "findings":  [
+                                                                                  {
+                                                                                      "type":  "laismo",
+                                                                                      "originalText":  "como así la están apodando",
+                                                                                      "correction":  "como así le están apodando",
+                                                                                      "explanation":  "\u0027apodando\u0027 requiere complemento indirecto: se apoda a alguien (CI). El referente es \u0027guardia roja o guardia de sangre\u0027 (femenino), pero el pronombre debe ser \u0027le\u0027 (CI), no \u0027la\u0027 (CD)."
+                                                                                  },
+                                                                                  {
+                                                                                      "type":  "laismo",
+                                                                                      "originalText":  "la dejó entrar cuando la reconoció",
+                                                                                      "correction":  "la dejó entrar cuando la reconoció",
+                                                                                      "explanation":  "Ambos usos son CD femenino (a ella), por lo que \u0027la\u0027 es correcto en los dos casos. No hay error aquí."
+                                                                                  }
+                                                                              ]
+                                                             },
+                                                  "ambiguedad":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "originalText":  "Al entrar, le dijo que podía irse a descansar, que él se ocuparía de la pequeña.",
+                                                                                          "pronoun":  "le",
+                                                                                          "possibleReferents":  [
+                                                                                                                    "la niñera",
+                                                                                                                    "Mary (la niña)"
+                                                                                                                ],
+                                                                                          "explanation":  "Hay dos referentes femeninos en el contexto inmediato: la niñera y Mary. Aunque por lógica se dirige a la niñera, gramaticalmente el pronombre \u0027le\u0027 podría referirse a cualquiera de las dos.",
+                                                                                          "suggestion":  "Al entrar, le dijo a la niñera que podía irse a descansar, que él se ocuparía de la pequeña."
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "sabía quién era aquel tipo que se encontró al entrar: la mano derecha del presidente Haddon.",
+                                                                                          "pronoun":  "se encontró",
+                                                                                          "possibleReferents":  [
+                                                                                                                    "Susan",
+                                                                                                                    "Mary Jane"
+                                                                                                                ],
+                                                                                          "explanation":  "El sujeto de \u0027se encontró al entrar\u0027 podría ser Susan o Mary Jane, pues ambas son referentes femeninos activos en el párrafo, aunque el contexto apunta a Susan.",
+                                                                                          "suggestion":  "sabía quién era aquel tipo con el que Susan se encontró al entrar: la mano derecha del presidente Haddon."
+                                                                                      }
+                                                                                  ]
+                                                                 }
+                                              },
+                                              {
+                                                  "leismo":  {
+                                                                 "findings":  [
+                                                                                  {
+                                                                                      "type":  "leismo",
+                                                                                      "originalText":  "Le sacaba de sus casillas estar privado de libertad de opinión.",
+                                                                                      "correction":  "Lo sacaba de sus casillas",
+                                                                                      "explanation":  "\u0027Le\u0027 funciona aquí como CD masculino (referente: Rud, sujeto paciente de la acción de sacar). El CD masculino exige \u0027lo\u0027, no \u0027le\u0027. Es un caso de leísmo."
+                                                                                  },
+                                                                                  {
+                                                                                      "type":  "loismo",
+                                                                                      "originalText":  "Haddon Church cada vez se lo había ido poniendo más difícil",
+                                                                                      "correction":  "se les había ido poniendo más difícil",
+                                                                                      "explanation":  "\u0027Lo\u0027 sustituye aquí a \u0027les\u0027 (CI, referente: los grupos terroristas de disidentes, en plural). El CI requiere \u0027les\u0027, no \u0027lo\u0027. Es un caso de loísmo."
+                                                                                  }
+                                                                              ]
+                                                             },
+                                                  "ambiguedad":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "originalText":  "no podía haber un dirigente al que culpar u odiar, este debía ser un ente que gobernase con mano invisible. Su figura, como persona y como presidente, debía desaparecer para siempre, aunque gobernase desde la sombra; de este modo, nadie podría apuntarle con el dedo.",
+                                                                                          "pronoun":  "le",
+                                                                                          "possibleReferents":  [
+                                                                                                                    "el dirigente",
+                                                                                                                    "Haddon Church (el presidente implícito)"
+                                                                                                                ],
+                                                                                          "explanation":  "El pronombre \u0027le\u0027 en \u0027apuntarle con el dedo\u0027 puede referirse tanto al dirigente mencionado como a Haddon Church, ambos referentes masculinos presentes en el contexto inmediato.",
+                                                                                          "suggestion":  "…nadie podría apuntarle a él con el dedo / …nadie podría apuntar al dirigente con el dedo."
+                                                                                      }
+                                                                                  ]
+                                                                 }
+                                              },
+                                              {
+                                                  "concordancia":  {
+                                                                       "findings":  [
+                                                                                        {
+                                                                                            "originalText":  "de los que ya nada vuelves a saber",
+                                                                                            "errorType":  "sujeto-verbo",
+                                                                                            "explanation":  "El verbo \u0027vuelves\u0027 está en segunda persona del singular, pero el contexto narrativo en tercera persona exige \u0027vuelve\u0027 para concordar con el sujeto implícito (\u0027nada\u0027) y el registro narrativo",
+                                                                                            "correction":  "de los que ya nada vuelve a saber"
+                                                                                        },
+                                                                                        {
+                                                                                            "originalText":  "un aluvión de balas atravesaron la sala",
+                                                                                            "errorType":  "sujeto-verbo",
+                                                                                            "explanation":  "El sujeto es \u0027un aluvión\u0027 (singular), por lo que el verbo debe ir en singular: \u0027atravesó\u0027",
+                                                                                            "correction":  "un aluvión de balas atravesó la sala"
+                                                                                        },
+                                                                                        {
+                                                                                            "originalText":  "la fuerza de los disparos lo empujaron hacia atrás",
+                                                                                            "errorType":  "sujeto-verbo",
+                                                                                            "explanation":  "El sujeto es \u0027la fuerza\u0027 (singular), por lo que el verbo debe ir en singular: \u0027empujó\u0027",
+                                                                                            "correction":  "la fuerza de los disparos lo empujó hacia atrás"
+                                                                                        }
+                                                                                    ]
+                                                                   },
+                                                  "dequeismo":  {
+                                                                    "findings":  [
+
+                                                                                 ]
+                                                                }
+                                              },
+                                              {
+                                                  "concordancia":  {
+                                                                       "findings":  [
+
+                                                                                    ]
+                                                                   },
+                                                  "dequeismo":  {
+                                                                    "findings":  [
+
+                                                                                 ]
+                                                                }
+                                              },
+                                              {
+                                                  "repeticion":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "word":  "continuar",
+                                                                                          "occurrences":  [
+                                                                                                              "el proyecto Ruta de la Seda debe continuar para buscar otros intramundos",
+                                                                                                              "La búsqueda de otras especies de las que conseguir nueva tecnología debe continuar"
+                                                                                                          ],
+                                                                                          "explanation":  "La palabra \u0027continuar\u0027 aparece dos veces en frases casi paralelas dentro del mismo párrafo breve, con estructura repetida (\u0027debe continuar\u0027), lo que resulta llamativo y empobrece el estilo."
+                                                                                      },
+                                                                                      {
+                                                                                          "word":  "peaksons",
+                                                                                          "occurrences":  [
+                                                                                                              "si seguimos en contacto con los peaksons",
+                                                                                                              "Tenemos que comunicarnos con los peaksons",
+                                                                                                              "¿Cómo nos podrían ayudar? Sabemos que no han desarrollado la tecnología necesaria para visitarnos",
+                                                                                                              "comunicarnos con los peaksons para decirles lo que está sucediendo"
+                                                                                                          ],
+                                                                                          "explanation":  "La palabra \u0027peaksons\u0027 se repite más de tres veces en párrafos consecutivos del diálogo inicial sin variación ni pronombre sustituto, generando una repetición mecánica que empobrece el texto."
+                                                                                      },
+                                                                                      {
+                                                                                          "word":  "pequeña",
+                                                                                          "occurrences":  [
+                                                                                                              "pronto tendría que enviarla a la Tierra a una casa de acogida",
+                                                                                                              "había decidido encargarse de la pequeña",
+                                                                                                              "vio una parte de sí mismo en aquella pequeña criatura",
+                                                                                                              "Verla indefensa y desprotegida en el mundo"
+                                                                                                          ],
+                                                                                          "explanation":  "\u0027Pequeña\u0027 y \u0027pequeña criatura\u0027 se repiten en párrafos consecutivos para referirse a la misma niña, junto con otras referencias, resultando repetitivo."
+                                                                                      },
+                                                                                      {
+                                                                                          "word":  "indefenso/indefensa",
+                                                                                          "occurrences":  [
+                                                                                                              "Verla indefensa y desprotegida en el mundo",
+                                                                                                              "le recordó lo indefenso que hacía muchos años él mismo se había sentido"
+                                                                                                          ],
+                                                                                          "explanation":  "\u0027Indefensa\u0027 e \u0027indefenso\u0027 aparecen en frases muy cercanas dentro del mismo párrafo, con estructura paralela que hace la repetición llamativa."
+                                                                                      },
+                                                                                      {
+                                                                                          "word":  "habitación",
+                                                                                          "occurrences":  [
+                                                                                                              "al entrar en la habitación donde había estado viviendo",
+                                                                                                              "Volderlayer volvió a su habitación",
+                                                                                                              "había estado viviendo tres años sola en una de las habitaciones del campus",
+                                                                                                              "Un error burocrático la asignó como compañera a Mary Jane. Ella estaba tan contenta cuando Susan se acomodó en la habitación"
+                                                                                                          ],
+                                                                                          "explanation":  "\u0027Habitación\u0027 se repite múltiples veces en párrafos consecutivos de la sección de Mary Jane sin variación estilística."
+                                                                                      }
+                                                                                  ]
+                                                                 },
+                                                  "verbos":  {
+                                                                 "findings":  [
+                                                                                  {
+                                                                                      "originalText":  "pulsó el botón rojo de apertura",
+                                                                                      "verb":  "pulsó",
+                                                                                      "explanation":  "Aunque \u0027pulsar\u0027 es aceptable, en este contexto de tensión dramática extrema un verbo como \u0027apretó\u0027 o \u0027golpeó\u0027 transmitiría mejor la urgencia y el peso emocional del gesto."
+                                                                                  },
+                                                                                  {
+                                                                                      "originalText":  "dio sentido a la expresión «hay miradas que matan»",
+                                                                                      "verb":  "dio",
+                                                                                      "explanation":  "\u0027Dar sentido\u0027 es una construcción con verbo comodín; podría sustituirse por \u0027encarnó la expresión\u0027 o \u0027justificó la expresión\u0027."
+                                                                                  },
+                                                                                  {
+                                                                                      "originalText":  "los vuelcos que da la vida no se lo habían permitido",
+                                                                                      "verb":  "da",
+                                                                                      "explanation":  "\u0027Dar vuelcos\u0027 es una construcción con verbo comodín; podría sustituirse por \u0027los avatares de la vida\u0027 o \u0027los giros que impone la vida\u0027."
+                                                                                  },
+                                                                                  {
+                                                                                      "originalText":  "se dio cuenta de que estaba sonriendo",
+                                                                                      "verb":  "se dio cuenta",
+                                                                                      "explanation":  "\u0027Darse cuenta\u0027 es una perífrasis comodín; podría sustituirse por \u0027advirtió que estaba sonriendo\u0027 o \u0027reparó en que estaba sonriendo\u0027."
+                                                                                  },
+                                                                                  {
+                                                                                      "originalText":  "La idea de que podría criarla se mostró con letras de neón en su pensamiento",
+                                                                                      "verb":  "se mostró",
+                                                                                      "explanation":  "\u0027Mostrarse\u0027 es vago en este contexto; podría sustituirse por \u0027destelló\u0027, \u0027relució\u0027 o \u0027irrumpió\u0027 para mayor expresividad."
+                                                                                  }
+                                                                              ]
+                                                             },
+                                                  "sustantivos":  {
+                                                                      "findings":  [
+                                                                                       {
+                                                                                           "originalText":  "algún tipo de tecnología que nos facilitase una ventaja operativa",
+                                                                                           "genericWord":  "tipo",
+                                                                                           "explanation":  "\u0027Algún tipo de tecnología\u0027 es una construcción vaga; podría sustituirse directamente por \u0027alguna tecnología\u0027 sin pérdida de significado y con mayor precisión."
+                                                                                       },
+                                                                                       {
+                                                                                           "originalText":  "por algún motivo, había despertado en él algún tipo de instinto paternal",
+                                                                                           "genericWord":  "algún tipo de",
+                                                                                           "explanation":  "\u0027Algún tipo de instinto paternal\u0027 es vago; bastaría con \u0027un instinto paternal\u0027 o \u0027cierto instinto paternal\u0027 para ganar concisión y precisión."
+                                                                                       },
+                                                                                       {
+                                                                                           "originalText":  "charlas de cualquier índole",
+                                                                                           "genericWord":  "índole",
+                                                                                           "explanation":  "\u0027De cualquier índole\u0027 es una expresión vaga y formulaica; podría sustituirse por \u0027de todo tipo\u0027 o especificarse con \u0027charlas sobre cualquier tema\u0027."
+                                                                                       }
+                                                                                   ]
+                                                                  }
+                                              },
+                                              {
+                                                  "repeticion":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "word":  "gobierno",
+                                                                                          "occurrences":  [
+                                                                                                              "comenzaron a multiplicarse, pensó que, si en el gobierno no hubera rostros, sería más difícil atacarlo",
+                                                                                                              "Por eso comenzó la transformación de la estructura gubernamental para que todos los funcionarios y fuerzas de seguridad permaneciesen en el anonimato",
+                                                                                                              "toda la gestión del gobierno se empezó a llevar a cabo de manera telemática",
+                                                                                                              "nadie podía saber quién trabajaba para el gobierno"
+                                                                                                          ],
+                                                                                          "explanation":  "\u0027gobierno\u0027 aparece cuatro veces en párrafos consecutivos muy próximos, con repetición que empobrece el estilo."
+                                                                                      },
+                                                                                      {
+                                                                                          "word":  "forma",
+                                                                                          "occurrences":  [
+                                                                                                              "construían edificios colocando ladrillos de manera eficiente",
+                                                                                                              "Otros muchos trabajos habían sido mecanizados de forma similar",
+                                                                                                              "toda la gestión del gobierno se empezó a llevar a cabo de manera telemática",
+                                                                                                              "todos los servicios se ofrecían de forma anónima"
+                                                                                                          ],
+                                                                                          "explanation":  "\u0027forma/manera\u0027 aparece repetido varias veces en el texto para introducir modos o maneras de hacer algo, resultando monótono."
+                                                                                      },
+                                                                                      {
+                                                                                          "word":  "término",
+                                                                                          "occurrences":  [
+                                                                                                              "también podría haber adoptado el ya existente término «igualitarismo»",
+                                                                                                              "quiso crear algo nuevo, inexistente. De ahí que inventase el término: «ecualicracia»",
+                                                                                                              "para que este término terminase siendo blanqueado"
+                                                                                                          ],
+                                                                                          "explanation":  "\u0027término\u0027 aparece tres veces en el mismo párrafo, con repetición claramente llamativa y evitable."
+                                                                                      },
+                                                                                      {
+                                                                                          "word":  "blanquear",
+                                                                                          "occurrences":  [
+                                                                                                              "tenía que blanquear la imagen del nuevo sistema económico y social instaurado",
+                                                                                                              "para que este término terminase siendo blanqueado"
+                                                                                                          ],
+                                                                                          "explanation":  "El verbo \u0027blanquear\u0027 y su participio \u0027blanqueado\u0027 aparecen en párrafos muy próximos con el mismo sentido figurado, generando una repetición notable."
+                                                                                      }
+                                                                                  ]
+                                                                 },
+                                                  "verbos":  {
+                                                                 "findings":  [
+                                                                                  {
+                                                                                      "originalText":  "Hizo una sonrisa",
+                                                                                      "verb":  "hizo",
+                                                                                      "explanation":  "Verbo comodín \u0027hacer\u0027 donde podría usarse el verbo específico \u0027sonrió\u0027."
+                                                                                  },
+                                                                                  {
+                                                                                      "originalText":  "se lo había ido poniendo más difícil",
+                                                                                      "verb":  "poniendo",
+                                                                                      "explanation":  "\u0027Poner más difícil\u0027 es una construcción vaga con verbo comodín; podría sustituirse por \u0027complicando\u0027 o \u0027dificultando\u0027."
+                                                                                  },
+                                                                                  {
+                                                                                      "originalText":  "El marketing y el adoctrinamiento hicieron el resto",
+                                                                                      "verb":  "hicieron",
+                                                                                      "explanation":  "\u0027Hacer el resto\u0027 es una expresión con verbo comodín; podría concretarse con \u0027completaron la tarea\u0027 o \u0027se encargaron del resto\u0027."
+                                                                                  }
+                                                                              ]
+                                                             },
+                                                  "sustantivos":  {
+                                                                      "findings":  [
+                                                                                       {
+                                                                                           "originalText":  "charlas de cualquier índole",
+                                                                                           "genericWord":  "índole",
+                                                                                           "explanation":  "\u0027Índole\u0027 es vago en este contexto; podría sustituirse por \u0027tema\u0027 o concretarse como \u0027de todo tipo\u0027 o \u0027sobre cualquier asunto\u0027."
+                                                                                       },
+                                                                                       {
+                                                                                           "originalText":  "algo nuevo, inexistente",
+                                                                                           "genericWord":  "algo",
+                                                                                           "explanation":  "\u0027Algo nuevo\u0027 es vago; podría concretarse como \u0027un concepto nuevo\u0027 o \u0027un término propio\u0027, especialmente dado que el contexto habla precisamente de crear un término."
+                                                                                       }
+                                                                                   ]
+                                                                  }
+                                              },
+                                              {
+                                                  "muletillas":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "expression":  "de algún modo",
+                                                                                          "occurrences":  [
+                                                                                                              "esperando que puedan ayudarnos de algún modo",
+                                                                                                              "Si decidiesen ayudarnos de algún modo"
+                                                                                                          ],
+                                                                                          "explanation":  "Expresión vaga repetida en el mismo texto sin aportar información precisa"
+                                                                                      },
+                                                                                      {
+                                                                                          "expression":  "de hecho",
+                                                                                          "occurrences":  [
+                                                                                                              "De hecho, si realizas una búsqueda de información sobre el presidente Haddon en internet no encuentras nada"
+                                                                                                          ],
+                                                                                          "explanation":  "Muletilla intensificadora prescindible que no añade contenido real al enunciado"
+                                                                                      },
+                                                                                      {
+                                                                                          "expression":  "Llegará un momento en el que",
+                                                                                          "occurrences":  [
+                                                                                                              "Llegará un momento en el que no se podrá utilizar nada en su contra. Llegará un momento en el que Haddon será un ente"
+                                                                                                          ],
+                                                                                          "explanation":  "La misma expresión se repite dos veces consecutivas en el mismo párrafo, resultando mecánica y evitable la segunda"
+                                                                                      },
+                                                                                      {
+                                                                                          "expression":  "de cualquier índole",
+                                                                                          "occurrences":  [
+                                                                                                              "Ambas mujeres solían compartir charlas de cualquier índole"
+                                                                                                          ],
+                                                                                          "explanation":  "Expresión comodín vaga y prescindible que no añade información al enunciado"
+                                                                                      }
+                                                                                  ]
+                                                                 },
+                                                  "pleonasmos":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "originalText":  "drástica y sustancial",
+                                                                                          "explanation":  "\u0027Drástica\u0027 y \u0027sustancial\u0027 expresan la misma idea de profundidad del cambio, resultando redundantes entre sí en este contexto",
+                                                                                          "correction":  "de manera tan drástica"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "multar por reincidencia reduciéndote",
+                                                                                          "explanation":  "\u0027Multar por reincidencia\u0027 ya implica una penalización repetida; añadir \u0027reduciéndote la dotación\u0027 es la concreción de la multa, pero no es pleonasmo real. Se descarta.",
+                                                                                          "correction":  ""
+                                                                                      }
+                                                                                  ]
+                                                                 }
+                                              },
+                                              {
+                                                  "muletillas":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "expression":  "de forma similar / de manera eficiente / de manera telemática / de forma anónima / de forma que",
+                                                                                          "occurrences":  [
+                                                                                                              "colocando ladrillos de manera eficiente y exquisita",
+                                                                                                              "habían sido mecanizados de forma similar",
+                                                                                                              "se empezó a llevar a cabo de manera telemática",
+                                                                                                              "todos los servicios se ofrecían de forma anónima"
+                                                                                                          ],
+                                                                                          "explanation":  "La construcción \u0027de forma/manera + adjetivo\u0027 se repite como muletilla a lo largo del texto para introducir adverbios modales. En la mayoría de casos puede sustituirse por el adverbio correspondiente (eficientemente, anónimamente) o restructurar la frase."
+                                                                                      },
+                                                                                      {
+                                                                                          "expression":  "también",
+                                                                                          "occurrences":  [
+                                                                                                              "también eran máquinas las que construían",
+                                                                                                              "pero también era del segundo tipo",
+                                                                                                              "También podría haber adoptado"
+                                                                                                          ],
+                                                                                          "explanation":  "El adverbio \u0027también\u0027 aparece repetidamente como apoyo aditivo que en varios casos resulta prescindible o sustituible por una construcción más precisa."
+                                                                                      },
+                                                                                      {
+                                                                                          "expression":  "a pesar de",
+                                                                                          "occurrences":  [
+                                                                                                              "Rud, a pesar de todo, era solo un idealista",
+                                                                                                              "seguían existiendo repartidos por todo el planeta a pesar de que Haddon Church",
+                                                                                                              "a pesar de que, en realidad, era una dictadura"
+                                                                                                          ],
+                                                                                          "explanation":  "La locución concesiva \u0027a pesar de\u0027 se repite tres veces en el mismo texto, funcionando como muletilla adversativa-concesiva que podría variarse con \u0027pese a\u0027, \u0027aunque\u0027 u otras formas."
+                                                                                      },
+                                                                                      {
+                                                                                          "expression":  "por todo el mundo / por todo el planeta",
+                                                                                          "occurrences":  [
+                                                                                                              "proliferaron por todo el mundo",
+                                                                                                              "seguían existiendo repartidos por todo el planeta"
+                                                                                                          ],
+                                                                                          "explanation":  "Dos expresiones casi sinónimas que expresan la misma idea de distribución global y se repiten en el mismo texto, denotando falta de variación léxica."
+                                                                                      }
+                                                                                  ]
+                                                                 },
+                                                  "pleonasmos":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "originalText":  "capaces de codificar el código",
+                                                                                          "explanation":  "\u0027Codificar\u0027 ya implica trabajar con código; mencionar \u0027el código\u0027 es redundante porque el verbo lo contiene semánticamente.",
+                                                                                          "correction":  "capaces de codificar las instrucciones / capaces de escribir el código"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "grupos terroristas de disidentes",
+                                                                                          "explanation":  "En el contexto ya se ha establecido que estos grupos cometen actos de terrorismo, por lo que \u0027terroristas\u0027 y la descripción previa de sus acciones resultan redundantes al combinarse en la misma etiqueta nominal.",
+                                                                                          "correction":  "grupos de disidentes"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "máscaras que cubrían sus caras",
+                                                                                          "explanation":  "Una máscara, por definición, cubre la cara. Especificar \u0027que cubrían sus caras\u0027 es redundante.",
+                                                                                          "correction":  "máscaras"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "el ya existente término",
+                                                                                          "explanation":  "\u0027Ya existente\u0027 es redundante: si se adopta un término, se sobreentiende que ya existe. El adjetivo no añade información.",
+                                                                                          "correction":  "el término ya existente «igualitarismo» / el término «igualitarismo»"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "algo nuevo, inexistente",
+                                                                                          "explanation":  "\u0027Nuevo\u0027 e \u0027inexistente\u0027 expresan la misma idea en este contexto: crear algo que no existe aún. La acumulación es redundante.",
+                                                                                          "correction":  "algo nuevo / algo inexistente"
+                                                                                      }
+                                                                                  ]
+                                                                 }
+                                              },
+                                              {
+                                                  "adverbios":  {
+                                                                    "findings":  [
+                                                                                     {
+                                                                                         "originalText":  "primero moviéndola despacio y después con mayor vehemencia",
+                                                                                         "adverb":  "despacio",
+                                                                                         "evaluation":  "Adecuado",
+                                                                                         "explanation":  "Aporta ritmo y contraste con \u0027mayor vehemencia\u0027, funciona bien narrativamente.",
+                                                                                         "alternatives":  [
+
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "sin prisa y vencido por el peso, resbaló hacia el suelo",
+                                                                                         "adverb":  "sin prisa",
+                                                                                         "evaluation":  "Adecuado",
+                                                                                         "explanation":  "Locución adverbial con valor literario que enfatiza la lentitud mortal del cuerpo.",
+                                                                                         "alternatives":  [
+
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "colocando ladrillos de manera eficiente y exquisita",
+                                                                                         "adverb":  "eficiente",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "\u0027De manera eficiente y exquisita\u0027 es una construcción débil que dice poco visualmente.",
+                                                                                         "alternatives":  [
+                                                                                                              "colocando ladrillos con precisión milimétrica, sin un solo desperdicio de movimiento",
+                                                                                                              "ejecutando cada hilada con una exactitud que ningún obrero humano habría podido igualar"
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "de manera distendida con su padre",
+                                                                                         "adverb":  "de manera distendida",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "Locución adverbial vaga que no transmite imagen concreta.",
+                                                                                         "alternatives":  [
+                                                                                                              "charlaba con su padre, relajada, sin que nada en su postura delatara tensión",
+                                                                                                              "reía con su padre como si el mundo fuera un lugar sencillo"
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "de manera sumisa",
+                                                                                         "adverb":  "de manera sumisa",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "Construcción perifrástica que puede sustituirse por una acción física más precisa.",
+                                                                                         "alternatives":  [
+                                                                                                              "sintió que los hombros se le encogían solos y bajó la mirada",
+                                                                                                              "los ojos se le fueron al suelo sin que ella pudiera evitarlo"
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "de manera tan drástica y sustancial",
+                                                                                         "adverb":  "de manera tan drástica y sustancial",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "Locución adverbial redundante; \u0027drástica\u0027 ya implica sustancialidad.",
+                                                                                         "alternatives":  [
+                                                                                                              "había transformado su sociedad hasta hacerla irreconocible",
+                                                                                                              "había sacudido su sociedad desde los cimientos"
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "también eran máquinas las que construían edificios colocando ladrillos de manera eficiente",
+                                                                                         "adverb":  "de forma similar",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "\u0027De forma similar\u0027 es un cierre vago que no añade valor narrativo.",
+                                                                                         "alternatives":  [
+                                                                                                              "el mismo proceso se repitió en decenas de oficios hasta vaciarlos de manos humanas",
+                                                                                                              "uno tras otro, los oficios fueron cediendo su lugar a engranajes y algoritmos"
+                                                                                                          ]
+                                                                                     }
+                                                                                 ]
+                                                                },
+                                                  "voz_pasiva":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "originalText":  "el mensaje antes de ser enviado",
+                                                                                          "explanation":  "Pasiva perifrástica con \u0027ser + participio\u0027; el agente está implícito (el sistema/los soldados).",
+                                                                                          "activeVersion":  "antes de que el sistema lo enviara"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "todas las confederaciones se han plegado a las exigencias de Haddon",
+                                                                                          "explanation":  "Construcción pasiva refleja con \u0027se\u0027 que puede reformularse en activa para mayor dinamismo.",
+                                                                                          "activeVersion":  "todas las confederaciones han cedido ante las exigencias de Haddon"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "Hay familias que denuncian desapariciones de familiares. Dicen que hay personas que son apresadas por la guardia roja",
+                                                                                          "explanation":  "Pasiva perifrástica con agente explícito (\u0027por la guardia roja\u0027).",
+                                                                                          "activeVersion":  "Dicen que la guardia roja apresa a personas"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "era algo que tenía interiorizado, como el resto de niños que habían sido adoctrinados desde aquel día",
+                                                                                          "explanation":  "Pasiva perifrástica con \u0027ser + participio\u0027; agente implícito (el gobierno).",
+                                                                                          "activeVersion":  "como el resto de niños a quienes el gobierno había adoctrinado desde aquel día"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "la habían investigado",
+                                                                                          "explanation":  "Voz activa con agente implícito — no es pasiva perifrástica. Se descarta.",
+                                                                                          "activeVersion":  ""
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "Un error burocrático la asignó como compañera a Mary Jane",
+                                                                                          "explanation":  "Construcción activa. No es pasiva.",
+                                                                                          "activeVersion":  ""
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "Han desaparecido periodistas que habían investigado su vida",
+                                                                                          "explanation":  "Pasiva con \u0027haber + participio\u0027 en uso intransitivo; el agente está implícito (Haddon/el gobierno).",
+                                                                                          "activeVersion":  "El gobierno/Haddon ha hecho desaparecer a periodistas que investigaban su vida"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "todas las confederaciones fueron obligadas a unificarse",
+                                                                                          "explanation":  "Pasiva perifrástica clara con \u0027ser + participio\u0027; agente implícito (el gobierno de Haddon).",
+                                                                                          "activeVersion":  "el gobierno de Haddon obligó a todas las confederaciones a unificarse"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "Después de la muerte de sus padres, Volderlayer había decidido encargarse de la pequeña",
+                                                                                          "explanation":  "Construcción activa. No es pasiva.",
+                                                                                          "activeVersion":  ""
+                                                                                      }
+                                                                                  ]
+                                                                 },
+                                                  "frases_largas":  {
+                                                                        "findings":  [
+                                                                                         {
+                                                                                             "originalText":  "Aunque lo peor era que si alguien te denunciaba o te pillaba un agente usando otro saludo, te podían apercibir e incluso multar por reincidencia reduciéndote la dotación mensual, eliminarte de las listas de espera de acceso a productos escasos o de los sorteos para acceder a productos especiales o sitios privilegiados.",
+                                                                                             "wordCount":  55,
+                                                                                             "explanation":  "Frase con múltiples oraciones subordinadas encadenadas que dificulta la lectura y acumula información.",
+                                                                                             "suggestion":  "Dividir en dos: una frase con la condición (\u0027si alguien te denunciaba…\u0027) y otra con las consecuencias (\u0027La sanción podía ir desde un apercibimiento hasta la reducción de la dotación mensual…\u0027)."
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Para Mary Jane, sin embargo, este tipo de consignas enmarcadas dentro de la política de concienciación social que el gobierno llevaba a cabo en escuelas desde el día de la Unión, en el que todas las confederaciones fueron obligadas a unificarse, era algo que tenía interiorizado, como el resto de niños que habían sido adoctrinados desde aquel día.",
+                                                                                             "wordCount":  57,
+                                                                                             "explanation":  "Frase con incisos encadenados que retrasan el núcleo verbal hasta el final y pierden al lector.",
+                                                                                             "suggestion":  "Separar el contexto histórico en una frase aparte: \u0027Desde el día de la Unión, el gobierno había adoctrinado a los niños con esas consignas. Para Mary Jane eran algo tan natural como respirar.\u0027"
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Su mirada inquieta, color azul intenso, su forma de vestir juvenil y su carácter empático, se habían ganado la amistad de la mayoría de los estudiantes.",
+                                                                                             "wordCount":  26,
+                                                                                             "explanation":  "No supera las 40 palabras. No aplica como frase larga.",
+                                                                                             "suggestion":  ""
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Decidieron cortar la comunicación con la Tierra; pero lo hicieron, no por mancillar su confianza, ni por vil traición, sino por miedo, un miedo que no habían sentido desde hacía miles de años en un mundo en el que ya no existía la inestabilidad, la inseguridad ante las amenazas, ni la preocupación por los problemas futuros; en un mundo donde la incertidumbre era un concepto que creían más que superado.",
+                                                                                             "wordCount":  70,
+                                                                                             "explanation":  "Período muy extenso con estructuras paralelas acumuladas que, si bien tienen ritmo retórico, pueden fatiga al lector.",
+                                                                                             "suggestion":  "Dividir tras \u0027sino por miedo\u0027: \u0027Decidieron cortar la comunicación, no por traición, sino por miedo. Un miedo que no habían sentido desde hacía miles de años, en un mundo donde la inestabilidad y la incertidumbre eran ya solo palabras vacías.\u0027"
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Al principio de aquella revolución industrial, aquellos que quedaron sin ocupación entraron en escuelas especializadas de formación que proliferaron por todo el mundo, en ellas se formaban ingenieros de software cualificados, capaces de codificar el código que las máquinas necesitaban para funcionar, o ingenieros industriales capaces de construirlas o repararlas.",
+                                                                                             "wordCount":  52,
+                                                                                             "explanation":  "Frase que acumula información técnica en una sola unidad sintáctica larga.",
+                                                                                             "suggestion":  "Cortar tras \u0027todo el mundo\u0027: \u0027Allí se formaban ingenieros de software capaces de programar las máquinas, e ingenieros industriales que las construían y reparaban.\u0027"
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Calcularon que, sin enfermedades, el planeta Tierra llegaría a la singularidad de la máxima población que los recursos limitados podrían albergar en cincuenta años; y ya sabían que nosotros no éramos como ellos y que no habíamos abandonado la idea de viajar a otros planetas.",
+                                                                                             "wordCount":  46,
+                                                                                             "explanation":  "Frase con dos proposiciones principales unidas que pueden independizarse para mayor claridad.",
+                                                                                             "suggestion":  "Dividir en dos oraciones: \u0027Calcularon que, sin enfermedades, la Tierra alcanzaría el límite de su población en cincuenta años. Y sabían que los humanos, a diferencia de ellos, no habían renunciado a colonizar otros planetas.\u0027"
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "A pesar de todo, aquel rencor que sintió hacia Mary Jane, al descubrir quién era, se diluyó con el tiempo cuando entendió que ella no era consciente del nivel de participación que Volderlayer había tenido en los acontecimientos que se habían desencadenado veinte años atrás.",
+                                                                                             "wordCount":  45,
+                                                                                             "explanation":  "Frase con subordinadas encadenadas que ralentizan la resolución del pensamiento.",
+                                                                                             "suggestion":  "Dividir: \u0027A pesar de todo, aquel rencor hacia Mary Jane fue diluyéndose con el tiempo. Susan entendió que la chica ignoraba lo que Volderlayer había hecho veinte años atrás.\u0027"
+                                                                                         }
+                                                                                     ]
+                                                                    },
+                                                  "nombres":  {
+                                                                  "findings":  [
+                                                                                   {
+                                                                                       "name":  "Mary Jane",
+                                                                                       "occurrences":  [
+                                                                                                           "—El gobierno provee —dijo Mary Jane al entrar en la habitación",
+                                                                                                           "para que saltara la alarma en la sala de control donde habían leído el mensaje antes de ser enviado",
+                                                                                                           "Antes de conocer a Susan, Mary Jane había estado viviendo tres años sola",
+                                                                                                           "Susan fue a parar a su habitación de casualidad. Un error burocrático la asignó como compañera a Mary Jane.",
+                                                                                                           "cuando le contó a su padre lo feliz que se sentía... decidió permitirlo",
+                                                                                                           "Susan descubrió quién era Mary Jane poco después de aterrizar en la universidad.",
+                                                                                                           "Dentro estaba Mary Jane hablando de manera distendida con su padre",
+                                                                                                           "aquel rencor que sintió hacia Mary Jane, al descubrir quién era"
+                                                                                                       ],
+                                                                                       "explanation":  "El nombre \u0027Mary Jane\u0027 aparece numerosas veces repartidas en varios párrafos consecutivos del capítulo 16, aunque en el párrafo que va desde \u0027Susan había llegado a la Universidad\u0027 hasta \u0027...para cautivarla\u0027 aparece al menos 4 veces dentro del mismo bloque narrativo continuo.",
+                                                                                       "suggestion":  "Sustituir algunas apariciones por pronombres (\u0027ella\u0027, \u0027la joven\u0027, \u0027la chica\u0027) o por referencias descriptivas (\u0027su compañera\u0027, \u0027la hija de Albert\u0027)."
+                                                                                   }
+                                                                               ]
+                                                              }
+                                              },
+                                              {
+                                                  "adverbios":  {
+                                                                    "findings":  [
+                                                                                     {
+                                                                                         "originalText":  "colocando ladrillos de manera eficiente y exquisita",
+                                                                                         "adverb":  "de manera eficiente y exquisita",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "La perífrasis \u0027de manera eficiente y exquisita\u0027 es débil y redundante; ralentiza la narración sin aportar imagen concreta.",
+                                                                                         "alternatives":  [
+                                                                                                              "colocando ladrillos con una precisión que ningún albañil podría igualar",
+                                                                                                              "colocando ladrillos sin un solo desperdicio de movimiento"
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "habían sido mecanizados de forma similar",
+                                                                                         "adverb":  "de forma similar",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "Expresión vaga que no añade información ni imagen narrativa.",
+                                                                                         "alternatives":  [
+                                                                                                              "habían corrido la misma suerte",
+                                                                                                              "habían cedido también ante las máquinas"
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "llevarse a cabo de manera telemática",
+                                                                                         "adverb":  "de manera telemática",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "La perífrasis \u0027de manera telemática\u0027 es burocrática y plana; puede integrarse en la acción con más precisión.",
+                                                                                         "alternatives":  [
+                                                                                                              "migrar por completo a una intranet gubernamental cifrada",
+                                                                                                              "trasladarse a canales digitales invisibles para el ciudadano"
+                                                                                                          ]
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "se ofrecían de forma anónima",
+                                                                                         "adverb":  "de forma anónima",
+                                                                                         "evaluation":  "Mejorable",
+                                                                                         "explanation":  "Construcción redundante dado el contexto ya explicado de anonimato; la perífrasis diluye la contundencia.",
+                                                                                         "alternatives":  [
+                                                                                                              "llegaban al ciudadano sin nombre ni rostro",
+                                                                                                              "nadie podía atribuirlos a un funcionario concreto"
+                                                                                                          ]
+                                                                                     }
+                                                                                 ]
+                                                                },
+                                                  "voz_pasiva":  {
+                                                                     "findings":  [
+                                                                                      {
+                                                                                          "originalText":  "Otros muchos trabajos habían sido mecanizados de forma similar",
+                                                                                          "explanation":  "Voz pasiva perifrástica sin agente explícito; la acción puede atribuirse directamente al sujeto activo del contexto (las máquinas o el proceso industrial).",
+                                                                                          "activeVersion":  "Las máquinas habían mecanizado de forma similar muchos otros trabajos."
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "se crearon cadenas de montaje de máquinas que pronto sustituyeron a la mano de obra humana",
+                                                                                          "explanation":  "Pasiva refleja impersonal que oculta al agente; puede reescribirse con sujeto activo.",
+                                                                                          "activeVersion":  "La industria levantó cadenas de montaje de máquinas que pronto sustituyeron a la mano de obra humana."
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "toda la gestión del gobierno se empezó a llevar a cabo de manera telemática a través de una intranet gubernamental cifrada",
+                                                                                          "explanation":  "Construcción pasiva refleja que diluye la responsabilidad del agente; en este caso Haddon Church es el impulsor implícito.",
+                                                                                          "activeVersion":  "Haddon trasladó toda la gestión del gobierno a una intranet gubernamental cifrada."
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "se impusieron protocolos para evitar que cuando saliesen de sus centros operativos, tras su jornada laboral, no pudiesen ser identificados",
+                                                                                          "explanation":  "Doble pasiva refleja y perifrástica acumulada (\u0027se impusieron\u0027 + \u0027pudiesen ser identificados\u0027) que oscurece al agente y enreda la sintaxis.",
+                                                                                          "activeVersion":  "El gobierno impuso protocolos para que nadie pudiese identificar a los guardias al salir de sus centros operativos."
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "las fortunas que les fueron arrebatadas",
+                                                                                          "explanation":  "Voz pasiva perifrástica con agente implícito; la acción puede atribuirse al sistema o a Haddon.",
+                                                                                          "activeVersion":  "las fortunas que el nuevo sistema les había arrebatado"
+                                                                                      },
+                                                                                      {
+                                                                                          "originalText":  "bien podría ser considerado como una autocracia comunista",
+                                                                                          "explanation":  "Pasiva perifrástica con agente implícito (la opinión pública o los analistas); puede activarse con sujeto explícito.",
+                                                                                          "activeVersion":  "cualquiera habría podido reconocerlo como una autocracia comunista"
+                                                                                      }
+                                                                                  ]
+                                                                 },
+                                                  "frases_largas":  {
+                                                                        "findings":  [
+                                                                                         {
+                                                                                             "originalText":  "Rud, a pesar de todo, era solo un idealista y no pertenecía al tercer y último grupo de personas que existía en la sociedad, aquellos que desde la clandestinidad, llevaban años cometiendo actos de sabotaje y terrorismo porque no habían podido perdonar los crímenes que se habían cometido en el pasado y la injusticia que supuso perder las fortunas que les fueron arrebatadas.",
+                                                                                             "wordCount":  71,
+                                                                                             "explanation":  "Frase excesivamente larga que encadena tres ideas distintas (carácter de Rud, definición del tercer grupo, motivación de ese grupo) sin pausas estructurales claras.",
+                                                                                             "suggestion":  "Dividir en al menos tres oraciones: una sobre el idealismo de Rud, otra que introduzca el tercer grupo, y una tercera sobre sus motivaciones históricas."
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Estos grupos terroristas de disidentes que surgieron tras el día de la unión, seguían existiendo repartidos por todo el planeta a pesar de que Haddon Church cada vez se lo había ido poniendo más difícil.",
+                                                                                             "wordCount":  42,
+                                                                                             "explanation":  "Oración que mezcla el origen histórico de los grupos, su persistencia global y la acción de Haddon en una sola estructura subordinada demasiado densa.",
+                                                                                             "suggestion":  "Separar en dos oraciones: una sobre la supervivencia de los grupos y otra sobre la presión ejercida por Haddon."
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Llegó un punto en el que toda la gestión del gobierno se empezó a llevar a cabo de manera telemática a través de una intranet gubernamental cifrada, de forma que nadie podía saber quién trabajaba para el gobierno, puesto que todos los servicios se ofrecían de forma anónima.",
+                                                                                             "wordCount":  49,
+                                                                                             "explanation":  "La acumulación de subordinadas causales y modales hace la frase difícil de seguir de una sola lectura.",
+                                                                                             "suggestion":  "Dividir tras \u0027cifrada\u0027: \u0027Llegó un punto en el que toda la gestión migró a una intranet gubernamental cifrada. Nadie podía saber quién trabajaba para el gobierno: los servicios no tenían nombre ni rostro.\u0027"
+                                                                                         },
+                                                                                         {
+                                                                                             "originalText":  "Los guardias de las fuerzas de seguridad comenzaron a llevar máscaras que cubrían sus caras y se impusieron protocolos para evitar que cuando saliesen de sus centros operativos, tras su jornada laboral, no pudiesen ser identificados.",
+                                                                                             "wordCount":  44,
+                                                                                             "explanation":  "La doble acción (máscaras + protocolos) y el inciso temporal \u0027tras su jornada laboral\u0027 sobrecargan la oración.",
+                                                                                             "suggestion":  "Dividir en dos oraciones: una sobre las máscaras y otra sobre los protocolos de salida."
+                                                                                         }
+                                                                                     ]
+                                                                    },
+                                                  "nombres":  {
+                                                                  "findings":  [
+
+                                                                               ]
+                                                              }
+                                              },
+                                              {
+                                                  "gerundios":  {
+                                                                    "findings":  [
+                                                                                     {
+                                                                                         "originalText":  "esperando que puedan ayudarnos de algún modo —terminó diciendo Albert mientras negaba con la cabeza, no queriendo aceptar lo que estaba ocurriendo",
+                                                                                         "gerund":  "esperando",
+                                                                                         "errorType":  "posterioridad",
+                                                                                         "explanation":  "El gerundio \u0027esperando\u0027 introduce una acción que en el contexto funciona como una circunstancia consecutiva o de finalidad, pero el problema real es \u0027no queriendo aceptar\u0027: un gerundio en construcción adjetiva que modifica el estado interno de Albert, expresando una acción simultánea con matiz causal que resulta forzado; sin embargo el error más claro es \u0027esperando\u0027 usado para expresar una finalidad (\u0027con la esperanza de que\u0027), lo cual debe expresarse con una construcción preposicional",
+                                                                                         "correction":  "terminó diciendo Albert mientras negaba con la cabeza, con la esperanza de que pudieran ayudarlos de algún modo, sin querer aceptar lo que estaba ocurriendo"
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "Eliminando cualquier rastro que pueda haber sobre él llegará un momento en el que no se podrá utilizar nada en su contra",
+                                                                                         "gerund":  "Eliminando",
+                                                                                         "errorType":  "especificativo",
+                                                                                         "explanation":  "El gerundio \u0027Eliminando\u0027 encabeza la oración en función de condición o causa (\u0027Si elimina / Al eliminar cualquier rastro…\u0027). Usar el gerundio como sujeto lógico o marco condicional es incorrecto en español; debe reemplazarse por una construcción subordinada adverbial",
+                                                                                         "correction":  "Si elimina cualquier rastro que pueda haber sobre él, llegará un momento en el que no se podrá utilizar nada en su contra"
+                                                                                     },
+                                                                                     {
+                                                                                         "originalText":  "El peso de su cuerpo agujereado, aterrizando sobre el teclado, ejecutó la orden de envío",
+                                                                                         "gerund":  "aterrizando",
+                                                                                         "errorType":  "posterioridad",
+                                                                                         "explanation":  "El gerundio \u0027aterrizando\u0027 modifica a \u0027el peso de su cuerpo agujereado\u0027 en función adjetiva especificativa, lo cual es incorrecto. Además expresa una acción que es prácticamente simultánea pero se usa con sujeto no agente (\u0027el peso\u0027). El gerundio no puede funcionar como adjetivo especificativo de un sustantivo.",
+                                                                                         "correction":  "El peso de su cuerpo agujereado, al aterrizar sobre el teclado, ejecutó la orden de envío"
+                                                                                     }
+                                                                                 ]
+                                                                },
+                                                  "tiempos":  {
+                                                                  "findings":  [
+                                                                                   {
+                                                                                       "originalText":  "Émilie se levantó de su lado aproximándose al ordenador que controlaba la apertura de los agujeros negros cuánticos y se sentó delante de él para ejecutar la orden de apertura; apenas habían pasado unos minutos desde que la aplicación de traducción había generado y empaquetado el mensaje a enviar. El sistema de apertura necesitaba una serie de parámetros y cierta burocracia para activarse. El tiempo que se demoró en parametrizar los datos fue suficiente para que saltara la alarma en la sala de control donde habían leído el mensaje antes de ser enviado. Al momento, cuatro soldados del gobierno armados con ametralladoras ligeras entraron en la sala",
+                                                                                       "verbsFound":  [
+                                                                                                          "se levantó",
+                                                                                                          "controlaba",
+                                                                                                          "se sentó",
+                                                                                                          "necesitaba",
+                                                                                                          "se demoró",
+                                                                                                          "entraron"
+                                                                                                      ],
+                                                                                       "explanation":  "La escena alterna entre indefinidos narrativos (se levantó, se sentó, se demoró, entraron) e imperfectos descriptivos (controlaba, necesitaba). Los imperfectos \u0027controlaba\u0027 y \u0027necesitaba\u0027 parecen mezclas de descuido ya que la narración avanza en indefinido y estos imperfectos no cumplen claramente una función descriptiva de fondo diferenciada, interrumpiendo el ritmo narrativo de forma inconsistente",
+                                                                                       "suggestion":  "Unificar en indefinido para las acciones puntuales de la escena: \u0027el ordenador que controlaba\u0027 podría mantenerse como descripción de fondo, pero \u0027necesitaba\u0027 debería ser \u0027necesitó\u0027 o reformularse: \u0027El sistema de apertura requería/necesitaba\u0027 se acepta como descriptivo de fondo; revisar coherencia general del pasaje"
+                                                                                   },
+                                                                                   {
+                                                                                       "originalText":  "Susan había llegado a la Universidad hacía un año. Su mirada inquieta, color azul intenso, su forma de vestir juvenil y su carácter empático, se habían ganado la amistad de la mayoría de los estudiantes. Ella y Mary Jane habían establecido una gran amistad.",
+                                                                                       "verbsFound":  [
+                                                                                                          "había llegado",
+                                                                                                          "se habían ganado",
+                                                                                                          "habían establecido"
+                                                                                                      ],
+                                                                                       "explanation":  "No es una mezcla de indefinido e imperfecto, sino un uso exclusivo de pluscuamperfecto que en este contexto resulta correcto. No es un error de tiempos.",
+                                                                                       "suggestion":  "Sin cambios necesarios"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                              },
+                                              {
+                                                  "gerundios":  {
+                                                                    "findings":  [
+
+                                                                                 ]
+                                                                },
+                                                  "tiempos":  {
+                                                                  "findings":  [
+                                                                                   {
+                                                                                       "originalText":  "Todo ocurrió muy rápido debido a que se crearon cadenas de montaje de máquinas que pronto sustituyeron a la mano de obra humana. Al principio de aquella revolución industrial, aquellos que quedaron sin ocupación entraron en escuelas especializadas de formación que proliferaron por todo el mundo. En ellas se formaban ingenieros de software cualificados",
+                                                                                       "verbsFound":  [
+                                                                                                          "ocurrió",
+                                                                                                          "se crearon",
+                                                                                                          "sustituyeron",
+                                                                                                          "quedaron",
+                                                                                                          "entraron",
+                                                                                                          "proliferaron",
+                                                                                                          "se formaban"
+                                                                                                      ],
+                                                                                       "explanation":  "La narración avanza en indefinido (ocurrió, se crearon, sustituyeron, quedaron, entraron, proliferaron) y de repente cambia a imperfecto (se formaban) sin que haya una justificación de fondo o cambio de plano narrativo que lo explique. Parece un descuido en la consistencia temporal de la escena.",
+                                                                                       "suggestion":  "Mantener el indefinido: \u0027En ellas se formaron ingenieros de software cualificados\u0027"
+                                                                                   },
+                                                                                   {
+                                                                                       "originalText":  "Estos grupos terroristas de disidentes que surgieron tras el día de la unión, seguían existiendo repartidos por todo el planeta a pesar de que Haddon Church cada vez se lo había ido poniendo más difícil.",
+                                                                                       "verbsFound":  [
+                                                                                                          "surgieron",
+                                                                                                          "seguían existiendo",
+                                                                                                          "había ido poniendo"
+                                                                                                      ],
+                                                                                       "explanation":  "La cláusula relativa usa indefinido (surgieron), mientras la oración principal mezcla imperfecto (seguían existiendo) con pluscuamperfecto perifrástico (había ido poniendo). En el contexto de la narración general en indefinido, el imperfecto \u0027seguían\u0027 resulta disonante y parece un descuido, ya que el párrafo anterior narra en indefinido (tuvo, fue, podía, debía).",
+                                                                                       "suggestion":  "Homogeneizar: \u0027Estos grupos terroristas de disidentes que surgieron tras el día de la unión siguieron existiendo repartidos por todo el planeta, a pesar de que Haddon Church cada vez se lo fue poniendo más difícil.\u0027"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                              },
+                                              {
+                                                  "findings":  [
+                                                                   {
+                                                                       "originalText":  "el escarlata tiño el blanco de su bata",
+                                                                       "wordForm":  "tiño",
+                                                                       "correctForm":  "tiñó",
+                                                                       "errorType":  "falta_tilde",
+                                                                       "context":  "relativo",
+                                                                       "explanation":  "\u0027tiñó\u0027 es pretérito indefinido de \u0027teñir\u0027 (tercera persona singular) y debe llevar tilde por ser palabra aguda terminada en vocal. \u0027tiño\u0027 sin tilde sería presente de indicativo, lo que no corresponde al contexto narrativo en pasado."
+                                                                   }
+                                                               ],
+                                                  "total_found":  1
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+                                                                   {
+                                                                       "originalText":  "Sea como sea debemos intentarlo",
+                                                                       "errorType":  "ausencia_coma_conector",
+                                                                       "correction":  "Sea como sea, debemos intentarlo",
+                                                                       "explanation":  "La locución \u0027sea como sea\u0027 funciona como conector o fórmula de cierre que debe ir seguida de coma cuando precede a la oración principal."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "sin embargo, la fuerza de los disparos lo empujaron",
+                                                                       "errorType":  "ausencia_coma_conector",
+                                                                       "correction":  "sin embargo, la fuerza de los disparos lo empujaron",
+                                                                       "explanation":  "El conector \u0027sin embargo\u0027 al inicio de frase debe ir seguido de coma. En este caso ya la lleva, por lo que se descarta."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "No tuvo ninguna oportunidad de alcanzar el teclado, sin embargo, la fuerza",
+                                                                       "errorType":  "ausencia_coma_conector",
+                                                                       "correction":  "No tuvo ninguna oportunidad de alcanzar el teclado; sin embargo, la fuerza",
+                                                                       "explanation":  "Cuando \u0027sin embargo\u0027 conecta dos oraciones independientes, lo apropiado es punto y coma antes del conector, no coma."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "Volderlayer, que seguía estando al mando de todos los proyectos de Ganímedes, recibió",
+                                                                       "errorType":  "ausencia_coma_inciso",
+                                                                       "correction":  "Volderlayer, que seguía estando al mando de todos los proyectos de Ganímedes, recibió",
+                                                                       "explanation":  "La subordinada explicativa ya está correctamente delimitada por comas; no es un error."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "Susan había llegado a la Universidad hacía un año. Su mirada inquieta, color azul intenso, su forma de vestir juvenil y su carácter empático, se habían ganado",
+                                                                       "errorType":  "coma_sujeto_verbo",
+                                                                       "correction":  "Su mirada inquieta, color azul intenso, su forma de vestir juvenil y su carácter empático se habían ganado",
+                                                                       "explanation":  "La coma tras \u0027empático\u0027 separa incorrectamente el sujeto compuesto (\u0027su mirada…, su forma…, su carácter empático\u0027) de su verbo (\u0027se habían ganado\u0027)."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "Susan era una de esas personas racionales y prácticas, que pasados los años tenían",
+                                                                       "errorType":  "coma_especificativa",
+                                                                       "correction":  "Susan era una de esas personas racionales y prácticas que pasados los años tenían",
+                                                                       "explanation":  "La subordinada \u0027que pasados los años tenían sentimientos contradictorios\u0027 es especificativa (delimita qué tipo de personas), por lo que no debe ir precedida de coma."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "pronto tendría que enviarla a la Tierra a una casa de acogida para esperar una adopción",
+                                                                       "errorType":  "ausencia_coma_inciso",
+                                                                       "correction":  "pronto tendría que enviarla a la Tierra a una casa de acogida para esperar una adopción",
+                                                                       "explanation":  "No hay error claro aquí; se descarta."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "En consecuencia, aunque siglos atrás ellos evaluaron",
+                                                                       "errorType":  "ausencia_coma_conector",
+                                                                       "correction":  "En consecuencia, aunque siglos atrás ellos evaluaron",
+                                                                       "explanation":  "\u0027En consecuencia\u0027 ya lleva coma; correcto. Se descarta."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "Calcularon que, sin enfermedades, el planeta Tierra llegaría a la singularidad de la máxima población que los recursos limitados podrían albergar en cincuenta años; y ya sabían",
+                                                                       "errorType":  "coma_innecesaria_y",
+                                                                       "correction":  "Calcularon que, sin enfermedades, el planeta Tierra llegaría a la singularidad de la máxima población que los recursos limitados podrían albergar en cincuenta años, y ya sabían",
+                                                                       "explanation":  "Cuando dos oraciones coordinadas con \u0027y\u0027 son largas pero forman parte de una enumeración bimembre, lo habitual es coma, no punto y coma antes de \u0027y\u0027."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "quién eres o por disponer de más dinero, sino por los méritos",
+                                                                       "errorType":  "ausencia_coma_inciso",
+                                                                       "correction":  "quién eres o por disponer de más dinero, sino por los méritos",
+                                                                       "explanation":  "La construcción \u0027no… sino\u0027 ya está correctamente puntuada; se descarta."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "su sonrisa de labios anchos y sus ocurrencias inesperadas, hicieron el resto",
+                                                                       "errorType":  "coma_sujeto_verbo",
+                                                                       "correction":  "su sonrisa de labios anchos y sus ocurrencias inesperadas hicieron el resto",
+                                                                       "explanation":  "La coma tras \u0027inesperadas\u0027 separa incorrectamente el sujeto compuesto del verbo \u0027hicieron\u0027."
+                                                                   }
+                                                               ],
+                                                  "total_found":  4
+                                              },
+                                              {
+                                                  "findings":  [
+                                                                   {
+                                                                       "originalText":  "aquellos que desde la clandestinidad, llevaban años cometiendo",
+                                                                       "errorType":  "coma_sujeto_verbo",
+                                                                       "correction":  "aquellos que desde la clandestinidad llevaban años cometiendo",
+                                                                       "explanation":  "La coma separa incorrectamente el sujeto «aquellos que desde la clandestinidad» de su verbo «llevaban». No debe haber coma entre el sujeto y el verbo principal."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "grupos terroristas de disidentes que surgieron tras el día de la unión, seguían existiendo",
+                                                                       "errorType":  "coma_especificativa",
+                                                                       "correction":  "grupos terroristas de disidentes que surgieron tras el día de la unión seguían existiendo",
+                                                                       "explanation":  "La subordinada «que surgieron tras el día de la unión» es especificativa (identifica de qué grupos se habla), por lo que no debe ir separada por coma del verbo principal."
+                                                                   }
+                                                               ],
+                                                  "total_found":  2
+                                              },
+                                              {
+                                                  "findings":  [
+                                                                   {
+                                                                       "originalText":  "Émilie. Están matando a miles",
+                                                                       "errorType":  "Ausencia de coma vocativa",
+                                                                       "correction":  "Émilie, están matando a miles",
+                                                                       "explanation":  "\u0027Émilie\u0027 es vocativo dentro de la intervención y debe ir seguido de coma para separarlo del resto de la frase. El punto que aparece tras \u0027Émilie\u0027 debería ser una coma."
+                                                                   },
+                                                                   {
+                                                                       "originalText":  "Sea como sea debemos intentarlo.",
+                                                                       "errorType":  "Falta de coma tras expresión parentética",
+                                                                       "correction":  "Sea como sea, debemos intentarlo.",
+                                                                       "explanation":  "La locución \u0027sea como sea\u0027 es un inciso que debe separarse con coma del resto de la oración."
+                                                                   }
+                                                               ],
+                                                  "total_found":  2
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              },
+                                              {
+                                                  "findings":  [
+
+                                                               ],
+                                                  "total_found":  0
+                                              }
+                                          ]
                         }
 }

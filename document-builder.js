@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v10.03 cargado');
+console.log('📦 document-builder.js v10.05 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -38,6 +38,7 @@ const SYMBOL_COLORS = {
   'mi_tilde':              '0055A0',
   'aun_tilde':             '0055A0',
   'si_tilde':              '0055A0',
+  'tildes_verbales':       '0055A0',
   'dequeismo':             '0055A0',
   'frases_largas':         'C0006A',
   'puntuacion_dialogo':    'C0006A',
@@ -68,6 +69,7 @@ const HIGHLIGHT = {
   'mi_tilde':              'Blue',
   'aun_tilde':             'Blue',
   'si_tilde':              'Blue',
+  'tildes_verbales':       'Blue',
   'dequeismo':             'Blue',
   'concordancia':          'Pink',
 };
@@ -187,6 +189,8 @@ function _singleComment(f) {
                     : fn;
       return `Tilde diacrítica: «${f.siForm||f.originalText}» debe escribirse «${f.correctForm||''}» (${fnLabel}). ${f.explanation||''}`;
     }
+    case 'tildes_verbales':
+      return `Tilde verbal (falta tilde): «${f.wordForm||f.originalText}» debe escribirse «${f.correctForm||''}» (pretérito indefinido). ${f.explanation||''}`;
     case 'dequeismo':
       return `${f.errorType==='dequeismo'?'Dequeísmo':'Queísmo'}: ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'concordancia':
@@ -321,6 +325,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       case 'mi_tilde':              return f.miForm  || f.originalText;
       case 'tu_tilde':              return f.tuForm  || f.originalText;
       case 'interrogativas_tilde':  return f.wordForm || f.originalText;
+      case 'tildes_verbales':       return f.wordForm || f.originalText;
       case 'pleonasmos': {
         const orig = (f.originalText||'').split(/\s+/);
         const corr = (f.correction  ||'').split(/\s+/);
@@ -407,8 +412,9 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     //   matchCase:true o matchWholeWord:true, cancelando también el sr del mismo batch.
     // — Si en algún caso extremo un bracket coincide con la misma posición, el resultado
     //   visual sería ◆◆¹palabra (dos símbolos), aceptable y sin pérdida de información.
-    const skipBracketSr = corrId === 'aun_tilde' || corrId === 'mi_tilde'
-                       || corrId === 'si_tilde'  || corrId === 'tu_tilde';
+    const skipBracketSr = corrId === 'aun_tilde'       || corrId === 'mi_tilde'
+                       || corrId === 'si_tilde'        || corrId === 'tu_tilde'
+                       || corrId === 'tildes_verbales';
     dbg(`_markWord ENTER corrId="${corrId}" keyText="${keyText}" mww=${mww} skip=${skipBracketSr}`);
     if (corrId === 'nombres_propios') console.log(`[NP] _markWord ENTER keyText="${keyText}"`);
     try {
