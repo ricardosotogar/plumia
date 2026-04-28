@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.02
+// PLUMIA — processor.js  v10.03
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -639,6 +639,13 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const before0 = findings.length;
       findings = findings.filter(f => !NO_ERROR_RE.test(f.explanation || ''));
       if (findings.length < before0) console.log(`[ABSOLUTA] ${r.correctionId}: ${before0 - findings.length} finding(s) descartados por explanation inválida`);
+
+      // Filtro corrección idéntica: si correction == originalText (ignorando «» y espacios),
+      // el finding no propone ningún cambio real y se descarta
+      const norm = s => (s || '').replace(/[«»]/g, '').trim();
+      const before00 = findings.length;
+      findings = findings.filter(f => norm(f.correction) !== norm(f.originalText));
+      if (findings.length < before00) console.log(`[NOCAMBIO] ${r.correctionId}: ${before00 - findings.length} finding(s) descartados por corrección idéntica al original`);
 
       if (r.correctionId === 'repeticion_lexica') {
         const before = findings.length;
