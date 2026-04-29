@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.05
+// PLUMIA — processor.js  v10.06
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -838,6 +838,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const raw = (f.originalText || '').replace(/[\r\n]+/g, ' ').trim();
           if (/[.!?…]\s+[A-ZÁÉÍÓÚÜÑ]/.test(raw)) {
             console.log(`[FRASES] descartado por cruce de oración: "${raw.substring(0, 60)}…"`);
+            return;
+          }
+          const wordCount = raw.split(/\s+/).filter(w => w.length > 0).length;
+          if (wordCount < 40) {
+            console.log(`[FRASES] descartado por menos de 40 palabras (${wordCount}): "${raw.substring(0, 60)}…"`);
             return;
           }
         }

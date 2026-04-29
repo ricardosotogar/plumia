@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v10.05 cargado');
+console.log('📦 document-builder.js v10.06 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -307,7 +307,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         const m = (f.originalText||'').match(/\b\w+mente\b/i);
         return m ? m[0] : f.originalText;
       }
-      case 'repeticion_lexica':     return (f.occurrences?.[0]) || f.word || f.originalText;
+      case 'repeticion_lexica':     return f.word || f.originalText;
       case 'verbos_comedin':        return f.verb || f.originalText;
       case 'sustantivos_genericos': return f.genericWord || f.originalText;
       case 'nombres_propios':       return f.name || f.originalText;
@@ -883,16 +883,24 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
     // Si un word marker coincide exactamente con el inicio del bracket, la
     // comprobación bracketSr en _markWord detecta ◆¹+keyText y entra en modo
     // commentOnly (comportamiento correcto: el bracket ya ocupa esa posición).
+    // frases_largas y ritmo_narrativo necesitan texto limpio para su búsqueda larga:
+    // se procesan PRIMERO dentro del grupo bracket, antes de que otros brackets
+    // inserten ◆ en el interior de la frase. Los brackets cortos posteriores
+    // buscan por texto (no por posición) y sobreviven con ◆ intercalados.
+    const LONG_BRACKET_FIRST = new Set(['frases_largas', 'ritmo_narrativo']);
     const mapped = others.map((f, i) => ({
       ...f,
       _paraIdx:    positions[i][0],
       _charIdx:    positions[i][1],
       _isBracket:  BRACKET_TYPES.has(f.correctionId) ? 0 : 1, // 0=bracket primero
+      _isLong:     LONG_BRACKET_FIRST.has(f.correctionId)  ? 0 : 1, // 0=long bracket first
     }));
     const ordered = mapped.sort((a, b) => {
       // 1) brackets antes que word markers
       if (a._isBracket !== b._isBracket) return a._isBracket - b._isBracket;
-      // 2) dentro del mismo tipo: back-to-front
+      // 2) dentro de brackets: frases_largas/ritmo_narrativo primero
+      if (a._isLong !== b._isLong) return a._isLong - b._isLong;
+      // 3) dentro del mismo tipo: back-to-front
       if (b._paraIdx !== a._paraIdx) return b._paraIdx - a._paraIdx;
       return b._charIdx - a._charIdx;
     });
