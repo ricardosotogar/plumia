@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.06
+// PLUMIA — processor.js  v10.07
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -635,7 +635,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       let findings = r.findings;
 
       // Filtro REGLA ABSOLUTA: descarta findings cuya explanation indica que no hay error real
-      const NO_ERROR_RE = /\bse omite\b|\bno (hay|presenta|existe|contiene) error\b|\bno es un error\b|\bsin error real\b|\bel fragmento (está bien|es correcto)\b|\bno (hay|presenta) error real\b|\b(sin error|anulado|descartado|ninguno)\b/i;
+      const NO_ERROR_RE = /\bse omite\b|\bno (hay|presenta|existe|contiene) error\b|\bno es un error\b|\bsin error real\b|\bel fragmento (está bien|es correcto)\b|\bno (hay|presenta) error real\b|\b(sin error|anulado|descartado|ninguno)\b|\buso aceptable\b|\bes aceptable\b|\bpuede aceptarse\b|\bse puede dejar\b|\bobservaci[oó]n menor\b|\bno es (el )?error m[aá]s grave\b|\bno constituye (un )?error\b|\bse mantiene como\b/i;
       const before0 = findings.length;
       findings = findings.filter(f => !NO_ERROR_RE.test(f.explanation || ''));
       if (findings.length < before0) console.log(`[ABSOLUTA] ${r.correctionId}: ${before0 - findings.length} finding(s) descartados por explanation inválida`);
