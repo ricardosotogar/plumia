@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.07
+// PLUMIA — processor.js  v10.08
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -635,7 +635,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       let findings = r.findings;
 
       // Filtro REGLA ABSOLUTA: descarta findings cuya explanation indica que no hay error real
-      const NO_ERROR_RE = /\bse omite\b|\bno (hay|presenta|existe|contiene) error\b|\bno es un error\b|\bsin error real\b|\bel fragmento (está bien|es correcto)\b|\bno (hay|presenta) error real\b|\b(sin error|anulado|descartado|ninguno)\b|\buso aceptable\b|\bes aceptable\b|\bpuede aceptarse\b|\bse puede dejar\b|\bobservaci[oó]n menor\b|\bno es (el )?error m[aá]s grave\b|\bno constituye (un )?error\b|\bse mantiene como\b/i;
+      const NO_ERROR_RE = /\bse omite\b|\bno (hay|presenta|existe|contiene) error\b|\bno es un error\b|\bsin error real\b|\bel fragmento (está bien|es correcto)\b|\bno (hay|presenta) error real\b|\b(sin error|anulado|descartado|ninguno)\b|\buso aceptable\b|\bes aceptable\b|\bpuede aceptarse\b|\bse puede dejar\b|\bobservaci[oó]n menor\b|\bno es (el )?error m[aá]s grave\b|\bno constituye (un )?error\b|\bse mantiene como\b|\bse descarta\b|\bno es (un )?pleonasmo\b|\bno es propiamente\b|\bno aplica\b|\bfuera de categor[ií]a\b/i;
       const before0 = findings.length;
       findings = findings.filter(f => !NO_ERROR_RE.test(f.explanation || ''));
       if (findings.length < before0) console.log(`[ABSOLUTA] ${r.correctionId}: ${before0 - findings.length} finding(s) descartados por explanation inválida`);
@@ -646,6 +646,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const before00 = findings.length;
       findings = findings.filter(f => norm(f.correction) !== norm(f.originalText));
       if (findings.length < before00) console.log(`[NOCAMBIO] ${r.correctionId}: ${before00 - findings.length} finding(s) descartados por corrección idéntica al original`);
+
+      // Filtro corrección vacía: si el campo correction existe pero está vacío tras normalizar,
+      // el modelo reconoció implícitamente que no hay corrección real → descartar
+      const NEEDS_CORRECTION = new Set(['pleonasmos','palabras_sobrantes','concordancia','gerundios','dequeismo','voz_pasiva','puntuacion_prosa','puntuacion_dialogo','ortotipografia_pura']);
+      if (NEEDS_CORRECTION.has(r.correctionId)) {
+        const before000 = findings.length;
+        findings = findings.filter(f => norm(f.correction || '').length > 0);
+        if (findings.length < before000) console.log(`[VACÍO] ${r.correctionId}: ${before000 - findings.length} finding(s) descartados por corrección vacía`);
+      }
 
       if (r.correctionId === 'repeticion_lexica') {
         const before = findings.length;

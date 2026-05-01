@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v10.07 cargado');
+console.log('📦 document-builder.js v10.08 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -201,10 +201,35 @@ function _singleComment(f) {
       return `Tiempo verbal: ${f.explanation||''} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
     case 'ortotipografia_pura':
       return f.isFirstOccurrence ? `Ortotipografía corregida en todo el documento: ${f.explanation}` : null;
-    case 'puntuacion_prosa':
-      return `Puntuación en prosa (${f.errorType||''}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
-    case 'puntuacion_dialogo':
-      return `Puntuación de diálogo (${f.errorType||''}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
+    case 'puntuacion_prosa': {
+      const PROSA_LABELS = {
+        'coma_sujeto_verbo':       'Coma entre sujeto y verbo',
+        'coma_especificativa':     'Coma en subordinada especificativa',
+        'ausencia_coma_inciso':    'Falta coma en inciso o aposición',
+        'ausencia_coma_conector':  'Falta coma tras conector',
+        'coma_innecesaria_y':      'Coma innecesaria ante «y»',
+        'punto_coma':              'Punto y coma incorrecto',
+        'ausencia_coma_vocativo':  'Falta coma vocativa',
+      };
+      const prosaLabel = PROSA_LABELS[f.errorType] || (f.errorType||'').replace(/_/g,' ');
+      return `Puntuación en prosa (${prosaLabel}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
+    }
+    case 'puntuacion_dialogo': {
+      const DIALOGO_LABELS = {
+        'falta_raya_acotacion':         'Falta raya antes de acotación',
+        'punto_antes_acotacion':        'Punto incorrecto antes de acotación',
+        'coma_antes_cierre':            'Coma innecesaria antes de raya de cierre',
+        'mayuscula_acotacion':          'Mayúscula incorrecta en acotación',
+        'punto_tras_interrogacion':     'Punto tras signo de interrogación',
+        'falta_punto_acotacion':        'Falta punto tras acotación',
+        'coma_tras_interrogacion':      'Coma innecesaria tras interrogación',
+        'ausencia_coma_vocativo':       'Falta coma vocativa',
+        'raya_pegada_cierre':           'Raya pegada al signo de cierre',
+        'intervencion_mismo_parrafo':   'Intervenciones en el mismo párrafo',
+      };
+      const dialogoLabel = DIALOGO_LABELS[f.errorType] || (f.errorType||'').replace(/_/g,' ');
+      return `Puntuación de diálogo (${dialogoLabel}): ${f.explanation||''} Corrección: «${f.correction||''}».`;
+    }
     case 'ritmo_narrativo':
       return `Ritmo narrativo (${f.sceneType||''}): ${f.issue||f.explanation||''} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`.trim();
     case 'voz_pasiva':
