@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v10.09
+// PLUMIA — processor.js  v11.00
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -432,23 +432,35 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       const accumulated = {};
       activeCoherenceCorrs.forEach(c => { accumulated[c.id] = []; });
       try {
-        const chunks = this._countWords(coherenceText) > CONFIG.coherenceChunkSizeWords
-          ? this._splitByChapters(coherenceText)
-          : [{ title: 'Documento', text: coherenceText }];
-        for (const ch of chunks) {
-          if (this.aborted) break;
-          const prompt = this._buildCoherenceGroupedPrompt(activeCoherenceCorrs, ch.text);
-          const response = await this._callAPI(prompt);
-          for (const corr of activeCoherenceCorrs) {
-            const section = response[corr.id];
-            if (!section || !Array.isArray(section.findings)) continue;
-            section.findings.forEach(f => {
-              const originalText = this._extractOriginalText(f);
-              if (!originalText) return;
-              accumulated[corr.id].push({ ...f, originalText, correctionId: corr.id,
-                colorId: corr.colorId, label: corr.label, directFix: corr.directFix });
-            });
-          }
+        // Verificar límite de tokens antes de enviar todo el documento
+        const wcDoc = this._countWords(coherenceText);
+        const estimatedTokens = Math.ceil(wcDoc / (CONFIG.wordsPerToken || 0.75));
+        const MAX_COHERENCE_TOKENS = 150000;
+        if (estimatedTokens > MAX_COHERENCE_TOKENS) {
+          throw new Error(
+            `El documento supera el límite para el análisis de coherencia ` +
+            `(${Math.round(estimatedTokens / 1000)}K tokens estimados; límite: ${Math.round(MAX_COHERENCE_TOKENS / 1000)}K tokens ≈ ` +
+            `${Math.round(MAX_COHERENCE_TOKENS * (CONFIG.wordsPerToken || 0.75) / 1000)}K palabras). ` +
+            `Selecciona solo una parte del texto para analizar.`
+          );
+        }
+
+        // Una única llamada con todo el documento (cross-chapter coherence)
+        const prompt = this._buildCoherenceGroupedPrompt(activeCoherenceCorrs, coherenceText);
+        const response = await this._callAPI(prompt);
+        for (const corr of activeCoherenceCorrs) {
+          const section = response[corr.id];
+          if (!section || !Array.isArray(section.findings)) continue;
+          section.findings.forEach(f => {
+            // Categorías de informe: no requieren originalText para búsqueda en documento
+            const isReport = corr.requiresFullDoc;
+            const originalText = isReport
+              ? (f.occurrence1?.text || f.originalText || f.excerpt || '')
+              : this._extractOriginalText(f);
+            if (!isReport && !originalText) return;
+            accumulated[corr.id].push({ ...f, originalText, correctionId: corr.id,
+              colorId: corr.colorId, label: corr.label, directFix: corr.directFix });
+          });
         }
         for (const corr of activeCoherenceCorrs) {
           allResults.push({ correctionId: corr.id, label: corr.label, groupId: corr.groupId,

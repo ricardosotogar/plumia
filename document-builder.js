@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v10.09 cargado');
+console.log('📦 document-builder.js v11.00 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -77,6 +77,9 @@ const HIGHLIGHT = {
 const BRACKET_TYPES = new Set([
   'voz_pasiva','tiempos_verbales','frases_largas','puntuacion_dialogo',
   'ritmo_narrativo','ambiguedad_pronominal',
+]);
+
+const REPORT_TYPES = new Set([
   'coherencia_personajes','coherencia_temporal','coherencia_objetos',
   'coherencia_conocimiento','tono_voz','nombres_inconsistentes','pov',
 ]);
@@ -864,14 +867,19 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
   async applyMarkings(resolvedFindings, selectionText = '') {
     if (!resolvedFindings || !resolvedFindings.length) return;
 
-    const ortotypo = resolvedFindings.filter(f => f.directFix);
-    const others   = resolvedFindings.filter(f => !f.directFix && f.originalText);
+    const reports  = resolvedFindings.filter(f => REPORT_TYPES.has(f.correctionId));
+    const ortotypo = resolvedFindings.filter(f => f.directFix && !REPORT_TYPES.has(f.correctionId));
+    const others   = resolvedFindings.filter(f => !f.directFix && f.originalText && !REPORT_TYPES.has(f.correctionId));
 
     // Ortotipografía: en modo selección se omite para evitar dos problemas:
     // 1) body.load('paragraphs') sobre documentos de 150+ hojas mata el WebView.
     // 2) Las correcciones automáticas (guiones, comillas, etc.) se aplicarían
     //    a TODO el documento, no solo al fragmento seleccionado.
     // Los hallazgos de ortotipografía siguen apareciendo en el informe de estadísticas.
+    if (reports.length) {
+      await this._appendReport(reports);
+    }
+
     if (ortotypo.length) {
       if (selectionText) {
         console.log('[PLUMIA] applyMarkings: ortotipografía omitida en modo selección (evita crash en doc grande)');
@@ -938,6 +946,98 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         catch(e) { console.warn('Plumia mark:', (ordered[i].originalText||'').substring(0,30), e.message); }
       });
     }
+  }
+
+  // ── Informe de coherencia narrativa al final del documento ───────────────
+  async _appendReport(findings) {
+    if (!findings.length) return;
+
+    const CONTRADICTION_LABELS = {
+      'experiencia':  'Experiencia contradictoria',
+      'habilidad':    'Habilidad inconsistente',
+      'rasgo_fisico': 'Rasgo físico inconsistente',
+      'conocimiento': 'Conocimiento improbable',
+    };
+
+    const ver  = window.PLUMIA.CONFIG_VERSION || '';
+    const fecha = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit', year:'numeric'});
+
+    // Agrupar por categoría
+    const byCategory = {};
+    for (const f of findings) {
+      if (!byCategory[f.correctionId]) byCategory[f.correctionId] = { label: f.label || f.correctionId, items: [] };
+      byCategory[f.correctionId].items.push(f);
+    }
+
+    await Word.run(async (ctx) => {
+      const body = ctx.document.body;
+
+      body.insertBreak(Word.BreakType.page, Word.InsertLocation.end);
+
+      const titlePara = body.insertParagraph(
+        `INFORME DE COHERENCIA NARRATIVA — PLUMIA v${ver} · ${fecha}`,
+        Word.InsertLocation.end
+      );
+      titlePara.font.bold  = true;
+      titlePara.font.size  = 13;
+      titlePara.font.color = '6B2197';
+
+      body.insertParagraph('', Word.InsertLocation.end);
+
+      let n = 1;
+      for (const [, { label, items }] of Object.entries(byCategory)) {
+        const catPara = body.insertParagraph(label.toUpperCase(), Word.InsertLocation.end);
+        catPara.font.bold  = true;
+        catPara.font.size  = 11;
+        catPara.font.color = '6B2197';
+
+        for (const f of items) {
+          // Cabecera del hallazgo
+          const who = f.characterName ? `Personaje: ${f.characterName}` : (f.name || '');
+          const headerPara = body.insertParagraph(`${n}. ${who}`, Word.InsertLocation.end);
+          headerPara.font.bold = true;
+
+          if (f.contradictionType) {
+            body.insertParagraph(
+              `   Tipo: ${CONTRADICTION_LABELS[f.contradictionType] || f.contradictionType}`,
+              Word.InsertLocation.end
+            );
+          }
+
+          if (f.occurrence1?.text) {
+            const loc1 = f.occurrence1.location ? ` [${f.occurrence1.location}]` : '';
+            body.insertParagraph(`   Primera mención: «${f.occurrence1.text}»${loc1}`, Word.InsertLocation.end);
+          }
+          if (f.occurrence2?.text) {
+            const loc2 = f.occurrence2.location ? ` [${f.occurrence2.location}]` : '';
+            body.insertParagraph(`   Segunda mención: «${f.occurrence2.text}»${loc2}`, Word.InsertLocation.end);
+          }
+
+          // Fallback para categorías no-personajes (occurrence genérico, originalText…)
+          if (!f.occurrence1 && !f.occurrence2) {
+            const excerpt = f.originalText || f.excerpt || '';
+            if (excerpt) body.insertParagraph(`   Fragmento: «${excerpt}»`, Word.InsertLocation.end);
+          }
+
+          if (f.explanation) {
+            const expPara = body.insertParagraph(`   ${f.explanation}`, Word.InsertLocation.end);
+            expPara.font.italic = true;
+          }
+          if (f.suggestion) {
+            body.insertParagraph(`   Sugerencia: ${f.suggestion}`, Word.InsertLocation.end);
+          }
+
+          body.insertParagraph('', Word.InsertLocation.end);
+          n++;
+        }
+
+        body.insertParagraph('', Word.InsertLocation.end);
+      }
+
+      await ctx.sync();
+    });
+
+    console.log(`[REPORT] Informe de coherencia generado: ${n - 1} hallazgos`);
   }
 
   // ── Resolver posición de cada finding en el documento ────────────────────

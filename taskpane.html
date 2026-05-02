@@ -18,7 +18,7 @@
   <div class="brand">
     <div>
       <div class="brand-name">Plum<em>ia</em></div>
-      <div class="brand-sub">Corrector ortotipográfico <span style="font-size:9px;opacity:0.55">v10.09</span></div>
+      <div class="brand-sub">Corrector ortotipográfico <span style="font-size:9px;opacity:0.55">v11.00</span></div>
     </div>
   </div>
   <button class="help-btn" onclick="openHelp()" title="Ayuda">?</button>
@@ -179,9 +179,9 @@
     </div>
     <ul class="mode-feature-list">
       <li class="mode-feature">
-        <span class="mode-feature-name">Coherencia temporal, personajes, etc.</span>
+        <span class="mode-feature-name">Coherencia temporal, personajes, etc. · Informe al final del documento</span>
         <button class="info-icon" onclick="toggleInfo(this,event)">?</button>
-        <div class="info-detail">Contradicciones en personajes, línea temporal, objetos y espacios, conocimiento implícito, cambios de punto de vista (POV), nombres propios escritos de formas distintas y tono narrativo.</div>
+        <div class="info-detail">Analiza el documento completo en una sola pasada y genera un informe al final del documento con los hallazgos. Detecta contradicciones en personajes, línea temporal, objetos y espacios, conocimiento implícito, cambios de punto de vista (POV), nombres propios escritos de formas distintas y tono narrativo.</div>
       </li>
     </ul>
   </div>
@@ -241,7 +241,7 @@
     <!-- Aviso coherencia narrativa v3 -->
     <div class="coherence-warning" id="coherenceWarning">
       <div class="coherence-warning-text">
-        ⚠ Las opciones de coherencia narrativa solo pueden revisarse si se analiza el documento completo. ¿Quieres que se analice todo el documento?<br>
+        ⚠ Las opciones de coherencia narrativa requieren analizar el documento completo. Los resultados se añadirán como informe al final del documento.<br>
         <em style="font-size:10.5px;opacity:.8">(El análisis puede tardar más y ser más costoso.)</em>
       </div>
       <div class="coherence-warning-btns">
@@ -404,8 +404,9 @@
     </div>
 
    <div class="coherence-cost-note" id="coherenceCostNote">
-	  ⚠ IMPORTANTE: El coste mostrado puede variar.
-	</div>
+    ⚠ La coherencia se analiza en una sola llamada con todo el documento. El coste mostrado es orientativo.
+   </div>
+   <div id="coherenceLimitWarning" style="display:none;color:var(--err,#c0392b);background:var(--err-bg,#fdf0f0);border-radius:6px;padding:8px 11px;font-size:11px;margin-top:6px;margin-bottom:8px;line-height:1.5"></div>
 
 	<div style="font-size:10.5px;color:var(--muted);background:var(--sepia);
 	  border-radius:6px;padding:9px 11px;margin-bottom:12px;line-height:1.6">
@@ -509,8 +510,8 @@ window.plumiaLog = function() {
   return t;
 };
 
-// ── PLUMIA v10.09 ───────────────────────────────────────────────────────────
-const PLUMIA_UI_VERSION = window.PLUMIA.CONFIG_VERSION || '10.09';
+// ── PLUMIA v11.00 ───────────────────────────────────────────────────────────
+const PLUMIA_UI_VERSION = window.PLUMIA.CONFIG_VERSION || '11.00';
 console.log('Plumia taskpane v' + PLUMIA_UI_VERSION + ' loaded');
 // Inyectar versión en el header (funciona aunque el HTML esté cacheado)
 document.addEventListener('DOMContentLoaded', function() {
@@ -751,7 +752,7 @@ function getManualHTML() {
     <div class="corr-group-title">Grupo 6 · Coherencia narrativa <span class="tag coherence">Documento completo</span></div>
     <div class="corr-entry">
       <div class="corr-entry-name">Personajes · Temporal · Objetos · Conocimiento · Tono · Nombres · POV</div>
-      <div class="corr-entry-desc">Contradicciones entre partes del texto: personajes, objetos, tono, punto de vista. Se delimita el fragmento con ◆¹…◆² en violeta.</div>
+      <div class="corr-entry-desc">Analiza el documento completo en una sola pasada. Los resultados se añaden como informe al final del documento (no se insertan marcas en el texto). Cada hallazgo incluye los fragmentos contradictorios con su ubicación.</div>
       <div class="example-box"><span class="ex-bad">Cap.1: «Era la primera vez que tocaba un muerto.»<br>Cap.14: «Es la primera vez que toco un muerto.»</span></div>
     </div>
     <div class="note-box">⚠ Las opciones de coherencia narrativa requieren analizar el documento completo y pueden ser hasta 5× más costosas que el resto.</div>
@@ -852,9 +853,9 @@ function getManualHTML() {
     </div>
 
     <div class="corr-entry">
-      <div class="corr-entry-name" style="color:#6B2197">◆¹ ◆² Violeta — Coherencia narrativa</div>
-      <div class="corr-entry-desc">Sin resaltado. ◆¹ y ◆² delimitan el fragmento con la contradicción. El comentario cita la ubicación de ambas menciones contradictorias.</div>
-      <div class="example-box"><span style="color:#6B2197">◆¹</span> Era la primera vez que lo veía. <span style="color:#6B2197">◆²</span> <em>→ contradice cap.1</em></div>
+      <div class="corr-entry-name" style="color:#6B2197">Informe violeta — Coherencia narrativa</div>
+      <div class="corr-entry-desc">No inserta marcas en el texto. Genera un informe al final del documento con cada contradicción detectada: personaje o elemento afectado, tipo de inconsistencia, fragmentos contradictorios con su ubicación y explicación.</div>
+      <div class="example-box"><em style="color:#6B2197">→ Informe añadido al final del documento</em></div>
     </div>
 
     <div class="corr-entry">
@@ -1286,7 +1287,7 @@ function updateCoherenceState() {
   if (!state.hasSelection) {
     // CASO A: No hay selección → confirmar análisis de documento completo
     // Se muestra siempre que haya al menos una opción marcada
-    warnText.innerHTML = `📋 Se va a analizar todo el documento. ¿Estás de acuerdo?`;
+    warnText.innerHTML = `📋 Se va a analizar todo el documento. Los resultados de coherencia se añadirán como informe al final del documento. ¿Estás de acuerdo?`;
     warnBtns.style.display = 'flex';
     warnBtns.innerHTML = `
       <button class="btn-coherence-yes" onclick="acceptCoherenceFullDoc()">Sí</button>
@@ -1296,7 +1297,7 @@ function updateCoherenceState() {
 
   } else if (hasCoherence) {
     // CASO B: Hay selección + coherencia → preguntar si quiere analizar todo
-    warnText.innerHTML = `⚠ Las opciones de coherencia narrativa solo pueden revisarse si se analiza el documento completo. ¿Quieres que se analice todo el documento?<br>
+    warnText.innerHTML = `⚠ Las opciones de coherencia narrativa requieren analizar el documento completo. Los resultados se añadirán como informe al final del documento. ¿Quieres continuar?<br>
       <em style="font-size:10.5px;opacity:.8">(El análisis puede tardar más y ser más costoso.)</em>`;
     warnBtns.style.display = 'flex';
     warnBtns.innerHTML = `
@@ -1601,16 +1602,25 @@ async function requestCostEstimate() {
   let coherenceInputTokens  = 0;
   let coherenceOutputTokens = 0;
 
+  const MAX_COHERENCE_TOKENS = 150000;
   if (coherenceIds.length > 0) {
-    const coherenceChunkSize  = window.PLUMIA.CONFIG.coherenceChunkSizeWords || 80000;
-    const coherenceChunks     = Math.max(1, Math.ceil(wc / coherenceChunkSize));
     const fullDocTokens       = Math.ceil(wc / WORDS_PER_TOKEN);
-    const tokensPerChunk      = Math.ceil(fullDocTokens / coherenceChunks);
-    // Coherencia: prompt completo (tokens de instrucciones ~1000) + texto, output es JSON corto (~8% del input)
     const COHERENCE_PROMPT    = 1000;
     const COHERENCE_OUT_RATIO = 0.08;
-    coherenceInputTokens  = coherenceIds.length * coherenceChunks * (COHERENCE_PROMPT + tokensPerChunk);
-    coherenceOutputTokens = coherenceIds.length * coherenceChunks * Math.ceil(tokensPerChunk * COHERENCE_OUT_RATIO);
+    // Una única llamada con todo el documento
+    coherenceInputTokens  = COHERENCE_PROMPT + fullDocTokens;
+    coherenceOutputTokens = Math.ceil(fullDocTokens * COHERENCE_OUT_RATIO);
+    // Aviso si supera el límite
+    const limitEl = document.getElementById('coherenceLimitWarning');
+    if (limitEl) {
+      if (fullDocTokens > MAX_COHERENCE_TOKENS) {
+        const maxWords = Math.round(MAX_COHERENCE_TOKENS * WORDS_PER_TOKEN / 1000);
+        limitEl.textContent = `⛔ El documento supera el límite para el análisis de coherencia (${Math.round(fullDocTokens/1000)}K tokens estimados; límite: ${Math.round(MAX_COHERENCE_TOKENS/1000)}K tokens ≈ ${maxWords}K palabras). El análisis de coherencia fallará — selecciona solo una parte del texto.`;
+        limitEl.style.display = 'block';
+      } else {
+        limitEl.style.display = 'none';
+      }
+    }
   }
 
   const totalInputTokens  = normalInputTokens  + coherenceInputTokens;
