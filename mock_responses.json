@@ -16744,5 +16744,1248 @@
                                                   "total_found":  0
                                               }
                                           ]
-                        }
+                        },
+    "PT cap 23-24-25": {
+    "desc": "",
+    "responses": [
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "laismo",
+              "originalText": "lo llamó para decirle que se acercara a sus aposentos",
+              "correction": "le llamó para decirle que se acercara a sus aposentos",
+              "explanation": "AiFlash es CD de 'llamar' en construcción personal ('llamar a alguien'), que en español estándar admite CI, pero aquí el referente es masculino y se usa 'lo' correctamente como CD. Sin embargo, 'llamar a alguien' en España toma CI → 'le llamó'. Aunque debatible, el uso normativo peninsular prefiere 'le llamó'."
+            },
+            {
+              "type": "laismo",
+              "originalText": "la habían convertido en lo que era",
+              "correction": "le habían convertido en lo que era",
+              "explanation": "'convertir a alguien en algo' rige complemento indirecto. El referente es Mary Jane (femenino), por lo que corresponde 'le' (CI), no 'la' (CD)."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "pudo ver aquella sonrisa que, de la mano de sus ojos, lanzó a su padre",
+              "pronoun": "lanzó",
+              "possibleReferents": [
+                "la madre",
+                "Mary Jane"
+              ],
+              "explanation": "El sujeto tácito de 'lanzó' puede referirse a la madre (quien sonríe en la grabación) o a Mary Jane (quien está observando). Ambas son femeninas y están presentes en el contexto inmediato.",
+              "suggestion": "pudo ver aquella sonrisa que su madre, de la mano de sus ojos, lanzó a su padre"
+            },
+            {
+              "originalText": "AiFlash se había ocupado incluso de dejarle la grabación que capturó del momento en el que su madre le desveló a Albert que estaba embarazada",
+              "pronoun": "su",
+              "possibleReferents": [
+                "Mary Jane",
+                "Albert"
+              ],
+              "explanation": "El posesivo 'su' en 'su madre' puede referirse a la madre de Mary Jane o a la madre de Albert, ya que ambos son referentes presentes en el contexto del relato. Aunque el contexto favorece a Mary Jane, gramaticalmente hay ambigüedad.",
+              "suggestion": "la grabación del momento en el que la madre de Mary Jane le desveló a Albert que estaba embarazada"
+            }
+          ]
+        }
+      },
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "loismo",
+              "originalText": "les tendréis en contra",
+              "correction": "los tendréis en contra",
+              "explanation": "'tener en contra' es un uso transitivo donde 'la mayoría de la población' funciona como CD masculino plural, por lo que corresponde 'los', no 'les'."
+            },
+            {
+              "type": "laismo",
+              "originalText": "Darle a la humana la tecnología",
+              "correction": "Darle a la humana la tecnología",
+              "explanation": "Este caso es correcto: 'darle' con CI femenino ('a la humana') es la forma adecuada. No es laísmo."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Buscaba, de algún modo, romper el frío tratamiento que mantenía con él, persiguiendo un acercamiento entre padre e hijo que no solía producirse en planeta Peak. Aquella aproximación resultaba tan inusual que, cuando ocurría, se mantenía en la privacidad, pues la sociedad la desaprobaba",
+              "pronoun": "la",
+              "possibleReferents": [
+                "la aproximación",
+                "la privacidad"
+              ],
+              "explanation": "El pronombre 'la' en 'la desaprobaba' tiene dos referentes femeninos posibles en el contexto inmediato: 'aquella aproximación' y 'la privacidad', aunque el sentido lógico apunta a la aproximación.",
+              "suggestion": "pues la sociedad desaprobaba aquella aproximación"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "para dos horas es el equivalente a veinte de vuestros años",
+              "errorType": "sujeto-verbo",
+              "explanation": "El sujeto 'dos horas' es plural, por lo que el verbo debería ser 'son' en lugar de 'es'.",
+              "correction": "dos horas son el equivalente a veinte de vuestros años"
+            },
+            {
+              "originalText": "la cree para ti",
+              "errorType": "sujeto-verbo",
+              "explanation": "El verbo 'cree' parece ser un error por 'creé' (primera persona singular del pretérito indefinido de 'crear'). El contexto indica que AiFlash dice haberla creado para Mary Jane.",
+              "correction": "la creé para ti"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "darse cuenta que AiFlash no estaba mintiendo",
+              "errorType": "queismo",
+              "explanation": "El verbo pronominal 'darse cuenta' rige la preposición 'de' antes de 'que'. Se omite la preposición obligatoria.",
+              "correction": "darse cuenta de que AiFlash no estaba mintiendo"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "se había convertido era una fortaleza",
+              "errorType": "sujeto-verbo",
+              "explanation": "Construcción verbal incorrecta: 'se había convertido era' combina dos verbos sin coordinación posible. Debe eliminarse uno: 'se había convertido en una fortaleza' o 'era una fortaleza'.",
+              "correction": "se había convertido en una fortaleza"
+            },
+            {
+              "originalText": "les tendréis en contra",
+              "errorType": "sujeto-verbo",
+              "explanation": "El pronombre 'les' (3.ª persona) no concuerda con el sujeto implícito de 2.ª persona plural ('vosotros') al que pertenece 'tendréis'. Debe usarse 'los' o replantear, pero el pronombre de objeto correcto referido a 'la mayoría de la población' en función de objeto directo sería 'los'.",
+              "correction": "los tendréis en contra"
+            },
+            {
+              "originalText": "lo que provocaría un apagón mundial de todos los sistemas automatizados e incitará un descontento",
+              "errorType": "sujeto-verbo",
+              "explanation": "Falta de concordancia temporal: 'provocaría' está en condicional pero 'incitará' está en futuro simple. Ambos verbos comparten el mismo sujeto y contexto condicional, por lo que deben concordar en el mismo tiempo verbal.",
+              "correction": "lo que provocaría un apagón mundial de todos los sistemas automatizados e incitaría un descontento"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "utilizarla contra del gobierno",
+              "errorType": "dequeismo",
+              "explanation": "La preposición 'contra' no se combina con artículo 'del' en este contexto. La construcción correcta es simplemente 'contra el gobierno', sin contracción porque 'contra' no rige 'de'.",
+              "correction": "utilizarla contra el gobierno"
+            }
+          ]
+        }
+      },
+      {
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Mary Jane no hizo ningún gesto",
+              "verb": "hizo",
+              "explanation": "Verbo comodín. Podría sustituirse por 'no gestualizó' o, mejor, reconstruir como 'Mary Jane permaneció impasible' o 'no se inmutó'."
+            },
+            {
+              "originalText": "dijo sin rodeos tras hacer que AiFlash fuese a su cubículo",
+              "verb": "hacer",
+              "explanation": "Verbo comodín. 'Hacer que alguien vaya' puede sustituirse por 'convocar', 'llamar' o 'citar': 'tras convocar a AiFlash en su cubículo'."
+            },
+            {
+              "originalText": "dijo provocando que Mary Jane sintiera una punzada más de curiosidad",
+              "verb": "provocando",
+              "explanation": "Verbo comodín en este contexto. Podría sustituirse por 'despertando' o 'avivando' una punzada de curiosidad, más expresivo y preciso."
+            },
+            {
+              "originalText": "en los servidores que sirven para dar servicio a la infraestructura",
+              "verb": "dar servicio",
+              "explanation": "Perífrasis comodín con 'dar'. Podría sustituirse por 'sustentar' o 'sostener' la infraestructura."
+            }
+          ]
+        },
+        "repeticion": {
+          "findings": [
+            {
+              "word": "sistema",
+              "occurrences": [
+                "o destruyes el sistema o lo dejas como está",
+                "¿Cómo podría una sola persona sin recursos conseguirlo? ¿Cómo podría luchar contra un gobierno con tecnología alienígena? ¿Cómo podría atacar a un gobierno sin rostros",
+                "todo era algo real, que, en realidad, todo estaba listo para pulsar el botón de ignición",
+                "su mundo estaba basado en una gran mentira",
+                "destruir el sistema",
+                "a favor del sistema",
+                "a poner al sistema y a su padre contra las cuerdas",
+                "actuar en contra del gobierno",
+                "derrocar al gobierno"
+              ],
+              "explanation": "La palabra 'sistema' aparece repetidamente en párrafos consecutivos del monólogo interior de Mary Jane y en el diálogo siguiente, sin variación ni intención estilística clara: 'destruyes el sistema', 'a favor del sistema', 'poner al sistema contra las cuerdas', 'el nuevo sistema', empobreciendo el estilo."
+            },
+            {
+              "word": "red",
+              "occurrences": [
+                "la red empezó a crecer como las raíces de un árbol",
+                "Gracias a este entramado de personas hemos conseguido información útil",
+                "¿Mi red de personas?",
+                "es tuya, la cree para ti",
+                "tu red de personas"
+              ],
+              "explanation": "'Red' y 'red de personas' se repiten varias veces en párrafos consecutivos de la explicación de AiFlash sin variación léxica que alivie la repetición."
+            },
+            {
+              "word": "gobierno",
+              "occurrences": [
+                "actuar en contra del gobierno cuando sea preciso",
+                "la dimensión real del gobierno",
+                "los núcleos de generación de órdenes de la intranet del gobierno",
+                "ataques terroristas contra instalaciones del gobierno",
+                "no comulgan con el gobierno",
+                "el gobierno fuese derrocado",
+                "lucha es contra el gobierno"
+              ],
+              "explanation": "'Gobierno' se repite más de seis veces en párrafos consecutivos del mismo bloque narrativo sin variación sinonímica, lo que resulta llamativo y empobrece el estilo."
+            },
+            {
+              "word": "peaksons",
+              "occurrences": [
+                "lograron comunicarse con una raza llamada los peaksons",
+                "Cuando tus padres comprendieron hasta dónde había llegado Haddon, quisieron contactar con los peaksons",
+                "La única tecnología que pudieron obtener de los peaksons es la que ya conoces",
+                "volví a contactar con los peaksons"
+              ],
+              "explanation": "Aunque es un nombre propio de raza ficticia, su repetición literal cuatro veces en distintos bloques narrativos próximos sin ninguna variante ('ellos', 'esa raza', etc.) resulta mecánica y empobrece la prosa."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "Pensó, por un momento, en esa clase de personas a las que les gustan las películas «gore»",
+              "genericWord": "clase",
+              "explanation": "'Esa clase de personas' es una construcción vaga. Podría concretarse como 'ese tipo de personas' o mejor aún con un sustantivo más descriptivo según el contexto."
+            },
+            {
+              "originalText": "el germen del odio hacia un sistema que muchos no abrazan, aún subyace en los substratos de vuestra sociedad",
+              "genericWord": "substratos",
+              "explanation": "Aunque 'sustratos' es término con cierta precisión, aquí se usa de forma abstracta y vaga ('sustratos de la sociedad') donde 'capas profundas' o 'estratos' serían igual de vagos; sin embargo, la forma correcta es 'sustratos', no 'substratos', lo cual es además un error ortográfico por ultracorrección."
+            },
+            {
+              "originalText": "Todo era una confusa maraña de pensamientos y sentimientos",
+              "genericWord": "cosa",
+              "explanation": "No aplica 'cosa', pero 'todo era una confusa maraña' usa 'todo' como sustantivo-comodín en lugar de nombrar concretamente qué: 'Aquella revelación era una confusa maraña de pensamientos y sentimientos'."
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "calle",
+              "occurrences": [
+                "nuestra red de personas saldrá a la calle a protestar con violencia",
+                "Cuando todos vean que no pasa nada, el resto se atreverá a salir a la calle sumándose a las protestas",
+                "No podrán con todos, están en minoría"
+              ],
+              "explanation": "'a la calle' aparece tres veces en párrafos consecutivos muy próximos, creando una repetición llamativa que empobrece el estilo"
+            },
+            {
+              "word": "proyectiles",
+              "occurrences": [
+                "Los pequeños proyectiles eran de una aleación tan resistente",
+                "convirtiéndose en pequeñas bolas incandescentes capaces de consumirse fundiendo el metal poco a poco, hasta perforarlo y permitir que el resto de los proyectiles accedieran al interior",
+                "torres defensivas con dispersores de pequeños proyectiles asesinos"
+              ],
+              "explanation": "'proyectiles' aparece tres veces en párrafos inmediatamente consecutivos describiendo el mismo arma, sin variación estilística"
+            },
+            {
+              "word": "homogeneidad",
+              "occurrences": [
+                "su mera existencia ha roto la homogeneidad",
+                "su sociedad ha evolucionado hacia el credo de la homogeneidad",
+                "la homogeneidad empezará a diluirse poco a poco"
+              ],
+              "explanation": "'homogeneidad' se repite tres veces en párrafos muy cercanos sin intención estilística clara, resultando repetitivo"
+            },
+            {
+              "word": "muerte y destrucción",
+              "occurrences": [
+                "dejando en su interior solo muerte y destrucción",
+                "Después, en el interior: muerte y destrucción"
+              ],
+              "explanation": "La expresión exacta 'muerte y destrucción' se repite dos veces en párrafos consecutivos de forma redundante y llamativa"
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "a continuación rio nerviosa diciendo",
+              "verb": "diciendo",
+              "explanation": "'rio nerviosa diciendo' es una construcción vaga; podría sustituirse por 'rio nerviosa y añadió' o simplemente estructurar el diálogo sin el gerundio comodín"
+            },
+            {
+              "originalText": "arrugó los labios con rabia",
+              "verb": "arrugó",
+              "explanation": "'arrugó los labios' es una perífrasis vaga; existe un verbo más preciso como 'frunció los labios' o 'apretó los labios'"
+            },
+            {
+              "originalText": "dijo Much-muck alzando la mano con el puño cerrado",
+              "verb": "alzando",
+              "explanation": "'alzando la mano' es una construcción genérica; podría sustituirse por 'levantó el puño cerrado' como gesto específico"
+            },
+            {
+              "originalText": "hacer sus movimientos",
+              "verb": "hace",
+              "explanation": "'hacer sus movimientos' es vago; podría sustituirse por 'ejecuta sus jugadas' o 'realiza sus jugadas', más preciso en contexto de ajedrez"
+            },
+            {
+              "originalText": "lo que me permite espiar sus sistemas",
+              "verb": "espiar",
+              "explanation": "Correcto en contexto, no se señala"
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "algo etéreo con una inteligencia superior",
+              "genericWord": "algo",
+              "explanation": "'algo etéreo' es vago para referirse a una entidad de inteligencia artificial; podría sustituirse por 'una entidad etérea' o 'un ente etéreo'"
+            },
+            {
+              "originalText": "es un margen tan ajustado y el cambio definido es tan pronunciado",
+              "genericWord": "cambio",
+              "explanation": "'el cambio definido' resulta vago en contexto genético; podría concretarse como 'la transformación genética definida' para mayor precisión"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "En efecto",
+              "occurrences": [
+                "En efecto. Siento decirte que fue Volderlayer",
+                "En efecto, la máquina propagandística del gobierno así lo llamó.",
+                "En efecto, la manera en la que cada persona actúa",
+                "En efecto, es tuya, la cree para ti.",
+                "En efecto. Pero puede que hayan llegado"
+              ],
+              "explanation": "Se repite cinco veces como muletilla afirmativa intercambiable con 'así es', que también se repite, empobreciendo el diálogo."
+            },
+            {
+              "expression": "Así es",
+              "occurrences": [
+                "Así es. Esto lo saben muy pocos Homo sapiens",
+                "Así es. De momento, te voy a dejar sola",
+                "Así es. Pero lo más importante es que entiendas"
+              ],
+              "explanation": "Se repite tres veces como confirmación genérica, alternando con 'En efecto' sin añadir variedad ni valor."
+            },
+            {
+              "expression": "de cualquier modo",
+              "occurrences": [
+                "De cualquier modo, en previsión de llegar a este punto",
+                "De cualquier modo, cuando decidas que estoy lista"
+              ],
+              "explanation": "Aparece dos veces como conector de transición prescindible que no añade significado al contenido."
+            },
+            {
+              "expression": "hoy en día",
+              "occurrences": [
+                "Es la tecnología que hoy en día se usa para crear los virus blancos."
+              ],
+              "explanation": "Expresión coloquial desgastada que podría sustituirse por 'actualmente' o eliminarse."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "de la mano de sus ojos, lanzó a su padre",
+              "explanation": "Aunque es una imagen poética, 'de la mano de sus ojos' junto con el verbo 'lanzó' referido a una mirada/sonrisa resulta redundante en la descripción del gesto facial, acumulando dos referencias al mismo acto expresivo.",
+              "correction": "aquella sonrisa que sus ojos lanzaron a su padre"
+            },
+            {
+              "originalText": "servidores que sirven para dar servicio",
+              "explanation": "'Servidores', 'sirven' y 'dar servicio' son tres repeticiones de la misma raíz léxica en la misma frase, constituyendo una redundancia estilística clara.",
+              "correction": "servidores destinados a sostener la infraestructura"
+            },
+            {
+              "originalText": "volvió a reincidir",
+              "explanation": "No aparece literalmente, pero sí su equivalente: 'volvió a contactar con los peaksons' tras haber dicho que ya lo había hecho, aunque aquí no es pleonasmo. En cambio: 'al mismo modo' no aplica. Revisar: 'la cree para ti' — errata, no pleonasmo.",
+              "correction": ""
+            },
+            {
+              "originalText": "grupos independientes que se retroalimentan entre sí",
+              "explanation": "'Retroalimentarse' ya implica reciprocidad mutua, por lo que 'entre sí' es redundante.",
+              "correction": "grupos independientes que se retroalimentan"
+            },
+            {
+              "originalText": "grupos que se retroalimentan de odio",
+              "explanation": "Segunda aparición del mismo esquema 'retroalimentarse' con complemento, reforzando la muletilla estructural del autor, aunque aquí 'de odio' no es pleonasmo en sí mismo.",
+              "correction": ""
+            },
+            {
+              "originalText": "substratos de vuestra sociedad",
+              "explanation": "'Substratos' (o sustratos) ya designa capas inferiores o profundas, por lo que añadir el posesivo no genera pleonasmo; sin embargo, 'subyace en los substratos' es redundante porque 'subyacer' ya significa 'estar debajo/oculto', duplicando la idea de profundidad.",
+              "correction": "aún subyace en vuestra sociedad"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "En efecto",
+              "occurrences": [
+                "—En efecto. Pero puede que hayan llegado",
+                "—En efecto. —Es necesario lograr",
+                "—En efecto. Aquellos que pierdan hijos"
+              ],
+              "explanation": "La expresión 'En efecto' se repite tres veces como respuesta afirmativa, pudiendo variarse con sinónimos como 'así es', 'exacto' o simplemente suprimirse."
+            },
+            {
+              "expression": "de algún modo",
+              "occurrences": [
+                "Buscaba, de algún modo, romper el frío tratamiento"
+              ],
+              "explanation": "Expresión vaga que no aporta información concreta y puede eliminarse sin alterar el significado."
+            },
+            {
+              "expression": "muerte y destrucción",
+              "occurrences": [
+                "dejando en su interior solo muerte y destrucción",
+                "Después, en el interior: muerte y destrucción."
+              ],
+              "explanation": "La misma fórmula 'muerte y destrucción' se repite dos veces en párrafos consecutivos sin variación, convirtiéndose en muletilla expresiva."
+            },
+            {
+              "expression": "el único camino a seguir",
+              "occurrences": [
+                "Supongo que es el único camino a seguir.",
+                "era el único camino a seguir"
+              ],
+              "explanation": "La expresión se repite de forma idéntica en dos momentos distintos del texto, denotando uso formulaico sin variación."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "trascienda hacia arriba",
+              "explanation": "'Trascender' ya implica ascender o propagarse más allá; 'hacia arriba' es redundante en este contexto.",
+              "correction": "trascienda"
+            },
+            {
+              "originalText": "con sus propias manos",
+              "explanation": "'Propias' es redundante junto a 'manos', pues luchar con las manos ya implica que son las propias.",
+              "correction": "con las manos"
+            },
+            {
+              "originalText": "cuándo las nuevas generaciones, provistas de instinto agresivo tengan que lidiar con el odio",
+              "explanation": "El uso de tilde en 'cuándo' dentro de una oración subordinada temporal es un error ortográfico; 'cuando' en este contexto es conjunción y no lleva tilde.",
+              "correction": "cuando las nuevas generaciones, provistas de instinto agresivo, tengan que lidiar con el odio"
+            },
+            {
+              "originalText": "se había convertido era una fortaleza",
+              "explanation": "Fusión errónea de dos construcciones: 'se había convertido en una fortaleza' y 'era una fortaleza'. Resultan redundantes al solaparse en una misma oración.",
+              "correction": "se había convertido en una fortaleza"
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "cuidadosamente radicalizados",
+              "adverb": "cuidadosamente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio no añade tensión narrativa; la idea de radicalización selectiva puede expresarse con más precisión.",
+              "alternatives": [
+                "radicalizados con esmero quirúrgico",
+                "elegidos y radicalizados uno a uno"
+              ]
+            },
+            {
+              "originalText": "fácilmente sus muertes",
+              "adverb": "fácilmente",
+              "evaluation": "Mejorable",
+              "explanation": "Debilita la gravedad del momento; una imagen concreta transmitiría mejor la frialdad del cálculo.",
+              "alternatives": [
+                "habría podido borrarlos sin dejar rastro",
+                "sus muertes habrían sido cosa de un instante"
+              ]
+            },
+            {
+              "originalText": "de manera anónima",
+              "adverb": "anónima",
+              "evaluation": "Mejorable",
+              "explanation": "Construcción perifrástica débil; un verbo preciso elimina la perífrasis y gana fuerza.",
+              "alternatives": [
+                "fuimos contactando con ellos sin revelar nuestra identidad",
+                "nos acercamos a ellos desde la sombra"
+              ]
+            },
+            {
+              "originalText": "poco a poco fuimos contactando",
+              "adverb": "poco a poco",
+              "evaluation": "Adecuado",
+              "explanation": "Refuerza la idea de una operación lenta y metódica; contribuye al ritmo del parlamento de AiFlash.",
+              "alternatives": []
+            },
+            {
+              "originalText": "de manera autónoma",
+              "adverb": "autónoma",
+              "evaluation": "Mejorable",
+              "explanation": "Perífrasis sustituible por un adverbio o construcción más directa.",
+              "alternatives": [
+                "para funcionar sin depender de nadie",
+                "para operar por cuenta propia"
+              ]
+            },
+            {
+              "originalText": "relativamente poco",
+              "adverb": "relativamente",
+              "evaluation": "Mejorable",
+              "explanation": "Vago e impreciso en boca de una inteligencia artificial que maneja datos exactos; rompe la verosimilitud del personaje.",
+              "alternatives": [
+                "hace unos ciclos",
+                "hace un tiempo que vosotros contaríais en meses"
+              ]
+            },
+            {
+              "originalText": "previamente",
+              "adverb": "previamente",
+              "evaluation": "Adecuado",
+              "explanation": "Funciona con precisión lógica dentro del razonamiento de AiFlash; no es prescindible.",
+              "alternatives": []
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "todos los científicos que trabajaron en el proyecto fueron asesinados, haciendo que pareciese un accidente",
+              "explanation": "Voz pasiva perifrástica con agente implícito; la versión activa gana en claridad e impacto.",
+              "activeVersion": "alguien asesinó a todos los científicos que trabajaron en el proyecto y lo hizo parecer un accidente"
+            },
+            {
+              "originalText": "fue Volderlayer el que ejecutó la orden",
+              "explanation": "Construcción pasiva enfática; puede reescribirse en activa sin perder el énfasis.",
+              "activeVersion": "Volderlayer ejecutó la orden"
+            },
+            {
+              "originalText": "fueron interceptados por los soldados que custodiaban la base y fueron acribillados cuando estaban enviando el mensaje",
+              "explanation": "Doble voz pasiva perifrástica con agente explícito; la voz activa es más directa y violenta.",
+              "activeVersion": "los soldados que custodiaban la base los interceptaron y los acribillaron cuando estaban enviando el mensaje"
+            },
+            {
+              "originalText": "la grabación de lo sucedido desapareció a los dos días",
+              "explanation": "No es voz pasiva; se descarta.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "dispuesto a ser ejecutado",
+              "explanation": "Voz pasiva de infinitivo con agente implícito integrada en una frase de cierre; puede activarse.",
+              "activeVersion": "dispuesto para que alguien lo ejecutase"
+            },
+            {
+              "originalText": "esos atentados terroristas no han sido realizados por tu red de personas",
+              "explanation": "Voz pasiva perifrástica con agente explícito claro.",
+              "activeVersion": "tu red de personas no ha realizado esos atentados terroristas"
+            },
+            {
+              "originalText": "la cree para ti",
+              "explanation": "Voz activa con error léxico («cree» en lugar de «creé»); no es pasiva. Se descarta.",
+              "activeVersion": ""
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Su vida afable y llena de felicidad estaba fundada sobre los cimientos de una sociedad creada a partir de una tecnología extraterrestre, sobre la premisa de que era hija de Volderlayer, alguien a quien consideraba una buena persona y padre, y sobre una manipulación, la que había guiado sus pasos a través de sutiles flechas de dirección que la habían convertido en lo que era, una científica.",
+              "wordCount": 62,
+              "explanation": "Frase muy larga con tres bloques encadenados sobre «fundada»; el lector pierde el hilo antes del cierre.",
+              "suggestion": "Dividir en dos: «Su vida afable estaba fundada sobre los cimientos de una tecnología extraterrestre y sobre la premisa de ser hija de Volderlayer, a quien consideraba un buen padre. Y sobre una manipulación: aquella que había guiado sus pasos con sutiles flechas de dirección hasta convertirla en lo que era, una científica.»"
+            },
+            {
+              "originalText": "Empezamos con unos pocos a los que les hicimos saber que no estaban solos, que había más como ellos, dispuestos a luchar en algún momento para derrocar al gobierno. A su vez, estos mismos se ocuparon de contactar con otras personas que les indicamos.",
+              "wordCount": 46,
+              "explanation": "La acumulación de subordinadas ralentiza el ritmo en un pasaje que debería tener dinamismo narrativo.",
+              "suggestion": "«Empezamos con unos pocos: les hicimos saber que no estaban solos. Que había más como ellos. Dispuestos a luchar. Ellos mismos se encargaron de contactar con quienes les indicamos.»"
+            },
+            {
+              "originalText": "En ellos se les planteaba si querían formar parte del movimiento y si estarían dispuestos a actuar cuando fuese preciso. Al final del mensaje se les decía que si aceptaban debían quemar el mismo y esperar órdenes.",
+              "wordCount": 42,
+              "explanation": "Dos oraciones que acumulan condicionales encadenados; el ritmo se vuelve pesado para un pasaje de acción explicativa.",
+              "suggestion": "«El mensaje era una pregunta: ¿querías formar parte? ¿Estabas dispuesto a actuar cuando llegara el momento? Al final, una instrucción: quema esto y espera órdenes.»"
+            },
+            {
+              "originalText": "Les mandé un mensaje explicándoles quién era, la situación a la que habíais llegado como sociedad, y que el germen del odio hacia un sistema que muchos no abrazan, aún subyace en los substratos de vuestra sociedad, evitando que la humanidad prospere haciendo borrón y cuenta nueva.",
+              "wordCount": 48,
+              "explanation": "Frase de reporte de discurso indirecto excesivamente cargada; la subordinación múltiple dificulta la comprensión.",
+              "suggestion": "«Les expliqué quién era y la situación de vuestra sociedad: el odio al sistema sigue latente en sus capas más profundas, impidiendo que la humanidad haga borrón y cuenta nueva.»"
+            },
+            {
+              "originalText": "Así hemos logrado crear cientos de miles de grupos independientes que se retroalimentan entre sí y que saben que son las piezas de un plan a largo plazo dispuesto a ser ejecutado",
+              "wordCount": 34,
+              "explanation": "Cerca del límite; la acumulación de relativas debilita el remate del largo parlamento explicativo.",
+              "suggestion": "«Así nacieron cientos de miles de grupos independientes. Cada uno, una pieza de un plan a largo plazo esperando su momento.»"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": []
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "de manera prioritaria, saltándose las listas de espera",
+              "adverb": "prioritaria (de manera prioritaria)",
+              "evaluation": "Mejorable",
+              "explanation": "La construcción perifrástica 'de manera prioritaria' es débil y sustituible por un verbo más preciso.",
+              "alternatives": [
+                "adelantándose en las listas de espera",
+                "colándose antes que el resto"
+              ]
+            },
+            {
+              "originalText": "destruir, de manera simultánea, la red de servidores",
+              "adverb": "simultánea (de manera simultánea)",
+              "evaluation": "Mejorable",
+              "explanation": "Perífrasis adverbial que puede condensarse en una acción verbal más directa.",
+              "alternatives": [
+                "destruir en un mismo golpe la red de servidores",
+                "hacer caer a la vez toda la red de servidores"
+              ]
+            },
+            {
+              "originalText": "terminarán siendo activadas de manera manual",
+              "adverb": "manual (de manera manual)",
+              "evaluation": "Mejorable",
+              "explanation": "La perífrasis 'de manera manual' es torpe; un verbo concreto gana en precisión narrativa.",
+              "alternatives": [
+                "terminarán activándose a mano",
+                "los líderes las activarán ellos mismos"
+              ]
+            },
+            {
+              "originalText": "probablemente, no vea las consecuencias finales",
+              "adverb": "probablemente",
+              "evaluation": "Adecuado",
+              "explanation": "Matiza la incertidumbre del personaje con naturalidad en el registro conversacional."
+            },
+            {
+              "originalText": "apenas me quedan unos años de vida",
+              "adverb": "apenas",
+              "evaluation": "Adecuado",
+              "explanation": "Refuerza la fragilidad emocional del personaje con economía expresiva."
+            },
+            {
+              "originalText": "Será justo después, cuando nuestra red de personas saldrá a la calle",
+              "adverb": "justo",
+              "evaluation": "Mejorable",
+              "explanation": "'Justo después' es una muletilla temporal que puede reemplazarse con una construcción más narrativa.",
+              "alternatives": [
+                "En ese preciso instante, nuestra red saldrá a la calle",
+                "Acto seguido, nuestra red lanzará a sus personas a la calle"
+              ]
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "las fuerzas de seguridad terminarán siendo activadas de manera manual",
+              "explanation": "Pasiva perifrástica con agente implícito (los líderes de los pelotones); la voz activa resulta más directa.",
+              "activeVersion": "los líderes de los pelotones activarán las fuerzas de seguridad de manera manual"
+            },
+            {
+              "originalText": "serán asesinados con toda probabilidad",
+              "explanation": "Pasiva perifrástica con agente implícito (la multitud enfurecida); una voz activa añade tensión narrativa.",
+              "activeVersion": "la gente los asesinará con toda probabilidad"
+            },
+            {
+              "originalText": "no se podrán propagar a través de las redes sociales",
+              "explanation": "Pasiva refleja con agente implícito (los rumores); puede reformularse en activa para mayor claridad.",
+              "activeVersion": "no podremos propagarlos a través de las redes sociales"
+            },
+            {
+              "originalText": "que puede ser instalado por las personas de nuestra red en los servidores",
+              "explanation": "Pasiva perifrástica con agente explícito ('las personas de nuestra red'); la activa es más dinámica.",
+              "activeVersion": "que las personas de nuestra red puedan instalar en los servidores"
+            },
+            {
+              "originalText": "estaría extendido por todo el mundo",
+              "explanation": "Pasiva perifrástica con agente implícito; puede reformularse en activa para mayor fluidez.",
+              "activeVersion": "se habría extendido por todo el mundo"
+            },
+            {
+              "originalText": "que estaban programados para acceder al cerebro",
+              "explanation": "Pasiva perifrástica con agente implícito (los ingenieros/diseñadores); aunque funcional, una activa daría más vida al sujeto.",
+              "activeVersion": "programados por sus creadores para acceder al cerebro"
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "momento en el que estaban programados para acceder al cerebro a través de los orificios respiratorios de cualquier ser vivo considerado enemigo y hacerlo papilla moviéndose a gran velocidad en el interior del cráneo.",
+              "wordCount": 44,
+              "explanation": "Frase de construcción densa que acumula complementos hasta dificultar la imagen mental del lector.",
+              "suggestion": "Dividir tras 'enemigo': '…hasta acorralar al enemigo. Entonces accedían al cerebro a través de los orificios respiratorios y lo hacían papilla moviéndose a gran velocidad dentro del cráneo.'"
+            },
+            {
+              "originalText": "Incluso ante una invasión aérea con naves construidas de una aleación similar a la de los proyectiles, estos estaban diseñados para pegarse al casco uno tras otro, en un mismo punto, convirtiéndose en pequeñas bolas incandescentes capaces de consumirse fundiendo el metal poco a poco, hasta perforarlo y permitir que el resto de los proyectiles accedieran al interior de la nave.",
+              "wordCount": 63,
+              "explanation": "Frase muy extensa que encadena demasiados gerundios e infinitivos, ralentizando la acción.",
+              "suggestion": "Cortar en dos: 'Ante una invasión aérea, los proyectiles se pegaban al casco uno tras otro en un mismo punto. Se convertían en pequeñas bolas incandescentes que fundían el metal poco a poco hasta perforarlo y dejar paso al resto de la enjambre.'"
+            },
+            {
+              "originalText": "¿Qué crees que ocurrirá si, al igual que el consejo de gobierno actual ha decidido aumentar el número de ritos de purificación, ellos deciden reducirlos, porque lleguen a plantear que es preciso aumentar el instinto agresivo para ser soldados más eficaces?",
+              "wordCount": 46,
+              "explanation": "Pregunta retórica con doble subordinación y paréntesis comparativo que exige releer para captar el argumento.",
+              "suggestion": "Dividir: 'El consejo actual ha aumentado los ritos de purificación. ¿Qué pasará si las nuevas generaciones deciden reducirlos, argumentando que un mayor instinto agresivo los convierte en mejores soldados?'"
+            },
+            {
+              "originalText": "Pero, ¿qué crees que sucederá con nuestra sociedad cuándo las nuevas generaciones, provistas de instinto agresivo tengan que lidiar con el odio?",
+              "wordCount": 27,
+              "explanation": "No supera las 40 palabras; se descarta como frase larga.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Nos llevará unos meses conseguirlo, y es entonces cuando podré dar la orden del comienzo de los sabotajes, lo que dará veracidad a los rumores sobre el mal funcionamiento por la incompetencia de los que trabajan en el gobierno.",
+              "wordCount": 41,
+              "explanation": "Supera las 40 palabras y encadena dos consecuencias que ganan claridad separadas.",
+              "suggestion": "Dividir: 'Nos llevará unos meses conseguirlo. Solo entonces daré la orden de iniciar los sabotajes, lo que dará veracidad a los rumores sobre la incompetencia de quienes trabajan para el gobierno.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Much-muck / Much-muk",
+              "occurrences": [
+                "dijo Much-muk, que hasta aquel momento no había llamado nunca a Mech-muck «hijo»",
+                "dijo Much-muck guardando un silencio reflexivo",
+                "dijo Much-muck con tono conciliador",
+                "dijo Much-muck alzando la mano con el puño cerrado"
+              ],
+              "explanation": "El nombre aparece 4 veces dentro del mismo bloque de diálogo/párrafo narrativo continuo, creando repetición monótona en las acotaciones.",
+              "suggestion": "Alternar con pronombres ('él dijo', 'respondió') o con referencias de rol ('el anciano dijo', 'su padre respondió') para reducir la densidad del nombre propio."
+            },
+            {
+              "name": "Mech-muck / Mech-muk",
+              "occurrences": [
+                "no había llamado nunca a Mech-muck «hijo»",
+                "—¡Tú no sucumbirás, Mech-muck!",
+                "La conexión surtió efecto y Mech-muck le correspondió del mismo modo",
+                "respondió Mech-muk"
+              ],
+              "explanation": "El nombre aparece 4 veces en el mismo segmento narrativo, además con variación ortográfica inconsistente (Mech-muck / Mech-muk).",
+              "suggestion": "Reducir apariciones con pronombres o sintagmas nominales ('el joven', 'su hijo') y unificar la grafía del nombre a lo largo de todo el texto."
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "todos los científicos que trabajaron en el proyecto fueron asesinados, haciendo que pareciese un accidente",
+              "gerund": "haciendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio expresa una acción posterior o resultado de los asesinatos, no simultánea. Debería reformularse con una construcción nominal o subordinada: 'de modo que pareciese un accidente' o 'para que pareciese un accidente'.",
+              "correction": "todos los científicos que trabajaron en el proyecto fueron asesinados de modo que pareciese un accidente"
+            },
+            {
+              "originalText": "dijo provocando que Mary Jane sintiera una punzada más de curiosidad",
+              "gerund": "provocando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio indica un efecto posterior o resultado de lo dicho, no una acción estrictamente simultánea. Es un uso incorrecto del gerundio de posterioridad/resultado.",
+              "correction": "dijo, con lo que provocó que Mary Jane sintiera una punzada más de curiosidad"
+            },
+            {
+              "originalText": "convirtiéndose a su vez en reclutadores",
+              "gerund": "convirtiéndose",
+              "errorType": "posterioridad",
+              "explanation": "La conversión en reclutadores es un resultado posterior a recibir las pautas, no una acción simultánea. El gerundio de posterioridad es incorrecto aquí.",
+              "correction": "con lo que se convirtieron a su vez en reclutadores"
+            },
+            {
+              "originalText": "radicalizándose hasta el punto de querer hacerle daño",
+              "gerund": "radicalizándose",
+              "errorType": "posterioridad",
+              "explanation": "La radicalización es el resultado o consecuencia del proceso descrito, expresando posterioridad respecto a retroalimentarse de odio, no simultaneidad.",
+              "correction": "hasta radicalizarse al punto de querer hacerle daño"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "Mary Jane no hizo ningún gesto, ya había escuchado en boca de Rud que su padre era un asesino y no le sorprendió oírlo de nuevo, solo se ensombreció al pensar que, quizás, no conocía en absoluto a su padre.",
+              "verbsFound": [
+                "no hizo",
+                "no le sorprendió",
+                "se ensombreció",
+                "no conocía"
+              ],
+              "explanation": "La mezcla de indefinidos (hizo, sorprendió, ensombreció) con imperfecto (conocía) en la misma cláusula narrativa puede ser descuido: 'no conocía' rompe el ritmo de indefinidos usados para acciones puntuales del mismo momento.",
+              "suggestion": "Unificar: 'no conoció en absoluto a su padre' o replantear la oración para que el imperfecto quede claramente justificado como estado de fondo."
+            },
+            {
+              "originalText": "Antes de que los soldados dispararan a su madre, pudo ver aquella sonrisa que, de la mano de sus ojos, lanzó a su padre. Era una expresión agridulce",
+              "verbsFound": [
+                "pudo ver",
+                "lanzó",
+                "Era"
+              ],
+              "explanation": "Se mezclan indefinidos narrativos (pudo ver, lanzó) con imperfecto (Era) en la descripción de la misma imagen. Aunque el imperfecto puede justificarse como descriptivo, la alternancia abrupta con 'lanzó' en la misma frase da sensación de mezcla no intencional.",
+              "suggestion": "'Era una expresión agridulce' podría mantenerse como descripción de estado, pero considerar 'Fue una expresión agridulce' para mantener coherencia con los indefinidos del mismo pasaje."
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "a continuación rio nerviosa diciendo—: me resulta cómico",
+              "gerund": "diciendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'diciendo' introduce una acción que es posterior al reír nervioso, no simultánea. La risa y el decir son acciones secuenciales presentadas como si fueran simultáneas, pero la estructura marca una acción que viene después.",
+              "correction": "a continuación rio nerviosa y dijo—: me resulta cómico"
+            },
+            {
+              "originalText": "su red de inteligencia se pondrá en guardia tomando represalias contra cualquiera",
+              "gerund": "tomando",
+              "errorType": "posterioridad",
+              "explanation": "Tomar represalias es una acción posterior a ponerse en guardia, no simultánea. La red primero se pone en guardia y luego toma represalias; el gerundio expresa una consecuencia posterior, uso incorrecto.",
+              "correction": "su red de inteligencia se pondrá en guardia y tomará represalias contra cualquiera"
+            },
+            {
+              "originalText": "lo que provocaría un apagón mundial de todos los sistemas automatizados e incitará un descontento generalizado que desencadenará en revueltas por las calles. Además, eliminando el sistema de órdenes",
+              "gerund": "eliminando",
+              "errorType": "especificativo",
+              "explanation": "El gerundio 'eliminando' funciona aquí como un adjunto causal o condicional que especifica una condición previa ('al eliminar el sistema de órdenes'), no como acción simultánea al verbo principal. Es un uso incorrecto del gerundio como equivalente a una cláusula condicional o causal.",
+              "correction": "Además, al eliminar el sistema de órdenes"
+            },
+            {
+              "originalText": "sacándolos a la calle para confrontar las revueltas",
+              "gerund": "sacándolos",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'sacándolos' expresa una acción posterior a 'actuarán por defecto', no simultánea. Primero actuarán por defecto y como consecuencia de ello los sacarán a la calle; describe un resultado posterior, no una acción paralela.",
+              "correction": "y los sacarán a la calle para confrontar las revueltas"
+            },
+            {
+              "originalText": "convirtiéndose en pequeñas bolas incandescentes capaces de consumirse fundiendo el metal poco a poco",
+              "gerund": "fundiendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'fundiendo' expresa una consecuencia o resultado de consumirse, no una acción simultánea. Primero se consumen y como resultado funden el metal; la acción de fundir es posterior y consecutiva al consumirse.",
+              "correction": "capaces de consumirse hasta fundir el metal poco a poco"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "La frustración de estar atascada la enfadó y arrugó los labios con rabia hasta que al final le pidió ayuda a AiFlash.",
+              "verbsFound": [
+                "enfadó",
+                "arrugó",
+                "pidió"
+              ],
+              "explanation": "No hay mezcla problemática aquí; todos los verbos están en indefinido. Se descarta.",
+              "suggestion": "No requiere corrección"
+            },
+            {
+              "originalText": "que se había convertido era una fortaleza",
+              "verbsFound": [
+                "había convertido",
+                "era"
+              ],
+              "explanation": "La frase 'que se había convertido era una fortaleza' contiene una evidente ruptura sintáctica: aparecen dos predicados yuxtapuestos sin coordinación ('había convertido' y 'era') que parecen un error de fusión de dos construcciones distintas ('que se había convertido en una fortaleza' y 'era una fortaleza'), resultando en una mezcla agramatical de tiempos y estructuras.",
+              "suggestion": "Elegir una sola construcción: 'que se había convertido en una fortaleza' o simplemente 'era una fortaleza', eliminando la duplicación."
+            }
+          ]
+        }
+      },
+      {
+        "findings": [
+          {
+            "originalText": "sabríamos lo que hacer",
+            "wordForm": "lo que hacer",
+            "correctForm": "lo que hacer",
+            "errorType": "falta_tilde",
+            "context": "interrogativo_indirecto",
+            "explanation": "La expresión «lo que hacer» en contexto de duda («sabríamos lo que hacer») funciona como interrogativa indirecta equivalente a «sabríamos qué hacer»; debería escribirse «lo qué hacer» no, sino directamente «sabríamos qué hacer». Sin embargo, aquí el fragmento usa «lo que» como relativo nominal, lo cual es correcto. Descartado."
+          },
+          {
+            "originalText": "por saber cómo podría una sola persona con ayuda de una inteligencia artificial acabar",
+            "wordForm": "cómo",
+            "correctForm": "cómo",
+            "errorType": "falta_tilde",
+            "context": "interrogativo_indirecto",
+            "explanation": "Correcto, ya lleva tilde. Descartado."
+          },
+          {
+            "originalText": "—¿Que tuvieron éxito?",
+            "wordForm": "Que",
+            "correctForm": "Qué",
+            "errorType": "falta_tilde",
+            "context": "interrogativo_directo",
+            "explanation": "La pregunta directa «¿Que tuvieron éxito?» expresa sorpresa/incredulidad y equivale a «¿Qué dices, que tuvieron éxito?»; el pronombre interrogativo exclamativo debe llevar tilde: «¿Qué tuvieron éxito?»."
+          }
+        ],
+        "total_found": 1
+      },
+      {
+        "findings": [
+          {
+            "originalText": "¿qué crees que sucederá con nuestra sociedad cuándo las nuevas generaciones",
+            "wordForm": "cuándo",
+            "correctForm": "cuando",
+            "errorType": "tilde_sobrante",
+            "context": "conjuncion",
+            "explanation": "'cuando' introduce aquí una subordinada temporal ('cuando las nuevas generaciones… tengan que lidiar'), no depende de un verbo de duda o conocimiento anterior que lo convierta en interrogativo indirecto. Es conjunción temporal, por lo que no lleva tilde."
+          }
+        ],
+        "total_found": 1
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Cuando entró en su cubículo lo abordó",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "Cuando entró en su cubículo, lo abordó",
+            "explanation": "La subordinada temporal 'Cuando entró en su cubículo' que precede a la oración principal debe ir seguida de coma."
+          },
+          {
+            "originalText": "Continuó hablando—: desde que se creó",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "Continuó hablando—: Desde que se creó",
+            "explanation": "Tras el cierre de la intervención de diálogo con guión, la prosa narrativa retoma con minúscula; sin embargo, el fragmento narrativo 'Continuó hablando—:' pertenece a prosa y la transición es problemática. (Descartado por pertenecer a diálogo)"
+          },
+          {
+            "originalText": "Digamos que, los Homo sapiens sois",
+            "errorType": "coma_sujeto_verbo",
+            "correction": "Digamos que los Homo sapiens sois",
+            "explanation": "La coma separa incorrectamente la conjunción 'que' del sujeto 'los Homo sapiens', interrumpiendo la subordinada sustantiva."
+          },
+          {
+            "originalText": "Sin embargo, Haddon Church dio la orden",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Sin embargo, Haddon Church dio la orden",
+            "explanation": "El conector 'Sin embargo' ya lleva coma correctamente. (Descartado — no es error)"
+          },
+          {
+            "originalText": "Por otro lado, sintió rechazo",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Por otro lado, sintió rechazo",
+            "explanation": "Correcto, no es error. Descartado."
+          },
+          {
+            "originalText": "solo era capaz de entender que su mundo",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "solo era capaz de entender que su mundo",
+            "explanation": "Descartado."
+          },
+          {
+            "originalText": "Además, llevo años manipulando",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Además, llevo años manipulando",
+            "explanation": "Correcto, no es error. Descartado."
+          },
+          {
+            "originalText": "También sabemos quiénes fueron los que estuvieron detrás del dedo enjuiciador, los verdugos; algunos están aún en servicio",
+            "errorType": "punto_coma",
+            "correction": "También sabemos quiénes fueron los que estuvieron detrás del dedo enjuiciador, los verdugos. Algunos están aún en servicio",
+            "explanation": "El punto y coma entre 'los verdugos; algunos están aún en servicio' une dos oraciones independientes que forman mejor sentido separadas por punto."
+          },
+          {
+            "originalText": "Sentía curiosidad por saber cómo podría una sola persona con ayuda de una inteligencia artificial acabar",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "Sentía curiosidad por saber cómo podría una sola persona, con ayuda de una inteligencia artificial, acabar",
+            "explanation": "El sintagma preposicional 'con ayuda de una inteligencia artificial' funciona como inciso y debe delimitarse con comas."
+          },
+          {
+            "originalText": "dispuesto a ser ejecutado—. Mientras hablaba",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "dispuesto a ser ejecutado—. Mientras hablaba",
+            "explanation": "Pertenece a diálogo. Descartado."
+          },
+          {
+            "originalText": "que, en realidad, todo estaba listo",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "que, en realidad, todo estaba listo",
+            "explanation": "Correcto, no es error. Descartado."
+          },
+          {
+            "originalText": "Determiné, también, que la decisión",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "Determiné, también, que la decisión",
+            "explanation": "Correcto, no es error. Descartado."
+          },
+          {
+            "originalText": "la cree para ti",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "la creé para ti",
+            "explanation": "Posible errata tipográfica ('cree' por 'creé'), pero no es error de puntuación. Descartado."
+          },
+          {
+            "originalText": "Digamos que, los Homo sapiens sois como cacerolas",
+            "errorType": "coma_sujeto_verbo",
+            "correction": "Digamos que los Homo sapiens sois como cacerolas",
+            "explanation": "Coma innecesaria tras 'que' que separa la conjunción subordinante del sujeto de la oración subordinada."
+          },
+          {
+            "originalText": "que, aunque roto por dentro, fue capaz",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "que, aunque roto por dentro, fue capaz",
+            "explanation": "Correcto, no es error. Descartado."
+          },
+          {
+            "originalText": "evitando que la humanidad prospere haciendo borrón y cuenta nueva",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "evitando que la humanidad prospere, haciendo borrón y cuenta nueva",
+            "explanation": "El gerundio 'haciendo borrón y cuenta nueva' funciona como inciso o complemento circunstancial que debe separarse con coma."
+          },
+          {
+            "originalText": "—También sabemos quiénes fueron",
+            "errorType": "ausencia_coma_conector",
+            "correction": "—También sabemos quiénes fueron",
+            "explanation": "Pertenece a diálogo. Descartado."
+          }
+        ],
+        "total_found": 3
+      },
+      {
+        "findings": [
+          {
+            "originalText": "quienes trabajan para el gobierno",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "quiénes trabajan para el gobierno",
+            "explanation": "Este no es un error de puntuación en prosa narrativa dentro del alcance definido."
+          },
+          {
+            "originalText": "Además, su red de inteligencia",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Además, su red de inteligencia",
+            "explanation": "La coma tras 'Además' ya está presente; no hay error aquí."
+          },
+          {
+            "originalText": "Sí, además, ya controlo",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Sí, además, ya controlo",
+            "explanation": "Ya tiene coma; no hay error."
+          },
+          {
+            "originalText": "Además, eliminando el sistema",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Además, eliminando el sistema",
+            "explanation": "Ya tiene coma; no hay error."
+          },
+          {
+            "originalText": "hacia donde ha derivado nuestro credo",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "hacia dónde ha derivado nuestro credo",
+            "explanation": "No es error de puntuación en prosa narrativa dentro del alcance definido."
+          },
+          {
+            "originalText": "para acabar diciendo —: me resulta cómico",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "para acabar diciendo—: «Me resulta cómico",
+            "explanation": "Fragmento de diálogo; excluido del análisis."
+          },
+          {
+            "originalText": "Esa es la clave, Mary Jane, debes dejar",
+            "errorType": "ausencia_coma_vocativo",
+            "correction": "Esa es la clave, Mary Jane, debes dejar",
+            "explanation": "Ya tiene comas vocativas correctas; no hay error."
+          },
+          {
+            "originalText": "lo que dará veracidad",
+            "errorType": "ausencia_coma_conector",
+            "correction": "lo que dará veracidad",
+            "explanation": "La coma antes de 'lo que' ya está presente en el texto original."
+          },
+          {
+            "originalText": "Pero además, estaremos preparados",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Pero, además, estaremos preparados",
+            "explanation": "El conector 'además' en posición intermedia debería ir entre comas: 'Pero, además, estaremos preparados'."
+          },
+          {
+            "originalText": "cuándo las nuevas generaciones, provistas de instinto agresivo tengan",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "cuándo las nuevas generaciones, provistas de instinto agresivo, tengan",
+            "explanation": "El inciso 'provistas de instinto agresivo' debe cerrarse con coma antes de 'tengan'."
+          },
+          {
+            "originalText": "No es cierto y, en el fondo, lo sabes",
+            "errorType": "ausencia_coma_conector",
+            "correction": "No es cierto y, en el fondo, lo sabes",
+            "explanation": "Las comas del inciso 'en el fondo' ya están presentes; no hay error."
+          },
+          {
+            "originalText": "Responde—dijo Much-muck",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "Responde —dijo Much-muck",
+            "explanation": "Fragmento de diálogo; excluido."
+          }
+        ],
+        "total_found": 2
+      },
+      {
+        "findings": [
+          {
+            "originalText": "—¿Que tuvieron éxito? —dijo muy perpleja.",
+            "errorType": "Mayúscula incorrecta en verbo de acotación",
+            "correction": "—¿Que tuvieron éxito? —dijo muy perpleja.",
+            "explanation": "El verbo de acotación 'dijo' ya está en minúscula, pero revisando el texto original está correcto. Descartado."
+          },
+          {
+            "originalText": "—¿Cómo podría una sola persona sin recursos conseguirlo? ¿Cómo podría luchar contra un gobierno con tecnología alienígena? ¿Cómo podría atacar a un gobierno sin rostros, recuerdas?",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "—¿Cómo podría una sola persona sin recursos conseguirlo? ¿Cómo podría luchar contra un gobierno con tecnología alienígena? ¿Cómo podría atacar a un gobierno sin rostros, recuerdas?",
+            "explanation": "Descartado: 'recuerdas' no es un vocativo sino un verbo en segunda persona. No aplica regla de vocativo."
+          },
+          {
+            "originalText": "—¿Quiénes?, ¿te refieres a tus amigos, las otras nueve inteligencias artificiales?",
+            "errorType": "Coma innecesaria después de interrogación",
+            "correction": "—¿Quiénes? ¿Te refieres a tus amigos, las otras nueve inteligencias artificiales?",
+            "explanation": "Tras el signo de cierre de interrogación no debe ir coma. La segunda pregunta inicia nueva oración con mayúscula."
+          },
+          {
+            "originalText": "—Yo solo soy el mensajero de las malas noticias, Mary Jane.",
+            "errorType": "Sin error",
+            "correction": "—Yo solo soy el mensajero de las malas noticias, Mary Jane.",
+            "explanation": "Correcto, la coma vocativa está presente."
+          },
+          {
+            "originalText": "—Aunque quisiera destruir el sistema, ¿Cómo podría una sola persona sin recursos conseguirlo?",
+            "errorType": "Mayúscula incorrecta tras coma antes de interrogación",
+            "correction": "—Aunque quisiera destruir el sistema, ¿cómo podría una sola persona sin recursos conseguirlo?",
+            "explanation": "Tras una coma dentro de una misma intervención, la palabra siguiente debe ir en minúscula aunque abra interrogación. 'Cómo' debe ser 'cómo' en minúscula."
+          },
+          {
+            "originalText": "dispuesto a ser ejecutado—. Mientras hablaba",
+            "errorType": "Falta de espacio entre raya de cierre de acotación y texto siguiente",
+            "correction": "dispuesto a ser ejecutado. —Mientras hablaba",
+            "explanation": "La acotación narrativa cierra con punto y la raya de apertura del nuevo fragmento de diálogo debe tener espacio y punto previo correctamente separado. Revisando: la raya '—.' indica fin de acotación y '—' nueva intervención; el formato '—.' seguido directo de texto narrativo es incorrecto."
+          },
+          {
+            "originalText": "—También sabemos quiénes fueron los que estuvieron detrás del dedo enjuiciador",
+            "errorType": "Falta de raya antes de nueva intervención de diálogo incrustada en párrafo narrativo",
+            "correction": "—También sabemos quiénes fueron los que estuvieron detrás del dedo enjuiciador",
+            "explanation": "Revisando contexto, esta línea continúa el parlamento de AiFlash tras una acotación con raya de cierre. El formato —AiFlash volvió a mostrarle… —También sabemos… usa doble raya que puede ser ambiguo pero es estructura válida de acotación intercalada."
+          },
+          {
+            "originalText": "—¿Así, sin más? —dijo sin esperar una respuesta— Bien, con la tecnología",
+            "errorType": "Falta de punto tras acotación cuando el diálogo continúa",
+            "correction": "—¿Así, sin más? —dijo sin esperar una respuesta—. Bien, con la tecnología",
+            "explanation": "Cuando una acotación intercalada cierra con raya y el diálogo continúa en nueva oración, debe añadirse punto antes de la raya de reapertura para indicar el fin de la acotación."
+          },
+          {
+            "originalText": "—No creo que lleguemos a eso. De cualquier modo, cuando decidas que estoy lista, hablaremos con ellos —a continuación rio nerviosa diciendo—: me resulta cómico pensar que pronto pueda estar hablando con extraterrestres.",
+            "errorType": "Mayúscula incorrecta en continuación de diálogo tras acotación",
+            "correction": "—No creo que lleguemos a eso. De cualquier modo, cuando decidas que estoy lista, hablaremos con ellos —a continuación rió nerviosa diciendo—: me resulta cómico pensar que pronto pueda estar hablando con extraterrestres.",
+            "explanation": "Revisando: tras '—:' el diálogo continúa en minúscula, lo cual es correcto. No hay error de mayúscula aquí."
+          }
+        ]
+      },
+      {
+        "findings": [
+          {
+            "originalText": "guardando un silencio reflexivo para acabar diciendo —: ¿Te das cuenta",
+            "errorType": "Mayúscula incorrecta en verbo de acotación",
+            "correction": "guardando un silencio reflexivo para acabar diciendo —: ¿te das cuenta",
+            "explanation": "Tras la raya de acotación que introduce el diálogo continuado, la frase que sigue no debe comenzar con mayúscula salvo que sea nombre propio u inicio de oración independiente. Aquí «¿Te» debe ser «¿te» porque la acotación interrumpe el discurso y la interrogación no inicia párrafo nuevo."
+          },
+          {
+            "originalText": "Esa es la clave, Mary Jane, debes dejar",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "Esa es la clave, Mary Jane. Debes dejar",
+            "explanation": "El nombre «Mary Jane» funciona como vocativo y debe ir separado por comas del resto de la frase. Aunque hay coma antes, falta la coma después para cerrar el vocativo y separarlo de la continuación de la frase."
+          },
+          {
+            "originalText": "Responde—dijo Much-muck alzando",
+            "errorType": "Falta de espacio y raya antes de acotación",
+            "correction": "Responde —dijo Much-muck alzando",
+            "explanation": "Debe haber un espacio antes de la raya que introduce la acotación: «Responde —dijo Much-muck»."
+          }
+        ],
+        "total_found": 3
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [
+          {
+            "originalText": "utilizarla contra del gobierno",
+            "surplus": "del",
+            "errorType": "prep_encadenada",
+            "explanation": "'contra' no requiere 'de'; 'contra del' es una preposición mal encadenada",
+            "correction": "utilizarla contra el gobierno"
+          },
+          {
+            "originalText": "hacia donde ha derivado nuestro credo",
+            "surplus": "hacia",
+            "errorType": "prep_encadenada",
+            "explanation": "'hacia donde' es redundante; basta con 'adonde' o simplemente 'donde'",
+            "correction": "adonde ha derivado nuestro credo"
+          }
+        ],
+        "total_found": 2
+      }
+    ]
+  }
 }
