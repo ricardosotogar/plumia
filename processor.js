@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v11.01
+// PLUMIA — processor.js  v11.02
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -534,7 +534,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
                 if (f.wordForm.toLowerCase().trim() === f.correctForm.toLowerCase().trim()) return null;
               }
               // Filtrar findings que el modelo marcó explícitamente como descartes
-              const expl = (f.explanation || f.correction || '').toLowerCase();
+              const expl = ((f.explanation || '') + ' ' + (f.correction || '')).toLowerCase();
               if (expl.includes('descar') || expl.includes('no incluir') || expl.includes('no es error') ||
                   expl.includes('no se señala') || expl.includes('no aplica') || expl.includes('dentro del límite') ||
                   expl.includes('no procede') || expl.includes('no es un error')) return null;
@@ -580,10 +580,11 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           let findings = this._dedupe(accumulated[id] || []);
 
           // Filtro post-proceso: descartar falsos positivos
-          if (id === 'voz_pasiva')         findings = this._filterVozPasiva(findings);
-          if (id === 'dequeismo')          findings = this._filterDequeismo(findings);
-          if (id === 'verbos_comedin')     findings = this._filterVerbosComedin(findings);
+          if (id === 'voz_pasiva')          findings = this._filterVozPasiva(findings);
+          if (id === 'dequeismo')           findings = this._filterDequeismo(findings);
+          if (id === 'verbos_comedin')      findings = this._filterVerbosComedin(findings);
           if (id === 'interrogativas_tilde') findings = this._filterInterrogativasTilde(findings);
+          if (id === 'repeticion_lexica')   findings = this._filterRepeticionLexica(findings);
 
           // Enriquecer con sinónimos del diccionario local
           if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
@@ -610,6 +611,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           if (id === 'dequeismo')           partialFindings = this._filterDequeismo(partialFindings);
           if (id === 'verbos_comedin')      partialFindings = this._filterVerbosComedin(partialFindings);
           if (id === 'interrogativas_tilde') partialFindings = this._filterInterrogativasTilde(partialFindings);
+          if (id === 'repeticion_lexica')   partialFindings = this._filterRepeticionLexica(partialFindings);
           if (partialFindings.length > 0 && !allResults.find(r => r.correctionId === id)) {
             if (['verbos_comedin','sustantivos_genericos','adverbios_mente','muletillas'].includes(id)) {
               partialFindings = enrichWithLocalSynonyms(partialFindings, id);
@@ -856,8 +858,10 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         // (el modelo construyó una "frase" que abarca varias oraciones distintas).
         // Hay que comprobarlo ANTES de truncar, porque el truncado a 75 chars elimina el punto.
         if (corrId === 'frases_largas') {
-          const raw = (f.originalText || '').replace(/[\r\n]+/g, ' ').trim();
-          if (/[.!?…]\s+[A-ZÁÉÍÓÚÜÑ]/.test(raw)) {
+          // Normalizar: quitar rayas de diálogo antes del test de cruce, porque
+          // "razón. —Lo sé" no dispara /[.!?]\s+[A-Z]/ sin este paso.
+          const raw = (f.originalText || '').replace(/[\r\n]+/g, ' ').replace(/[—–]/g, ' ').trim();
+          if (/[.!?…]\s+[A-ZÁÉÍÓÚÜÑ«¿¡]/.test(raw)) {
             console.log(`[FRASES] descartado por cruce de oración: "${raw.substring(0, 60)}…"`);
             return;
           }
@@ -876,17 +880,26 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
           const check = originalText.toLowerCase().substring(0, Math.min(originalText.length, 40));
           if (check.length > 5 && !chunkLower.includes(check)) return;
         }
-        // adverbios_mente: descartar si ni el campo adverb ni originalText contienen
-        // una palabra real terminada en -mente (evita que la raíz "absorbente" se marque).
+        // adverbios_mente: exigir que la palabra -mente aparezca en el texto real o en
+        // f.adverbs. Se excluye f.adverb porque el modelo puede inventar una forma -mente
+        // (ej: "contundentemente") para un adjetivo adverbializado que no está en el texto.
         if (corrId === 'adverbios_mente') {
-          const candidates = (f.adverbs||[]).concat([f.adverb, originalText]).filter(Boolean);
-          const hasMente = candidates.some(a => /mente\b/i.test(a));
-          if (!hasMente) return;
+          const textHasMente   = /mente\b/i.test(originalText);
+          const adverbsHaveMente = (f.adverbs||[]).some(a => /mente\b/i.test(a));
+          if (!textHasMente && !adverbsHaveMente) return;
+          if (/^adecuad/i.test(f.evaluation||'')) return;
         }
-        const expl = (f.explanation || f.correction || '').toLowerCase();
+        const expl = ((f.explanation || '') + ' ' + (f.correction || '')).toLowerCase();
         if (expl.includes('descarte') || expl.includes('no incluir') || expl.includes('no es error') ||
             expl.includes('no se señala') || expl.includes('no aplica') || expl.includes('dentro del límite') ||
-            expl.includes('no procede') || expl.includes('no es un error')) return;
+            expl.includes('no procede') || expl.includes('no es un error') ||
+            expl.includes('correcto tal como') || expl.includes('fragmento es correcto') ||
+            (expl.includes('es correcto') && !expl.includes('no es correcto')) ||
+            expl.includes('se mantiene la tilde') || expl.includes('mantiene la tilde') ||
+            expl.includes('puede interpretarse como interrogativa') ||
+            expl.includes('en realidad correcto') || expl.includes('caso es correcto') ||
+            expl.includes('reconsiderando') || expl.includes('sí lleva tilde') ||
+            expl.includes('lleva tilde')) return;
         accumulated[corrId].push({
           ...f,
           originalText,
@@ -1006,6 +1019,26 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     });
   }
 
+  // Descarta findings de repeticion_lexica donde todas las ocurrencias de la palabra
+  // en el chunk están separadas por más de 40 palabras (el modelo viola la regla de distancia).
+  _filterRepeticionLexica(findings) {
+    return findings.filter(f => {
+      if (!f._chunkText || !f.word) return true;
+      const escaped = (f.word || '').trim().toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (!escaped) return true;
+      const re = new RegExp(`\\b${escaped}\\w{0,4}\\b`, 'gi');
+      const matches = [...f._chunkText.matchAll(re)];
+      if (matches.length < 2) return true; // no se puede verificar → conservar
+      for (let i = 1; i < matches.length; i++) {
+        const between = f._chunkText.slice(matches[i - 1].index + matches[i - 1][0].length, matches[i].index);
+        const wordsBetween = between.trim() ? between.trim().split(/\s+/).length : 0;
+        if (wordsBetween <= 40) return true; // al menos un par está cerca → válido
+      }
+      console.log(`[REPLEX] descartado "${f.word}" — todas las ocurrencias > 40 palabras de distancia`);
+      return false;
+    });
+  }
+
   _filterDequeismo(findings) {
     return findings.filter(f => {
       const corr = (f.correction || '').trim().toLowerCase();
@@ -1038,7 +1071,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
     return findings.filter(f => {
       // nombres_propios: deduplicar por nombre — chunks solapados pueden producir el mismo
       // nombre con distinto originalText (variaciones de puntuación en la cita)
-      const k = f.name ? ('name:' + f.name.toLowerCase().trim()) : (f.originalText||'').trim().toLowerCase();
+      const k = f.name   ? ('name:'   + f.name.toLowerCase().trim())
+              : f.adverb ? ('adverb:' + f.adverb.toLowerCase().trim())
+              : (f.originalText||'').trim().toLowerCase();
       if (seen.has(k)) return false; seen.add(k); return true;
     });
   }
