@@ -662,15 +662,20 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       if (findings.length < before0) console.log(`[ABSOLUTA] ${r.correctionId}: ${before0 - findings.length} finding(s) descartados por explanation inválida`);
 
       // Filtro corrección idéntica: si correction == originalText (ignorando «» y espacios),
-      // el finding no propone ningún cambio real y se descarta
+      // el finding no propone ningún cambio real y se descarta.
+      // Se excluyen las categorías de informe (requiresFullDoc) porque no tienen campo correction.
       const norm = s => (s || '').replace(/[«»]/g, '').trim();
-      const before00 = findings.length;
-      findings = findings.filter(f => norm(f.correction) !== norm(f.originalText));
-      if (findings.length < before00) console.log(`[NOCAMBIO] ${r.correctionId}: ${before00 - findings.length} finding(s) descartados por corrección idéntica al original`);
+      const isReportCategory = CORRECTIONS.find(c => c.id === r.correctionId)?.requiresFullDoc;
+      if (!isReportCategory) {
+        const before00 = findings.length;
+        findings = findings.filter(f => norm(f.correction) !== norm(f.originalText));
+        if (findings.length < before00) console.log(`[NOCAMBIO] ${r.correctionId}: ${before00 - findings.length} finding(s) descartados por corrección idéntica al original`);
+      }
 
       // Filtro corrección vacía: si el campo correction existe pero está vacío tras normalizar,
       // el modelo reconoció implícitamente que no hay corrección real → descartar
       const NEEDS_CORRECTION = new Set(['pleonasmos','palabras_sobrantes','concordancia','gerundios','dequeismo','voz_pasiva','puntuacion_prosa','puntuacion_dialogo','ortotipografia_pura']);
+      // Las categorías de informe (coherencia) no tienen correction — nunca aplicar este filtro
       if (NEEDS_CORRECTION.has(r.correctionId)) {
         const before000 = findings.length;
         findings = findings.filter(f => norm(f.correction || '').length > 0);
