@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v11.04
+// PLUMIA — processor.js  v11.05
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -461,7 +461,9 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             // Categorías de informe: no requieren originalText para búsqueda en documento
             const isReport = corr.requiresFullDoc;
             const originalText = isReport
-              ? (f.occurrence1?.text || f.occurrence?.text || f.originalText || f.excerpt || '')
+              ? (f.occurrence1?.text || f.occurrence?.text ||
+                 (typeof f.occurrences?.[0] === 'string' ? f.occurrences[0] : f.occurrences?.[0]?.text) ||
+                 f.originalText || f.excerpt || '')
               : this._extractOriginalText(f);
             if (!isReport && !originalText) return;
             accumulated[corr.id].push({ ...f, originalText, correctionId: corr.id,
@@ -803,18 +805,19 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       // allá del char 55 en occ[0] (quedaría cortado por el truncado a 75 chars).
       if (f.name && Array.isArray(f.occurrences) && f.occurrences.length > 0) {
         const nameLower = f.name.toLowerCase();
+        const occStr = occ => typeof occ === 'string' ? occ : (occ?.text || '');
         let chosen = f.occurrences[0];
-        const pos0 = chosen.toLowerCase().indexOf(nameLower);
+        const pos0 = occStr(chosen).toLowerCase().indexOf(nameLower);
         if (pos0 === -1 || pos0 > 55) {
           // occ[0] no sirve: buscar la primera ocurrencia donde el nombre esté antes del char 55
           for (const occ of f.occurrences) {
-            const p = occ.toLowerCase().indexOf(nameLower);
+            const p = occStr(occ).toLowerCase().indexOf(nameLower);
             if (p !== -1 && p <= 55) { chosen = occ; break; }
           }
         }
-        text = chosen;
+        text = occStr(chosen);
         console.log(`[NP] _extractOriginalText name="${f.name}" chosen="${text.substring(0,70)}" pos0=${pos0}`);
-      } else if (f.occurrences?.[0]) text = f.occurrences[0];
+      } else if (f.occurrences?.[0]) text = typeof f.occurrences[0] === 'string' ? f.occurrences[0] : (f.occurrences[0].text || '');
       else if (f.occurrence1?.text)  text = f.occurrence1.text;
       else if (f.occurrence?.text)   text = f.occurrence.text;
       else if (f.frase)              text = f.frase;
@@ -1105,17 +1108,19 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             // nombres_propios: usar occ[0] (más representativo del cluster); fallback si nombre > char 55
             if (f.name) {
               const nameLower = f.name.toLowerCase();
+              const occStr = occ => typeof occ === 'string' ? occ : (occ?.text || '');
               let chosen = f.occurrences[0];
-              const pos0 = chosen.toLowerCase().indexOf(nameLower);
+              const pos0 = occStr(chosen).toLowerCase().indexOf(nameLower);
               if (pos0 === -1 || pos0 > 55) {
                 for (const occ of f.occurrences) {
-                  const p = occ.toLowerCase().indexOf(nameLower);
+                  const p = occStr(occ).toLowerCase().indexOf(nameLower);
                   if (p !== -1 && p <= 55) { chosen = occ; break; }
                 }
               }
-              text = chosen;
+              text = occStr(chosen);
             } else {
-              text = f.occurrences[0];
+              const occ0 = f.occurrences[0];
+              text = typeof occ0 === 'string' ? occ0 : (occ0?.text || '');
             }
           } else if (f.occurrence1 && f.occurrence1.text) {
             // coherencia: occurrence1.text
