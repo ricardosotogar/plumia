@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v11.03 cargado');
+console.log('📦 document-builder.js v11.04 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -241,6 +241,7 @@ function _singleComment(f) {
       let c = `COHERENCIA — ${f.label||'Coherencia narrativa'}:\n`;
       if (f.occurrence1) c += `· ${f.occurrence1.location||'Primera mención'}: «${f.occurrence1.text}»\n`;
       if (f.occurrence2) c += `· ${f.occurrence2.location||'Segunda mención'}: «${f.occurrence2.text}»\n`;
+      if (!f.occurrence1 && f.occurrence) c += `· ${f.occurrence.location||'Fragmento'}: «${f.occurrence.text}»\n`;
       return (c + (f.explanation||'')).trim();
     }
   }
@@ -993,15 +994,22 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
         for (const f of items) {
           // Cabecera del hallazgo
-          const who = f.characterName ? `Personaje: ${f.characterName}` : (f.name || '');
+          const who = f.characterName
+            ? `Personaje: ${f.characterName}`
+            : f.focalCharacter ? `POV: ${f.focalCharacter} → ${f.intrudingCharacter || '?'}`
+            : (f.itemOrSpace ? `Elemento: ${f.itemOrSpace}` : (f.name || ''));
           const headerPara = body.insertParagraph(`${n}. ${who}`, Word.InsertLocation.end);
           headerPara.font.bold = true;
 
-          if (f.contradictionType) {
+          if (f.contradictionType || f.inconsistencyType || f.knowledgeIssue || f.issueType) {
+            const tipo = f.contradictionType || f.inconsistencyType || f.knowledgeIssue || f.issueType;
             body.insertParagraph(
-              `   Tipo: ${CONTRADICTION_LABELS[f.contradictionType] || f.contradictionType}`,
+              `   Tipo: ${CONTRADICTION_LABELS[tipo] || tipo}`,
               Word.InsertLocation.end
             );
+          }
+          if (f.establishedTone) {
+            body.insertParagraph(`   Tono establecido: ${f.establishedTone}`, Word.InsertLocation.end);
           }
 
           if (f.occurrence1?.text) {
@@ -1012,11 +1020,23 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
             const loc2 = f.occurrence2.location ? ` [${f.occurrence2.location}]` : '';
             body.insertParagraph(`   Segunda mención: «${f.occurrence2.text}»${loc2}`, Word.InsertLocation.end);
           }
+          // occurrence singular (tono_voz, pov)
+          if (!f.occurrence1 && f.occurrence?.text) {
+            const loc = f.occurrence.location ? ` [${f.occurrence.location}]` : '';
+            body.insertParagraph(`   Fragmento: «${f.occurrence.text}»${loc}`, Word.InsertLocation.end);
+          }
 
-          // Fallback para categorías no-personajes (occurrence genérico, originalText…)
-          if (!f.occurrence1 && !f.occurrence2) {
+          // Fallback para originalText / excerpt
+          if (!f.occurrence1 && !f.occurrence2 && !f.occurrence) {
             const excerpt = f.originalText || f.excerpt || '';
             if (excerpt) body.insertParagraph(`   Fragmento: «${excerpt}»`, Word.InsertLocation.end);
+          }
+
+          if (f.variants?.length) {
+            body.insertParagraph(`   Variantes encontradas: ${f.variants.join(', ')}`, Word.InsertLocation.end);
+          }
+          if (f.recommendedForm) {
+            body.insertParagraph(`   Forma recomendada: ${f.recommendedForm}`, Word.InsertLocation.end);
           }
 
           if (f.explanation) {

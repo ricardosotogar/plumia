@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v11.03
+// PLUMIA — processor.js  v11.04
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -461,7 +461,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             // Categorías de informe: no requieren originalText para búsqueda en documento
             const isReport = corr.requiresFullDoc;
             const originalText = isReport
-              ? (f.occurrence1?.text || f.originalText || f.excerpt || '')
+              ? (f.occurrence1?.text || f.occurrence?.text || f.originalText || f.excerpt || '')
               : this._extractOriginalText(f);
             if (!isReport && !originalText) return;
             accumulated[corr.id].push({ ...f, originalText, correctionId: corr.id,
@@ -840,11 +840,12 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
       return `=== ${i + 1}. CLAVE "${corr.id}" — ${corr.label} ===\n${core}`;
     }).join('\n\n');
 
-    const jsonTemplate = '{' + activeCorrs.map(c =>
-      `"${c.id}":{"findings":[]}`
-    ).join(',') + '}';
+    const jsonTemplate = '{' + activeCorrs.map(c => {
+      const example = c.findingTemplate ? `[${c.findingTemplate}]` : '[]';
+      return `"${c.id}":{"findings":${example},"total_found":0}`;
+    }).join(',') + '}';
 
-    return `Eres un editor literario experto en español. Analiza el texto para los siguientes ${activeCorrs.length} aspectos narrativos y devuelve UN ÚNICO JSON con una clave por aspecto.\n\nREGLA ABSOLUTA: Si no encuentras ningún problema en una categoría, devuelve findings:[] para esa clave. Nunca omitas una clave del JSON.\n\n${sections}\n\nTexto a analizar:\n${text}\n\nResponde ÚNICAMENTE con este JSON (exactamente estas claves, sin texto adicional):\n${jsonTemplate}`;
+    return `Eres un editor literario experto en español. Analiza el texto para los siguientes ${activeCorrs.length} aspectos narrativos y devuelve UN ÚNICO JSON con una clave por aspecto.\n\nREGLA ABSOLUTA: Si no encuentras ningún problema en una categoría, devuelve findings:[] para esa clave. Nunca omitas una clave del JSON.\n\n${sections}\n\nTexto a analizar:\n${text}\n\nResponde ÚNICAMENTE con este JSON (usando exactamente la estructura de finding mostrada para cada clave, sin texto adicional):\n${jsonTemplate}`;
   }
 
   _parseGroupedResponse(response, group, activeIds, accumulated, chunkText) {
