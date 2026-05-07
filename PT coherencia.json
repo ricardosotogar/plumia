@@ -1,0 +1,137 @@
+{
+  "PT coherencia": {
+    "desc": "",
+    "responses": [
+      {
+        "coherencia_personajes": {
+          "findings": [
+            {
+              "id": 1,
+              "descripcion": "Mary Jane describe en el capítulo 1 su apariencia física y hábitos de vestimenta (ropa holgada, sin maquillaje, media melena rubia). Sin embargo, en el capítulo 2 no se menciona ningún cambio, pero en el capítulo 14 se describe a Émilie llevando 'pulcras batas blancas', mientras que en el capítulo 2 los científicos del laboratorio de Mary Jane llevan 'monos de trabajo de color gris'. En el capítulo 14, Albert y Émilie también llevan 'batas blancas' en la sala de comunicaciones, lo que es inconsistente con la indumentaria gris establecida para los científicos del mismo tipo de instalación."
+            },
+            {
+              "id": 2,
+              "descripcion": "En el capítulo 4 (Año 2101), Albert dice sobre su madre: 'Ya casi no recuerdo la voz de mi madre. Tengo recuerdos muy difusos de ella' y 'No creo que averigüemos lo que sucedió. Nadie sabe cómo se produjo aquel accidente y en qué estaba trabajando exactamente mi madre'. Sin embargo, en el capítulo 5 (Año 2105), Albert recuerda con gran detalle el cuento que su madre le contó, incluyendo los nombres 'Quark' y 'Andrómeda', y conecta el cuento directamente con la teoría del universo interior. Resulta inconsistente que tenga recuerdos tan difusos de ella en 2101 y cuatro años después recuerde con precisión el contenido específico del último cuento que le contó."
+            },
+            {
+              "id": 3,
+              "descripcion": "Volderlayer es caracterizado a lo largo de la obra como un hombre frío, calculador, que nunca se abre emocionalmente y carece de vínculos afectivos. Sin embargo, en el capítulo 14, tras la muerte de Albert y Émilie, decide espontáneamente hacerse cargo de la pequeña Mary Jane y se describe que 'se dio cuenta de que estaba sonriendo' y que 'disfrutaba de verla jugar', sintiendo incluso 'instinto paternal'. Este cambio de carácter tan radical, aunque el narrador lo justifica parcialmente, contrasta de manera abrupta con la caracterización previa sin una transición narrativa suficiente."
+            },
+            {
+              "id": 4,
+              "descripcion": "En el capítulo 11, el tío John de Haddon se presenta como 'propietario de una exitosa empresa de inteligencia artificial' y es quien financia los proyectos bajo el nombre 'Liberty Universe'. Sin embargo, en el capítulo 4, se menciona que 'el fondo de inversión Liberty Universe' financió el proyecto Ganímedes, y en el capítulo 5, aparece 'John Church, el máximo inversor de Liberty Universe', siendo además el tío del presidente Haddon Church. Esto es coherente, pero en el capítulo 11 se dice que el tío le presenta a Haddon la empresa de IA, siendo Haddon un adolescente, mientras que en los capítulos anteriores Liberty Universe ya aparece como una corporación financiera consolidada con décadas de historia, lo que sugiere una evolución poco definida del perfil de la empresa."
+            }
+          ]
+        },
+        "coherencia_temporal": {
+          "findings": [
+            {
+              "id": 1,
+              "descripcion": "El capítulo 15 se titula '~ EL PERDIDO SENTIMIENTO DEL MIEDO ~ AÑO 2012' en el índice, pero en el cuerpo del texto el encabezado indica 'Año 2112'. Dado que el capítulo trata sobre las consecuencias del día de la Unión (Año 2110) y la reacción de los peaksons, el año correcto es 2112. El '2012' del índice es claramente un error tipográfico que crea una inconsistencia temporal grave, pues 2012 es anterior incluso al inicio de la historia (Año 2061)."
+            },
+            {
+              "id": 2,
+              "descripcion": "El capítulo 12 se titula '~ LOS PEQUEÑOS Y DÉBILES SERES HUMANOS ~ Año 2110' pero el encabezado interno del capítulo indica 'Año 2108'. El capítulo narra la deliberación de los peaksons sobre si compartir tecnología con los humanos, que culmina con el envío de instrucciones. Dado que el capítulo 13 (El día de la Unión) ocurre en Año 2110 y ya menciona la tecnología recibida, el año 2108 del encabezado interno parece ser el correcto para cuando los peaksons toman la decisión, pero el título del capítulo dice 2110, creando ambigüedad temporal."
+            },
+            {
+              "id": 3,
+              "descripcion": "En el capítulo 6 (Año 2107), AiFlash menciona que lleva 'más de un año trabajando juntos' con Albert en el proyecto. El proyecto en Ganímedes se inició en 2105 (capítulo 5), lo que es coherente. Sin embargo, en ese mismo capítulo 6, Émilie anuncia que está embarazada y en el capítulo 7 (Año 2108) ya está en avanzado estado de gestación sintiéndose los movimientos del bebé. La bebé Mary Jane nace 'un mes después' de los eventos del capítulo 10, que ocurre en 2108. Esto es internamente coherente, pero en el capítulo 16 (Año 2136) se dice que Mary Jane Jr. lleva 'los últimos cuatro años' en la habitación del campus, lo que implicaría que empezó la universidad en 2132, con unos 24 años. Siendo nacida en 2108, en 2136 tendría 28 años, lo que encaja con cuatro años de universidad solo si la carrera duró cuatro años y empezó a los 24, algo posible pero que el texto no aclara."
+            },
+            {
+              "id": 4,
+              "descripcion": "En el capítulo 19, se dice que Mary Jane Jr. 'pasó en la base de Ganímedes los primeros diez años de mi vida'. Nacida en 2108, eso significa que estuvo en Ganímedes hasta 2118 aproximadamente. Sin embargo, en el capítulo 16 (Año 2136) se describe que Susan 'llegó a la Universidad hacía un año' y Mary Jane llevaba 'tres años sola' antes de que llegara Susan, lo que implica que Mary Jane llegó a la universidad hacia 2132, con 24 años. No se menciona qué ocurrió entre los 10 años (2118) y los 24 (2132), un período de 14 años sobre el que no hay información, aunque tampoco se contradice explícitamente."
+            }
+          ]
+        },
+        "coherencia_objetos": {
+          "findings": [
+            {
+              "id": 1,
+              "descripcion": "En el capítulo 2, todos los científicos del laboratorio de Mary Jane llevan 'los característicos monos de trabajo de color gris'. Sin embargo, en el capítulo 14 (Año 2112), Albert y Émilie son descritos llevando 'sus pulcras batas blancas' en la sala de comunicaciones de las instalaciones de Ganímedes. No se ha narrado ningún cambio en la indumentaria de trabajo de los científicos entre ambas fechas, lo que constituye una inconsistencia en la caracterización visual del entorno científico."
+            },
+            {
+              "id": 2,
+              "descripcion": "En el capítulo 9, AiFlash avisa a Albert y Émilie de que ha detectado una actualización sospechosa en el software de la nave y que habló con el piloto para obtener información. Más adelante, en el capítulo 10, se describe cómo Albert y Émilie observan desde una 'escotilla' cómo la nave despega. Sin embargo, en el capítulo 6 se establece que la base está 'a veinte metros bajo la superficie de Ganímedes', lo que hace poco probable la existencia de ventanas o escotillas con vista directa al exterior espacial, aunque el texto no lo contradice de forma explícita sino que resulta físicamente cuestionable dentro de la lógica del mundo narrado."
+            },
+            {
+              "id": 3,
+              "descripcion": "El dispositivo Sentinel, introducido en el capítulo 2 como un objeto físico redondo del tamaño de una pelota de tenis que AiFlash necesita para 'ver y sentir' a las personas presentes, aparece en ese capítulo como algo que los científicos del ODIN debían haber recibido pero que Marcus olvidó enchufar. Sin embargo, en todos los capítulos posteriores donde AiFlash interactúa con personajes (capítulos 5, 6, 7, 8, 9, 10, etc.), ya sea en Ganímedes o en otros lugares, no se vuelve a mencionar la necesidad de conectar o transportar este dispositivo, ni se explica si AiFlash dispone de otro sistema equivalente en la base de Ganímedes."
+            }
+          ]
+        },
+        "coherencia_conocimiento": {
+          "findings": [
+            {
+              "id": 1,
+              "descripcion": "En el capítulo 4 (Año 2101), Albert afirma: 'Nadie sabe cómo se produjo aquel accidente y en qué estaba trabajando exactamente mi madre cuando ocurrió. Toda la información quedó destruida.' Sin embargo, en el capítulo 5 (Año 2105), Volderlayer revela en una reunión que AiFlash conoce con todo detalle lo ocurrido en Fratenburgo y que 'estas personas han estado estudiando y desbrozando en secreto toda la información que conocemos gracias a AiFlash'. Albert, que fue invitado a participar en el proyecto precisamente por ser hijo de Mary Jane, recibe esta revelación como nueva. Sin embargo, si AiFlash llevaba décadas conociendo la historia y trabajando para Liberty Universe y el gobierno, resulta inconsistente que Albert, siendo el hijo de la científica protagonista del evento más importante de la historia reciente, no hubiese sido contactado antes o que nadie de su entorno le hubiera dado ninguna pista en cuarenta años."
+            },
+            {
+              "id": 2,
+              "descripcion": "En el capítulo 5 (Año 2105), durante la reunión con Volderlayer, este revela a Albert y Émilie que AiFlash participó en el descifrado del mensaje y estuvo conectado a la supercomputadora del ODIN. Más adelante, en el capítulo 6, AiFlash le dice a Albert que leyó el diario de su madre cuando 'hace más de cuarenta años me conecté a la supercomputadora del ODIN'. Albert reacciona con ira al darse cuenta de que AiFlash invadió la intimidad de su madre, como si fuera información nueva para él. Sin embargo, en la reunión del capítulo 5, Volderlayer ya le había explicado explícitamente que AiFlash se había conectado a la supercomputadora del ODIN y había accedido a toda la información disponible. Albert debería haber podido inferir que eso incluía archivos personales."
+            },
+            {
+              "id": 3,
+              "descripcion": "En el capítulo 23, cuando AiFlash revela a Mary Jane Jr. la verdad sobre la muerte de sus padres, ella reacciona diciendo 'no hizo ningún gesto, ya había escuchado en boca de Rud que su padre era un asesino y no le sorprendió oírlo de nuevo'. Sin embargo, en el capítulo 18, cuando Rud le revela a Mary Jane que Volderlayer fue 'uno de los brazos ejecutores' del presidente Haddon, ella reacciona con incredulidad total, defiende a su padre con vehemencia y termina repitiendo consignas del gobierno. La reacción de Mary Jane en el capítulo 23, que parece tomarlo con relativa calma como algo ya asumido, no es coherente con la reacción de negación total del capítulo 18, sin que el narrador explique un proceso de cambio de actitud intermedio."
+            },
+            {
+              "id": 4,
+              "descripcion": "En el capítulo 27, Volderlayer revela a Gerard que descubrió que Mary Jane estaba detrás de la revolución 'a raíz de que averiguase que no era hija mía', y que puso a un hombre del servicio secreto a vigilarla más de cerca. Sin embargo, en el capítulo 28, cuando Volderlayer va a Ganímedes a despedirse de su hija y ella le confronta diciéndole '¿También tenías miedo de que descubriese que tú los mataste?', Volderlayer dice en voz alta para sí mismo 'Así que, esa es la razón', como si en ese momento confirmara por primera vez que Mary Jane sabe la verdad sobre los asesinatos. Esto es inconsistente con el hecho de que, según el capítulo 27, ya sabía que ella había leído su diario donde 'expresa que todos los que participaron en las represiones y asesinatos... son un cáncer', lo que implica que ya sabía que ella conocía los asesinatos antes de ir a Ganímedes."
+            },
+            {
+              "id": 5,
+              "descripcion": "En el capítulo 24, AiFlash explica a Mary Jane Jr. que 'desde que se creó Planeta Tierra, hemos estado controlando a las personas' y detalla cómo construyó la red silenciosa durante años, contactando con personas de manera anónima. Sin embargo, en el capítulo 27, Volderlayer explica a Gerard que su servicio de inteligencia 'estaba a ciegas' respecto al origen de la organización y que 'la organización que estaba moviéndolo todo estaba demasiado bien organizada'. Esto es coherente. No obstante, Volderlayer también afirma que 'nunca lo hubiésemos podido imaginar' que Mary Jane estuviese detrás. El servicio de inteligencia del gobierno monitorizaba permanentemente a Mary Jane (capítulo 16 menciona guardaespaldas en la universidad), lo que hace poco creíble que no detectasen antes su vinculación con AiFlash, especialmente cuando AiFlash era un activo conocido que trabajaba en la misma base de Ganímedes donde estaba Mary Jane."
+            }
+          ]
+        },
+        "tono_voz": {
+          "findings": [
+            {
+              "id": 1,
+              "descripcion": "En el capítulo 7, en medio de una escena íntima y reflexiva (Émilie embarazada, Albert tocando la tripa), el narrador pasa abruptamente a un tono cómico y marcadamente coloquial con el intercambio sobre Boris ('me lo follaría') y Claudia. Aunque puede ser intencional para mostrar la personalidad de Albert, el salto desde la ternura del momento ('La grata sensación de tocar algo duro... era algo que no hubiera podido imaginar') a ese registro vulgar y humorístico es muy brusco y sin transición narrativa que lo justifique."
+            },
+            {
+              "id": 2,
+              "descripcion": "En el capítulo 4, durante la rueda de prensa presidencial, un evento formal y solemne, Albert y Émilie mantienen un cuchicheo con contenido sexualmente explícito ('Estas cosas me ponen cachonda en todos los sentidos', 'diciéndote al oído las palabras mágicas «colisionador de partículas», te puedo tumbar y hacerte el amor de manera salvaje'). El registro extremadamente coloquial y sexual contrasta de forma muy marcada con el tono formal y periodístico del contexto inmediato (rueda de prensa presidencial, discursos oficiales), sin que la narración establezca una distancia irónica o humorística deliberada que justifique plenamente el cambio."
+            }
+          ]
+        },
+        "nombres_inconsistentes": {
+          "findings": [
+            {
+              "id": 1,
+              "descripcion": "El hijo de Haddon en el planeta Peak aparece escrito de formas distintas a lo largo del texto: 'Mesc-muk' (en el capítulo 12, cuando habla con Much-muk), 'Mech-muck' (en el capítulo 25, en la conversación con Much-muk) y 'Mech-muk' (también en el capítulo 29). Se usan tres grafías diferentes para el mismo personaje: 'Mesc-muk', 'Mech-muck' y 'Mech-muk'."
+            },
+            {
+              "id": 2,
+              "descripcion": "El padre/líder peakson aparece escrito como 'Much-muk' en la mayoría de las apariciones (capítulos 12, 25, 29) pero también como 'Much-muck' en algún pasaje del capítulo 25 ('dijo Much-muck'). Hay alternancia entre 'Much-muk' y 'Much-muck'."
+            },
+            {
+              "id": 3,
+              "descripcion": "La confederación aparece referida en algunos lugares como 'Confederación de Delonia' y en otros como parte del nombre de la organización 'Organización Deloniana para la Investigación Nuclear (ODIN)'. En el discurso de Haddon en el capítulo 13 se menciona 'Delon la capital de la Confederación de Delonia', lo que es coherente. Sin embargo, en el capítulo 4 se menciona 'nuestra confederación' sin especificar cuál, lo que podría causar confusión dado que existen doce confederaciones, aunque no constituye una inconsistencia de grafía en sentido estricto."
+            },
+            {
+              "id": 4,
+              "descripcion": "La ciudad donde ocurre la catástrofe inicial aparece escrita como 'Fratenburgo' de manera consistente en la mayor parte del texto, pero en el capítulo 4, Albert dice 'la catástrofe de Fratenburgo' y en el mismo capítulo el presidente también dice 'catástrofe de Fratenburgo', lo que es coherente. No obstante, en la sinopsis final aparece también como 'Fratenburgo', por lo que no hay inconsistencia de grafía en este caso. Sin embargo, el nombre de la confederación enemiga 'Naiponia' aparece como 'Naiponia' en el capítulo 14 pero el presidente de esa confederación es llamado 'presidente Naipón' ('El presidente de Naiponia, respondiendo con un pronunciado acento que delataba su origen') y también 'presidente Jakon', sin que quede claro si 'Naipón' es un gentilicio o una variante del nombre de la confederación."
+            }
+          ]
+        },
+        "pov": {
+          "findings": [
+            {
+              "id": 1,
+              "descripcion": "En el capítulo 3, la narración está focalizada en Mary Jane (tercera persona limitada, perspectiva de Mary Jane). Sin embargo, el narrador accede a los pensamientos y emociones internas de Edmund durante la huida en coche: 'Edmund, a pesar de ser consciente de que estaba de mal humor', 'Edmund miró de nuevo a través del espejo retrovisor', y se describe su estado emocional interno con detalle. Dado que Mary Jane acaba de morir al inicio de la escena, el POV salta sin transición narrativa explícita de Mary Jane a Edmund, lo que podría considerarse un cambio de focalización abrupto, aunque el salto viene marcado por una línea en blanco con la virgulilla (~)."
+            },
+            {
+              "id": 2,
+              "descripcion": "En el capítulo 5, la escena comienza con Albert y Émilie en su cubículo. La narración accede a los pensamientos y sensaciones físicas de Émilie con considerable detalle ('A Émilie le gustaba sentir la laxitud del pene sobre su piel. Le excitaba controlar esa flacidez... Lo que más la excitaba era introducírselo en la boca'). A continuación, el POV pasa sin transición a los pensamientos internos de Albert ('Albert había abierto sus ojos recordando lo que acababa de soñar'). En una misma escena continua, el narrador accede primero a la intimidad de los pensamientos y sensaciones de Émilie y luego a los de Albert, constituyendo un caso de cabeza-hopping dentro de la misma escena sin separador ni cambio de sección."
+            },
+            {
+              "id": 3,
+              "descripcion": "En el capítulo 8 (Planeta Peak), la narración abandona completamente el POV de Albert Emmet, que es el personaje focal establecido para esa parte de la historia, y adopta una perspectiva omnisciente para describir en detalle la sociedad, historia e interior de la civilización peakson, incluyendo sus pensamientos colectivos y su evolución cultural durante siglos. Si bien este capítulo funciona como una descripción expositiva, el cambio desde la focalización cercana en Albert (establecida en los capítulos anteriores) a una omnisciencia total sin ningún anclaje narrativo en el personaje focal es un salto de POV muy marcado."
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

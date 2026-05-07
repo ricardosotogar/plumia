@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v11.06 cargado');
+console.log('📦 document-builder.js v11.07 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -972,13 +972,15 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
 
     let n = 1;
     await Word.run(async (ctx) => {
-      const body = ctx.document.body;
+      // Crear un documento nuevo para el informe (no tocar el manuscrito)
+      const newDoc = ctx.application.createDocument();
+      await ctx.sync();
 
-      body.insertBreak(Word.BreakType.page, Word.InsertLocation.end);
+      const body = newDoc.body;
 
       const titlePara = body.insertParagraph(
         `INFORME DE COHERENCIA NARRATIVA — PLUMIA v${ver} · ${fecha}`,
-        Word.InsertLocation.end
+        Word.InsertLocation.start
       );
       titlePara.font.bold  = true;
       titlePara.font.size  = 13;
@@ -1053,6 +1055,8 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
         body.insertParagraph('', Word.InsertLocation.end);
       }
 
+      await ctx.sync();
+      newDoc.open();
       await ctx.sync();
     });
 
