@@ -12,7 +12,7 @@
 (function() {
 
 window.PLUMIA.BUILDER_VERSION = '9.33';
-console.log('📦 document-builder.js v11.05 cargado');
+console.log('📦 document-builder.js v11.06 cargado');
 
 // ── Flag global de debug ──────────────────────────────────────────────────────
 // Para activar logs: window.PLUMIA_DEBUG = true  (en la consola del navegador)
@@ -970,6 +970,7 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       byCategory[f.correctionId].items.push(f);
     }
 
+    let n = 1;
     await Word.run(async (ctx) => {
       const body = ctx.document.body;
 
@@ -984,8 +985,6 @@ window.PLUMIA.DocumentBuilder = class DocumentBuilder {
       titlePara.font.color = '6B2197';
 
       body.insertParagraph('', Word.InsertLocation.end);
-
-      let n = 1;
       for (const [, { label, items }] of Object.entries(byCategory)) {
         const catPara = body.insertParagraph(label.toUpperCase(), Word.InsertLocation.end);
         catPara.font.bold  = true;
