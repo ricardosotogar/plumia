@@ -1133,10 +1133,14 @@ async function detectSelection() {
 function updateSelectionContext() {
   const el   = document.getElementById('selectionContext');
   const text = document.getElementById('selectionContextText');
-  if (state.hasSelection && !state.forceFullDoc) {
+  const allCoherence = state.selectedIds.size > 0 && [...state.selectedIds].every(id => {
+    const c = CORRECTIONS.find(x => x.id === id);
+    return c && c.requiresFullDoc;
+  });
+  if (state.hasSelection && !state.forceFullDoc && !allCoherence) {
     el.className = 'selection-context';
     text.textContent = '✂️ La revisión se realizará solo sobre el texto que has seleccionado.';
-  } else if (state.hasSelection && state.forceFullDoc) {
+  } else if (state.hasSelection && (state.forceFullDoc || allCoherence)) {
     el.className = 'selection-context full-doc';
     text.textContent = '📋 La revisión se realizará sobre el documento completo (requerido por coherencia narrativa).';
   } else {
@@ -1429,6 +1433,7 @@ function updateAnalyzeButton() {
   });
   document.getElementById('format-output-block').style.display   = allCoherence ? 'none' : '';
   document.getElementById('coherence-output-notice').style.display = allCoherence ? '' : 'none';
+  updateSelectionContext();
 }
 
 function selectFormat(fmt) {
