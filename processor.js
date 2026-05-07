@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v11.02
+// PLUMIA — processor.js  v11.03
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -447,10 +447,16 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
 
         // Una única llamada con todo el documento (cross-chapter coherence)
         const prompt = this._buildCoherenceGroupedPrompt(activeCoherenceCorrs, coherenceText);
+        console.log(`[COHERENCIA] Enviando llamada única. Categorías: ${activeCoherenceCorrs.map(c=>c.id).join(', ')}. Tokens estimados: ~${Math.ceil(this._countWords(coherenceText)/0.75)}`);
         const response = await this._callAPI(prompt);
+        console.log('[COHERENCIA] Respuesta recibida. Secciones:', Object.keys(response));
         for (const corr of activeCoherenceCorrs) {
           const section = response[corr.id];
-          if (!section || !Array.isArray(section.findings)) continue;
+          if (!section || !Array.isArray(section.findings)) {
+            console.log(`[COHERENCIA] ${corr.id}: sin sección en respuesta o findings no es array`);
+            continue;
+          }
+          console.log(`[COHERENCIA] ${corr.id}: ${section.findings.length} finding(s) crudos (total_found=${section.total_found ?? '?'})`);
           section.findings.forEach(f => {
             // Categorías de informe: no requieren originalText para búsqueda en documento
             const isReport = corr.requiresFullDoc;
@@ -461,6 +467,7 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
             accumulated[corr.id].push({ ...f, originalText, correctionId: corr.id,
               colorId: corr.colorId, label: corr.label, directFix: corr.directFix });
           });
+          console.log(`[COHERENCIA] ${corr.id}: ${accumulated[corr.id].length} finding(s) tras filtrado`);
         }
         for (const corr of activeCoherenceCorrs) {
           allResults.push({ correctionId: corr.id, label: corr.label, groupId: corr.groupId,
