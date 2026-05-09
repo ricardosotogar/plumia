@@ -202,6 +202,8 @@ function _singleComment(f) {
       return `Palabra sobrante: ${f.explanation||''} Corrección: «${f.correction||''}».`;
     case 'tiempos_verbales':
       return `Tiempo verbal: ${f.explanation||''} ${f.suggestion?'Sugerencia: '+f.suggestion:''}`;
+    case 'extranjerismos':
+      return `Extranjerismo sin cursiva: «${f.word}» (${f.language||'inglés'}) debe escribirse en cursiva. Los extranjerismos no adaptados al español van siempre en cursiva. ${f.explanation||''}`.trim();
     case 'ortotipografia_pura':
       return f.isFirstOccurrence ? `Ortotipografía corregida en todo el documento: ${f.explanation}` : null;
     case 'puntuacion_prosa': {
