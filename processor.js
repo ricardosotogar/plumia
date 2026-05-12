@@ -1,5 +1,5 @@
 // ============================================================================
-// PLUMIA — processor.js  v11.07
+// PLUMIA — processor.js  v11.08
 // PlumiaProcessor: extracción de texto, chunking, llamadas API, análisis
 // Depende de: corrections-config.js, synonyms-db.js
 // ============================================================================
@@ -688,6 +688,15 @@ window.PLUMIA.PlumiaProcessor = class PlumiaProcessor {
         const before = findings.length;
         findings = findings.filter(f => this._repeticionIsCloseOccurrences(f, f._chunkText || selectionText, 40));
         if (findings.length < before) console.log(`[REPLEX] ${before - findings.length} finding(s) descartados por distancia real >40 palabras`);
+      }
+
+      if (r.correctionId === 'ambiguedad_pronominal') {
+        const before = findings.length;
+        findings = findings.filter(f => {
+          if (!f.pronoun || !f.originalText) return true;
+          return f.originalText.toLowerCase().includes(f.pronoun.toLowerCase().trim());
+        });
+        if (findings.length < before) console.log(`[AMBIG] ${before - findings.length} finding(s) descartados por pronombre ausente en originalText`);
       }
 
       if (r.correctionId === 'puntuacion_prosa') {

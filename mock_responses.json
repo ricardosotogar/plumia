@@ -18985,5 +18985,1800 @@
         }
       }
     ]
+  },
+  "INSA 1-2-3": {
+    "desc": "",
+    "responses": [
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "laismo",
+              "originalText": "Por Dios, no puedo mentirla.",
+              "correction": "no puedo mentirle",
+              "explanation": "'Mentir' construye complemento indirecto. 'La' (CD femenino) sustituye incorrectamente a 'le' (CI). Es laísmo: el referente femenino (Iris) funciona como CI."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Alguien comenta que trabaja en una de las tiendas que señala a la derecha y que podemos ver lo ocurrido en las cámaras de seguridad. Al acercarnos vemos a alguien, que comenta es su jefe, tirado en el suelo",
+              "pronoun": "su",
+              "possibleReferents": [
+                "el pasajero que comenta",
+                "otro pasajero del grupo"
+              ],
+              "explanation": "El posesivo 'su' en 'su jefe' remite al primer 'alguien', pero hay dos referentes masculinos presentes (el que comenta y potencialmente otros varones del grupo), lo que genera ambigüedad momentánea sobre de quién es el jefe.",
+              "suggestion": "Al acercarnos vemos a alguien que comenta que es el jefe de ese pasajero, tirado en el suelo."
+            },
+            {
+              "originalText": "Nos arremolinamos detrás de él para observar algo que nos deja perturbados.",
+              "pronoun": "él",
+              "possibleReferents": [
+                "el pasajero que trabaja en la tienda",
+                "el jefe (cadáver)"
+              ],
+              "explanation": "Hay dos referentes masculinos inmediatamente anteriores: el pasajero empleado de la tienda y el jefe tirado en el suelo. Aunque el contexto orienta hacia el empleado, la presencia de ambos referentes masculinos genera ambigüedad.",
+              "suggestion": "Nos arremolinamos detrás del empleado para observar algo que nos deja perturbados."
+            }
+          ]
+        }
+      },
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "laismo",
+              "originalText": "Meter a tu marido fallecido en un saco no se lo deseo a nadie. Y tampoco le deseo a ninguna niña tener que esperar en un descansillo a que tu madre vuelva arrastrando a su padre fallecido por el suelo.",
+              "correction": "no se lo deseo a nadie / tampoco le deseo — la segunda frase es correcta, pero la primera usa 'lo' donde el CI es 'a nadie'. Se mantiene 'se lo' como correcto. — Revisar el laísmo real más abajo.",
+              "explanation": "Falsa alarma, se descarta. Ver siguiente hallazgo real."
+            },
+            {
+              "type": "loismo",
+              "originalText": "¿me tomas le pelo, padre?",
+              "correction": "¿me tomas el pelo, padre?",
+              "explanation": "No es propiamente un loísmo sino un error léxico: 'le' en lugar del artículo 'el' en la expresión idiomática 'tomar el pelo'."
+            },
+            {
+              "type": "laismo",
+              "originalText": "la muy zorra. Bueno, el matrimonio no iba bien, pero supongo que haberla engañado con otra mujer ha influido en que me odie tanto",
+              "correction": "haberle engañado",
+              "explanation": "'Engañar a alguien' en el sentido de serle infiel toma CI en el español estándar peninsular ('engañarle'), no CD. 'haberla engañado' es laísmo."
+            },
+            {
+              "type": "loismo",
+              "originalText": "Aunque estaban en otro país, a ellos les ha pillado ahí fuera",
+              "correction": "a ellos les ha pillado — es correcto (CI); sin hallazgo real aquí.",
+              "explanation": "Se descarta."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Ella levanta su cabecita para mirarme, y lo descubre sin que haya llegado a abrir la boca.",
+              "pronoun": "lo",
+              "possibleReferents": [
+                "la muerte de Benjamín / la noticia",
+                "Benjamín"
+              ],
+              "explanation": "El pronombre 'lo' tiene referente neutro ambiguo: podría referirse a la muerte de Benjamín, a la noticia en general o a Benjamín mismo. El antecedente no está explícito en la frase ni en la inmediatamente anterior.",
+              "suggestion": "Ella levanta su cabecita para mirarme, y lo adivina / y descubre la verdad sin que haya llegado a abrir la boca."
+            },
+            {
+              "originalText": "Iris lo mira y yo hago lo mismo. Después le doy un beso en los labios y animo a Iris a que le dé un beso de despedida.",
+              "pronoun": "le (segundo)",
+              "possibleReferents": [
+                "Benjamín",
+                "Iris"
+              ],
+              "explanation": "El segundo 'le' en 'animo a Iris a que le dé un beso' tiene dos referentes masculinos/mixtos próximos: podría interpretarse que Iris le dé un beso a Benjamín o, con menos lógica narrativa pero gramaticalmente posible, a la narradora. Benjamín acaba de ser mencionado pero Iris también está presente como sujeto activo.",
+              "suggestion": "animo a Iris a que le dé un beso de despedida a su padre."
+            },
+            {
+              "originalText": "Aún no sabes si están muertos. Y no podrán probar que lo ocurrido ha sido por nuestra tecnología.",
+              "pronoun": "lo (en 'lo ocurrido')",
+              "possibleReferents": [
+                "el colapso de la malla",
+                "la muerte masiva"
+              ],
+              "explanation": "Referente neutro ambiguo: 'lo ocurrido' puede referirse al colapso de la malla subatómica o a la muerte masiva de la población. Aunque contextualmente se entiende, gramaticalmente el antecedente no está unificado.",
+              "suggestion": "Y no podrán probar que el colapso ha sido causado por nuestra tecnología."
+            },
+            {
+              "originalText": "Sabe que a espaldas de su padre confabuló convenciendo al resto de miembros del consejo para suavizar el riesgo de colapso de la malla",
+              "pronoun": "confabuló (sujeto implícito ambiguo)",
+              "possibleReferents": [
+                "Malcom",
+                "su padre (Víctor)"
+              ],
+              "explanation": "El sujeto tácito de 'confabuló' puede referirse tanto a Malcom como a su padre Víctor, pues ambos son referentes masculinos activos en el párrafo. El sintagma 'a espaldas de su padre' orienta hacia Malcom, pero la elisión genera ambigüedad momentánea.",
+              "suggestion": "Sabe que, a espaldas de su padre, él mismo confabuló convenciendo al resto de miembros del consejo..."
+            }
+          ]
+        }
+      },
+      {
+        "leismo": {
+          "findings": [
+            {
+              "type": "leismo",
+              "originalText": "como así le conocen en el mundo de los negocios",
+              "correction": "como así lo conocen en el mundo de los negocios",
+              "explanation": "'Conocer' es verbo transitivo; el referente 'El gran Oshmoon' funciona como CD masculino. La norma panhispánica prescribe 'lo conocen'. 'Le conocen' es leísmo de persona masculino."
+            }
+          ]
+        },
+        "ambiguedad": {
+          "findings": [
+            {
+              "originalText": "Aquel despacho de decoración añeja siempre le ha dado paz y tranquilidad.",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Víctor Oshmoon",
+                "Malcom"
+              ],
+              "explanation": "Dos referentes masculinos activos en el contexto inmediato. La frase puede leerse como que el despacho da paz al padre o a Malcom.",
+              "suggestion": "«Aquel despacho de decoración añeja siempre le ha dado paz y tranquilidad a Víctor.»"
+            },
+            {
+              "originalText": "Tras un momento en el que sopesa si le creen",
+              "pronoun": "le",
+              "possibleReferents": [
+                "Malcom",
+                "Tulipán"
+              ],
+              "explanation": "Dos personajes masculinos presentes (Malcom y Tulipán). 'Le creen' puede referirse a cualquiera de los dos.",
+              "suggestion": "«Tras un momento en el que sopesa si le creen a él, dice:»"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "No puedo mentirla",
+              "errorType": "sujeto-verbo",
+              "explanation": "El verbo 'mentir' no es transitivo directo en este contexto; sin embargo, el error principal es de régimen verbal: se usa 'mentirla' con objeto directo cuando debería ser 'mentirle' (objeto indirecto). Aunque esto es leísmo/laísmo y no concordancia estricta, el uso de 'mentirla' es incorrecto gramaticalmente.",
+              "correction": "No puedo mentirle"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "Me doy cuenta que he estado como diez segundos embobada mirándolos",
+              "errorType": "queismo",
+              "explanation": "El verbo 'darse cuenta' rige la preposición 'de' antes del complemento oracional. Se omite la preposición obligatoria.",
+              "correction": "Me doy cuenta de que he estado como diez segundos embobada mirándolos"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "Sus ojos, solo arrojan tristeza",
+              "errorType": "sustantivo-adjetivo",
+              "explanation": "La coma entre 'Sus ojos' y 'solo arrojan tristeza' separa incorrectamente el sujeto del predicado, pero el error más notable es la coma que no tiene justificación sintáctica y fragmenta la oración. Sin embargo, en términos de concordancia, no hay error de número ni género.",
+              "correction": "Sus ojos solo arrojan tristeza"
+            },
+            {
+              "originalText": "Hemos estado llorando lo que siento una eternidad",
+              "errorType": "sujeto-verbo",
+              "explanation": "La construcción 'lo que siento una eternidad' es incorrecta; debería ser 'lo que parece una eternidad' o similar, pero tal como está, 'siento' en primera persona singular no concuerda con la intención de la frase impersonal.",
+              "correction": "Hemos estado llorando lo que parece una eternidad"
+            },
+            {
+              "originalText": "a ellos les ha pillado ahí fuera",
+              "errorType": "sujeto-verbo",
+              "explanation": "El sujeto 'esto' (sobreentendido, referido al suceso) con el complemento 'a ellos' requiere que el verbo concuerde: 'les ha pillado' es correcto en leísmo pero el sujeto implícito singular concuerda. No obstante, el pronombre 'les' debería ser 'los' (complemento directo), aunque esto es leísmo, no concordancia. Descartado.",
+              "correction": ""
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "Doy gracias a Dios de que este tipo no fuese Benjamín",
+              "errorType": "dequeismo",
+              "explanation": "'Dar gracias' no rige la preposición 'de' antes de 'que'. La construcción correcta es 'Doy gracias a Dios de que' → en realidad 'dar gracias de que' es dequeísmo; debe ser 'doy gracias a Dios de que' — sin embargo, 'dar gracias de que' sí es una construcción establecida. Reconsiderando: 'dar gracias' admite 'de que'. No es error claro.",
+              "correction": ""
+            },
+            {
+              "originalText": "pienso de que",
+              "errorType": "dequeismo",
+              "explanation": "El verbo 'pensar' (opinión) no rige preposición. 'Pienso de que' es dequeísmo; debe ser 'pienso que'.",
+              "correction": "pienso que"
+            },
+            {
+              "originalText": "Me doy cuenta, en este preciso momento, que aún la quería",
+              "errorType": "queismo",
+              "explanation": "El verbo pronominal 'darse cuenta' exige la preposición 'de' antes de 'que'. La omisión de 'de' constituye queísmo.",
+              "correction": "Me doy cuenta, en este preciso momento, de que aún la quería"
+            },
+            {
+              "originalText": "¿Conoces al alguien que viva en la profundidad de una cueva",
+              "errorType": "dequeismo",
+              "explanation": "Aquí aparece 'al alguien', que es un error morfosintáctico: el artículo contracto 'al' no puede preceder a 'alguien'. Debe ser simplemente '¿Conoces a alguien que viva…?'",
+              "correction": "¿Conoces a alguien que viva en la profundidad de una cueva"
+            }
+          ]
+        }
+      },
+      {
+        "concordancia": {
+          "findings": [
+            {
+              "originalText": "Ni siquiera lo primero que pensó es que su madre y hermanos no estaban en casa",
+              "errorType": "sujeto-verbo",
+              "explanation": "El verbo 'es' está en presente pero el contexto narrativo está en pasado ('pensó', 'había parado'). Debe concordar temporalmente: 'fue'.",
+              "correction": "Ni siquiera lo primero que pensó fue que su madre y hermanos no estaban en casa"
+            }
+          ]
+        },
+        "dequeismo": {
+          "findings": [
+            {
+              "originalText": "la única comida de la que han dispuesto es de que la había en las dos neveras dobles",
+              "errorType": "dequeismo",
+              "explanation": "El verbo copulativo 'es' introduce una oración atributiva que no requiere 'de que', sino simplemente 'la que'. La construcción correcta es 'es la que había'.",
+              "correction": "la única comida de la que han dispuesto es la que había en las dos neveras dobles"
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "Dios",
+              "occurrences": [
+                "Dios, aquí están todos muertos también.",
+                "Dios, quizás esté muerto; sí, es lo más probable.",
+                "Dios, no me hagas esto, por favor.",
+                "Por Dios, no puedo mentirla.",
+                "Dios, me va a reventar el corazón"
+              ],
+              "explanation": "La interjección 'Dios' se repite cinco veces en pocos párrafos consecutivos de forma mecánica, empobreciendo el estilo aunque refleje angustia."
+            },
+            {
+              "word": "cadáveres",
+              "occurrences": [
+                "Es desconcertante ver tantos cadáveres tirados por el suelo.",
+                "Dios, hay cadáveres por todos los lados de la estación",
+                "fuera también hay cadáveres."
+              ],
+              "explanation": "'Cadáveres' aparece tres veces en párrafos inmediatamente consecutivos sin variación léxica."
+            },
+            {
+              "word": "eléctri",
+              "occurrences": [
+                "las descargas eléctricas, que ocupan toda la estancia",
+                "las descargas eléctricas desaparecen",
+                "la ramificación eléctrica ha llegado a la entrada",
+                "la descarga empieza a propagarse",
+                "los hilos eléctricos parecen tantear en el aire"
+              ],
+              "explanation": "Las variantes de 'descarga/s eléctrica/s' e 'hilos eléctricos' se repiten en exceso en los párrafos contiguos del capítulo de Adam, sin variación estilística."
+            },
+            {
+              "word": "tirado",
+              "occurrences": [
+                "hay personas tiradas por el andén",
+                "personas desplomadas por el suelo",
+                "cadáveres tirados por el suelo",
+                "hay gente tirada en el suelo",
+                "tirado en el suelo o sentado a su escritorio"
+              ],
+              "explanation": "'Tirado/a/s' para describir cadáveres se repite constantemente a lo largo de párrafos adyacentes sin alternancia."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Hago un gesto a Iris para que salga del vagón",
+              "verb": "Hago",
+              "explanation": "'Hacer un gesto' es vago; podría sustituirse por 'Le señalo a Iris' o 'Le indico a Iris con un gesto'."
+            },
+            {
+              "originalText": "niega con la cabeza, mirándonos con un gesto de zozobra e incredulidad",
+              "verb": "mirándonos con un gesto",
+              "explanation": "'Con un gesto' es una construcción vaga; podría sustituirse por 'reflejando zozobra e incredulidad en el rostro' o 'con expresión de zozobra'."
+            },
+            {
+              "originalText": "Le doy unas palmaditas en la espalda",
+              "verb": "doy",
+              "explanation": "'Dar palmaditas' es perifrástico; podría sustituirse por 'Le palmeo la espalda' o 'Le doy unos golpecitos en la espalda'."
+            },
+            {
+              "originalText": "Hice esta excursión con él",
+              "verb": "haber hecho",
+              "explanation": "'Haber hecho esta excursión' es vago; podría sustituirse por 'haber emprendido' o 'haber compartido esta excursión'."
+            },
+            {
+              "originalText": "pisando el suelo como si hubiera huevos que no quisiera romper",
+              "verb": "pisando",
+              "explanation": "Aunque 'pisar' no es un comodín puro, la construcción resulta perifrástica; podría sustituirse por 'avanzando con suma cautela'."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "algún tipo de arma de pulsos",
+              "genericWord": "tipo",
+              "explanation": "'Algún tipo de arma' es una construcción vaga; podría sustituirse directamente por 'un arma de pulsos'."
+            },
+            {
+              "originalText": "algún tipo de espasmo",
+              "genericWord": "tipo",
+              "explanation": "'Algún tipo de espasmo' es redundante y vago; puede simplificarse a 'algún espasmo' o concretarse más."
+            },
+            {
+              "originalText": "Ha sido algo extraño e inquietante",
+              "genericWord": "algo",
+              "explanation": "'Algo extraño' es vago en contexto narrativo; podría sustituirse por 'un fenómeno extraño e inquietante' o 'un destello extraño e inquietante'."
+            },
+            {
+              "originalText": "sea lo que sea, puede que haya sido a escala nacional",
+              "genericWord": "sea lo que sea",
+              "explanation": "La expresión 'sea lo que sea' elude nombrar el fenómeno que ya ha sido descrito; podría sustituirse por 'el fenómeno' o 'el evento' con referencia concreta."
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "fuerte",
+              "occurrences": [
+                "tengo que ser fuerte, tengo que ser un ejemplo para Iris",
+                "Tengo que ser fuerte. Tengo que ser fuerte.",
+                "no hago más que repetirme que tengo que ser fuerte"
+              ],
+              "explanation": "La expresión 'ser fuerte' aparece cuatro veces en pocos párrafos consecutivos de forma no estilística (más allá de la primera repetición intencionada)."
+            },
+            {
+              "word": "llorar",
+              "occurrences": [
+                "No quiero que Iris me vea llorar",
+                "Dios, no puedo dejar de llorar",
+                "Sigo queriendo llorar, pero no lo consigo",
+                "Quiero llorar pero no puedo"
+              ],
+              "explanation": "'llorar' y sus variantes aparecen cuatro veces en párrafos consecutivos sin variación estilística que lo justifique."
+            },
+            {
+              "word": "dimensión",
+              "occurrences": [
+                "Empiezo a pensar que la dimensión de lo ocurrido es mucho más grande",
+                "si la dimensión de todo esto es la que parece",
+                "No con esta dimensión",
+                "No con esta dimensión"
+              ],
+              "explanation": "'dimensión' aparece cuatro veces en secciones próximas del texto sin variación ni intención estilística clara."
+            },
+            {
+              "word": "malla subatómica",
+              "occurrences": [
+                "algo estaba ocurriendo en la malla subatómica del planeta",
+                "algo estaba sucediendo con la malla subatómica",
+                "la inestabilidad crecía y que podría haber un colapso de la malla",
+                "la velocidad de deterioro de la malla"
+              ],
+              "explanation": "'malla (subatómica)' se repite cuatro veces en párrafos consecutivos del mismo diálogo, resultando redundante."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Hago lo mismo",
+              "verb": "hacer",
+              "explanation": "En el contexto de mirar el cadáver de Benjamín, 'hago lo mismo' es vago; podría decirse 'lo contemplo' o 'también lo miro'."
+            },
+            {
+              "originalText": "le doy un beso en los labios",
+              "verb": "dar",
+              "explanation": "'Dar un beso' es construcción perifrástica con verbo comodín; el verbo preciso es 'lo beso en los labios'."
+            },
+            {
+              "originalText": "animo a Iris a que le dé un beso de despedida",
+              "verb": "dar",
+              "explanation": "'Dar un beso' puede sustituirse por el verbo preciso: 'animo a Iris a que lo bese para despedirse'."
+            },
+            {
+              "originalText": "Cojo el mando y salgo por la puerta principal",
+              "verb": "coger",
+              "explanation": "'Coger el mando' es vago; podría usarse 'recojo el mando' o 'tomo el mando' para mayor precisión."
+            },
+            {
+              "originalText": "hizo que pensáramos que lo solucionaríamos",
+              "verb": "hacer",
+              "explanation": "'Hacer que pensáramos' es construcción perifrástica con verbo comodín; podría decirse 'nos llevó a pensar' o 'nos indujo a creer'."
+            },
+            {
+              "originalText": "dice depositando el móvil en la mesa",
+              "verb": "depositar / dice",
+              "explanation": "'Dice depositando' usa 'dice' como verbo de habla genérico donde cabe uno más expresivo ('replica', 'responde'), y 'depositar' podría ser 'dejar caer' o 'soltar' para mayor expresividad."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "no hago más que repetirme que tengo que ser fuerte",
+              "genericWord": "cosa",
+              "explanation": "No aplica aquí; véase siguiente hallazgo real."
+            },
+            {
+              "originalText": "Buscaré un lugar en la naturaleza",
+              "genericWord": "lugar",
+              "explanation": "'Un lugar en la naturaleza' es vago; podría concretarse en 'un claro', 'un bosque cercano', 'un prado' o similar, dado que la narradora conoce un sitio concreto que menciona después."
+            },
+            {
+              "originalText": "Buscaré una furgoneta pick-up que sirva para transportarlo",
+              "genericWord": "sitio",
+              "explanation": "Véase hallazgo siguiente."
+            },
+            {
+              "originalText": "tengo que ir a comprar una pala a algún sitio",
+              "genericWord": "sitio",
+              "explanation": "'A algún sitio' es excesivamente vago en contexto narrativo concreto; podría especificarse ('a alguna ferretería', 'a algún almacén')."
+            }
+          ]
+        }
+      },
+      {
+        "repeticion": {
+          "findings": [
+            {
+              "word": "hombre",
+              "occurrences": [
+                "Otro de los hombres es el mayordomo de la mansión, Samuel, un hombre de mediana edad",
+                "Un cuarto varón, el jardinero, es un hombre joven",
+                "el quinto de los hombres, Ramón, es el ayudante de cocina; un joven entusiasta"
+              ],
+              "explanation": "'hombre/hombres' aparece repetido en párrafos consecutivos al presentar a los personajes del servicio, resultando monótono junto con las presentaciones en cadena."
+            },
+            {
+              "word": "mujer",
+              "occurrences": [
+                "Susan, una mujer guapa de grandes ojos marrones",
+                "además de Susan, la otra mujer es la jefa de cocina, una mujer mayor de gran experiencia"
+              ],
+              "explanation": "'mujer' aparece tres veces en el mismo bloque descriptivo del personal, empobreciendo el estilo."
+            },
+            {
+              "word": "padre",
+              "occurrences": [
+                "Malcom, aun conociendo de antemano la postura de su padre, decide proponerle",
+                "No quiere que su padre piense que necesita el apoyo de ambos",
+                "lo que quiere proponerle: —Padre, necesitamos comida y agua —le dice al entrar",
+                "a su padre le molesta que no la cierre"
+              ],
+              "explanation": "'padre' se repite cuatro veces en un bloque reducido sin variación ni intención estilística clara."
+            },
+            {
+              "word": "materializer / materializar / materializada / materializados",
+              "occurrences": [
+                "proporcionar electricidad a la mansión y hacer funcionar el Materializer Home",
+                "Este es capaz de materializar cualquier alimento",
+                "la comida materializada acabaría matándolo",
+                "Lo ocurrido está relacionado con los materializer",
+                "¡Malditos materializer!"
+              ],
+              "explanation": "La raíz 'materializ-' se repite en exceso en párrafos consecutivos sin necesidad técnica que lo justifique en todos los casos."
+            }
+          ]
+        },
+        "verbos": {
+          "findings": [
+            {
+              "originalText": "Malcom queda en silencio",
+              "verb": "queda",
+              "explanation": "'Quedar en silencio' es una perífrasis vaga; verbos como 'enmudece' o 'calla' expresan la acción con mayor precisión."
+            },
+            {
+              "originalText": "decide ladrarle sin retroceder",
+              "verb": "decide",
+              "explanation": "Aquí 'decide' actúa como verbo puente innecesario; la imagen sería más directa con 'opta por ladrarle' o simplemente suprimiéndolo: 'le ladra sin retroceder'."
+            },
+            {
+              "originalText": "Hoy iremos a por algunas provisiones",
+              "verb": "iremos a por",
+              "explanation": "'Ir a por' es una construcción comodín; 'buscaremos' o 'recogeremos' algunas provisiones sería más preciso en contexto."
+            },
+            {
+              "originalText": "dice susurrando",
+              "verb": "dice",
+              "explanation": "'Dice susurrando' es redundante y vago; 'susurra' integra ambas acciones con un único verbo preciso."
+            }
+          ]
+        },
+        "sustantivos": {
+          "findings": [
+            {
+              "originalText": "Al quinto día, el agua deja de salir de los grifos",
+              "genericWord": "salir",
+              "explanation": "No es un sustantivo vago; se descarta."
+            },
+            {
+              "originalText": "un atisbo, más que de inteligencia, de picardía",
+              "genericWord": "atisbo",
+              "explanation": "Aunque 'atisbo' es válido, en este contexto 'destello' o 'chispa' serían más expresivos y concretos para la mirada descrita."
+            },
+            {
+              "originalText": "Lo ocurrido está relacionado con los materializer",
+              "genericWord": "lo ocurrido",
+              "explanation": "'Lo ocurrido' es un sintagma genérico que ya ha sido denominado 'el suceso' o 'el incidente' en párrafos anteriores; su repetición como fórmula vaga empobrece el texto."
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "Dios / Dios mío",
+              "occurrences": [
+                "Dios, el desconcierto de todos los que estábamos en los vagones es absoluto",
+                "Dios, hay cadáveres por todos los lados de la estación",
+                "Dios mío, los animales también están muertos",
+                "¡Dios mío, Benjamín!",
+                "Dios, por favor, que esté bien",
+                "Dios, creo que se los he roto"
+              ],
+              "explanation": "La interjección 'Dios' y sus variantes se repiten de forma excesiva en el capítulo de Carissa, perdiendo fuerza expresiva por saturación."
+            },
+            {
+              "expression": "Joder",
+              "occurrences": [
+                "Joder, es espectacular.",
+                "joder, veo que viene hacia nosotros.",
+                "Joder, a ellos también les ha alcanzado la tormenta eléctrica."
+              ],
+              "explanation": "Interjección comodín repetida tres veces en el capítulo de Adam, que pierde impacto por acumulación."
+            },
+            {
+              "expression": "De repente",
+              "occurrences": [
+                "Muertos de repente.",
+                "De repente, observo cómo de entre el quicio de las nubes"
+              ],
+              "explanation": "Aparece dos veces. En ambos contextos la inmediatez ya está implícita y puede eliminarse sin pérdida de significado."
+            },
+            {
+              "expression": "lo antes posible / lo más deprisa posible / a la mayor brevedad posible",
+              "occurrences": [
+                "Decido salir de allí a la mayor brevedad posible.",
+                "alejarnos de las nubes lo más deprisa posible ha sido lo más acertado",
+                "Vamos al alojamiento y refugiémonos allí lo antes posible."
+              ],
+              "explanation": "La misma idea de urgencia máxima se expresa tres veces con fórmulas equivalentes que actúan como muletilla conceptual."
+            },
+            {
+              "expression": "No sé / No lo sé",
+              "occurrences": [
+                "No sé cuál es el problema",
+                "No sé qué ha pasado",
+                "No lo sé."
+              ],
+              "explanation": "Fórmula de desconcierto repetida mecánicamente en poco espacio narrativo."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "le ordeno a Elián que entre dentro, yo paso detrás",
+              "explanation": "'Entrar' ya implica moverse al interior; 'dentro' es redundante.",
+              "correction": "le ordeno a Elián que entre, yo paso detrás"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "Dios",
+              "occurrences": [
+                "Doy gracias a Dios de que este tipo no fuese Benjamín",
+                "Dios, no puedo soportarlo",
+                "Dios, tengo que ir a comprar una pala"
+              ],
+              "explanation": "La interjección 'Dios' se repite tres veces como muletilla emocional sin aportar valor narrativo adicional."
+            },
+            {
+              "expression": "Tengo que ser fuerte",
+              "occurrences": [
+                "tengo que ser fuerte. Tengo que ser fuerte",
+                "no hago más que repetirme que tengo que ser fuerte"
+              ],
+              "explanation": "La expresión se repite de forma redundante en un espacio muy corto del texto, más allá del efecto estilístico justificable."
+            },
+            {
+              "expression": "de repente",
+              "occurrences": [
+                "ha dejado de funcionar de repente"
+              ],
+              "explanation": "Muletilla habitual que no aporta información precisa; podría eliminarse sin pérdida de significado."
+            },
+            {
+              "expression": "más de lo mismo",
+              "occurrences": [
+                "más de lo mismo: coches parados, estrellados",
+                "Pruebo con gente que conozco del resto del país, más de lo mismo"
+              ],
+              "explanation": "Expresión coloquial repetida dos veces que funciona como comodín sin aportar precisión narrativa."
+            },
+            {
+              "expression": "en este preciso momento",
+              "occurrences": [
+                "Me doy cuenta, en este preciso momento, que aún la quería"
+              ],
+              "explanation": "Muletilla enfática que no añade información; 'en este momento' o suprimirlo bastaría."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "Salgo fuera, casi sin poder respirar",
+              "explanation": "'Salgo' ya implica movimiento hacia fuera; 'fuera' es redundante.",
+              "correction": "Salgo, casi sin poder respirar"
+            },
+            {
+              "originalText": "Solo he visto un único coche en dirección contraria",
+              "explanation": "'Solo' y 'único' expresan lo mismo; uno de los dos sobra.",
+              "correction": "Solo he visto un coche en dirección contraria"
+            },
+            {
+              "originalText": "tener que esperar en un descansillo a que tu madre vuelva arrastrando a su padre fallecido por el suelo",
+              "explanation": "Arrastrar implica moverlo por el suelo; 'por el suelo' es redundante.",
+              "correction": "a que tu madre vuelva arrastrando a su padre fallecido"
+            },
+            {
+              "originalText": "¿Conoces al alguien que viva en la profundidad de una cueva de mineral conductor",
+              "explanation": "'al alguien' es un error gramatical: el artículo 'al' no puede preceder a 'alguien'.",
+              "correction": "¿Conoces a alguien que viva en la profundidad de una cueva de mineral conductor"
+            },
+            {
+              "originalText": "engañarte a ti mismo",
+              "explanation": "Aparece dos veces en el mismo pasaje ('quieres engañarte a ti mismo' / 'Yo soy muy consciente… si tú te quieres engañar a ti mismo'). 'Engañarse' ya implica a uno mismo; 'a ti mismo' es redundante.",
+              "correction": "engañarte"
+            }
+          ]
+        }
+      },
+      {
+        "muletillas": {
+          "findings": [
+            {
+              "expression": "de momento",
+              "occurrences": [
+                "De momento, buscaremos comida enlatada y agua embotellada en los supermercados"
+              ],
+              "explanation": "Expresión comodín que no aporta precisión temporal real; podría eliminarse o sustituirse por 'por ahora'."
+            },
+            {
+              "expression": "sin tapujos",
+              "occurrences": [
+                "Tulipán le pregunta sin tapujos"
+              ],
+              "explanation": "Expresión hecha y repetida en narrativa que no añade información relevante; podría eliminarse."
+            },
+            {
+              "expression": "media verdad",
+              "occurrences": [
+                "le cuenta una media verdad"
+              ],
+              "explanation": "Expresión comodín muy gastada en narrativa para introducir una revelación parcial."
+            },
+            {
+              "expression": "teniendo en cuenta",
+              "occurrences": [
+                "teniendo en cuenta que están bien pagados",
+                "teniendo en cuenta que nuestros satélites siguen funcionando"
+              ],
+              "explanation": "Aparece dos veces como muletilla introductoria que podría sustituirse por 'dado que' o reformularse."
+            }
+          ]
+        },
+        "pleonasmos": {
+          "findings": [
+            {
+              "originalText": "no pueden salir fuera porque es peligroso",
+              "explanation": "'Salir' ya implica ir hacia fuera; 'fuera' es redundante.",
+              "correction": "no pueden salir porque es peligroso"
+            },
+            {
+              "originalText": "ahí arriba",
+              "occurrences": [
+                "nuestros satélites siguen funcionando ahí arriba"
+              ],
+              "explanation": "Los satélites están en el espacio, y 'ahí arriba' duplica la idea de elevación ya implícita en el contexto de satélites orbitando.",
+              "correction": "nuestros satélites siguen funcionando"
+            },
+            {
+              "originalText": "aun conociendo de antemano la postura de su padre",
+              "explanation": "'De antemano' es redundante con 'conociendo', que ya implica saber algo previamente.",
+              "correction": "aun conociendo la postura de su padre"
+            },
+            {
+              "originalText": "decides subir al despacho de su padre",
+              "explanation": "No es pleonasmo estricto, se descarta.",
+              "correction": ""
+            },
+            {
+              "originalText": "una única vez a la Oshmoon Corporation",
+              "explanation": "'Una' y 'única' son redundantes; 'una única vez' repite el concepto de singularidad.",
+              "correction": "una vez a la Oshmoon Corporation"
+            },
+            {
+              "originalText": "Lo diré una única vez más",
+              "explanation": "'Una' y 'única' son redundantes; el concepto de singularidad se expresa dos veces.",
+              "correction": "Lo diré una vez más"
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "No quiero asustarla, pero tratar de suavizar lo que ocurre no merece la pena.",
+              "adverb": "no hay adverbio aquí",
+              "evaluation": "Adecuado",
+              "explanation": "Revisión descartada",
+              "alternatives": []
+            },
+            {
+              "originalText": "Más despacio, tratando de no hacer movimientos bruscos, saco la linterna",
+              "adverb": "despacio",
+              "evaluation": "Adecuado",
+              "explanation": "Modifica la acción con precisión táctica en un momento de tensión extrema; contribuye al ritmo pausado y amenazante de la escena.",
+              "alternatives": []
+            },
+            {
+              "originalText": "decido seguirlos. Si hay algo más adelante, prefiero estar en la retaguardia.",
+              "adverb": "No aplica",
+              "evaluation": "Adecuado",
+              "explanation": "Descartado",
+              "alternatives": []
+            },
+            {
+              "originalText": "Lo ha dicho con voz tan alta que casi se me sale el corazón del pecho",
+              "adverb": "casi",
+              "evaluation": "Adecuado",
+              "explanation": "Intensificador expresivo integrado en una imagen hiperbólica eficaz.",
+              "alternatives": []
+            },
+            {
+              "originalText": "respirar este aire puro y fresco es casi una sensación virginal",
+              "adverb": "casi",
+              "evaluation": "Adecuado",
+              "explanation": "Matiza la hipérbole con naturalidad y encaja en el tono introspectivo del personaje.",
+              "alternatives": []
+            },
+            {
+              "originalText": "Empiezo a pedalear como una posesa.",
+              "adverb": "No aplica",
+              "evaluation": "Adecuado",
+              "explanation": "Descartado",
+              "alternatives": []
+            },
+            {
+              "originalText": "Vamos al alojamiento y refugiémonos allí lo antes posible.",
+              "adverb": "lo antes posible",
+              "evaluation": "Mejorable",
+              "explanation": "Locución adverbial vaga que amortigua la urgencia en un momento que pide contundencia narrativa.",
+              "alternatives": [
+                "«Vamos al alojamiento. Hay que refugiarse antes de que vuelva.»",
+                "«Vamos al alojamiento —dije empujándolo hacia la puerta—. Ahora.»"
+              ]
+            },
+            {
+              "originalText": "Espero que arreglen las comunicaciones lo antes posible para llamarla",
+              "adverb": "lo antes posible",
+              "evaluation": "Mejorable",
+              "explanation": "Segunda aparición de la misma locución en pocas líneas; repetición que aplana el ritmo.",
+              "alternatives": [
+                "«Necesito que las comunicaciones vuelvan pronto; llamarla antes de que se entere por la prensa.»",
+                "«Quiero llamarla antes de que la prensa lo publique y ella se derrumbe sin saber si estamos vivos.»"
+              ]
+            },
+            {
+              "originalText": "Con decisión, enderezo la bici",
+              "adverb": "Con decisión",
+              "evaluation": "Mejorable",
+              "explanation": "Locución adverbial que explica la actitud del personaje en lugar de mostrarla; resta fuerza a la acción tras un momento físicamente impactante.",
+              "alternatives": [
+                "«Enderezo la bici de un tirón, me subo sin mirar atrás y le digo a Iris que monte.»",
+                "«Me muerdo el labio, enderezo la bici y la llamo sin apartar los ojos del camino.»"
+              ]
+            },
+            {
+              "originalText": "sin ni siquiera mirarlo",
+              "adverb": "siquiera",
+              "evaluation": "Adecuado",
+              "explanation": "Refuerza la frialdad disociativa del personaje ante el cadáver; aporta valor psicológico al momento.",
+              "alternatives": []
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "Están todas muertas con las patas estiradas; tiesas como si fuesen figuras de un belén caídas.",
+              "explanation": "Construcción predicativa con participio que describe estado resultante; aunque no es pasiva perifrástica estricta con agente, la acumulación de participios en posición pasiva ('estiradas', 'caídas') carga el ritmo y puede activarse.",
+              "activeVersion": "Yacen con las patas rígidas hacia arriba, como figuras de belén derribadas."
+            },
+            {
+              "originalText": "La pantalla muestra una aura de finos hilos eléctricos de tonos azules y blancos que invaden toda la tienda culebreando en el aire, cambiando de forma y tocándolo todo.",
+              "explanation": "No es pasiva; revisión descartada.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "Hemos pasado varias horas en la cueva para asegurar que aquella manta eléctrica no vuelve a aparecer.",
+              "explanation": "Voz activa en pretérito perfecto compuesto; no es pasiva perifrástica.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "la descarga empieza a propagarse por dentro avanzando hacia nosotros",
+              "explanation": "Activa; descartada.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "Todas las serpientes quedan suspendidas en el aire, retorciéndose mientras que los delgados tentáculos eléctricos las abrazan.",
+              "explanation": "«Quedan suspendidas» es pasiva de estado con agente implícito (la descarga eléctrica). Puede activarse para ganar dinamismo en una escena de acción.",
+              "activeVersion": "Los delgados tentáculos eléctricos las atrapan y las mantienen en el aire, retorciéndose."
+            },
+            {
+              "originalText": "Al mismo tiempo, veo que la ramificación eléctrica ha llegado a la entrada de la cueva. Para mi sorpresa, la descarga empieza a propagarse por dentro avanzando hacia nosotros.",
+              "explanation": "Activa; descartada.",
+              "activeVersion": ""
+            },
+            {
+              "originalText": "No le había hecho gracia que Elián dejase de ir al colegio un viernes",
+              "explanation": "Construcción activa con dativo de interés; no es pasiva perifrástica.",
+              "activeVersion": ""
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Saber que lo más seguro es que lo encuentre en alguna parte de este edificio, tirado en el suelo o sentado a su escritorio caído sobre la mesa, y que a Iris se le va a romper el corazón cuando le diga que ha muerto, me desgarra el alma.",
+              "wordCount": 48,
+              "explanation": "Frase muy larga con dos subordinadas encadenadas y una principal retardada al final; el peso emocional se diluye antes de llegar al núcleo ('me desgarra el alma').",
+              "suggestion": "Dividir en dos: «Saber que lo más seguro es encontrarlo tirado en alguna parte de este edificio ya me destroza. Pero imaginar la cara de Iris cuando se lo diga me desgarra el alma.»"
+            },
+            {
+              "originalText": "Vemos cómo las descargas eléctricas, que ocupan toda la estancia, alcanzan a su jefe, que empieza a sufrir espasmos quedando casi suspendido en el aire durante un rato, hasta que cae al suelo cuando las descargas eléctricas desaparecen.",
+              "wordCount": 44,
+              "explanation": "Cadena de relativas y gerundios que alarga la acción y repite 'descargas eléctricas' en la misma frase.",
+              "suggestion": "«Vemos cómo las descargas alcanzan a su jefe: sufre espasmos, queda casi suspendido en el aire y cae al suelo cuando los hilos desaparecen.»"
+            },
+            {
+              "originalText": "Pronto, esto saldrá en los medios de comunicación, me llamará para ver si estamos bien y para reprocharme que no habríamos corrido peligro de no haber salido un viernes de excursión.",
+              "wordCount": 38,
+              "explanation": "Roza el límite; la segunda mitad acumula dos infinitivos coordinados con carga argumentativa que ralentiza el ritmo interior del personaje.",
+              "suggestion": "«Pronto saldrá en los medios. Me llamará para saber si estamos bien, y de paso para reprocharme que un viernes no era día de excursión.»"
+            },
+            {
+              "originalText": "Hace ya más de dos horas que hemos dejado atrás aquella diminuta cueva. Creo que descender la montaña y alejarnos de las nubes lo más deprisa posible ha sido lo más acertado.",
+              "wordCount": 35,
+              "explanation": "Aunque individualmente no supera los 40 palabras, la segunda frase acumula dos infinitivos sujeto coordinados con doble superlativo que la hace pesada.",
+              "suggestion": "«Bajamos a toda prisa, alejándonos de las nubes. Fue lo más acertado.»"
+            },
+            {
+              "originalText": "Me sorprendo al observar que salta por encima de él sin ni siquiera mirarlo, como si fuera un papel o una colilla de cigarro, y va directo al ordenador.",
+              "wordCount": 32,
+              "explanation": "No supera los 40; descartada como frase larga.",
+              "suggestion": ""
+            },
+            {
+              "originalText": "Observo un coche aún encendido, muy cerca, en un semáforo. Solo tendría que sacar el cadáver de su dueño y el de su acompañante para poder usarlo.",
+              "wordCount": 28,
+              "explanation": "Bajo umbral; descartada.",
+              "suggestion": ""
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Elián",
+              "occurrences": [
+                "—Hijo, ¿no te parece que son unas vistas impresionantes? —le digo a Elián.",
+                "Giro mi cabeza y observo que Elián, también con los ojos cerrados, respira hondo imitándome.",
+                "—¡Rápido, Elián! ¡Sube!, ¡sube!, o nos alcanzará.",
+                "y le ordeno a Elián que entre dentro",
+                "—Continúa, Elián, ¡continúa!",
+                "Más tarde, ya más relajado, Elián se ha dormido acurrucado en mí.",
+                "En cuanto se despierte comenzaremos el descenso",
+                "—Elián, no pasa nada. Nosotros estamos bien —le digo.",
+                "Veo que Elián también las observa.",
+                "No le había hecho gracia que Elián dejase de ir al colegio un viernes"
+              ],
+              "explanation": "El nombre 'Elián' aparece más de 4 veces repartido a lo largo del capítulo II de Adam, aunque en varios párrafos distintos. Dentro del párrafo de la cueva en particular ('—¡Rápido, Elián!... —Continúa, Elián... le ordeno a Elián... —Pero, papá... Elián se ha dormido') acumula 4 o más menciones en un bloque narrativo muy compacto, saturando la prosa.",
+              "suggestion": "Sustituir algunas menciones por el pronombre 'él' o por sintagmas como 'mi hijo' o 'el chico': «Le ordeno que entre, yo paso detrás» / «Lo veo respirar hondo, imitándome»."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "Mis lágrimas resbalan por mi cara sin piedad, como minúsculos cubitos de hielo, y mi cara se retuerce de dolor.",
+              "adverb": "sin piedad",
+              "evaluation": "Adecuado",
+              "explanation": "La expresión funciona bien como recurso expresivo integrado en la imagen.",
+              "alternatives": []
+            },
+            {
+              "originalText": "estoy sorprendentemente entera, con un nudo en el estómago, pero entera",
+              "adverb": "sorprendentemente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio debilita la sensación; la sorpresa puede mostrarse con la acción o el contraste.",
+              "alternatives": [
+                "me descubro entera, con un nudo en el estómago, pero entera",
+                "algo en mí resiste, entera todavía, con un nudo en el estómago"
+              ]
+            },
+            {
+              "originalText": "Conozco un sitio muy bonito, más bien cerca, donde solíamos ir de pícnic",
+              "adverb": "más bien cerca",
+              "evaluation": "Mejorable",
+              "explanation": "Locución adverbial vaga que no aporta precisión ni valor literario.",
+              "alternatives": [
+                "Conozco un sitio a pocos kilómetros, donde solíamos ir de pícnic",
+                "Conozco un claro al borde de la ciudad donde solíamos ir de pícnic"
+              ]
+            },
+            {
+              "originalText": "tras varios intentos infructuosos desisto",
+              "adverb": "infructuosos",
+              "evaluation": "Adecuado",
+              "explanation": "Adjetivo que actúa como modificador preciso; no es adverbio en -mente, pero la densidad informativa es alta y no debilita la frase.",
+              "alternatives": []
+            },
+            {
+              "originalText": "manifiestamente muerta, con los ojos abiertos mirando al infinito",
+              "adverb": "manifiestamente",
+              "evaluation": "Mejorable",
+              "explanation": "El adverbio resulta redundante junto a la descripción visual que sigue; la imagen ya transmite la muerte con claridad.",
+              "alternatives": [
+                "muerta sin duda, con los ojos abiertos mirando al infinito",
+                "los ojos abiertos, fijos en el infinito: muerta"
+              ]
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "han sido incontables los que había por la calle y en el edificio",
+              "explanation": "Construcción perifrástica pasiva con participio que invierte el orden activo natural.",
+              "activeVersion": "he visto incontables cadáveres por la calle y en el edificio"
+            },
+            {
+              "originalText": "La alarma del móvil de Benjamín nos ha despertado a ambas.",
+              "explanation": "Pasiva refleja encubierta; el sujeto agente es la alarma y la acción recae sobre las protagonistas.",
+              "activeVersion": "La alarma del móvil de Benjamín sonó y nos despertó a ambas."
+            },
+            {
+              "originalText": "Confirmaron en los experimentos de laboratorio que la malla terminaba colapsando provocando una descarga eléctrica para reordenarse y recuperar la antimateria perdida.",
+              "explanation": "Pasiva implícita con agente indeterminado; 'confirmaron' sin sujeto explícito oculta la responsabilidad.",
+              "activeVersion": "Nuestros científicos confirmaron en los experimentos de laboratorio que la malla terminaba colapsando y provocaba una descarga eléctrica para reordenarse."
+            },
+            {
+              "originalText": "ordené que recubrieran todas las paredes y ventanas con una delgada tela de cobre y aluminio",
+              "explanation": "Pasiva encubierta con verbo causativo; el agente real de la acción queda diluido.",
+              "activeVersion": "ordené a los operarios que recubrieran todas las paredes y ventanas con una delgada tela de cobre y aluminio"
+            },
+            {
+              "originalText": "Desde que aquellos delgados hilos eléctricos han asolado el vecindario",
+              "explanation": "Construcción activa correcta; no es pasiva. Se descarta.",
+              "activeVersion": ""
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Cuando algunos científicos alzaron la voz de alarma para decir que algo estaba sucediendo con la malla subatómica, pusimos a nuestros científicos a investigarlo. Confirmaron en los experimentos de laboratorio que la malla terminaba colapsando provocando una descarga eléctrica para reordenarse y recuperar la antimateria perdida.",
+              "wordCount": 55,
+              "explanation": "Dos oraciones encadenadas con mucha carga informativa técnica que dificultan la comprensión en lectura corrida.",
+              "suggestion": "Dividir: 'Cuando algunos científicos alzaron la voz de alarma, pusimos a los nuestros a investigarlo. Los resultados fueron claros: la malla terminaba colapsando, provocando una descarga eléctrica para reordenarse y recuperar la antimateria perdida.'"
+            },
+            {
+              "originalText": "Sabe que a espaldas de su padre confabuló convenciendo al resto de miembros del consejo para suavizar el riesgo de colapso de la malla y sumar esfuerzos en buscar una solución antes de que ocurriese.",
+              "wordCount": 41,
+              "explanation": "Frase con varias subordinadas anidadas que ralentiza la lectura y dispersa el foco narrativo.",
+              "suggestion": "Dividir: 'Sabe que a espaldas de su padre maniobró en el consejo. Convenció a los demás miembros de suavizar el riesgo y concentrar esfuerzos en buscar una solución antes de que todo se derrumbara.'"
+            },
+            {
+              "originalText": "Buscaré una furgoneta pick-up que sirva para transportarlo y nos acercaremos a un centro comercial donde coger una pala y bolsas grandes de plástico.",
+              "wordCount": 30,
+              "explanation": "Dentro del límite pero acumula dos acciones y un propósito en una sola oración; podría aligerarse.",
+              "suggestion": "Dividir en dos oraciones separando la búsqueda de la furgoneta del plan de aprovisionamiento."
+            },
+            {
+              "originalText": "Y tampoco le deseo a ninguna niña tener que esperar en un descansillo a que tu madre vuelva arrastrando a su padre fallecido por el suelo.",
+              "wordCount": 30,
+              "explanation": "Frase emotiva que funciona bien en longitud, aunque el cambio de segunda a tercera persona ('tu madre… su padre') introduce una leve ambigüedad.",
+              "suggestion": "Unificar persona: '…a que su madre vuelva arrastrando a su padre fallecido por el suelo.'"
+            },
+            {
+              "originalText": "Aunque pensándolo bien, con suerte me habré librado de mi exmujer. Esa sanguijuela solo me ha sacado la sangre, quitándome la vida poco a poco desde que me conoció, y todo mi dinero desde que nos divorciamos.",
+              "wordCount": 42,
+              "explanation": "Periodo largo con acumulación de complementos que diluye el golpe irónico del personaje.",
+              "suggestion": "Recortar: 'Esa sanguijuela me ha vaciado desde el día que nos conocimos: primero la vida, luego el dinero.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Benjamín",
+              "occurrences": [
+                "Doy gracias a Dios de que este tipo no fuese Benjamín",
+                "la de Benjamín",
+                "enterrar a Benjamín",
+                "junto a Benjamín",
+                "quiero enterrar a Benjamín cuanto antes"
+              ],
+              "explanation": "El nombre 'Benjamín' aparece más de cuatro veces dentro del mismo párrafo extenso que abarca la secuencia del descubrimiento del cuerpo y el entierro, lo que genera saturación nominal.",
+              "suggestion": "Alternar con pronombres ('él', 'su cuerpo'), referencias afectivas ('el amor de mi vida', 'mi marido') o elipsis para aliviar la repetición."
+            },
+            {
+              "name": "Elián",
+              "occurrences": [
+                "Buenos días, Elián",
+                "Elián me dice que deje de fumar",
+                "No lo sé, Elián, quizás",
+                "Vamos a por ella, papá. —Sí, no te preocupes, estamos yendo a su casa",
+                "¿Ves hijo? No todos están muertos"
+              ],
+              "explanation": "En el bloque narrativo de Adam, 'Elián' se repite con alta frecuencia dentro de párrafos contiguos y cortos, generando saturación aunque se distribuye en varios párrafos breves.",
+              "suggestion": "Sustituir algunas menciones por 'mi hijo', 'el niño' o pronombres para aligerar la presencia del nombre."
+            },
+            {
+              "name": "Malcom",
+              "occurrences": [
+                "—¡No me trates como un viejo tonto, Malcom!",
+                "—¿Genocida?, ¿me tomas le pelo, padre? No lo sabíamos a ciencia cierta —dice herido en su orgullo.",
+                "Me avergüenza que seas mi hijo, Malcom",
+                "Malcom queda en silencio",
+                "Malcom, el hijo mayor de los Oshmoon"
+              ],
+              "explanation": "En el bloque de Oshmoon Corporation, 'Malcom' aparece repetidamente en un espacio textual muy comprimido, lo que satura la lectura.",
+              "suggestion": "Alternar con 'su hijo', 'el joven' o simplemente el pronombre 'él' en los tramos narrativos para reducir la densidad del nombre."
+            }
+          ]
+        }
+      },
+      {
+        "adverbios": {
+          "findings": [
+            {
+              "originalText": "por suerte estaba en la casa cuando ocurrió el suceso",
+              "adverb": "por suerte",
+              "evaluation": "Adecuado",
+              "explanation": "Locución adverbial que aporta ironía narrativa al contexto.",
+              "alternatives": []
+            },
+            {
+              "originalText": "como si estuviera pintado a rotulador",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No aplica, es un recurso comparativo, no adverbio en -mente.",
+              "alternatives": []
+            },
+            {
+              "originalText": "Dando aún cobertura a las suscripciones",
+              "adverb": "aún",
+              "evaluation": "Adecuado",
+              "explanation": "Adverbio temporal que refuerza la continuidad en contraste con el caos.",
+              "alternatives": []
+            },
+            {
+              "originalText": "sin atreverse a salir de la mansión",
+              "adverb": "N/A",
+              "evaluation": "Adecuado",
+              "explanation": "No es adverbio en -mente.",
+              "alternatives": []
+            },
+            {
+              "originalText": "dice susurrando",
+              "adverb": "susurrando",
+              "evaluation": "Adecuado",
+              "explanation": "Gerundio modal preciso, no adverbio en -mente.",
+              "alternatives": []
+            }
+          ]
+        },
+        "voz_pasiva": {
+          "findings": [
+            {
+              "originalText": "Los mapas moleculares se compraban una única vez a la Oshmoon Corporation, lo que daba derecho a poder pagar por cada vez que se materializaba un producto",
+              "explanation": "Construcciones pasivas reflejas encadenadas que diluyen la agencia narrativa y ralentizan el ritmo.",
+              "activeVersion": "La Oshmoon Corporation vendía los mapas moleculares una única vez, otorgando el derecho a pagar por cada materialización de un producto."
+            },
+            {
+              "originalText": "Estos solo saben que no pueden salir fuera porque es peligroso, y por las conversaciones que escuchan entre padre e hijo, ya conocen la trascendencia de lo que ha ocurrido",
+              "explanation": "La pasiva refleja 'lo que ha ocurrido' con agente difuso debilita la carga dramática del momento.",
+              "activeVersion": "Estos solo saben que no pueden salir porque es peligroso, y escuchando las conversaciones entre padre e hijo han comprendido ya la trascendencia del desastre."
+            }
+          ]
+        },
+        "frases_largas": {
+          "findings": [
+            {
+              "originalText": "Un cuarto varón, el jardinero, es un hombre joven, muy tatuado, al que todos conocen como Tulipán, que por suerte estaba en la casa cuando ocurrió el suceso, porque estaba cortejando a Susan, una mujer guapa de grandes ojos marrones del personal de limpieza.",
+              "wordCount": 48,
+              "explanation": "La frase acumula demasiada información de presentación de personaje en una sola unidad sintáctica, lo que satura al lector.",
+              "suggestion": "Dividir en dos frases: presentar a Tulipán y su descripción en una, y el detalle de que estaba cortejando a Susan en otra separada."
+            },
+            {
+              "originalText": "Encerrados en casa desde el incidente y sin electricidad, porque un coche se estrelló contra la subestación eléctrica de su zona, la única comida de la que han dispuesto es de que la había en las dos neveras dobles de la mansión y en la despensa, gracias a que uno de los hijos de Víctor Oshmoon no consumía comida materializada; era hipocondriaco y se le metió en la cabeza que la comida materializada acabaría matándolo de cáncer.",
+              "wordCount": 79,
+              "explanation": "Frase excesivamente larga que mezcla causa del corte eléctrico, descripción del suministro alimentario y caracterización de un personaje, perdiendo foco.",
+              "suggestion": "Separar en tres frases: (1) el corte eléctrico y su causa, (2) la comida disponible en neveras y despensa, (3) la razón hipocondríaca del hijo que explica la abundancia de alimentos no materializados."
+            },
+            {
+              "originalText": "Con electricidad y teniendo en cuenta que nuestros satélites siguen funcionando ahí arriba, dando aún cobertura a las suscripciones, podríamos materializar cualquier alimento que necesitemos.",
+              "wordCount": 31,
+              "explanation": "Frase justa en límite pero con gerundio explicativo intercalado que fragmenta el argumento del personaje.",
+              "suggestion": "Separar el dato sobre los satélites como frase breve previa para dar más peso al argumento final."
+            },
+            {
+              "originalText": "Malcom, que ve en sus ojos un atisbo, más que de inteligencia, de picardía, sabe que no puede engañarlo y, tras una pausa para meditar qué responder, le cuenta una media verdad:",
+              "wordCount": 34,
+              "explanation": "La intercalación del inciso 'más que de inteligencia, de picardía' junto con la cláusula temporal alarga la frase de forma irregular.",
+              "suggestion": "Reescribir separando la observación sobre los ojos de Tulipán del acto de responder: 'Malcom ve en sus ojos picardía más que inteligencia. Sabe que no puede engañarlo. Tras una pausa, le cuenta una media verdad:'"
+            },
+            {
+              "originalText": "Por otro lado, además de Susan, la otra mujer es la jefa de cocina, una mujer mayor de gran experiencia, que siempre lleva el pelo recogido con un gran moño y que responde al nombre de Carmen.",
+              "wordCount": 37,
+              "explanation": "La presentación de Carmen acumula varios rasgos descriptivos enlazados con subordinadas de relativo que hacen la frase pesada.",
+              "suggestion": "Dividir: 'La otra mujer es Carmen, la jefa de cocina. Mayor, de gran experiencia, siempre lleva el pelo recogido en un moño.'"
+            }
+          ]
+        },
+        "nombres": {
+          "findings": [
+            {
+              "name": "Malcom",
+              "occurrences": [
+                "Malcom queda en silencio.",
+                "Malcom, el hijo mayor de los Oshmoon, siempre fue el más descastado de la familia, el más egoísta.",
+                "Su padre lo conoce bien. Malcom, el hijo mayor",
+                "—Cierra la puerta —reprende a Malcom.",
+                "inquieta aún más a Malcom, que como un perro con el rabo entre las piernas"
+              ],
+              "explanation": "El nombre 'Malcom' aparece repetidamente en párrafos que se suceden sin apenas uso de pronombres o aposiciones alternativas, generando monotonía nominal.",
+              "suggestion": "Sustituir algunas apariciones por pronombres ('él'), apelaciones ('el joven Oshmoon', 'el hijo mayor') o estructuras que eviten la repetición sin perder claridad referencial."
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "tratando de otear a escondidas a través de las ventanas",
+              "gerund": "tratando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'tratando' describe una acción que se solapa correctamente con agacharse, pero en este contexto funciona como un gerundio especificativo que modifica al sujeto con valor adjetival: 'los pasajeros que trataban de otear'. Sin embargo, revisado en contexto, es uso modal correcto. Descartado.",
+              "correction": ""
+            },
+            {
+              "originalText": "Escalamos las rocas lo más rápido que podemos, pero el manto que asciende cubriéndolo todo como un océano lleno de electricidad nos va a dar caza en unos segundos",
+              "gerund": "cubriéndolo",
+              "errorType": "especificativo",
+              "explanation": "'cubriéndolo todo' funciona como un gerundio adjetival o especificativo que modifica a 'el manto que asciende', caracterizándolo. El gerundio no debe usarse con valor adjetival especificativo (equivale a 'el manto que lo cubre todo'). Debería sustituirse por una oración de relativo.",
+              "correction": "el manto que asciende cubriendo todo como un océano → 'el manto que asciende y lo cubre todo como un océano'"
+            },
+            {
+              "originalText": "Nos arremolinamos detrás de él para observar algo que nos deja perturbados",
+              "gerund": "",
+              "errorType": "",
+              "explanation": "No hay gerundio incorrecto aquí.",
+              "correction": ""
+            },
+            {
+              "originalText": "mirándonos con un gesto de zozobra e incredulidad, confirmando lo que ya pensaba: está muerta",
+              "gerund": "confirmando",
+              "errorType": "posterioridad",
+              "explanation": "'Confirmando lo que ya pensaba' expresa una acción posterior al gesto de negar con la cabeza y mirarnos: primero niega y nos mira, y eso confirma algo. La acción de confirmar es resultado o consecuencia posterior del gesto, no simultánea. Un gerundio de posterioridad es incorrecto en español normativo.",
+              "correction": "Él niega con la cabeza, mirándonos con un gesto de zozobra e incredulidad, lo que confirmaba lo que ya pensaba"
+            },
+            {
+              "originalText": "tratando de dar normalidad a una situación surrealista, que monte delante de mí",
+              "gerund": "tratando",
+              "errorType": "posterioridad",
+              "explanation": "'Tratando de dar normalidad' es simultáneo a decirle a Iris que monte, lo cual es uso modal correcto. No es error real.",
+              "correction": ""
+            },
+            {
+              "originalText": "pisando el suelo como si hubiera huevos que no quisiera romper",
+              "gerund": "pisando",
+              "errorType": "posterioridad",
+              "explanation": "Uso modal correcto, simultáneo. No es error.",
+              "correction": ""
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "Hemos pasado varias horas en la cueva para asegurar que aquella manta eléctrica no vuelve a aparecer. Me he acercado a la salida un par de veces para observar si las nubes aún estaban allí. Aún no se han disipado. Más tarde, ya más relajado, Elián se ha dormido acurrucado en mí. En cuanto se despierte comenzaremos el descenso antes de que anochezca. Hace ya más de dos horas que hemos dejado atrás aquella diminuta cueva.",
+              "verbsFound": [
+                "hemos pasado",
+                "me he acercado",
+                "estaban",
+                "se han disipado",
+                "se ha dormido",
+                "hemos dejado"
+              ],
+              "explanation": "La narración mezcla en el mismo bloque retrospectivo el imperfecto 'estaban' (las nubes aún estaban allí) con perfecto compuesto ('me he acercado', 'se han disipado'). El imperfecto 'estaban' rompe la coherencia temporal del pasado reciente narrado en perfecto compuesto, sugiriendo un descuido de concordancia.",
+              "suggestion": "Unificar: 'para observar si las nubes aún se habían disipado' o bien 'si las nubes seguían allí', manteniendo el registro temporal del perfecto compuesto."
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "esa arpía esté muerta, lo más probable, es que esa arpía esté muerta —es mejor que vaya sabiendo que, lo más probable, es que esa arpía esté muerta",
+              "gerund": "sabiendo",
+              "errorType": "posterioridad",
+              "explanation": "'vaya sabiendo' con gerundio introduce una acción posterior o simultánea forzada; aquí la construcción 'es mejor que vaya sabiendo que' usa el gerundio de modo que expresa una finalidad futura que debería expresarse de otro modo, pero en realidad esta construcción es válida coloquialmente. Se descarta.",
+              "correction": ""
+            },
+            {
+              "originalText": "quitándome la vida poco a poco desde que me conoció",
+              "gerund": "quitándome",
+              "errorType": "posterioridad",
+              "explanation": "'esa sanguijuela solo me ha sacado la sangre, quitándome la vida poco a poco': el gerundio aquí es de modo o consecuencia simultánea, lo cual es correcto. Se descarta.",
+              "correction": ""
+            },
+            {
+              "originalText": "dándose por vencido, porque nadie responde",
+              "gerund": "dándose",
+              "errorType": "posterioridad",
+              "explanation": "'dice depositando el móvil en la mesa, dándose por vencido': dos gerundios encadenados que describen acciones simultáneas al verbo principal 'dice'. Correcto. Se descarta.",
+              "correction": ""
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "Continúo el trayecto por la carretera comarcal y, de nuevo, más sorpresas: veo un coche parado en medio de la carretera. Lo he pasado despacio. Dentro había una persona mayor de unos sesenta y cinco años, con muchas canas, manifiestamente muerta, con los ojos abiertos mirando al infinito.",
+              "verbsFound": [
+                "veo (presente)",
+                "he pasado (pretérito perfecto)",
+                "había (imperfecto)"
+              ],
+              "explanation": "El narrador alterna presente ('veo'), pretérito perfecto ('lo he pasado') e imperfecto ('había') en la descripción de la misma escena y el mismo coche. El cambio de 'lo he pasado despacio' a 'dentro había' mezcla tiempos de forma inconsistente dentro de la misma secuencia narrativa.",
+              "suggestion": "Unificar en presente: 'Lo paso despacio. Dentro hay una persona mayor...' o en pasado: 'Lo pasé despacio. Dentro había una persona mayor...'"
+            },
+            {
+              "originalText": "La radio, que había encendido para poner algo de música para distraer a Elián, ha dejado de funcionar de repente.",
+              "verbsFound": [
+                "había encendido (pluscuamperfecto)",
+                "ha dejado (pretérito perfecto)"
+              ],
+              "explanation": "La mezcla de pluscuamperfecto ('había encendido') con pretérito perfecto ('ha dejado') en la misma oración dentro de una narración en presente resulta inconsistente. Si el hilo narrativo está en presente, debería ser 'que he encendido' o reescribirse para dar coherencia temporal.",
+              "suggestion": "'La radio, que he encendido para poner algo de música para distraer a Elián, ha dejado de funcionar de repente.'"
+            }
+          ]
+        }
+      },
+      {
+        "gerundios": {
+          "findings": [
+            {
+              "originalText": "Sabe que a espaldas de su padre confabuló convenciendo al resto de miembros del consejo para suavizar el riesgo de colapso de la malla",
+              "gerund": "convenciendo",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'convenciendo' expresa una acción que es resultado o consecuencia posterior de 'confabuló', no una acción simultánea. Convencer al resto es el objetivo logrado tras confabular, no una acción que ocurre al mismo tiempo.",
+              "correction": "Sabe que a espaldas de su padre confabuló para convencer al resto de miembros del consejo"
+            },
+            {
+              "originalText": "Su lealtad es inquebrantable, teniendo en cuenta que están bien pagados y que sirven a las personas más influyentes y poderosas del mundo.",
+              "gerund": "teniendo",
+              "errorType": "especificativo",
+              "explanation": "El gerundio 'teniendo en cuenta' funciona aquí como nexo causal-explicativo que introduce una subordinada adjetiva o causal, uso que resulta forzado en este contexto. La lealtad no es una acción simultánea a 'teniendo en cuenta'; se trata de una acción posterior o causal que debería expresarse con una conjunción causal.",
+              "correction": "Su lealtad es inquebrantable, dado que están bien pagados y que sirven a las personas más influyentes y poderosas del mundo."
+            },
+            {
+              "originalText": "conectando a la casa los paneles solares que sirven para calentar el agua de la piscina cubierta",
+              "gerund": "conectando",
+              "errorType": "posterioridad",
+              "explanation": "El gerundio 'conectando' indica aquí el medio o modo para 'solucionar el problema eléctrico', pero la conexión de los paneles es un paso previo necesario, no una acción estrictamente simultánea a solucionar el problema. Expresa posterioridad respecto al hecho de 'ser capaz de solucionar'.",
+              "correction": "Rómulo dice que podría ser capaz de solucionar el problema eléctrico conectando a la casa los paneles solares — este uso es aceptable como modo; puede mantenerse o reformularse: 'si conectara a la casa los paneles solares'"
+            }
+          ]
+        },
+        "tiempos": {
+          "findings": [
+            {
+              "originalText": "Desde que aquellos delgados hilos eléctricos han asolado el vecindario, solo ha sentido miedo, miedo a las consecuencias legales. Ni siquiera lo primero que pensó es que su madre y hermanos no estaban en casa.",
+              "verbsFound": [
+                "pensó",
+                "es"
+              ],
+              "explanation": "Se mezcla el indefinido 'pensó' con el presente 'es' en la misma cláusula referida a un momento pasado puntual. 'Lo primero que pensó es que' combina tiempos de forma incoherente; el verbo copulativo debería estar también en pasado para mantener la concordancia temporal de la escena.",
+              "suggestion": "Ni siquiera lo primero que pensó fue que su madre y hermanos no estaban en casa."
+            },
+            {
+              "originalText": "porque estaba cortejando a Susan, una mujer guapa de grandes ojos marrones del personal de limpieza",
+              "verbsFound": [
+                "estaba cortejando"
+              ],
+              "explanation": "En el contexto de la escena narrada en presente histórico o en indefinido ('ocurrió el suceso'), el uso de 'estaba cortejando' mezcla un imperfecto de simultaneidad con el indefinido 'ocurrió', lo que por sí mismo es aceptable; sin embargo, en el párrafo inmediato se narran los hechos en presente ('es', 'hay', 'son', 'conocen'), generando una mezcla de planos temporales que parece descuido.",
+              "suggestion": "Revisar la coherencia del párrafo descriptivo: si se narra en presente, usar 'está cortejando'; si se narra en pasado narrativo, mantener 'estaba cortejando' pero unificar el resto del párrafo en pasado."
+            }
+          ]
+        }
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Saco fuerzas de quién sabe dónde",
+            "wordForm": "quién",
+            "correctForm": "quien",
+            "errorType": "tilde_sobrante",
+            "context": "relativo",
+            "explanation": "'quien sabe dónde' es una locución adverbial con 'quien' en función de pronombre relativo indefinido, no interrogativo. No introduce una pregunta indirecta sino una expresión equivalente a 'de algún lugar desconocido'. No lleva tilde."
+          },
+          {
+            "originalText": "quien sabe si puede volver a suceder",
+            "wordForm": "quien",
+            "correctForm": "quien",
+            "errorType": "falta_tilde",
+            "context": "conjuncion",
+            "explanation": "Aquí 'quien sabe si' es también una locución que equivale a 'quizás' o 'tal vez', con 'quien' como pronombre relativo indefinido. No es interrogativo indirecto. Sin tilde. — ANULADO: ya aparece sin tilde en el texto, forma correcta."
+          }
+        ],
+        "total_found": 1
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Me sorprende cómo inmunizamos la mente a las desgracias ajenas",
+            "wordForm": "cómo",
+            "correctForm": "como",
+            "errorType": "tilde_sobrante",
+            "context": "conjuncion",
+            "explanation": "Aquí 'como' introduce una subordinada sustantiva dependiente del verbo 'sorprende': 'me sorprende el hecho de que inmunizamos la mente'. No hay pregunta implícita sobre el modo; es una conjunción que introduce el contenido que provoca sorpresa, equivalente a 'me sorprende que inmunizamos'. Se puede sustituir por 'el hecho de que', por lo que es conjunción sin tilde."
+          }
+        ],
+        "total_found": 1
+      },
+      {
+        "findings": [
+          {
+            "originalText": "tras una pausa para meditar qué responder",
+            "wordForm": "qué",
+            "correctForm": "qué",
+            "errorType": "falta_tilde",
+            "context": "interrogativo_indirecto",
+            "explanation": "'qué responder' es una interrogativa indirecta dependiente de 'meditar' (equivale a 'meditar cuál cosa responder'). Debe llevar tilde diacrítica. Nota: la forma ya aparece con tilde en el texto original, por lo que no hay error real aquí."
+          },
+          {
+            "originalText": "la única comida de la que han dispuesto es de que la había en las dos neveras",
+            "wordForm": "de que",
+            "correctForm": "de que",
+            "errorType": "tilde_sobrante",
+            "context": "conjuncion",
+            "explanation": "El texto presenta una construcción anómala: 'es de que la había', donde 'que' es conjunción introductora de subordinada sustantiva. No hay interrogativo indirecto aquí y 'que' no debe llevar tilde."
+          }
+        ],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Y tampoco le deseo a ninguna niña tener que esperar en un descansillo a que tu madre vuelva arrastrando a su padre fallecido por el suelo.",
+            "tuForm": "tu",
+            "correctForm": "tú",
+            "function": "pronombre_personal",
+            "explanation": "Aquí 'tu' no funciona como posesivo que precede a un sustantivo propio de la niña; el contexto es 'a que tú (la madre) vuelva', es decir, es el pronombre personal sujeto de la subordinada, no un determinante posesivo. Sin embargo, revisando mejor: 'tu madre' sí podría interpretarse como posesivo referido a la niña ('la madre de la niña'). En ese caso sería correcto sin tilde. No se detecta error real aquí."
+          },
+          {
+            "originalText": "Lo que tú digas, padre.",
+            "tuForm": "tú",
+            "correctForm": "tú",
+            "function": "pronombre_personal",
+            "explanation": "Uso correcto, no es un error."
+          }
+        ],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [
+          {
+            "originalText": "quien sabe si puede volver",
+            "errorType": "ausencia_coma_conector",
+            "correction": "quien sabe si puede volver",
+            "explanation": "La expresión «quien sabe» funciona aquí como conector parentético y debería ir entre comas o separada, pero el error principal es la ausencia de tilde en «quién sabe» y la falta de coma: «y quién sabe si puede volver»."
+          },
+          {
+            "originalText": "Me doy cuenta que he estado",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "Me doy cuenta de que he estado",
+            "explanation": "Ausencia de la preposición «de» ante la conjunción «que» en régimen verbal («darse cuenta de que»), aunque esto es más un error gramatical que tipográfico."
+          },
+          {
+            "originalText": "con decisión, enderezo la bici, me subo a ella, y le digo",
+            "errorType": "coma_innecesaria_y",
+            "correction": "con decisión, enderezo la bici, me subo a ella y le digo",
+            "explanation": "La coma antes de «y» en el último elemento de una enumeración de acciones coordinadas es innecesaria cuando no hay ambigüedad ni elemento muy extenso previo."
+          },
+          {
+            "originalText": "No puedo mentirla.",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "No puedo mentirla.",
+            "explanation": "Este fragmento no presenta error de puntuación relevante en este contexto."
+          },
+          {
+            "originalText": "Sus ojos, solo arrojan tristeza",
+            "errorType": "coma_sujeto_verbo",
+            "correction": "Sus ojos solo arrojan tristeza",
+            "explanation": "La coma separa incorrectamente el sujeto «Sus ojos» del verbo «arrojan». El adverbio «solo» no justifica una coma entre sujeto y predicado."
+          }
+        ],
+        "total_found": 3
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Sus ojos, solo arrojan tristeza",
+            "errorType": "coma_sujeto_verbo",
+            "correction": "Sus ojos solo arrojan tristeza",
+            "explanation": "La coma separa incorrectamente el sujeto 'Sus ojos' de su verbo 'arrojan'. No hay inciso ni elemento parentético que justifique la coma."
+          },
+          {
+            "originalText": "quizás es mejor que vaya fuera, a por Iris",
+            "errorType": "coma_innecesaria_y",
+            "correction": "quizás es mejor que vaya fuera a por Iris",
+            "explanation": "La coma antes de 'a por Iris' separa innecesariamente el verbo de su complemento directo; no hay pausa justificada."
+          },
+          {
+            "originalText": "¿Ves hijo? No todos están muertos",
+            "errorType": "ausencia_coma_vocativo",
+            "correction": "¿Ves, hijo? No todos están muertos",
+            "explanation": "'Hijo' funciona como vocativo dentro de la pregunta narrativa y debe ir separado por coma del verbo que lo precede."
+          },
+          {
+            "originalText": "es mejor que vaya sabiendo que, lo más probable, es que esa arpía esté muerta",
+            "errorType": "coma_sujeto_verbo",
+            "correction": "es mejor que vaya sabiendo que lo más probable es que esa arpía esté muerta",
+            "explanation": "Las comas alrededor de 'lo más probable' crean un falso inciso que rompe innecesariamente la subordinada. 'Lo más probable' es el sujeto de 'es' y no constituye un inciso explicativo separable."
+          },
+          {
+            "originalText": "Llamo a mi socio que está en Candoria",
+            "errorType": "coma_especificativa",
+            "correction": "Llamo a mi socio que está en Candoria",
+            "explanation": "La subordinada 'que está en Candoria' es especificativa (identifica a cuál socio) y no debe ir entre comas. En el texto no aparecen comas, por lo que esta ya está correcta. ANULADO"
+          },
+          {
+            "originalText": "no, no puede ser, no hubiera salido sin las llaves",
+            "errorType": "ausencia_coma_conector",
+            "correction": "no, no puede ser; no hubiera salido sin las llaves",
+            "explanation": "El punto y coma o pausa fuerte sería más adecuado entre las dos oraciones independientes, pero tal como está puede considerarse opción del autor."
+          },
+          {
+            "originalText": "Conozco un sitio muy bonito, más bien cerca, donde solíamos ir de pícnic, que nos gustaba visitar en otoño",
+            "errorType": "coma_especificativa",
+            "correction": "Conozco un sitio muy bonito, más bien cerca, donde solíamos ir de pícnic que nos gustaba visitar en otoño",
+            "explanation": "La subordinada 'que nos gustaba visitar en otoño' es especificativa respecto a 'pícnic' y no debe separarse con coma."
+          },
+          {
+            "originalText": "Y, sin embargo, estoy sorprendentemente entera",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Y, sin embargo, estoy sorprendentemente entera",
+            "explanation": "La puntuación es correcta: 'sin embargo' va entre comas. No es un error. ANULADO"
+          },
+          {
+            "originalText": "¿Conoces al alguien que viva",
+            "errorType": "coma_sujeto_verbo",
+            "correction": "¿Conoces a alguien que viva",
+            "explanation": "Errata léxica: 'al alguien' debe ser 'a alguien', pero esto está fuera del ámbito de puntuación."
+          }
+        ],
+        "total_found": 3
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Aquella estampa, inquieta aún más a Malcom,",
+            "errorType": "coma_sujeto_verbo",
+            "correction": "Aquella estampa inquieta aún más a Malcom,",
+            "explanation": "La coma separa incorrectamente el sujeto «Aquella estampa» de su verbo «inquieta»."
+          },
+          {
+            "originalText": "que como un perro con el rabo entre las piernas, decide ladrarle",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "que, como un perro con el rabo entre las piernas, decide ladrarle",
+            "explanation": "El inciso comparativo «como un perro con el rabo entre las piernas» debe ir delimitado por comas por ambos lados; falta la coma de apertura tras «que»."
+          },
+          {
+            "originalText": "Por otro lado, además de Susan,",
+            "errorType": "ausencia_coma_conector",
+            "correction": "Por otro lado, además de Susan,",
+            "explanation": "El fragmento es correcto tal como aparece; se mantiene sin cambio."
+          },
+          {
+            "originalText": "Malcom, aun conociendo de antemano la postura de su padre, decide proponerle",
+            "errorType": "ausencia_coma_inciso",
+            "correction": "Malcom, aun conociendo de antemano la postura de su padre, decide proponerle",
+            "explanation": "El fragmento es correcto; el inciso ya va delimitado por comas."
+          }
+        ],
+        "total_found": 2
+      },
+      {
+        "findings": [
+          {
+            "originalText": "—¿Qué pasa mamá?",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "—¿Qué pasa, mamá?",
+            "explanation": "El vocativo 'mamá' aparece dentro de una intervención directa marcada con raya y va unido al resto de la frase sin coma que lo separe."
+          },
+          {
+            "originalText": "—Creo que sí —Espero que ella no note mi miedo.",
+            "errorType": "Mayúscula incorrecta en verbo de acotación / falta de punto tras acotación",
+            "correction": "—Creo que sí —espero que ella no note mi miedo.",
+            "explanation": "Tras la raya de cierre de la acotación, 'Espero' va en mayúscula cuando debería ir en minúscula, ya que es continuación de la acotación del diálogo, no una oración nueva independiente separada por punto."
+          },
+          {
+            "originalText": "—Hijo, ¿no te parece que son unas vistas impresionantes? —le digo a Elián.",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "—Hijo, ¿no te parece que son unas vistas impresionantes? —le digo a Elián.",
+            "explanation": "El vocativo 'Hijo' ya va seguido de coma, por lo que este fragmento es correcto. No debe señalarse."
+          },
+          {
+            "originalText": "—¿Qué le pasa a las personas del suelo, mami?",
+            "errorType": "Sin error",
+            "correction": "—¿Qué le pasa a las personas del suelo, mami?",
+            "explanation": "Correcto."
+          },
+          {
+            "originalText": "—No lo sé, hija.",
+            "errorType": "Sin error",
+            "correction": "—No lo sé, hija.",
+            "explanation": "Correcto."
+          },
+          {
+            "originalText": "—Hija, vamos a buscarlo.",
+            "errorType": "Sin error",
+            "correction": "—Hija, vamos a buscarlo.",
+            "explanation": "Correcto."
+          },
+          {
+            "originalText": "—¿Qué hacemos aquí mami?",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "—¿Qué hacemos aquí, mami?",
+            "explanation": "El vocativo 'mami' aparece dentro de una intervención directa marcada con raya y va unido al resto de la frase sin coma separadora."
+          },
+          {
+            "originalText": "—Pero mami, aquí solo hay personas muertas. ¿Papá está también muerto? —me dice con pucheros en sus labios.",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "—Pero, mami, aquí solo hay personas muertas. ¿Papá está también muerto? —me dice con pucheros en sus labios.",
+            "explanation": "El vocativo 'mami' va precedido de 'Pero' sin coma antes ni después; debe ir separado por comas del resto de la frase."
+          },
+          {
+            "originalText": "—Elián, no pasa nada. Nosotros estamos bien —le digo.",
+            "errorType": "Sin error",
+            "correction": "—Elián, no pasa nada. Nosotros estamos bien —le digo.",
+            "explanation": "Correcto."
+          },
+          {
+            "originalText": "—¡Rápido, Elián! ¡Sube!, ¡sube!, o nos alcanzará.",
+            "errorType": "Coma innecesaria después de signo de exclamación",
+            "correction": "—¡Rápido, Elián! ¡Sube! ¡sube! o nos alcanzará.",
+            "explanation": "Tras los signos de exclamación no se añade coma; los signos de exclamación ya cierran el enunciado y no precisan coma adicional."
+          },
+          {
+            "originalText": "—Pero, papá, no veo nada.",
+            "errorType": "Sin error",
+            "correction": "—Pero, papá, no veo nada.",
+            "explanation": "Correcto."
+          },
+          {
+            "originalText": "—He llegado al final —me dice.",
+            "errorType": "Sin error",
+            "correction": "—He llegado al final —me dice.",
+            "explanation": "Correcto."
+          }
+        ]
+      },
+      {
+        "findings": [
+          {
+            "originalText": "—No. No lo sé, Elián, quizás —es mejor que vaya sabiendo",
+            "errorType": "Falta de punto tras acotación cuando el diálogo continúa",
+            "correction": "—No. No lo sé, Elián, quizás —es mejor que vaya sabiendo",
+            "explanation": "La acotación intercalada «—es mejor que vaya sabiendo que, lo más probable, es que esa arpía esté muerta» no cierra con punto antes del guion de reapertura del diálogo. Sin embargo, revisando el fragmento, la estructura es una acotación que continúa el diálogo sin raya de reapertura, por lo que el error real es la ausencia de raya de cierre y punto: «—No. No lo sé, Elián, quizás —es mejor que vaya sabiendo que, lo más probable, es que esa arpía esté muerta—.»"
+          },
+          {
+            "originalText": "!Un coche!",
+            "errorType": "Signos de exclamación incorrectos (apertura con signo incorrecto)",
+            "correction": "¡Un coche!",
+            "explanation": "En español, la exclamación debe abrirse con el signo de apertura invertido «¡», no con «!». La forma correcta es «¡Un coche!»."
+          },
+          {
+            "originalText": "—¿Genocida?, ¿me tomas le pelo, padre?",
+            "errorType": "Coma innecesaria después de interrogación",
+            "correction": "—¿Genocida? ¿Me tomas el pelo, padre?",
+            "explanation": "Tras el signo de cierre de interrogación «?» no debe ir coma. Además, la siguiente pregunta inicia una nueva interrogación independiente y debe comenzar con mayúscula."
+          },
+          {
+            "originalText": "—¿Ves hijo? No todos están muertos.",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "—¿Ves, hijo? No todos están muertos.",
+            "explanation": "El apelativo «hijo» funciona como vocativo dentro de la pregunta y debe ir separado por coma del resto de la intervención."
+          },
+          {
+            "originalText": "—Elián, espera aquí fuera un momento —le digo.",
+            "errorType": "Sin error",
+            "correction": "—Elián, espera aquí fuera un momento —le digo.",
+            "explanation": "Correcto"
+          },
+          {
+            "originalText": "—Buenos días, Elián. Anda vístete, nos vamos.",
+            "errorType": "Ausencia de coma vocativa",
+            "correction": "—Buenos días, Elián. Anda, vístete, nos vamos.",
+            "explanation": "«Anda» funciona aquí como apelativo/imperativo introductorio y «vístete» como orden; se recomienda coma tras «Anda» para separar el vocativo funcional, aunque el error principal detectado es la falta de coma tras «Anda»."
+          }
+        ]
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [
+          {
+            "originalText": "No, no, no. Dios, aquí están todos muertos también. No sé en qué planta trabaja Benjamín. Dios, quizás esté muerto; sí, es lo más probable. Dios, no me hagas esto, por favor. No puedo dejar sola a Iris en el hall. Subiré planta por planta y le diré que espere en los ascensores hasta que haya revisado cada una.",
+            "sceneType": "reflexión",
+            "issue": "Acumulación de frases muy cortas y telegráficas en un momento de reflexión interior angustiada pero pausada (la protagonista está planificando su búsqueda, no en acción inmediata). La fragmentación extrema —'No sé en qué planta trabaja Benjamín. Dios, quizás esté muerto; sí, es lo más probable. Dios, no me hagas esto, por favor.'— rompe el tono introspectivo y convierte el pensamiento en una lista de telegrama en lugar de un flujo de conciencia coherente.",
+            "suggestion": "Fusionar algunas de estas frases para crear un flujo interno más sostenido que refleje la angustia sin fragmentarla artificialmente: por ejemplo, 'No sé en qué planta trabaja Benjamín, y lo más probable es que lo encuentre muerto. Dios, no me hagas esto, por favor.' Reservar la fragmentación extrema para el momento exacto del impacto emocional, no para toda la secuencia de planificación."
+          },
+          {
+            "originalText": "Hace ya más de dos horas que hemos dejado atrás aquella diminuta cueva. Creo que descender la montaña y alejarnos de las nubes lo más deprisa posible ha sido lo más acertado. Esa maldita tormenta eléctrica ha sido espeluznante y quien sabe si puede volver a suceder. La oscuridad de la noche empieza a acechar, hay que acelerar el paso.",
+            "sceneType": "atmósfera",
+            "issue": "Este párrafo de atmósfera y transición temporal, que debería tener un tono contemplativo o de tensión sostenida, se resuelve en cuatro frases cortas y sumarias de densidad casi idéntica que aplastan el tempo. Ninguna de ellas desarrolla la atmósfera: la montaña, la noche que cae, el miedo latente. El resultado es una enumeración seca que impide al lector instalarse en el momento.",
+            "suggestion": "Desarrollar al menos una de estas ideas con más textura atmosférica, permitiendo que la descripción de la oscuridad que 'empieza a acechar' o el recuerdo de la tormenta respiren con una frase más extendida que ancle al lector en el paisaje y el estado emocional del personaje, en lugar de despachar el momento en cuatro pinceladas telegráficas."
+          }
+        ],
+        "total_found": 2
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Entro en una sala de reuniones. Hay una mesa ovalada con diez sillas. En el lado de la puerta hay cuatro cadáveres: tres sentados con el cuerpo algo resbalado en la silla, y otro en el suelo.",
+            "sceneType": "descripción",
+            "issue": "Acumulación de frases cortas y telegráficas en una escena descriptiva de atmósfera densa y cargada emocionalmente. 'Entro en una sala de reuniones. Hay una mesa ovalada con diez sillas.' rompe el tono contemplativo y sobrecogedor que requiere el descubrimiento de una sala llena de cadáveres, dándole un ritmo de inventario frío que no encaja con la tensión emocional acumulada.",
+            "suggestion": "Fundir las frases cortas descriptivas en una estructura más fluida que sostenga la atmósfera: por ejemplo, 'Entro en una sala de reuniones con una mesa ovalada rodeada de diez sillas, y en el lado de la puerta hay cuatro cadáveres...' para que el inventario visual no suene a telegrama sino a descubrimiento pausado y angustiante."
+          },
+          {
+            "originalText": "Es la hora de partir. Conozco un sitio muy bonito, más bien cerca, donde solíamos ir de pícnic, que nos gustaba visitar en otoño para disfrutar de las tonalidades anaranjadas de los árboles. Aquel será un buen sitio donde enterrarlo. Hace un rato que hemos partido, la carretera está desierta de coches en movimiento.",
+            "sceneType": "reflexión",
+            "issue": "Hay un salto brusco e injustificado de densidad: el fragmento evocador y contemplativo sobre el lugar del pícnic (tono íntimo, nostálgico) queda inmediatamente aplastado por la transición telegráfica 'Hace un rato que hemos partido', que colapsa en una sola frase escueta un salto temporal y espacial enorme. La desproporción entre la densidad emotiva de lo anterior y la sequedad de esa frase crea un desequilibrio perjudicial para el ritmo de la escena.",
+            "suggestion": "Expandir mínimamente la transición o integrarla en el párrafo anterior para que el paso del tiempo no se perciba como un corte abrupto, preservando el tono nostálgico: por ejemplo, dedicar una frase más al trayecto que conecte emocionalmente la evocación del lugar con el momento de estar ya en camino."
+          }
+        ],
+        "total_found": 2
+      },
+      {
+        "findings": [
+          {
+            "originalText": "—No. No vamos a utilizarlo. —¿Por qué no? Ahora mismo, la malla subatómica se ha ajustado y un solo dispositivo no podría causar ningún tipo de desestabilización. —No. —¡¿Por qué?! Ya no tiene ningún sentido no usarlo.",
+            "sceneType": "descripción",
+            "issue": "La secuencia de réplicas brevísimas '—No.' aislada entre intervenciones de longitud media crea un desequilibrio de densidad párrafo a párrafo que no responde a un crescendo de tensión dramática sostenido, sino a una alternancia irregular que fragmenta el ritmo sin intención poética clara. El monosílabo aislado '—No.' como párrafo independiente junto a los párrafos circundantes de 20-30 palabras genera una desproporción de densidad que interrumpe el tono de confrontación pausada entre padre e hijo.",
+            "suggestion": "Integrar el '—No.' aislado en la misma línea que la réplica siguiente o añadir un breve gesto o acción del personaje que justifique y amortigüe la interrupción abrupta, otorgándole peso dramático en lugar de dejarla suspendida como un fragmento telegráfico desconectado."
+          }
+        ],
+        "total_found": 1
+      },
+      {
+        "findings": [],
+        "total_found": 0
+      },
+      {
+        "findings": [
+          {
+            "originalText": "Salgo fuera, casi sin poder respirar",
+            "surplus": "fuera",
+            "errorType": "movimiento_redundante",
+            "explanation": "'Salgo' ya implica salir hacia fuera; 'fuera' es redundante",
+            "correction": "Salgo, casi sin poder respirar"
+          },
+          {
+            "originalText": "Solo he visto un único coche en dirección",
+            "surplus": "único",
+            "errorType": "movimiento_redundante",
+            "explanation": "'Solo' y 'único' expresan lo mismo; uno de los dos sobra",
+            "correction": "Solo he visto un coche en dirección"
+          },
+          {
+            "originalText": "¿Conoces al alguien que viva en la profundidad",
+            "surplus": "al",
+            "errorType": "preposicion_duplicada",
+            "explanation": "'al' intrusivo antes de 'alguien'; preposición sobrante",
+            "correction": "¿Conoces a alguien que viva en la profundidad"
+          }
+        ],
+        "total_found": 3
+      },
+      {
+        "findings": [
+          {
+            "originalText": "la única comida de la que han dispuesto es de que la había",
+            "surplus": "de",
+            "errorType": "de_intrusivo",
+            "explanation": "'es de que' debería ser 'es que'; la preposición 'de' es intrusiva entre el verbo copulativo y la conjunción 'que'",
+            "correction": "la única comida de la que han dispuesto es que la había"
+          },
+          {
+            "originalText": "¿Conoces al alguien que viva",
+            "surplus": "al",
+            "errorType": "prep_encadenada",
+            "explanation": "El artículo contracto 'al' es sobrante antes del pronombre indefinido 'alguien'",
+            "correction": "¿Conoces a alguien que viva"
+          }
+        ],
+        "total_found": 2
+      }
+    ]
   }
 }
