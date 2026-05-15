@@ -116,6 +116,7 @@ const buildCommentText = window.PLUMIA.buildCommentText;
 function _singleComment(f) {
   switch(f.correctionId) {
     case 'leismo': case 'laismo': case 'loismo':
+      if (f.type === 'typo_el_le') return `Error tipográfico: «le» debería ser el artículo «el». ${f.explanation||''} Corrección: «${f.correction}».`.trim();
       return `${f.label||'Leísmo'}: la forma correcta es «${f.correction}».`;
     case 'ambiguedad_pronominal':
       return `Ambigüedad pronominal: «${f.pronoun}» puede referirse a ${(f.possibleReferents||[]).join(' o ')}. ${f.suggestion?'Posible revisión: '+f.suggestion:''}`;
